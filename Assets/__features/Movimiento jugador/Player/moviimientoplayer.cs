@@ -44,7 +44,7 @@ public class moviimientoplayer : MonoBehaviour
         bool isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetButton("Fire3");
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
 
-       
+
         //Calculos raros que no entiendo
         if (direction.magnitude >= 0.1f)
         {
