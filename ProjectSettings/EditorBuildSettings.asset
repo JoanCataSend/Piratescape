@@ -5,11 +5,20 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Piratescape/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/__features/Scenes/MainScene.unity
+    path: Assets/__features/MenuPrincipal/MenuPrincipal.unity
+    guid: 87ac2f31643f0e541891f1e81966b86d
+  - enabled: 1
+    path: Assets/__features/IntroVideo/IntroVideo.unity
+    guid: 5e363a47ca29cc643accc3ad6f50e802
+  - enabled: 1
+    path: Assets/__features/Movimiento jugador/movimiento.unity
+    guid: 1777f1f334d64e343a60ea75ddb87088
+  - enabled: 1
+    path: Assets/Piratescape/Scenes/MainScene.unity
     guid: 4782c088c3a211240982933716f59873
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
