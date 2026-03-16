@@ -114,6 +114,11 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
         interactuable = false;
         activo = false;
 
+        if (InteractionUI.Instance != null)
+        {
+            InteractionUI.Instance.Hide();
+        }
+
         SetIndicatorVisible(false);
 
         if (visualRoot != null)
