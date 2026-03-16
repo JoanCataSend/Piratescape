@@ -72,7 +72,7 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
             if (activo)
             {
-                InteractionUI.Instance.Show();
+                InteractionUI.Instance.Show($"Recoger {objectName}");
                 SetIndicatorVisible(true);
             }
             else

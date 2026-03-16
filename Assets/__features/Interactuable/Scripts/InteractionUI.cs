@@ -1,10 +1,12 @@
+using TMPro;
 using UnityEngine;
 
 public class InteractionUI : MonoBehaviour
 {
     public static InteractionUI Instance;
 
-    [SerializeField] GameObject prompt;
+    [SerializeField] private GameObject prompt;
+    [SerializeField] private TMP_Text actionText;
 
     void Awake()
     {
@@ -12,8 +14,9 @@ public class InteractionUI : MonoBehaviour
         Hide();
     }
 
-    public void Show()
+    public void Show(string message)
     {
+        actionText.text = message;
         prompt.SetActive(true);
     }
 
