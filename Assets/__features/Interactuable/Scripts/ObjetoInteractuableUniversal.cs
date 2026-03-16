@@ -9,6 +9,7 @@ public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
     [SerializeField] private string objectId = "objeto_001";
     [SerializeField] private string objectName = "Objeto interactuable";
     [SerializeField] private string interactionMessage = "Interacción realizada.";
+    [SerializeField] private string promptAction = "Recoger";
 
     [Header("Configuración")]
     [SerializeField] private float rango = 2.5f;
@@ -31,7 +32,6 @@ public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
     private void Start()
     {
         jugador = FindFirstObjectByType<JugadorActivador>();
-
         SetIndicatorVisible(false);
     }
 
@@ -47,7 +47,7 @@ public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
             activo = nuevoEstado;
 
             if (activo)
-                InteractionUI.Instance.Show();
+                InteractionUI.Instance.Show($"{promptAction} {objectName}");
             else
                 InteractionUI.Instance.Hide();
         }
