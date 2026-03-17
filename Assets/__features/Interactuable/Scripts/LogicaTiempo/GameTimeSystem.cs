@@ -34,7 +34,7 @@ namespace GuevaraVideojocs.TimeSystem
         public bool IsPaused => isPaused;
 
         public string CurrentTimeFormatted => $"{currentHour:00}:{currentMinute:00}";
-        public string CurrentDayAndTimeFormatted => $"DIA {currentDay} HORA {currentHour:00}:{currentMinute:00}";
+        public string CurrentDayAndTimeFormatted => $"dia {currentDay} hora {currentHour:00}:{currentMinute:00}";
 
         private void Awake()
         {

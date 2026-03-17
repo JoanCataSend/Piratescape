@@ -65,7 +65,7 @@ namespace GuevaraVideojocs.UI
                 return;
             }
 
-            timeText.text = $"DIA {day} HORA {hour:00}:{minute:00}";
+            timeText.text = $"dia {day} hora {hour:00}:{minute:00}";
         }
 
         private void UpdateDayNightIcon(int hour)
