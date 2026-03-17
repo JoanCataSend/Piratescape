@@ -11,8 +11,8 @@ namespace GuevaraVideojocs.TimeSystem
 
         [Header("Initial Time")]
         [SerializeField] private int startDay = 1;
-        [SerializeField] private int startHour = 8;
-        [SerializeField] private int startMinute = 0;
+        [SerializeField] private int startHour = 17;
+        [SerializeField] private int startMinute = 58;
 
         [Header("Time Progression")]
         [SerializeField] private float realSecondsPerGameMinute = 1f;
@@ -34,7 +34,7 @@ namespace GuevaraVideojocs.TimeSystem
         public bool IsPaused => isPaused;
 
         public string CurrentTimeFormatted => $"{currentHour:00}:{currentMinute:00}";
-        public string CurrentDayAndTimeFormatted => $"Day {currentDay} {currentHour:00}:{currentMinute:00}";
+        public string CurrentDayAndTimeFormatted => $"DIA {currentDay} HORA {currentHour:00}:{currentMinute:00}";
 
         private void Awake()
         {
