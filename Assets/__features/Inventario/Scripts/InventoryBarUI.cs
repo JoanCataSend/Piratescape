@@ -47,6 +47,8 @@ public class InventoryBarUI : MonoBehaviour
             {
                 slotUIs[i].SetSlot(slot.itemData, slot.amount);
             }
+
+            slotUIs[i].SetSelected(i == playerInventory.SelectedSlotIndex);
         }
     }
 }

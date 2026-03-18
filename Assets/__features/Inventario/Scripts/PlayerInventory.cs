@@ -25,23 +25,18 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     }
 
     private void Update()
+{
+    if (UnityEngine.InputSystem.Keyboard.current == null)
     {
-        if (Keyboard.current == null)
-        {
-            return;
-        }
-
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
-        if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
-        if (Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
-        if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
-        if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
-
-        if (Keyboard.current.qKey.wasPressedThisFrame)
-        {
-            UseSelectedItem();
-        }
+        return;
     }
+
+    if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
+    if (UnityEngine.InputSystem.Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
+    if (UnityEngine.InputSystem.Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
+    if (UnityEngine.InputSystem.Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
+    if (UnityEngine.InputSystem.Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
+}
 
     private void InitializeSlots()
     {
