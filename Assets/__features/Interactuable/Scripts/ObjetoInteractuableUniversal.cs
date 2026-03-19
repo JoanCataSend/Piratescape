@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Objeto interactuable genérico reutilizable para cualquier asset.
+/// Objeto interactuable genérico reutilizable para cualquier asset. Cambio.
 /// </summary>
 public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
 {
