@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class moviimientoplayer : MonoBehaviour
+public class movimientoplayer : MonoBehaviour
 {
     private CharacterController controller;
     private Vector3 playerVelocity;
@@ -8,7 +9,7 @@ public class moviimientoplayer : MonoBehaviour
 
     [Header("Configuración de Movimiento")]
     [SerializeField] private float playerSpeed = 5.0f;
-    [SerializeField] private float sprintMultiplier = 1.8f; //Valor que muliplica al correr
+    [SerializeField] private float sprintMultiplier = 1.8f;
     [SerializeField] private float jumpHeight = 1.0f;
     [SerializeField] private float gravityValue = -9.81f;
 
@@ -17,57 +18,64 @@ public class moviimientoplayer : MonoBehaviour
     private float turnSmoothVelocity;
 
     [Header("Referencias")]
-    [SerializeField] private Transform cameraTransform; //Moviminto depende de la camara
+    [SerializeField] private Transform cameraTransform;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
 
-        // Oculta ratón y lo bloquea
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
     {
+        if (Keyboard.current == null)
+        {
+            return;
+        }
+
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
         {
-            // Se pone a -2 (y no a 0) para asegurar que el CharacterController detecte bien el suelo en pendientes
             playerVelocity.y = -2f;
         }
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized; // Normalized evita que corra más en diagonal
 
-        //Sprint
-        bool isSprinting = Input.GetKey(KeyCode.LeftShift) || Input.GetButton("Fire3");
+        float horizontal = 0f;
+        float vertical = 0f;
+
+        if (Keyboard.current.aKey.isPressed) horizontal -= 1f;
+        if (Keyboard.current.dKey.isPressed) horizontal += 1f;
+        if (Keyboard.current.sKey.isPressed) vertical -= 1f;
+        if (Keyboard.current.wKey.isPressed) vertical += 1f;
+
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        bool isSprinting = Keyboard.current.leftShiftKey.isPressed;
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
 
-
-        //Calculos raros que no entiendo
         if (direction.magnitude >= 0.1f)
         {
-            // Calcula el ángulo hacia el que debe mirar sumando la rotación "Y" de la cámara
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+            float cameraY = cameraTransform != null ? cameraTransform.eulerAngles.y : 0f;
 
-            // Suaviza la rotación para que el pirata no gire de forma robótica/instantánea
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraY;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-            // Calcula el vector de movimiento real basándose en la rotación final
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-            // Aplica el movimiento horizontal
             controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
         }
 
-        //Salto
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && groundedPlayer)
         {
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
         }
-        //Gravedad
+
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
     }

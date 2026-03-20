@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
+{
+    public event Action OnInventoryChanged;
+
+    [Header("Configuracion del inventario")]
+    [SerializeField] private int inventorySize = 5;
+
+    [Header("Seleccion")]
+    [SerializeField] private int selectedSlotIndex = 0;
+
+    private List<InventorySlot> slots = new List<InventorySlot>();
+    private PlayerHealth playerHealth;
+
+    public int SelectedSlotIndex => selectedSlotIndex;
+
+    private void Awake()
+    {
+        playerHealth = GetComponent<PlayerHealth>();
+        InitializeSlots();
+    }
+
+    private void Update()
+{
+    if (UnityEngine.InputSystem.Keyboard.current == null)
+    {
+        return;
+    }
+
+    if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
+    if (UnityEngine.InputSystem.Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
+    if (UnityEngine.InputSystem.Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
+    if (UnityEngine.InputSystem.Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
+    if (UnityEngine.InputSystem.Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
+}
+
+    private void InitializeSlots()
+    {
+        slots = new List<InventorySlot>();
+
+        for (int i = 0; i < inventorySize; i++)
+        {
+            slots.Add(new InventorySlot());
+        }
+
+        NotifyInventoryChanged();
+    }
+
+    public bool TryAddItem(ItemData itemData, int amount)
+    {
+        if (itemData == null)
+        {
+            Debug.LogWarning("PlayerInventory: itemData es null.");
+            return false;
+        }
+
+        if (amount <= 0)
+        {
+            Debug.LogWarning("PlayerInventory: amount debe ser mayor que 0.");
+            return false;
+        }
+
+        int remainingAmount = amount;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].CanStack(itemData))
+            {
+                int amountToAdd = Mathf.Min(remainingAmount, slots[i].FreeSpace());
+                slots[i].amount += amountToAdd;
+                remainingAmount -= amountToAdd;
+
+                if (remainingAmount <= 0)
+                {
+                    NotifyInventoryChanged();
+                    return true;
+                }
+            }
+        }
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].IsEmpty())
+            {
+                int amountToAdd = Mathf.Min(remainingAmount, InventorySlot.MaxStack);
+                slots[i].itemData = itemData;
+                slots[i].amount = amountToAdd;
+                remainingAmount -= amountToAdd;
+
+                if (remainingAmount <= 0)
+                {
+                    NotifyInventoryChanged();
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public bool RemoveItem(ItemData itemData, int amount = 1)
+    {
+        if (itemData == null || amount <= 0)
+        {
+            return false;
+        }
+
+        int remainingAmount = amount;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData)
+            {
+                int amountToRemove = Mathf.Min(remainingAmount, slots[i].amount);
+                slots[i].amount -= amountToRemove;
+                remainingAmount -= amountToRemove;
+
+                if (slots[i].amount <= 0)
+                {
+                    slots[i].Clear();
+                }
+
+                if (remainingAmount <= 0)
+                {
+                    NotifyInventoryChanged();
+                    return true;
+                }
+            }
+        }
+
+        NotifyInventoryChanged();
+        return remainingAmount <= 0;
+    }
+
+    public void SelectSlot(int index)
+    {
+        if (index < 0 || index >= slots.Count)
+        {
+            return;
+        }
+
+        selectedSlotIndex = index;
+        NotifyInventoryChanged();
+    }
+
+    public void UseSelectedItem()
+    {
+        InventorySlot slot = GetSlot(selectedSlotIndex);
+
+        if (slot == null || slot.IsEmpty())
+        {
+            Debug.Log("No hay item en el slot seleccionado.");
+            return;
+        }
+
+        ItemData item = slot.itemData;
+
+        if (!item.IsConsumable)
+        {
+            Debug.Log(item.DisplayName + " no es consumible.");
+            return;
+        }
+
+        bool used = ConsumeItem(item);
+
+        if (used)
+        {
+            slot.amount--;
+
+            if (slot.amount <= 0)
+            {
+                slot.Clear();
+            }
+
+            Debug.Log("Consumido: " + item.DisplayName);
+            NotifyInventoryChanged();
+        }
+    }
+
+    private bool ConsumeItem(ItemData item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+
+        if (item.HealthRestore > 0)
+        {
+            if (playerHealth == null)
+            {
+                Debug.LogWarning("No hay PlayerHealth en el jugador.");
+                return false;
+            }
+
+            playerHealth.Heal(item.HealthRestore);
+            return true;
+        }
+
+        return false;
+    }
+
+    public List<InventorySlot> GetSlots()
+    {
+        return slots;
+    }
+
+    public InventorySlot GetSlot(int index)
+    {
+        if (index < 0 || index >= slots.Count)
+        {
+            return null;
+        }
+
+        return slots[index];
+    }
+
+    private void NotifyInventoryChanged()
+    {
+        OnInventoryChanged?.Invoke();
+    }
+}

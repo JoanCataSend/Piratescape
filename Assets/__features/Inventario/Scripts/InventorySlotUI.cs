@@ -1,0 +1,41 @@
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class InventorySlotUI : MonoBehaviour
+{
+    [SerializeField] private Image iconImage;
+    [SerializeField] private TMP_Text amountText;
+    [SerializeField] private Image backgroundImage;
+
+    [Header("Colores")]
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color selectedColor = Color.yellow;
+
+    public void SetEmpty()
+    {
+        iconImage.enabled = false;
+        amountText.text = "";
+    }
+
+    public void SetSlot(ItemData itemData, int amount)
+    {
+        if (itemData == null || amount <= 0)
+        {
+            SetEmpty();
+            return;
+        }
+
+        iconImage.enabled = true;
+        iconImage.sprite = itemData.Icon;
+        amountText.text = amount.ToString();
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (backgroundImage != null)
+        {
+            backgroundImage.color = selected ? selectedColor : normalColor;
+        }
+    }
+}
