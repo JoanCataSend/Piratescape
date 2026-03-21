@@ -15,5 +15,8 @@ MonoBehaviour:
   itemId: coco
   displayName: Coco
   icon: {fileID: 21300000, guid: 312d2306564a1cb41ac29dd94f6e3cc7, type: 3}
+  isConsumable: 1
+  healthRestore: 10
+  energyRestore: 5
   healthRecovery: 10
-  energyRecovery: 0
+  energyRecovery: 5
