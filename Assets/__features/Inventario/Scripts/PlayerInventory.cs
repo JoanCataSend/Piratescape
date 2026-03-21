@@ -37,6 +37,11 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         if (UnityEngine.InputSystem.Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
         if (UnityEngine.InputSystem.Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
         if (UnityEngine.InputSystem.Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
+
+        if (UnityEngine.InputSystem.Keyboard.current.qKey.wasPressedThisFrame)
+        {
+            UseSelectedItem();
+        }
     }
 
     private void InitializeSlots()
