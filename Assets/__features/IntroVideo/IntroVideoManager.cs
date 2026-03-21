@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class IntroVideoManager : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
-    public string siguienteEscena = "movimiento";
+    public string siguienteEscena = "mapav2";
 
     void Start()
     {
