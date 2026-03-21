@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 {
@@ -15,28 +14,30 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     private List<InventorySlot> slots = new List<InventorySlot>();
     private PlayerHealth playerHealth;
+    private PlayerEnergy playerEnergy;
 
     public int SelectedSlotIndex => selectedSlotIndex;
 
     private void Awake()
     {
         playerHealth = GetComponent<PlayerHealth>();
+        playerEnergy = GetComponent<PlayerEnergy>();
         InitializeSlots();
     }
 
     private void Update()
-{
-    if (UnityEngine.InputSystem.Keyboard.current == null)
     {
-        return;
-    }
+        if (UnityEngine.InputSystem.Keyboard.current == null)
+        {
+            return;
+        }
 
-    if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
-    if (UnityEngine.InputSystem.Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
-    if (UnityEngine.InputSystem.Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
-    if (UnityEngine.InputSystem.Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
-    if (UnityEngine.InputSystem.Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
-}
+        if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
+        if (UnityEngine.InputSystem.Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
+        if (UnityEngine.InputSystem.Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
+        if (UnityEngine.InputSystem.Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
+        if (UnityEngine.InputSystem.Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
+    }
 
     private void InitializeSlots()
     {
@@ -99,6 +100,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             }
         }
 
+        NotifyInventoryChanged();
         return false;
     }
 
@@ -159,13 +161,13 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         ItemData item = slot.itemData;
 
-        if (!item.IsConsumable)
+        if (item is not ConsumibleItemData consumibleItem)
         {
             Debug.Log(item.DisplayName + " no es consumible.");
             return;
         }
 
-        bool used = ConsumeItem(item);
+        bool used = ConsumeItem(consumibleItem);
 
         if (used)
         {
@@ -181,26 +183,42 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
     }
 
-    private bool ConsumeItem(ItemData item)
+    private bool ConsumeItem(ConsumibleItemData item)
     {
         if (item == null)
         {
             return false;
         }
 
+        bool usedSomething = false;
+
         if (item.HealthRestore > 0)
         {
-            if (playerHealth == null)
+            if (playerHealth != null)
+            {
+                playerHealth.Heal(item.HealthRestore);
+                usedSomething = true;
+            }
+            else
             {
                 Debug.LogWarning("No hay PlayerHealth en el jugador.");
-                return false;
             }
-
-            playerHealth.Heal(item.HealthRestore);
-            return true;
         }
 
-        return false;
+        if (item.EnergyRestore > 0)
+        {
+            if (playerEnergy != null)
+            {
+                playerEnergy.RestoreEnergy(item.EnergyRestore);
+                usedSomething = true;
+            }
+            else
+            {
+                Debug.LogWarning("No hay PlayerEnergy en el jugador.");
+            }
+        }
+
+        return usedSomething;
     }
 
     public List<InventorySlot> GetSlots()

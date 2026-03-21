@@ -8,10 +8,6 @@ public class InventorySlotUI : MonoBehaviour
     [SerializeField] private TMP_Text amountText;
     [SerializeField] private Image backgroundImage;
 
-    [Header("Colores")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color selectedColor = Color.yellow;
-
     public void SetEmpty()
     {
         iconImage.enabled = false;
@@ -35,7 +31,7 @@ public class InventorySlotUI : MonoBehaviour
     {
         if (backgroundImage != null)
         {
-            backgroundImage.color = selected ? selectedColor : normalColor;
+            backgroundImage.enabled = selected;
         }
     }
 }
