@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfa92465034ab8b4a8afcbdd6105a430, type: 3}
   m_Name: ItemRoca
   m_EditorClassIdentifier: 
-  itemId: coco
-  displayName: Coco
-  icon: {fileID: 21300000, guid: 312d2306564a1cb41ac29dd94f6e3cc7, type: 3}
-  healthRecovery: 10
+  itemId: roca
+  displayName: Roca
+  icon: {fileID: 21300000, guid: c8b4ac4fa53fb2149af8cb711822b893, type: 3}
+  isConsumable: 0
+  healthRestore: 0
+  energyRestore: 0
+  healthRecovery: 0
   energyRecovery: 0
