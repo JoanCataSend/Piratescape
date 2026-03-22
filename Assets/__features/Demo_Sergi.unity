@@ -840,7 +840,7 @@ MonoBehaviour:
   interactionMessage: Madera recogido
   rango: 2.5
   interactuable: 1
-  itemData: {fileID: 0}
+  itemData: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
   amount: 1
   vidaAGanar: 10
   interactionIndicator: {fileID: 0}
@@ -1922,7 +1922,7 @@ MonoBehaviour:
   visualizador: {fileID: 870595232}
   saludMaxima: 100
   saludActual: 100
-  perdidaSaludPorMinuto: 0.1
+  perdidaSaludPorMinuto: 1
 --- !u!4 &576351768
 Transform:
   m_ObjectHideFlags: 0
@@ -5509,10 +5509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2e23945d09bc054088bbec7cc0fabda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 100
-  healthBar: {fileID: 1440898120}
-  visualizadorBarras: {fileID: 870595232}
+  sistemaSaludJugador: {fileID: 576351767}
 --- !u!1 &1674145773
 GameObject:
   m_ObjectHideFlags: 0
