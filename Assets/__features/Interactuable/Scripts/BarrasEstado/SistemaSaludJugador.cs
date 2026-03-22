@@ -55,4 +55,10 @@ public sealed class SistemaSaludJugador : MonoBehaviour
             visualizador.EstablecerSalud(saludActual, saludMaxima);
         }
     }
+    public void AumentarSalud(float cantidad)
+    {
+        saludActual += cantidad;
+        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+        ActualizarHUD(); // Esto actualizará tu VisualizadorBarrasEstado
+    }
 }

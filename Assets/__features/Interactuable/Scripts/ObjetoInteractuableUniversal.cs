@@ -1,17 +1,17 @@
 using UnityEngine;
 
 /// <summary>
-/// Objeto interactuable genérico reutilizable para cualquier asset. Cambio.
+/// Objeto interactuable gen rico reutilizable para cualquier asset.
 /// </summary>
 public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
 {
     [Header("Datos del objeto")]
     [SerializeField] private string objectId = "objeto_001";
     [SerializeField] private string objectName = "Objeto interactuable";
-    [SerializeField] private string interactionMessage = "Interacción realizada.";
+    [SerializeField] private string interactionMessage = "Interacci n realizada.";
     [SerializeField] private string promptAction = "Recoger";
 
-    [Header("Configuración")]
+    [Header("Configuraci n")]
     [SerializeField] private float rango = 2.5f;
     [SerializeField] private bool interactuable = true;
 

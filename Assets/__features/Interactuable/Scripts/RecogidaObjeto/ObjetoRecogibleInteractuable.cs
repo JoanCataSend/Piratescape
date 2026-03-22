@@ -14,6 +14,8 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
     [Header("Datos de recogida")]
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
+    [Header("Curación")]
+    [SerializeField] private int vidaAGanar = 10;
 
     [Header("Indicador visual")]
     [SerializeField] private GameObject interactionIndicator;
@@ -121,20 +123,28 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
         activo = false;
 
         if (InteractionUI.Instance != null)
-        {
             InteractionUI.Instance.Hide();
-        }
 
         SetIndicatorVisible(false);
 
-        if (visualRoot != null)
+        // ---- CURAR AL JUGADOR ----
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>(); // Busca el jugador en la escena
+        if (playerHealth != null)
         {
-            visualRoot.SetActive(false);
+            playerHealth.Heal(vidaAGanar);
+            Debug.Log($"Jugador curado +{vidaAGanar} vida");
         }
+        else
+        {
+            Debug.LogWarning("No se encontró PlayerHealth en la escena");
+        }
+        // --------------------------
+
+        if (visualRoot != null)
+            visualRoot.SetActive(false);
 
         gameObject.SetActive(false);
     }
-
     private void SetIndicatorVisible(bool visible)
     {
         if (interactionIndicator != null)
