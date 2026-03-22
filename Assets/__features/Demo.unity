@@ -842,6 +842,7 @@ MonoBehaviour:
   interactuable: 1
   itemData: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
   amount: 1
+  vidaAGanar: 10
   interactionIndicator: {fileID: 0}
   visualRoot: {fileID: 0}
 --- !u!1 &400148778
@@ -1460,6 +1461,7 @@ MonoBehaviour:
   interactuable: 1
   itemData: {fileID: 11400000, guid: 93a4c8e1b730d4f47ab81ee0dbd01ee5, type: 2}
   amount: 1
+  vidaAGanar: 10
   interactionIndicator: {fileID: 0}
   visualRoot: {fileID: 0}
 --- !u!54 &488682930
@@ -5439,8 +5441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2e23945d09bc054088bbec7cc0fabda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 50
+  sistemaSaludJugador: {fileID: 576351767}
 --- !u!1 &1674145773
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,49 +1,33 @@
 using UnityEngine;
-using UnityEngine.UI;
+
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int currentHealth = 100;
-    [SerializeField] private Slider healthBar;
-    [SerializeField] private VisualizadorBarrasEstado visualizadorBarras;
-    public int CurrentHealth => currentHealth;
-    public int MaxHealth => maxHealth;
+    [SerializeField] private SistemaSaludJugador sistemaSaludJugador;
+
+    public int CurrentHealth => sistemaSaludJugador != null ? Mathf.RoundToInt(sistemaSaludJugador.SaludActual) : 0;
+    public int MaxHealth => sistemaSaludJugador != null ? Mathf.RoundToInt(sistemaSaludJugador.SaludMaxima) : 0;
+
+    private void Awake()
+    {
+        if (sistemaSaludJugador == null)
+        {
+            sistemaSaludJugador = FindFirstObjectByType<SistemaSaludJugador>();
+        }
+    }
 
     public void Heal(int amount)
     {
-        if (amount <= 0) return;
+        if (amount <= 0 || sistemaSaludJugador == null) return;
 
-        currentHealth += amount;
-        if (currentHealth > maxHealth) currentHealth = maxHealth;
-
-        // Actualiza la barra de vida visual
-        if (visualizadorBarras != null)
-            visualizadorBarras.EstablecerSaludActual(currentHealth);
-
-        Debug.Log("Vida actual: " + currentHealth);
+        sistemaSaludJugador.AumentarSalud(amount);
+        Debug.Log($"Vida curada +{amount}. Vida actual: {CurrentHealth}/{MaxHealth}");
     }
 
-    
     public void TakeDamage(int amount)
     {
-        if (amount <= 0) return;
+        if (amount <= 0 || sistemaSaludJugador == null) return;
 
-        currentHealth -= amount;
-        if (currentHealth < 0) currentHealth = 0;
-
-        // Actualiza barra visual
-        if (visualizadorBarras != null)
-            visualizadorBarras.EstablecerSaludActual(currentHealth);
-
-        Debug.Log("Vida actual: " + currentHealth);
-    }
-    void Start()
-    {
-        healthBar.maxValue = maxHealth;
-        healthBar.value = currentHealth;
-    }
-    void UpdateHealthBar()
-    {
-        healthBar.value = currentHealth;
+        sistemaSaludJugador.ReducirSaludDirecta(amount);
+        Debug.Log($"Daño recibido -{amount}. Vida actual: {CurrentHealth}/{MaxHealth}");
     }
 }

@@ -14,6 +14,9 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     [Header("Configuracion desgaste")]
     [SerializeField] private float perdidaSaludPorMinuto = 0.1f;
 
+    public float SaludActual => saludActual;
+    public float SaludMaxima => saludMaxima;
+
     private void OnEnable()
     {
         if (sistemaTiempo != null)
@@ -37,14 +40,31 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     private void AlCambiarTiempo(int dia, int hora, int minuto)
     {
-        ReducirSalud();
+        ReducirSaludPorTiempo();
     }
 
-    private void ReducirSalud()
+    private void ReducirSaludPorTiempo()
     {
         saludActual -= perdidaSaludPorMinuto;
         saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+        ActualizarHUD();
+    }
 
+    public void ReducirSaludDirecta(float cantidad)
+    {
+        if (cantidad <= 0f) return;
+
+        saludActual -= cantidad;
+        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+        ActualizarHUD();
+    }
+
+    public void AumentarSalud(float cantidad)
+    {
+        if (cantidad <= 0f) return;
+
+        saludActual += cantidad;
+        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
         ActualizarHUD();
     }
 
@@ -54,11 +74,5 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         {
             visualizador.EstablecerSalud(saludActual, saludMaxima);
         }
-    }
-    public void AumentarSalud(float cantidad)
-    {
-        saludActual += cantidad;
-        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
-        ActualizarHUD(); // Esto actualizará tu VisualizadorBarrasEstado
     }
 }

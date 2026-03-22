@@ -127,19 +127,6 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         SetIndicatorVisible(false);
 
-        // ---- CURAR AL JUGADOR ----
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>(); // Busca el jugador en la escena
-        if (playerHealth != null)
-        {
-            playerHealth.Heal(vidaAGanar);
-            Debug.Log($"Jugador curado +{vidaAGanar} vida");
-        }
-        else
-        {
-            Debug.LogWarning("No se encontró PlayerHealth en la escena");
-        }
-        // --------------------------
-
         if (visualRoot != null)
             visualRoot.SetActive(false);
 
