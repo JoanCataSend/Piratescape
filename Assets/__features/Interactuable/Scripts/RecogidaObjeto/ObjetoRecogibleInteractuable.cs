@@ -81,6 +81,12 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
                 SetIndicatorVisible(false);
             }
         }
+
+        if (activo && UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            Debug.Log("E pulsada sobre objeto activo");
+            Interactuar();
+        }
     }
 
     public void Interactuar()

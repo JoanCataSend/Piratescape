@@ -1,10 +1,8 @@
 using UnityEngine;
-
 [CreateAssetMenu(fileName = "ItemData", menuName = "Gameplay/Items/Item Data")]
-public class ItemData : ScriptableObject
 
+public class ItemData : ScriptableObject
 {
-    [Header("Basic data")]
     [SerializeField] private string itemId;
     [SerializeField] private string displayName;
     [SerializeField] private Sprite icon;

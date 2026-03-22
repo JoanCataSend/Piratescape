@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfa92465034ab8b4a8afcbdd6105a430, type: 3}
-  m_Name: ItemCoco
+  m_Name: Cafe
   m_EditorClassIdentifier: 
-  itemId: coco
-  displayName: Coco
-  icon: {fileID: 0}
-  healthRecovery: 10
-  energyRecovery: 0
+  itemId: cafe
+  displayName: "Caf\xE9"
+  icon: {fileID: 21300000, guid: 3e9140f398740a04580b493a420e0151, type: 3}
+  healthRestore: 0
+  energyRestore: 30

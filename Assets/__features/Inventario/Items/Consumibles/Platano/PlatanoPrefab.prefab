@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1763915665861701271
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.76
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4.76
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9326175
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.3440538
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.077974536
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.07597136
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 39.042
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -14.748
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -14.568
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      propertyPath: m_Name
+      value: PlatanoPrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7827361176859076900}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4774458290796676096}
+  m_SourcePrefab: {fileID: 100100000, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+--- !u!1 &1494005551563264966 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+  m_PrefabInstance: {fileID: 1763915665861701271}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7827361176859076900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494005551563264966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd44853c4ae215846808bcd943c6c2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectId: platano
+  objectName: "Pl\xE1tano"
+  interactionMessage: "Pl\xE1tano recogido"
+  rango: 2.5
+  interactuable: 1
+  itemData: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  amount: 1
+  interactionIndicator: {fileID: 0}
+  visualRoot: {fileID: 0}
+--- !u!65 &-4774458290796676096
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494005551563264966}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
