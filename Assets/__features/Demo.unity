@@ -2051,7 +2051,7 @@ MonoBehaviour:
   visualizador: {fileID: 870595232}
   saludMaxima: 100
   saludActual: 100
-  perdidaSaludPorMinuto: 50
+  perdidaSaludPorMinuto: 0.1
 --- !u!4 &576351768
 Transform:
   m_ObjectHideFlags: 0
