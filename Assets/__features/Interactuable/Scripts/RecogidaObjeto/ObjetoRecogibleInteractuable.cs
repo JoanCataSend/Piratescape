@@ -14,14 +14,6 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
     [Header("Datos de recogida")]
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
-    [Header("Curación")]
-    [SerializeField] private int vidaAGanar = 10;
-
-    [Header("Indicador visual")]
-    [SerializeField] private GameObject interactionIndicator;
-
-    [Header("Opcional")]
-    [SerializeField] private GameObject visualRoot;
 
     private bool activo;
     private IActivador jugador;
@@ -127,16 +119,11 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         SetIndicatorVisible(false);
 
-        if (visualRoot != null)
-            visualRoot.SetActive(false);
 
         gameObject.SetActive(false);
     }
     private void SetIndicatorVisible(bool visible)
     {
-        if (interactionIndicator != null)
-        {
-            interactionIndicator.SetActive(visible);
-        }
+
     }
 }
