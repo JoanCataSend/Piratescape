@@ -1,18 +1,32 @@
 using UnityEngine;
-using UnityEngine.Video;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
-public class IntroVideoManager : MonoBehaviour
+public sealed class IntroVideoManager : MonoBehaviour
 {
-    public VideoPlayer videoPlayer;
-    public string siguienteEscena = "mapav2";
+    [SerializeField] private VideoPlayer videoPlayer;
+    [SerializeField] private string siguienteEscena = "Demo";
 
-    void Start()
+    private void Start()
     {
+        if (videoPlayer == null)
+        {
+            Debug.LogError("IntroVideoManager: falta la referencia al VideoPlayer.");
+            return;
+        }
+
         videoPlayer.loopPointReached += AlTerminarVideo;
     }
 
-    void Update()
+    private void OnDestroy()
+    {
+        if (videoPlayer != null)
+        {
+            videoPlayer.loopPointReached -= AlTerminarVideo;
+        }
+    }
+
+    private void Update()
     {
         if (Input.anyKeyDown)
         {
@@ -20,13 +34,19 @@ public class IntroVideoManager : MonoBehaviour
         }
     }
 
-    void AlTerminarVideo(VideoPlayer vp)
+    private void AlTerminarVideo(VideoPlayer reproductor)
     {
         CargarJuego();
     }
 
-    void CargarJuego()
+    private void CargarJuego()
     {
+        if (string.IsNullOrWhiteSpace(siguienteEscena))
+        {
+            Debug.LogError("IntroVideoManager: el nombre de la siguiente escena está vacío.");
+            return;
+        }
+
         SceneManager.LoadScene(siguienteEscena);
     }
 }
