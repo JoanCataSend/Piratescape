@@ -112,6 +112,12 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PararMusica();
+            MusicManager.Instance.DestruirMusicManager();
+        }
+
         SceneManager.LoadScene("PantallaPrincipal");
     }
 

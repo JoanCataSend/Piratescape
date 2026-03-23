@@ -46,6 +46,11 @@ public sealed class PantallaMuerteUI : MonoBehaviour
             hud.SetActive(false);
         }
 
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PararMusica();
+        }
+
         panelMuerte.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;
