@@ -17,4 +17,10 @@ public class MenuPrincipal : MonoBehaviour
     {
         Debug.Log("Configuracion");
     }
+
+    public void Salir()
+    {
+        Debug.Log("Saliendo del juego...");
+        Application.Quit();
+    }
 }
