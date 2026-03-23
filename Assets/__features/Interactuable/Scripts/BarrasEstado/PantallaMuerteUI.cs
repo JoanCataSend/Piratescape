@@ -7,6 +7,7 @@ public sealed class PantallaMuerteUI : MonoBehaviour
     [SerializeField] private SistemaSaludJugador sistemaSaludJugador;
     [SerializeField] private GameObject panelMuerte;
     [SerializeField] private GameObject hud;
+    [SerializeField] private AudioSource audioMuerte;
 
     private bool pantallaMostrada;
 
@@ -15,6 +16,11 @@ public sealed class PantallaMuerteUI : MonoBehaviour
         if (panelMuerte != null)
         {
             panelMuerte.SetActive(false);
+        }
+
+        if (audioMuerte != null)
+        {
+            audioMuerte.Stop();
         }
     }
 
@@ -44,11 +50,21 @@ public sealed class PantallaMuerteUI : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (audioMuerte != null && !audioMuerte.isPlaying)
+        {
+            audioMuerte.Play();
+        }
     }
 
     public void ReintentarPartida()
     {
         Debug.Log("REINTENTAR PULSADO");
+
+        if (audioMuerte != null)
+        {
+            audioMuerte.Stop();
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -61,6 +77,11 @@ public sealed class PantallaMuerteUI : MonoBehaviour
     public void SalirDelJuego()
     {
         Debug.Log("SALIR PULSADO");
+
+        if (audioMuerte != null)
+        {
+            audioMuerte.Stop();
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
