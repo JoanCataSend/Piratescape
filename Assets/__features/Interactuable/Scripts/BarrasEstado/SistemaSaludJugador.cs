@@ -14,8 +14,11 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     [Header("Configuracion desgaste")]
     [SerializeField] private float perdidaSaludPorMinuto = 0.1f;
 
+    private bool estaMuerto;
+
     public float SaludActual => saludActual;
     public float SaludMaxima => saludMaxima;
+    public bool EstaMuerto => estaMuerto;
 
     private void OnEnable()
     {
@@ -35,11 +38,18 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     private void Start()
     {
+        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
         ActualizarHUD();
+        ComprobarMuerte();
     }
 
     private void AlCambiarTiempo(int dia, int hora, int minuto)
     {
+        if (estaMuerto)
+        {
+            return;
+        }
+
         ReducirSaludPorTiempo();
     }
 
@@ -47,24 +57,35 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     {
         saludActual -= perdidaSaludPorMinuto;
         saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+
         ActualizarHUD();
+        ComprobarMuerte();
     }
 
     public void ReducirSaludDirecta(float cantidad)
     {
-        if (cantidad <= 0f) return;
+        if (cantidad <= 0f || estaMuerto)
+        {
+            return;
+        }
 
         saludActual -= cantidad;
         saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+
         ActualizarHUD();
+        ComprobarMuerte();
     }
 
     public void AumentarSalud(float cantidad)
     {
-        if (cantidad <= 0f) return;
+        if (cantidad <= 0f || estaMuerto)
+        {
+            return;
+        }
 
         saludActual += cantidad;
         saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+
         ActualizarHUD();
     }
 
@@ -73,6 +94,26 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         if (visualizador != null)
         {
             visualizador.EstablecerSalud(saludActual, saludMaxima);
+        }
+    }
+
+    private void ComprobarMuerte()
+    {
+        if (estaMuerto)
+        {
+            return;
+        }
+
+        if (saludActual > 0f)
+        {
+            return;
+        }
+
+        estaMuerto = true;
+
+        if (sistemaTiempo != null)
+        {
+            sistemaTiempo.PauseTime();
         }
     }
 }
