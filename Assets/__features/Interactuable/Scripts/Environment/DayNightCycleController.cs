@@ -12,6 +12,10 @@ namespace GuevaraVideojocs.Environment
         [SerializeField] private GameObject sunVisual;
         [SerializeField] private GameObject moonVisual;
 
+        [Header("Skybox")]
+        [SerializeField] private Material daySkybox;
+        [SerializeField] private Material nightSkybox;
+
         [Header("Day Night Hours")]
         [SerializeField] private int dayStartHour = 6;
         [SerializeField] private int nightStartHour = 18;
@@ -34,26 +38,50 @@ namespace GuevaraVideojocs.Environment
         [SerializeField] private Vector3 sunDayRotation = new Vector3(50f, -30f, 0f);
         [SerializeField] private Vector3 moonNightRotation = new Vector3(220f, -30f, 0f);
 
+        private bool isSubscribed = false;
+
+        private void Start()
+        {
+            RefreshLighting();
+        }
+
         private void OnEnable()
         {
-            if (gameTimeSystem == null)
-            {
-                Debug.LogWarning($"{nameof(DayNightCycleController)}: missing GameTimeSystem reference.");
-                return;
-            }
-
-            gameTimeSystem.OnTimeChanged += HandleTimeChanged;
+            SubscribeToTimeSystem();
             RefreshLighting();
         }
 
         private void OnDisable()
         {
+            UnsubscribeFromTimeSystem();
+        }
+
+        private void SubscribeToTimeSystem()
+        {
             if (gameTimeSystem == null)
+            {
+                Debug.LogWarning($"{nameof(DayNightCycleController)}: falta la referencia a GameTimeSystem.");
+                return;
+            }
+
+            if (isSubscribed)
+            {
+                return;
+            }
+
+            gameTimeSystem.OnTimeChanged += HandleTimeChanged;
+            isSubscribed = true;
+        }
+
+        private void UnsubscribeFromTimeSystem()
+        {
+            if (gameTimeSystem == null || !isSubscribed)
             {
                 return;
             }
 
             gameTimeSystem.OnTimeChanged -= HandleTimeChanged;
+            isSubscribed = false;
         }
 
         private void HandleTimeChanged(int day, int hour, int minute)
@@ -63,6 +91,12 @@ namespace GuevaraVideojocs.Environment
 
         private void RefreshLighting()
         {
+            if (gameTimeSystem == null)
+            {
+                Debug.LogWarning($"{nameof(DayNightCycleController)}: no se puede refrescar porque GameTimeSystem es null.");
+                return;
+            }
+
             UpdateLighting(gameTimeSystem.CurrentHour);
         }
 
@@ -73,17 +107,20 @@ namespace GuevaraVideojocs.Environment
             UpdateSun(isDayTime);
             UpdateMoon(isDayTime);
             UpdateAmbientLight(isDayTime);
+            UpdateSkybox(isDayTime);
         }
 
         private void UpdateSun(bool isDayTime)
         {
-            if (sunLight != null)
+            if (sunLight == null)
             {
-                sunLight.enabled = true;
-                sunLight.intensity = isDayTime ? daySunIntensity : nightSunIntensity;
-                sunLight.color = isDayTime ? daySunColor : nightSunColor;
-                sunLight.transform.rotation = Quaternion.Euler(sunDayRotation);
+                return;
             }
+
+            sunLight.enabled = true;
+            sunLight.intensity = isDayTime ? daySunIntensity : nightSunIntensity;
+            sunLight.color = isDayTime ? daySunColor : nightSunColor;
+            sunLight.transform.rotation = Quaternion.Euler(sunDayRotation);
 
             if (sunVisual != null)
             {
@@ -111,7 +148,25 @@ namespace GuevaraVideojocs.Environment
 
         private void UpdateAmbientLight(bool isDayTime)
         {
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight = isDayTime ? dayAmbientColor : nightAmbientColor;
+        }
+
+        private void UpdateSkybox(bool isDayTime)
+        {
+            Material targetSkybox = isDayTime ? daySkybox : nightSkybox;
+
+            if (targetSkybox == null)
+            {
+                Debug.LogWarning($"{nameof(DayNightCycleController)}: falta asignar el skybox de {(isDayTime ? "día" : "noche")}.");
+                return;
+            }
+
+            if (RenderSettings.skybox != targetSkybox)
+            {
+                RenderSettings.skybox = targetSkybox;
+                DynamicGI.UpdateEnvironment();
+            }
         }
     }
 }
