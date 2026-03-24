@@ -10,6 +10,7 @@ public class MenuPrincipal : MonoBehaviour
 
     public void Continuar()
     {
+        SceneManager.LoadScene("Demotest");
         Debug.Log("Continuar");
     }
 

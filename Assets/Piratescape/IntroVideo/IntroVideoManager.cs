@@ -5,7 +5,7 @@ using UnityEngine.Video;
 public sealed class IntroVideoManager : MonoBehaviour
 {
     [SerializeField] private VideoPlayer videoPlayer;
-    [SerializeField] private string siguienteEscena = "Demo";
+    [SerializeField] private string siguienteEscena = "Demotest";
 
     private void Start()
     {
