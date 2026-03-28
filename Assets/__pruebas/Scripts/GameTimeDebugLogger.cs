@@ -1,7 +1,6 @@
 using UnityEngine;
 
-namespace GuevaraVideojocs.TimeSystem
-{
+
     public class GameTimeDebugLogger : MonoBehaviour
     {
         [SerializeField] private GameTimeSystem gameTimeSystem;
@@ -45,4 +44,3 @@ namespace GuevaraVideojocs.TimeSystem
             Debug.Log($"[GameTime] Day {day} - {hour:00}:{minute:00}");
         }
     }
-}

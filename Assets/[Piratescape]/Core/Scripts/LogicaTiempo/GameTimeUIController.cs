@@ -1,10 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using GuevaraVideojocs.TimeSystem;
 
-namespace GuevaraVideojocs.UI
-{
     public sealed class GameTimeUIController : MonoBehaviour
     {
         [Header("References")]
@@ -79,4 +76,3 @@ namespace GuevaraVideojocs.UI
             dayNightIcon.sprite = isDayTime ? daySprite : nightSprite;
         }
     }
-}

@@ -1,8 +1,5 @@
 using UnityEngine;
-using GuevaraVideojocs.TimeSystem;
 
-namespace GuevaraVideojocs.Environment
-{
     public sealed class DayNightCycleController : MonoBehaviour
     {
         [Header("References")]
@@ -158,7 +155,7 @@ namespace GuevaraVideojocs.Environment
 
             if (targetSkybox == null)
             {
-                Debug.LogWarning($"{nameof(DayNightCycleController)}: falta asignar el skybox de {(isDayTime ? "día" : "noche")}.");
+                //Debug.LogWarning($"{nameof(DayNightCycleController)}: falta asignar el skybox de {(isDayTime ? "día" : "noche")}.");
                 return;
             }
 
@@ -169,4 +166,3 @@ namespace GuevaraVideojocs.Environment
             }
         }
     }
-}
