@@ -21,11 +21,25 @@ public sealed class PlayerPickupController : MonoBehaviour
 
     private void Awake()
     {
+        // 1. Intentar usar la referencia puesta en Inspector
         itemReceiver = itemReceiverSource as IItemReceiver;
+
+        // 2. Si no existe o no implementa la interfaz, buscar PlayerInventory automáticamente
+        if (itemReceiver == null)
+        {
+            PlayerInventory inventory = GetComponent<PlayerInventory>();
+
+            if (inventory != null)
+            {
+                itemReceiver = inventory;
+                itemReceiverSource = inventory;
+                Debug.Log("PlayerPickupController: itemReceiver asignado automáticamente a PlayerInventory.", this);
+            }
+        }
 
         if (itemReceiver == null)
         {
-            Debug.LogError("PlayerPickupController: itemReceiverSource must implement IItemReceiver.", this);
+            Debug.LogError("PlayerPickupController: no se encontró ningún IItemReceiver válido en el jugador.", this);
         }
 
         jugadorActivador = GetComponent<JugadorActivador>();
@@ -95,7 +109,11 @@ public sealed class PlayerPickupController : MonoBehaviour
             return false;
         }
 
+        Debug.Log("Intentando recoger: " + collectible.ItemData.DisplayName + " x" + collectible.Amount);
+
         bool added = itemReceiver.TryAddItem(collectible.ItemData, collectible.Amount);
+
+        Debug.Log("Resultado TryAddItem: " + added);
 
         if (!added)
         {
@@ -208,7 +226,7 @@ public sealed class PlayerPickupController : MonoBehaviour
         }
     }
 
-    /*private InputDeviceType DetectarTipoMando(Gamepad gamepad)
+    private InputDeviceType DetectarTipoMando(Gamepad gamepad)
     {
         if (gamepad == null)
         {
@@ -225,6 +243,8 @@ public sealed class PlayerPickupController : MonoBehaviour
             : "";
 
         string combinedInfo = displayName + " " + name + " " + manufacturer + " " + product;
+
+        Debug.Log("MANDO DETECTADO -> " + combinedInfo);
 
         if (combinedInfo.Contains("sony") ||
             combinedInfo.Contains("playstation") ||
@@ -243,48 +263,7 @@ public sealed class PlayerPickupController : MonoBehaviour
         }
 
         return InputDeviceType.GenericGamepad;
-
-
-    }*/
-
-    private InputDeviceType DetectarTipoMando(Gamepad gamepad)
-{
-    if (gamepad == null)
-    {
-        return InputDeviceType.GenericGamepad;
     }
-
-    string displayName = gamepad.displayName != null ? gamepad.displayName.ToLower() : "";
-    string name = gamepad.name != null ? gamepad.name.ToLower() : "";
-    string manufacturer = gamepad.description.manufacturer != null
-        ? gamepad.description.manufacturer.ToLower()
-        : "";
-    string product = gamepad.description.product != null
-        ? gamepad.description.product.ToLower()
-        : "";
-
-    string combinedInfo = displayName + " " + name + " " + manufacturer + " " + product;
-
-    Debug.Log("MANDO DETECTADO -> " + combinedInfo);
-
-    if (combinedInfo.Contains("sony") ||
-        combinedInfo.Contains("playstation") ||
-        combinedInfo.Contains("dualshock") ||
-        combinedInfo.Contains("dualsense") ||
-        combinedInfo.Contains("wireless controller"))
-    {
-        return InputDeviceType.PlayStation;
-    }
-
-    if (combinedInfo.Contains("xbox") ||
-        combinedInfo.Contains("microsoft") ||
-        combinedInfo.Contains("xinput"))
-    {
-        return InputDeviceType.Xbox;
-    }
-
-    return InputDeviceType.GenericGamepad;
-}
 
     private string GetInteractionIcon()
     {
