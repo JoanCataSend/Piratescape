@@ -208,7 +208,7 @@ public sealed class PlayerPickupController : MonoBehaviour
         }
     }
 
-    private InputDeviceType DetectarTipoMando(Gamepad gamepad)
+    /*private InputDeviceType DetectarTipoMando(Gamepad gamepad)
     {
         if (gamepad == null)
         {
@@ -243,14 +243,55 @@ public sealed class PlayerPickupController : MonoBehaviour
         }
 
         return InputDeviceType.GenericGamepad;
+
+
+    }*/
+
+    private InputDeviceType DetectarTipoMando(Gamepad gamepad)
+{
+    if (gamepad == null)
+    {
+        return InputDeviceType.GenericGamepad;
     }
+
+    string displayName = gamepad.displayName != null ? gamepad.displayName.ToLower() : "";
+    string name = gamepad.name != null ? gamepad.name.ToLower() : "";
+    string manufacturer = gamepad.description.manufacturer != null
+        ? gamepad.description.manufacturer.ToLower()
+        : "";
+    string product = gamepad.description.product != null
+        ? gamepad.description.product.ToLower()
+        : "";
+
+    string combinedInfo = displayName + " " + name + " " + manufacturer + " " + product;
+
+    Debug.Log("MANDO DETECTADO -> " + combinedInfo);
+
+    if (combinedInfo.Contains("sony") ||
+        combinedInfo.Contains("playstation") ||
+        combinedInfo.Contains("dualshock") ||
+        combinedInfo.Contains("dualsense") ||
+        combinedInfo.Contains("wireless controller"))
+    {
+        return InputDeviceType.PlayStation;
+    }
+
+    if (combinedInfo.Contains("xbox") ||
+        combinedInfo.Contains("microsoft") ||
+        combinedInfo.Contains("xinput"))
+    {
+        return InputDeviceType.Xbox;
+    }
+
+    return InputDeviceType.GenericGamepad;
+}
 
     private string GetInteractionIcon()
     {
         switch (lastInputDevice)
         {
             case InputDeviceType.PlayStation:
-                return "?";
+                return "□";
 
             case InputDeviceType.Xbox:
                 return "X";
