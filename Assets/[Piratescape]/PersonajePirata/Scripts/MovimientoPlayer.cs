@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(CharacterController))]
 public class movimientoplayer : MonoBehaviour
 {
     private CharacterController controller;
@@ -20,13 +21,14 @@ public class movimientoplayer : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform cameraTransform;
 
-    private bool isMoving;
-    private bool isSprinting;
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction sprintAction;
 
-    public bool IsMoving => isMoving;
-    public bool IsSprinting => isSprinting;
+    private Vector2 moveInput;
+    private bool jumpPressed;
 
-    void Start()
+    private void Awake()
     {
         controller = GetComponent<CharacterController>();
 
@@ -35,61 +37,148 @@ public class movimientoplayer : MonoBehaviour
             cameraTransform = Camera.main.transform;
         }
 
+        CrearInputs();
+    }
+
+    private void OnEnable()
+    {
+        moveAction.Enable();
+        jumpAction.Enable();
+        sprintAction.Enable();
+
+        moveAction.performed += OnMovePerformed;
+        moveAction.canceled += OnMoveCanceled;
+        jumpAction.performed += OnJumpPerformed;
+    }
+
+    private void OnDisable()
+    {
+        moveAction.performed -= OnMovePerformed;
+        moveAction.canceled -= OnMoveCanceled;
+        jumpAction.performed -= OnJumpPerformed;
+
+        moveAction.Disable();
+        jumpAction.Disable();
+        sprintAction.Disable();
+    }
+
+    private void Start()
+    {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void Update()
+    private void Update()
     {
-        if (Keyboard.current == null)
-        {
-            return;
-        }
-
         groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
+
+        if (groundedPlayer && playerVelocity.y < 0f)
         {
             playerVelocity.y = -2f;
         }
 
-        float horizontal = 0f;
-        float vertical = 0f;
+        MoverJugador();
+        Saltar();
+        AplicarGravedad();
+    }
 
-        if (Keyboard.current.aKey.isPressed) horizontal -= 1f;
-        if (Keyboard.current.dKey.isPressed) horizontal += 1f;
-        if (Keyboard.current.sKey.isPressed) vertical -= 1f;
-        if (Keyboard.current.wKey.isPressed) vertical += 1f;
+    private void CrearInputs()
+    {
+        moveAction = new InputAction(name: "Move", type: InputActionType.Value);
 
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+        moveAction.AddCompositeBinding("2DVector")
+            .With("Up", "<Keyboard>/w")
+            .With("Down", "<Keyboard>/s")
+            .With("Left", "<Keyboard>/a")
+            .With("Right", "<Keyboard>/d");
 
-        isMoving = direction.magnitude >= 0.1f;
-        isSprinting = Keyboard.current.leftShiftKey.isPressed && isMoving;
+        moveAction.AddCompositeBinding("2DVector")
+            .With("Up", "<Keyboard>/upArrow")
+            .With("Down", "<Keyboard>/downArrow")
+            .With("Left", "<Keyboard>/leftArrow")
+            .With("Right", "<Keyboard>/rightArrow");
 
+        moveAction.AddBinding("<Gamepad>/leftStick");
+        moveAction.AddBinding("<Gamepad>/dpad");
+
+        jumpAction = new InputAction(name: "Jump", type: InputActionType.Button);
+        jumpAction.AddBinding("<Keyboard>/space");
+        jumpAction.AddBinding("<Gamepad>/buttonSouth");
+
+        sprintAction = new InputAction(name: "Sprint", type: InputActionType.Value);
+        sprintAction.AddBinding("<Keyboard>/leftShift");
+        sprintAction.AddBinding("<Gamepad>/leftStickPress");
+        sprintAction.AddBinding("<Gamepad>/rightTrigger");
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        jumpPressed = true;
+    }
+
+    private void MoverJugador()
+    {
+        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y);
+
+        if (direction.magnitude < 0.1f)
+        {
+            return;
+        }
+
+        direction.Normalize();
+
+        float cameraY = cameraTransform != null ? cameraTransform.eulerAngles.y : 0f;
+
+        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraY;
+
+        float smoothAngle = Mathf.SmoothDampAngle(
+            transform.eulerAngles.y,
+            targetAngle,
+            ref turnSmoothVelocity,
+            turnSmoothTime
+        );
+
+        transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+
+        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+        bool isSprinting = sprintAction.ReadValue<float>() > 0.5f;
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
 
-        if (isMoving)
+        controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
+    }
+
+    private void Saltar()
+    {
+        if (jumpPressed && groundedPlayer)
         {
-            float cameraY = cameraTransform != null ? cameraTransform.eulerAngles.y : 0f;
-
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraY;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
+            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
         }
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && groundedPlayer)
-        {
-            playerVelocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-        }
+        jumpPressed = false;
+    }
 
+    private void AplicarGravedad()
+    {
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
     }
 
     public bool IsActuallySprinting()
     {
-        return isSprinting;
+        bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
+        bool isMoving = moveInput.magnitude > 0.1f;
+
+        return isTryingToSprint && isMoving;
     }
 }

@@ -15,9 +15,7 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
 
-    private bool activo;
-    private IActivador jugador;
-    private PlayerPickupController playerPickupController;
+    private bool mostrandoPrompt;
 
     public float Rango
     {
@@ -25,105 +23,83 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
         set => rango = value;
     }
 
-    public bool Activo => activo;
+    public bool Activo => EstaDisponible;
+
+    public bool EstaDisponible => interactuable && gameObject.activeInHierarchy;
 
     public ItemData ItemData => itemData;
     public int Amount => amount;
 
-    private void Start()
-    {
-        JugadorActivador jugadorActivador = FindFirstObjectByType<JugadorActivador>();
-
-        if (jugadorActivador == null)
-        {
-            Debug.LogError("ObjetoRecogibleInteractuable: JugadorActivador not found.", this);
-            return;
-        }
-
-        jugador = jugadorActivador;
-        playerPickupController = jugadorActivador.GetComponent<PlayerPickupController>();
-
-        if (playerPickupController == null)
-        {
-            Debug.LogError("ObjetoRecogibleInteractuable: PlayerPickupController not found on player.", this);
-        }
-
-        SetIndicatorVisible(false);
-    }
-
-    private void Update()
-    {
-        if (jugador == null || !interactuable)
-        {
-            return;
-        }
-
-        bool nuevoEstado = Vector3.Distance(transform.position, jugador.Position) < rango;
-
-        if (nuevoEstado != activo)
-        {
-            activo = nuevoEstado;
-
-            if (activo)
-            {
-                InteractionUI.Instance.Show($"Recoger {objectName}");
-                SetIndicatorVisible(true);
-            }
-            else
-            {
-                InteractionUI.Instance.Hide();
-                SetIndicatorVisible(false);
-            }
-        }
-
-        if (activo && UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            Debug.Log("E pulsada sobre objeto activo");
-            Interactuar();
-        }
-    }
+    public string ObjectId => objectId;
+    public string ObjectName => objectName;
+    public string InteractionMessage => interactionMessage;
 
     public void Interactuar()
     {
-        if (!interactuable)
+        // La interacción real la gestiona PlayerPickupController.
+        // Este método se deja por compatibilidad con la interfaz Interactuable.
+    }
+
+    public bool EstaEnRango(Vector3 posicionJugador)
+    {
+        if (!EstaDisponible)
+        {
+            return false;
+        }
+
+        return Vector3.Distance(transform.position, posicionJugador) <= rango;
+    }
+
+    public void MostrarPrompt(string icono)
+    {
+        if (!EstaDisponible)
         {
             return;
         }
 
-        if (!activo)
+        if (InteractionUI.Instance != null)
         {
-            return;
+            // Si tu InteractionUI usa Show(string message)
+            InteractionUI.Instance.Show($"Pulsa {icono} para recoger {objectName}");
+
+            // Si tu InteractionUI realmente usa Show(string key, string message),
+            // cambia la línea de arriba por esta:
+            // InteractionUI.Instance.Show(icono, $"para recoger {objectName}");
         }
 
-        if (playerPickupController == null)
+        mostrandoPrompt = true;
+        SetIndicatorVisible(true);
+    }
+
+    public void OcultarPrompt()
+    {
+        if (mostrandoPrompt && InteractionUI.Instance != null)
         {
-            Debug.LogWarning("ObjetoRecogibleInteractuable: PlayerPickupController is missing.");
-            return;
+            InteractionUI.Instance.Hide();
         }
 
-        bool collected = playerPickupController.TryCollect(this);
-
-        if (collected)
-        {
-            Debug.Log($"{interactionMessage} -> {objectName} (ID: {objectId})");
-        }
+        mostrandoPrompt = false;
+        SetIndicatorVisible(false);
     }
 
     public void OnCollected()
     {
         interactuable = false;
-        activo = false;
+        mostrandoPrompt = false;
 
         if (InteractionUI.Instance != null)
+        {
             InteractionUI.Instance.Hide();
+        }
 
         SetIndicatorVisible(false);
-
-
         gameObject.SetActive(false);
     }
+
     private void SetIndicatorVisible(bool visible)
     {
-
+        // Aquí puedes activar/desactivar un icono 3D, outline, partícula, etc.
+        // Ejemplo:
+        // if (miIndicador != null) miIndicador.SetActive(visible);
     }
 }
