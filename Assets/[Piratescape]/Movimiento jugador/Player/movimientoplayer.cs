@@ -20,6 +20,12 @@ public class movimientoplayer : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform cameraTransform;
 
+    private bool isMoving;
+    private bool isSprinting;
+
+    public bool IsMoving => isMoving;
+    public bool IsSprinting => isSprinting;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -56,10 +62,12 @@ public class movimientoplayer : MonoBehaviour
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        bool isSprinting = Keyboard.current.leftShiftKey.isPressed;
+        isMoving = direction.magnitude >= 0.1f;
+        isSprinting = Keyboard.current.leftShiftKey.isPressed && isMoving;
+
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
 
-        if (direction.magnitude >= 0.1f)
+        if (isMoving)
         {
             float cameraY = cameraTransform != null ? cameraTransform.eulerAngles.y : 0f;
 
@@ -78,5 +86,10 @@ public class movimientoplayer : MonoBehaviour
 
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
+    }
+
+    public bool IsActuallySprinting()
+    {
+        return isSprinting;
     }
 }
