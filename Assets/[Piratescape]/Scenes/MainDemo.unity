@@ -8978,8 +8978,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7011040e40e36d446b29ed66d38bd5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visualizador: {fileID: 0}
+  movimientoPlayer: {fileID: 0}
   maxEnergy: 100
   currentEnergy: 80
+  energyLossPerSecondWhileSprinting: 10
 --- !u!114 &1588489904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10423,7 +10426,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975866677}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 935d161917b95bb4db810de32e9708fe, type: 3}
   m_Name: 
