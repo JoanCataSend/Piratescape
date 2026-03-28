@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GuevaraVideojocs.TimeSystem
-{
+
     public class GameTimeSystem : MonoBehaviour
     {
         private const int MinutesPerHour = 60;
@@ -253,4 +252,3 @@ namespace GuevaraVideojocs.TimeSystem
             ResumeTime();
         }
     }
-}

@@ -1,5 +1,5 @@
 using UnityEngine;
-using GuevaraVideojocs.TimeSystem;
+
 
 public sealed class SistemaSaludJugador : MonoBehaviour
 {
