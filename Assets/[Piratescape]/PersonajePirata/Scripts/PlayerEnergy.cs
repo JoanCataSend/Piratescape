@@ -18,21 +18,16 @@ public class PlayerEnergy : MonoBehaviour
 
     public float MaxEnergy => maxEnergy;
     public float CurrentEnergy => currentEnergy;
-    public float NormalizedEnergy => maxEnergy > 0 ? currentEnergy / maxEnergy : 0f;
+    public float NormalizedEnergy => maxEnergy > 0f ? currentEnergy / maxEnergy : 0f;
 
     private void Awake()
     {
-        if (movimientoPlayer == null)
-        {
-            movimientoPlayer = GetComponent<movimientoplayer>();
-        }
+        CachearReferencias();
     }
 
     private void Start()
     {
-        maxEnergy = Mathf.Max(0f, maxEnergy);
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
-
+        ValidarValoresIniciales();
         NotifyEnergyChanged();
     }
 
@@ -43,11 +38,13 @@ public class PlayerEnergy : MonoBehaviour
             return;
         }
 
-        if (movimientoPlayer.IsActuallySprinting())
+        if (!movimientoPlayer.IsActuallySprinting())
         {
-            float energyToUse = energyLossPerSecondWhileSprinting * Time.deltaTime;
-            TryUseEnergy(energyToUse);
+            return;
         }
+
+        float energiaAGastar = energyLossPerSecondWhileSprinting * Time.deltaTime;
+        TryUseEnergy(energiaAGastar);
     }
 
     public bool HasEnoughEnergy(float amount)
@@ -72,10 +69,9 @@ public class PlayerEnergy : MonoBehaviour
             return false;
         }
 
-        currentEnergy -= amount;
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
-
+        currentEnergy = LimitarEnergiaActual(currentEnergy - amount);
         NotifyEnergyChanged();
+
         return true;
     }
 
@@ -86,9 +82,7 @@ public class PlayerEnergy : MonoBehaviour
             return;
         }
 
-        currentEnergy += amount;
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
-
+        currentEnergy = LimitarEnergiaActual(currentEnergy + amount);
         NotifyEnergyChanged();
     }
 
@@ -100,8 +94,32 @@ public class PlayerEnergy : MonoBehaviour
 
     public void SetEnergy(float amount)
     {
-        currentEnergy = Mathf.Clamp(amount, 0f, maxEnergy);
+        currentEnergy = LimitarEnergiaActual(amount);
         NotifyEnergyChanged();
+    }
+
+    private void CachearReferencias()
+    {
+        if (movimientoPlayer == null)
+        {
+            movimientoPlayer = GetComponent<movimientoplayer>();
+        }
+    }
+
+    private void ValidarValoresIniciales()
+    {
+        maxEnergy = LimitarEnergiaMaxima(maxEnergy);
+        currentEnergy = LimitarEnergiaActual(currentEnergy);
+    }
+
+    private float LimitarEnergiaMaxima(float valor)
+    {
+        return Mathf.Max(0f, valor);
+    }
+
+    private float LimitarEnergiaActual(float valor)
+    {
+        return Mathf.Clamp(valor, 0f, maxEnergy);
     }
 
     private void NotifyEnergyChanged()
