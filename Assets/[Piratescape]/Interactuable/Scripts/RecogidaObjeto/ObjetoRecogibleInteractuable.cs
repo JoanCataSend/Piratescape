@@ -59,12 +59,7 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         if (InteractionUI.Instance != null)
         {
-            // Si tu InteractionUI usa Show(string message)
             InteractionUI.Instance.Show($"Pulsa {icono} para recoger {objectName}");
-
-            // Si tu InteractionUI realmente usa Show(string key, string message),
-            // cambia la línea de arriba por esta:
-            // InteractionUI.Instance.Show(icono, $"para recoger {objectName}");
         }
 
         mostrandoPrompt = true;
@@ -93,13 +88,20 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
         }
 
         SetIndicatorVisible(false);
+
+        RecursoGenerado recursoGenerado = GetComponent<RecursoGenerado>();
+
+        if (recursoGenerado != null)
+        {
+            recursoGenerado.Consumir();
+            return;
+        }
+
         gameObject.SetActive(false);
     }
 
     private void SetIndicatorVisible(bool visible)
     {
         // Aquí puedes activar/desactivar un icono 3D, outline, partícula, etc.
-        // Ejemplo:
-        // if (miIndicador != null) miIndicador.SetActive(visible);
     }
 }
