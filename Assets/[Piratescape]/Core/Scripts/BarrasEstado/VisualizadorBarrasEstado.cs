@@ -17,13 +17,7 @@ public sealed class VisualizadorBarrasEstado : MonoBehaviour
 
     private void Start()
     {
-        // 🔥 IMPORTANTE: asegurar valores válidos antes de pintar
-        saludMaxima = Mathf.Max(0f, saludMaxima);
-        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
-
-        energiaMaxima = Mathf.Max(0f, energiaMaxima);
-        energiaActual = Mathf.Clamp(energiaActual, 0f, energiaMaxima);
-
+        ValidarValoresIniciales();
         ActualizarBarras();
     }
 
@@ -36,44 +30,68 @@ public sealed class VisualizadorBarrasEstado : MonoBehaviour
     // SALUD
     public void EstablecerSaludActual(float nuevaSaludActual)
     {
-        saludActual = Mathf.Clamp(nuevaSaludActual, 0f, saludMaxima);
+        saludActual = LimitarValorActual(nuevaSaludActual, saludMaxima);
         ActualizarBarraSalud();
     }
 
     public void EstablecerSalud(float nuevaSaludActual, float nuevaSaludMaxima)
     {
-        saludMaxima = Mathf.Max(0f, nuevaSaludMaxima);
-        saludActual = Mathf.Clamp(nuevaSaludActual, 0f, saludMaxima);
+        saludMaxima = LimitarValorMaximo(nuevaSaludMaxima);
+        saludActual = LimitarValorActual(nuevaSaludActual, saludMaxima);
         ActualizarBarraSalud();
     }
 
     private void ActualizarBarraSalud()
     {
-        if (rellenoBarraSalud != null)
-        {
-            rellenoBarraSalud.fillAmount = saludMaxima > 0f ? saludActual / saludMaxima : 0f;
-        }
+        ActualizarRellenoBarra(rellenoBarraSalud, saludActual, saludMaxima);
     }
 
     // ENERGIA
     public void EstablecerEnergiaActual(float nuevaEnergiaActual)
     {
-        energiaActual = Mathf.Clamp(nuevaEnergiaActual, 0f, energiaMaxima);
+        energiaActual = LimitarValorActual(nuevaEnergiaActual, energiaMaxima);
         ActualizarBarraEnergia();
     }
 
     public void EstablecerEnergia(float nuevaEnergiaActual, float nuevaEnergiaMaxima)
     {
-        energiaMaxima = Mathf.Max(0f, nuevaEnergiaMaxima);
-        energiaActual = Mathf.Clamp(nuevaEnergiaActual, 0f, energiaMaxima);
+        energiaMaxima = LimitarValorMaximo(nuevaEnergiaMaxima);
+        energiaActual = LimitarValorActual(nuevaEnergiaActual, energiaMaxima);
         ActualizarBarraEnergia();
     }
 
     private void ActualizarBarraEnergia()
     {
-        if (rellenoBarraEnergia != null)
+        ActualizarRellenoBarra(rellenoBarraEnergia, energiaActual, energiaMaxima);
+    }
+
+    // METODOS AUXILIARES
+    private void ValidarValoresIniciales()
+    {
+        saludMaxima = LimitarValorMaximo(saludMaxima);
+        saludActual = LimitarValorActual(saludActual, saludMaxima);
+
+        energiaMaxima = LimitarValorMaximo(energiaMaxima);
+        energiaActual = LimitarValorActual(energiaActual, energiaMaxima);
+    }
+
+    private float LimitarValorMaximo(float valorMaximo)
+    {
+        return Mathf.Max(0f, valorMaximo);
+    }
+
+    private float LimitarValorActual(float valorActual, float valorMaximo)
+    {
+        return Mathf.Clamp(valorActual, 0f, valorMaximo);
+    }
+
+    private void ActualizarRellenoBarra(Image barra, float valorActual, float valorMaximo)
+    {
+        if (barra == null)
         {
-            rellenoBarraEnergia.fillAmount = energiaMaxima > 0f ? energiaActual / energiaMaxima : 0f;
+            return;
         }
+
+        barra.fillAmount = valorMaximo > 0f ? valorActual / valorMaximo : 0f;
     }
 }
