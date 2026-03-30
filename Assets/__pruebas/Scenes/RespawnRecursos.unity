@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabsRecurso:
-  - {fileID: 8240323733054049027, guid: 0302f8cd8bda80949bf4bebcc3fea4be, type: 3}
+  - {fileID: 5235030195647688268, guid: 175c7727898fe6748b5e0afdc1f311d4, type: 3}
   contenedorRecursosGenerados: {fileID: 1778845625}
   puntosSpawn: []
   cantidadInicial: 4
@@ -424,7 +424,7 @@ Transform:
   m_GameObject: {fileID: 101601128}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.63, y: 0, z: -39.93}
+  m_LocalPosition: {x: 1.63, y: -2.12, z: -39.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -871,7 +871,7 @@ Transform:
   m_GameObject: {fileID: 224300874}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.58, y: 0, z: 0}
+  m_LocalPosition: {x: 3.58, y: -3.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1290,7 +1290,7 @@ Transform:
   m_GameObject: {fileID: 349605507}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46.8, y: 0, z: 12.3}
+  m_LocalPosition: {x: 46.8, y: -1.7, z: 12.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5185,7 +5185,7 @@ Transform:
   m_GameObject: {fileID: 1132903301}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 61.9, y: 0, z: 10}
+  m_LocalPosition: {x: 61.9, y: -1.7, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5338,7 +5338,7 @@ Transform:
   m_GameObject: {fileID: 1166168236}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.38, y: 0, z: -23.83}
+  m_LocalPosition: {x: -6.38, y: -2.12, z: -23.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6612,7 +6612,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1483489530}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8396,7 +8396,7 @@ Transform:
   m_GameObject: {fileID: 1891355112}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.33, y: 0, z: 6.42}
+  m_LocalPosition: {x: 0, y: -3.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8688,7 +8688,7 @@ Transform:
   m_GameObject: {fileID: 1961924375}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13, y: 0, z: 0.49}
+  m_LocalPosition: {x: 11.9, y: -3.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9012,8 +9012,8 @@ MonoBehaviour:
   - {fileID: 1704205371133336201, guid: a6b77133a3722a34b82321373845b9db, type: 3}
   contenedorRecursosGenerados: {fileID: 1491752254}
   puntosSpawn: []
-  cantidadInicial: 4
-  cantidadMaximaActiva: 4
+  cantidadInicial: 2
+  cantidadMaximaActiva: 2
   tiempoReaparicion: 20
   mascaraBloqueo:
     serializedVersion: 2
@@ -9290,7 +9290,7 @@ Transform:
   m_GameObject: {fileID: 2065246405}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.23, y: 0, z: 9.22}
+  m_LocalPosition: {x: 10.23, y: -1.7, z: 9.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9753,7 +9753,7 @@ Transform:
   m_GameObject: {fileID: 2144576572}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.38, y: 0, z: -39.93}
+  m_LocalPosition: {x: -6.38, y: -2.12, z: -39.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
