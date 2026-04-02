@@ -16,9 +16,13 @@ public class PlayerEnergy : MonoBehaviour
     [Header("Desgaste al correr")]
     [SerializeField] private float energyLossPerSecondWhileSprinting = 10f;
 
+    [Header("Penalizacion por energia vacia")]
+    [SerializeField] private float movementMultiplierWhenExhausted = 0.5f;
+
     public float MaxEnergy => maxEnergy;
     public float CurrentEnergy => currentEnergy;
     public float NormalizedEnergy => maxEnergy > 0f ? currentEnergy / maxEnergy : 0f;
+    public bool IsExhausted => currentEnergy <= 0f;
 
     private void Awake()
     {
@@ -28,6 +32,7 @@ public class PlayerEnergy : MonoBehaviour
     private void Start()
     {
         ValidarValoresIniciales();
+        AplicarEstadoMovimiento();
         NotifyEnergyChanged();
     }
 
@@ -66,10 +71,14 @@ public class PlayerEnergy : MonoBehaviour
 
         if (!HasEnoughEnergy(amount))
         {
+            currentEnergy = 0f;
+            AplicarEstadoMovimiento();
+            NotifyEnergyChanged();
             return false;
         }
 
         currentEnergy = LimitarEnergiaActual(currentEnergy - amount);
+        AplicarEstadoMovimiento();
         NotifyEnergyChanged();
 
         return true;
@@ -83,18 +92,21 @@ public class PlayerEnergy : MonoBehaviour
         }
 
         currentEnergy = LimitarEnergiaActual(currentEnergy + amount);
+        AplicarEstadoMovimiento();
         NotifyEnergyChanged();
     }
 
     public void FillEnergy()
     {
         currentEnergy = maxEnergy;
+        AplicarEstadoMovimiento();
         NotifyEnergyChanged();
     }
 
     public void SetEnergy(float amount)
     {
         currentEnergy = LimitarEnergiaActual(amount);
+        AplicarEstadoMovimiento();
         NotifyEnergyChanged();
     }
 
@@ -110,6 +122,7 @@ public class PlayerEnergy : MonoBehaviour
     {
         maxEnergy = LimitarEnergiaMaxima(maxEnergy);
         currentEnergy = LimitarEnergiaActual(currentEnergy);
+        movementMultiplierWhenExhausted = Mathf.Clamp(movementMultiplierWhenExhausted, 0.1f, 1f);
     }
 
     private float LimitarEnergiaMaxima(float valor)
@@ -120,6 +133,25 @@ public class PlayerEnergy : MonoBehaviour
     private float LimitarEnergiaActual(float valor)
     {
         return Mathf.Clamp(valor, 0f, maxEnergy);
+    }
+
+    private void AplicarEstadoMovimiento()
+    {
+        if (movimientoPlayer == null)
+        {
+            return;
+        }
+
+        if (IsExhausted)
+        {
+            movimientoPlayer.SetCanSprint(false);
+            movimientoPlayer.SetEnergySpeedMultiplier(movementMultiplierWhenExhausted);
+        }
+        else
+        {
+            movimientoPlayer.SetCanSprint(true);
+            movimientoPlayer.SetEnergySpeedMultiplier(1f);
+        }
     }
 
     private void NotifyEnergyChanged()

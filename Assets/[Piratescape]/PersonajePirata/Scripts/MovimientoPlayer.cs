@@ -21,6 +21,10 @@ public class movimientoplayer : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform cameraTransform;
 
+    [Header("Estado afectado por energia")]
+    [SerializeField] private float energySpeedMultiplier = 1f;
+    [SerializeField] private bool canSprint = true;
+
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
@@ -152,8 +156,11 @@ public class movimientoplayer : MonoBehaviour
 
         Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-        bool isSprinting = sprintAction.ReadValue<float>() > 0.5f;
+        bool isTryingToSprint = sprintAction.ReadValue<float>() > 0.5f;
+        bool isSprinting = isTryingToSprint && canSprint;
+
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
+        currentSpeed *= energySpeedMultiplier;
 
         controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
     }
@@ -179,6 +186,16 @@ public class movimientoplayer : MonoBehaviour
         bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
         bool isMoving = moveInput.magnitude > 0.1f;
 
-        return isTryingToSprint && isMoving;
+        return isTryingToSprint && isMoving && canSprint;
+    }
+
+    public void SetEnergySpeedMultiplier(float multiplier)
+    {
+        energySpeedMultiplier = Mathf.Clamp(multiplier, 0.1f, 1f);
+    }
+
+    public void SetCanSprint(bool value)
+    {
+        canSprint = value;
     }
 }

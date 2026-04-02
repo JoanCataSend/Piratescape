@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 {
@@ -27,20 +28,42 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     private void Update()
     {
-        if (UnityEngine.InputSystem.Keyboard.current == null)
+        // TECLADO: seleccionar slots 1-5
+        if (Keyboard.current != null)
         {
-            return;
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
+            if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
+
+            // Q para consumir/usar
+            if (Keyboard.current.qKey.wasPressedThisFrame)
+            {
+                UseSelectedItem();
+            }
         }
 
-        if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
-        if (UnityEngine.InputSystem.Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
-        if (UnityEngine.InputSystem.Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
-        if (UnityEngine.InputSystem.Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
-        if (UnityEngine.InputSystem.Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
-
-        if (UnityEngine.InputSystem.Keyboard.current.qKey.wasPressedThisFrame)
+        // MANDO
+        if (Gamepad.current != null)
         {
-            UseSelectedItem();
+            // L1
+            if (Gamepad.current.leftShoulder.wasPressedThisFrame)
+            {
+                SelectPreviousSlot();
+            }
+
+            // R1
+            if (Gamepad.current.rightShoulder.wasPressedThisFrame)
+            {
+                SelectNextSlot();
+            }
+
+            // TRIANGULO / Y para consumir/usar
+            if (Gamepad.current.buttonNorth.wasPressedThisFrame)
+            {
+                UseSelectedItem();
+            }
         }
     }
 
@@ -151,6 +174,40 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
 
         selectedSlotIndex = index;
+        NotifyInventoryChanged();
+    }
+
+    public void SelectNextSlot()
+    {
+        if (slots == null || slots.Count == 0)
+        {
+            return;
+        }
+
+        selectedSlotIndex++;
+
+        if (selectedSlotIndex >= slots.Count)
+        {
+            selectedSlotIndex = 0;
+        }
+
+        NotifyInventoryChanged();
+    }
+
+    public void SelectPreviousSlot()
+    {
+        if (slots == null || slots.Count == 0)
+        {
+            return;
+        }
+
+        selectedSlotIndex--;
+
+        if (selectedSlotIndex < 0)
+        {
+            selectedSlotIndex = slots.Count - 1;
+        }
+
         NotifyInventoryChanged();
     }
 
