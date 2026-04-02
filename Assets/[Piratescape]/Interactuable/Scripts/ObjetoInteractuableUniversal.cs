@@ -6,7 +6,7 @@ public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
     [Header("Datos del objeto")]
     [SerializeField] private string objectId = "objeto_001";
     [SerializeField] private string objectName = "Objeto interactuable";
-    [SerializeField] private string interactionMessage = "Interacci n realizada.";
+    [SerializeField] private string interactionMessage = "Interaccion realizada.";
     [SerializeField] private string promptAction = "Recoger";
 
     [Header("Configuraci n")]
