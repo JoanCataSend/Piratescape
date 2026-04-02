@@ -59,7 +59,7 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         if (InteractionUI.Instance != null)
         {
-            InteractionUI.Instance.Show($"Pulsa {icono} para recoger {objectName}");
+            InteractionUI.Instance.Show(this, $"Pulsa {icono} para recoger {objectName}");
         }
 
         mostrandoPrompt = true;
@@ -70,7 +70,7 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
     {
         if (mostrandoPrompt && InteractionUI.Instance != null)
         {
-            InteractionUI.Instance.Hide();
+            InteractionUI.Instance.Hide(this);
         }
 
         mostrandoPrompt = false;
@@ -84,7 +84,7 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         if (InteractionUI.Instance != null)
         {
-            InteractionUI.Instance.Hide();
+            InteractionUI.Instance.Hide(this);
         }
 
         SetIndicatorVisible(false);
@@ -99,6 +99,8 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         gameObject.SetActive(false);
     }
+
+   
 
     private void SetIndicatorVisible(bool visible)
     {

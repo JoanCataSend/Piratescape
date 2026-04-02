@@ -1,6 +1,4 @@
-/// <summary>
-/// Contrato base de cualquier objeto interactuable.
-/// </summary>
+
 public interface Interactuable
 {
     void Interactuar();

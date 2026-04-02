@@ -1,8 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Objeto interactuable gen rico reutilizable para cualquier asset.
-/// </summary>
+
 public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
 {
     [Header("Datos del objeto")]
@@ -47,9 +45,9 @@ public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
             activo = nuevoEstado;
 
             if (activo)
-                InteractionUI.Instance.Show($"{promptAction} {objectName}");
+                InteractionUI.Instance.Show(this, $"{promptAction} {objectName}");
             else
-                InteractionUI.Instance.Hide();
+                InteractionUI.Instance.Hide(this);
         }
     }
 
