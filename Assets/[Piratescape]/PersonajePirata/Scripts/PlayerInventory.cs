@@ -245,4 +245,53 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     {
         OnInventoryChanged?.Invoke();
     }
+
+    /* Métodos añadidos para la construcción del barco */
+    public int ObtenerCantidad(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return 0;
+        }
+
+        int cantidadTotal = 0;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            InventorySlot slot = slots[i];
+
+            if (slot.IsEmpty())
+            {
+                continue;
+            }
+
+            if (slot.itemData != itemData)
+            {
+                continue;
+            }
+
+            cantidadTotal += slot.amount;
+        }
+
+        return cantidadTotal;
+    }
+
+    public int RemoverHasta(ItemData itemData, int cantidadSolicitada)
+    {
+        if (itemData == null || cantidadSolicitada <= 0)
+        {
+            return 0;
+        }
+
+        int cantidadDisponible = ObtenerCantidad(itemData);
+        int cantidadARemover = Mathf.Min(cantidadDisponible, cantidadSolicitada);
+
+        if (cantidadARemover <= 0)
+        {
+            return 0;
+        }
+
+        RemoveItem(itemData, cantidadARemover);
+        return cantidadARemover;
+    }
 }

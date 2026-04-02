@@ -66,13 +66,6 @@ public sealed class PlayerPickupController : MonoBehaviour
                 TryCollect(objetoActual);
             }
         }
-        else
-        {
-            if (InteractionUI.Instance != null)
-            {
-                InteractionUI.Instance.Hide();
-            }
-        }
     }
 
     public bool TryCollect(ICollectible collectible)
