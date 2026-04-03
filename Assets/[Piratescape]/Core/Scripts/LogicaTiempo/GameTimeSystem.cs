@@ -1,254 +1,294 @@
 using System;
 using UnityEngine;
 
+public class GameTimeSystem : MonoBehaviour
+{
+    private const int MinutesPerHour = 60;
+    private const int HoursPerDay = 24;
+    private const int MinutesPerDay = HoursPerDay * MinutesPerHour;
 
-    public class GameTimeSystem : MonoBehaviour
+    [Header("Initial Time")]
+    [SerializeField] private int startDay = 1;
+    [SerializeField] private int startHour = 17;
+    [SerializeField] private int startMinute = 58;
+
+    [Header("Time Progression")]
+    [SerializeField] private float realSecondsPerGameMinute = 1f;
+    [SerializeField] private bool startPaused = false;
+
+    private float accumulatedRealTime;
+    private int currentDay;
+    private int currentHour;
+    private int currentMinute;
+    private bool isPaused;
+
+    private bool wasNight;
+
+    public event Action<int> OnDayChanged;
+    public event Action<int, int> OnHourMinuteChanged;
+    public event Action<int, int, int> OnTimeChanged;
+    public event Action<bool> OnDayNightChanged; // true = noche
+
+    public int CurrentDay => currentDay;
+    public int CurrentHour => currentHour;
+    public int CurrentMinute => currentMinute;
+    public bool IsPaused => isPaused;
+
+    // ✅ NUEVO
+    public bool IsNight => currentHour >= 18;
+    public bool IsDay => currentHour >= 6 && currentHour < 18;
+
+    public string CurrentTimeFormatted => $"{currentHour:00}:{currentMinute:00}";
+    public string CurrentDayAndTimeFormatted => $"dia {currentDay} hora {currentHour:00}:{currentMinute:00}";
+
+    private void Awake()
     {
-        private const int MinutesPerHour = 60;
-        private const int HoursPerDay = 24;
-        private const int MinutesPerDay = HoursPerDay * MinutesPerHour;
+        ValidateSerializedValues();
 
-        [Header("Initial Time")]
-        [SerializeField] private int startDay = 1;
-        [SerializeField] private int startHour = 17;
-        [SerializeField] private int startMinute = 58;
+        currentDay = startDay;
+        currentHour = startHour;
+        currentMinute = startMinute;
+        isPaused = startPaused;
 
-        [Header("Time Progression")]
-        [SerializeField] private float realSecondsPerGameMinute = 1f;
-        [SerializeField] private bool startPaused = false;
+        wasNight = IsNight;
 
-        private float accumulatedRealTime;
-        private int currentDay;
-        private int currentHour;
-        private int currentMinute;
-        private bool isPaused;
+        NotifyTimeChanged();
+    }
 
-        public event Action<int> OnDayChanged;
-        public event Action<int, int> OnHourMinuteChanged;
-        public event Action<int, int, int> OnTimeChanged;
-
-        public int CurrentDay => currentDay;
-        public int CurrentHour => currentHour;
-        public int CurrentMinute => currentMinute;
-        public bool IsPaused => isPaused;
-
-        public string CurrentTimeFormatted => $"{currentHour:00}:{currentMinute:00}";
-        public string CurrentDayAndTimeFormatted => $"dia {currentDay} hora {currentHour:00}:{currentMinute:00}";
-
-        private void Awake()
+    private void Update()
+    {
+        if (isPaused)
         {
-            ValidateSerializedValues();
-
-            currentDay = startDay;
-            currentHour = startHour;
-            currentMinute = startMinute;
-            isPaused = startPaused;
-
-            NotifyTimeChanged();
+            return;
         }
 
-        private void Update()
+        if (realSecondsPerGameMinute <= 0f)
         {
-            if (isPaused)
-            {
-                return;
-            }
-
-            if (realSecondsPerGameMinute <= 0f)
-            {
-                return;
-            }
-
-            accumulatedRealTime += Time.deltaTime;
-
-            while (accumulatedRealTime >= realSecondsPerGameMinute)
-            {
-                accumulatedRealTime -= realSecondsPerGameMinute;
-                AdvanceOneGameMinute();
-            }
+            return;
         }
 
-        public void PauseTime()
+        accumulatedRealTime += Time.deltaTime;
+
+        while (accumulatedRealTime >= realSecondsPerGameMinute)
         {
-            isPaused = true;
+            accumulatedRealTime -= realSecondsPerGameMinute;
+            AdvanceOneGameMinute();
+        }
+    }
+
+    public void PauseTime()
+    {
+        isPaused = true;
+    }
+
+    public void ResumeTime()
+    {
+        isPaused = false;
+    }
+
+    public void SetPaused(bool value)
+    {
+        isPaused = value;
+    }
+
+    public void SetTimeScale(float newRealSecondsPerGameMinute)
+    {
+        if (newRealSecondsPerGameMinute <= 0f)
+        {
+            Debug.LogWarning($"{nameof(GameTimeSystem)}: realSecondsPerGameMinute must be greater than 0.");
+            return;
         }
 
-        public void ResumeTime()
+        realSecondsPerGameMinute = newRealSecondsPerGameMinute;
+    }
+
+    public void SetTime(int day, int hour, int minute)
+    {
+        if (day < 1)
         {
-            isPaused = false;
+            day = 1;
         }
 
-        public void SetPaused(bool value)
+        hour = Mathf.Clamp(hour, 0, HoursPerDay - 1);
+        minute = Mathf.Clamp(minute, 0, MinutesPerHour - 1);
+
+        bool dayChanged = currentDay != day;
+
+        currentDay = day;
+        currentHour = hour;
+        currentMinute = minute;
+        accumulatedRealTime = 0f;
+
+        if (dayChanged)
         {
-            isPaused = value;
-        }
-
-        public void SetTimeScale(float newRealSecondsPerGameMinute)
-        {
-            if (newRealSecondsPerGameMinute <= 0f)
-            {
-                Debug.LogWarning($"{nameof(GameTimeSystem)}: realSecondsPerGameMinute must be greater than 0.");
-                return;
-            }
-
-            realSecondsPerGameMinute = newRealSecondsPerGameMinute;
-        }
-
-        public void SetTime(int day, int hour, int minute)
-        {
-            if (day < 1)
-            {
-                day = 1;
-            }
-
-            hour = Mathf.Clamp(hour, 0, HoursPerDay - 1);
-            minute = Mathf.Clamp(minute, 0, MinutesPerHour - 1);
-
-            bool dayChanged = currentDay != day;
-
-            currentDay = day;
-            currentHour = hour;
-            currentMinute = minute;
-            accumulatedRealTime = 0f;
-
-            if (dayChanged)
-            {
-                OnDayChanged?.Invoke(currentDay);
-            }
-
-            NotifyTimeChanged();
-        }
-
-        public void AddMinutes(int minutesToAdd)
-        {
-            if (minutesToAdd == 0)
-            {
-                return;
-            }
-
-            int totalMinutes = GetCurrentTotalMinutes() + minutesToAdd;
-
-            while (totalMinutes < 0)
-            {
-                if (currentDay > 1)
-                {
-                    currentDay--;
-                    totalMinutes += MinutesPerDay;
-                    OnDayChanged?.Invoke(currentDay);
-                }
-                else
-                {
-                    totalMinutes = 0;
-                    break;
-                }
-            }
-
-            while (totalMinutes >= MinutesPerDay)
-            {
-                totalMinutes -= MinutesPerDay;
-                currentDay++;
-                OnDayChanged?.Invoke(currentDay);
-            }
-
-            currentHour = totalMinutes / MinutesPerHour;
-            currentMinute = totalMinutes % MinutesPerHour;
-
-            NotifyTimeChanged();
-        }
-
-        public void AddHours(int hoursToAdd)
-        {
-            AddMinutes(hoursToAdd * MinutesPerHour);
-        }
-
-        public void AddDays(int daysToAdd)
-        {
-            if (daysToAdd == 0)
-            {
-                return;
-            }
-
-            currentDay = Mathf.Max(1, currentDay + daysToAdd);
-            NotifyTimeChanged();
             OnDayChanged?.Invoke(currentDay);
         }
 
-        public float GetNormalizedTimeOfDay()
+        CheckDayNightChange();
+        NotifyTimeChanged();
+    }
+
+    public void AddMinutes(int minutesToAdd)
+    {
+        if (minutesToAdd == 0)
         {
-            int totalMinutes = GetCurrentTotalMinutes();
-            return (float)totalMinutes / MinutesPerDay;
+            return;
         }
 
-        private void AdvanceOneGameMinute()
+        int totalMinutes = GetCurrentTotalMinutes() + minutesToAdd;
+
+        while (totalMinutes < 0)
         {
-            currentMinute++;
-
-            if (currentMinute >= MinutesPerHour)
+            if (currentDay > 1)
             {
-                currentMinute = 0;
-                currentHour++;
-            }
-
-            if (currentHour >= HoursPerDay)
-            {
-                currentHour = 0;
-                currentDay++;
+                currentDay--;
+                totalMinutes += MinutesPerDay;
                 OnDayChanged?.Invoke(currentDay);
             }
-
-            NotifyTimeChanged();
-        }
-
-        private int GetCurrentTotalMinutes()
-        {
-            return (currentHour * MinutesPerHour) + currentMinute;
-        }
-
-        private void NotifyTimeChanged()
-        {
-            OnHourMinuteChanged?.Invoke(currentHour, currentMinute);
-            OnTimeChanged?.Invoke(currentDay, currentHour, currentMinute);
-        }
-
-        private void ValidateSerializedValues()
-        {
-            startDay = Mathf.Max(1, startDay);
-            startHour = Mathf.Clamp(startHour, 0, HoursPerDay - 1);
-            startMinute = Mathf.Clamp(startMinute, 0, MinutesPerHour - 1);
-
-            if (realSecondsPerGameMinute <= 0f)
+            else
             {
-                realSecondsPerGameMinute = 1f;
+                totalMinutes = 0;
+                break;
             }
         }
 
-        [ContextMenu("Debug/Add 10 Minutes")]
-        private void DebugAdd10Minutes()
+        while (totalMinutes >= MinutesPerDay)
         {
-            AddMinutes(10);
+            totalMinutes -= MinutesPerDay;
+            currentDay++;
+            OnDayChanged?.Invoke(currentDay);
         }
 
-        [ContextMenu("Debug/Add 1 Hour")]
-        private void DebugAdd1Hour()
+        currentHour = totalMinutes / MinutesPerHour;
+        currentMinute = totalMinutes % MinutesPerHour;
+
+        CheckDayNightChange();
+        NotifyTimeChanged();
+    }
+
+    public void AddHours(int hoursToAdd)
+    {
+        AddMinutes(hoursToAdd * MinutesPerHour);
+    }
+
+    public void AddDays(int daysToAdd)
+    {
+        if (daysToAdd == 0)
         {
-            AddHours(1);
+            return;
         }
 
-        [ContextMenu("Debug/Add 1 Day")]
-        private void DebugAdd1Day()
+        currentDay = Mathf.Max(1, currentDay + daysToAdd);
+
+        CheckDayNightChange();
+        NotifyTimeChanged();
+        OnDayChanged?.Invoke(currentDay);
+    }
+
+    // ✅ NUEVO → dormir
+    public void SleepToNextDay()
+    {
+        currentDay++;
+        currentHour = 6;
+        currentMinute = 0;
+        accumulatedRealTime = 0f;
+
+        wasNight = false;
+
+        OnDayChanged?.Invoke(currentDay);
+        OnDayNightChanged?.Invoke(false);
+
+        NotifyTimeChanged();
+    }
+
+    public float GetNormalizedTimeOfDay()
+    {
+        int totalMinutes = GetCurrentTotalMinutes();
+        return (float)totalMinutes / MinutesPerDay;
+    }
+
+    private void AdvanceOneGameMinute()
+    {
+        currentMinute++;
+
+        if (currentMinute >= MinutesPerHour)
         {
-            AddDays(1);
+            currentMinute = 0;
+            currentHour++;
         }
 
-        [ContextMenu("Debug/Pause")]
-        private void DebugPause()
+        if (currentHour >= HoursPerDay)
         {
-            PauseTime();
+            currentHour = 0;
+            currentDay++;
+            OnDayChanged?.Invoke(currentDay);
         }
 
-        [ContextMenu("Debug/Resume")]
-        private void DebugResume()
+        CheckDayNightChange();
+        NotifyTimeChanged();
+    }
+
+    private void CheckDayNightChange()
+    {
+        bool isNightNow = IsNight;
+
+        if (isNightNow != wasNight)
         {
-            ResumeTime();
+            wasNight = isNightNow;
+            OnDayNightChanged?.Invoke(isNightNow);
         }
     }
+
+    private int GetCurrentTotalMinutes()
+    {
+        return (currentHour * MinutesPerHour) + currentMinute;
+    }
+
+    private void NotifyTimeChanged()
+    {
+        OnHourMinuteChanged?.Invoke(currentHour, currentMinute);
+        OnTimeChanged?.Invoke(currentDay, currentHour, currentMinute);
+    }
+
+    private void ValidateSerializedValues()
+    {
+        startDay = Mathf.Max(1, startDay);
+        startHour = Mathf.Clamp(startHour, 0, HoursPerDay - 1);
+        startMinute = Mathf.Clamp(startMinute, 0, MinutesPerHour - 1);
+
+        if (realSecondsPerGameMinute <= 0f)
+        {
+            realSecondsPerGameMinute = 1f;
+        }
+    }
+
+    [ContextMenu("Debug/Add 10 Minutes")]
+    private void DebugAdd10Minutes()
+    {
+        AddMinutes(10);
+    }
+
+    [ContextMenu("Debug/Add 1 Hour")]
+    private void DebugAdd1Hour()
+    {
+        AddHours(1);
+    }
+
+    [ContextMenu("Debug/Add 1 Day")]
+    private void DebugAdd1Day()
+    {
+        AddDays(1);
+    }
+
+    [ContextMenu("Debug/Pause")]
+    private void DebugPause()
+    {
+        PauseTime();
+    }
+
+    [ContextMenu("Debug/Resume")]
+    private void DebugResume()
+    {
+        ResumeTime();
+    }
+}
