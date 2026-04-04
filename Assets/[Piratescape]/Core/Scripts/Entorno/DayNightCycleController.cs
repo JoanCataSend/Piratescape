@@ -61,8 +61,10 @@ public class DayNightController : MonoBehaviour
     {
         if (daySkybox == null || nightSkybox == null) return;
 
-        // 👇 transición REAL entre 6:00 y 18:00
-        float factor = Mathf.InverseLerp(0.25f, 0.75f, t);
+        // 🌅 Transición suave:
+        // 0.25 = 6:00 → empieza día
+        // 0.75 = 18:00 → empieza noche
+        float factor = Mathf.Clamp01(Mathf.InverseLerp(0.2f, 0.8f, t));
 
         RenderSettings.skybox.Lerp(nightSkybox, daySkybox, factor);
         DynamicGI.UpdateEnvironment();
