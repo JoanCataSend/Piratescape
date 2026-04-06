@@ -8,6 +8,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     [Header("Referencias")]
     [SerializeField] private PlayerInventory inventarioJugador;
+    [SerializeField] private PlayerEnergy energiaJugador;
     [SerializeField] private GameObject barcoNivel1;
     [SerializeField] private GameObject zonaConstruccionVisual;
     [SerializeField] private GameObject marcadorMiniMapaBarco;
@@ -17,6 +18,10 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     [Header("Configuracion")]
     [SerializeField] private bool ocultarBaseAlCompletar = true;
+
+    [Header("Coste al construir")]
+    [SerializeField] private float energiaGastadaPorMaterial = 5f;
+    [SerializeField] private int vidaGastadaPorMaterialSinEnergia = 2;
 
     private bool construccionCompletada;
 
@@ -28,6 +33,11 @@ public sealed class ConstruccionBarco : MonoBehaviour
         if (inventarioJugador == null)
         {
             inventarioJugador = FindFirstObjectByType<PlayerInventory>();
+        }
+
+        if (energiaJugador == null)
+        {
+            energiaJugador = FindFirstObjectByType<PlayerEnergy>();
         }
 
         AplicarEstadoVisualInicial();
@@ -67,6 +77,8 @@ public sealed class ConstruccionBarco : MonoBehaviour
             }
 
             requisito.Entregar(cantidadRemovida);
+            AplicarCosteConstruccion(cantidadRemovida);
+
             OnConstruccionActualizada?.Invoke();
             IntentarCompletarConstruccion();
             return true;
@@ -101,6 +113,19 @@ public sealed class ConstruccionBarco : MonoBehaviour
     {
         RequisitoConstruccion requisito = BuscarRequisito(itemData);
         return requisito == null ? 0 : requisito.CantidadPendiente;
+    }
+
+    private void AplicarCosteConstruccion(int cantidadEntregada)
+    {
+        if (energiaJugador == null || cantidadEntregada <= 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < cantidadEntregada; i++)
+        {
+            energiaJugador.TryUseEnergyOrHealth(energiaGastadaPorMaterial, vidaGastadaPorMaterialSinEnergia);
+        }
     }
 
     private void IntentarCompletarConstruccion()

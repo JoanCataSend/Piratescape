@@ -26,9 +26,13 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     [Header("Reglas de sueño")]
     [SerializeField] private int minSleepHour = 18;
-    [SerializeField] private int fullRecoveryUntilHour = 21;
     [SerializeField] private int wakeHour = 8;
     [SerializeField] private int wakeMinute = 0;
+
+    [Header("Recuperacion de energia")]
+    [SerializeField] private int halfRecoveryFromHour = 22;
+    [SerializeField] private float halfRecoveryPercent = 0.5f;
+    [SerializeField] private float lateRecoveryPercent = 0.25f;
 
     [Header("Animacion provisional")]
     [SerializeField] private bool movePlayerToSleepPoint = true;
@@ -219,35 +223,39 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             return;
         }
 
-        bool duermePronto = EsSuenoTemprano();
+        float porcentajeRecuperacion = ObtenerPorcentajeRecuperacionSegunHora();
+        float energiaObjetivo = playerEnergy.MaxEnergy * porcentajeRecuperacion;
 
-        if (duermePronto)
+        if (playerEnergy.CurrentEnergy < energiaObjetivo)
         {
-            playerEnergy.FillEnergy();
-            return;
-        }
-
-        float energiaMinimaDespuesDeDormir = playerEnergy.MaxEnergy * 0.5f;
-
-        if (playerEnergy.CurrentEnergy < energiaMinimaDespuesDeDormir)
-        {
-            playerEnergy.SetEnergy(energiaMinimaDespuesDeDormir);
+            playerEnergy.SetEnergy(energiaObjetivo);
         }
     }
 
-    private bool EsSuenoTemprano()
+    private float ObtenerPorcentajeRecuperacionSegunHora()
     {
-        if (timeSystem.CurrentHour < fullRecoveryUntilHour)
+        int horaActual = timeSystem.CurrentHour;
+
+        // De 00:00 a 07:59 -> recupera hasta el 25%
+        if (horaActual < wakeHour)
         {
-            return true;
+            return lateRecoveryPercent;
         }
 
-        return timeSystem.CurrentHour == fullRecoveryUntilHour && timeSystem.CurrentMinute == 0;
+        // De 22:00 a 23:59 -> recupera hasta el 50%
+        if (horaActual >= halfRecoveryFromHour)
+        {
+            return halfRecoveryPercent;
+        }
+
+        // De 18:00 a 21:59 -> recupera hasta el 100%
+        return 1f;
     }
 
     private bool CanSleepNow()
     {
-        return timeSystem != null && timeSystem.CurrentHour >= minSleepHour;
+        return timeSystem != null &&
+               (timeSystem.CurrentHour >= minSleepHour || timeSystem.CurrentHour < wakeHour);
     }
 
     private bool EstaJugadorEnRango()

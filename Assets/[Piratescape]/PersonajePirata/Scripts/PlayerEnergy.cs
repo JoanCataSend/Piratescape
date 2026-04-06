@@ -8,6 +8,7 @@ public class PlayerEnergy : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private VisualizadorBarrasEstado visualizador;
     [SerializeField] private movimientoplayer movimientoPlayer;
+    [SerializeField] private PlayerHealth playerHealth;
 
     [Header("Configuracion de energia")]
     [SerializeField] private float maxEnergy = 100f;
@@ -16,8 +17,13 @@ public class PlayerEnergy : MonoBehaviour
     [Header("Desgaste al correr")]
     [SerializeField] private float energyLossPerSecondWhileSprinting = 10f;
 
+    [Header("Daño al correr sin energia")]
+    [SerializeField] private int healthLossPerSecondWhileSprintingExhausted = 5;
+
     [Header("Penalizacion por energia vacia")]
     [SerializeField] private float movementMultiplierWhenExhausted = 0.5f;
+
+    private float healthDamageTimerWhileSprintingExhausted;
 
     public float MaxEnergy => maxEnergy;
     public float CurrentEnergy => currentEnergy;
@@ -45,11 +51,18 @@ public class PlayerEnergy : MonoBehaviour
 
         if (!movimientoPlayer.IsActuallySprinting())
         {
+            healthDamageTimerWhileSprintingExhausted = 0f;
             return;
         }
 
-        float energiaAGastar = energyLossPerSecondWhileSprinting * Time.deltaTime;
-        TryUseEnergy(energiaAGastar);
+        if (!IsExhausted)
+        {
+            float energiaAGastar = energyLossPerSecondWhileSprinting * Time.deltaTime;
+            TryUseEnergy(energiaAGastar);
+            return;
+        }
+
+        AplicarDanioPorCorrerSinEnergia();
     }
 
     public bool HasEnoughEnergy(float amount)
@@ -84,6 +97,26 @@ public class PlayerEnergy : MonoBehaviour
         return true;
     }
 
+    public bool TryUseEnergyOrHealth(float energyAmount, int healthDamageIfExhausted)
+    {
+        if (energyAmount <= 0f)
+        {
+            return true;
+        }
+
+        if (!IsExhausted)
+        {
+            return TryUseEnergy(energyAmount);
+        }
+
+        if (healthDamageIfExhausted > 0 && playerHealth != null)
+        {
+            playerHealth.TakeDamage(healthDamageIfExhausted);
+        }
+
+        return false;
+    }
+
     public void RestoreEnergy(float amount)
     {
         if (amount <= 0f)
@@ -110,11 +143,34 @@ public class PlayerEnergy : MonoBehaviour
         NotifyEnergyChanged();
     }
 
+    private void AplicarDanioPorCorrerSinEnergia()
+    {
+        if (playerHealth == null || healthLossPerSecondWhileSprintingExhausted <= 0)
+        {
+            return;
+        }
+
+        healthDamageTimerWhileSprintingExhausted += Time.deltaTime;
+
+        float intervaloDanio = 1f / healthLossPerSecondWhileSprintingExhausted;
+
+        while (healthDamageTimerWhileSprintingExhausted >= intervaloDanio)
+        {
+            playerHealth.TakeDamage(1);
+            healthDamageTimerWhileSprintingExhausted -= intervaloDanio;
+        }
+    }
+
     private void CachearReferencias()
     {
         if (movimientoPlayer == null)
         {
             movimientoPlayer = GetComponent<movimientoplayer>();
+        }
+
+        if (playerHealth == null)
+        {
+            playerHealth = GetComponent<PlayerHealth>();
         }
     }
 
@@ -123,6 +179,7 @@ public class PlayerEnergy : MonoBehaviour
         maxEnergy = LimitarEnergiaMaxima(maxEnergy);
         currentEnergy = LimitarEnergiaActual(currentEnergy);
         movementMultiplierWhenExhausted = Mathf.Clamp(movementMultiplierWhenExhausted, 0.1f, 1f);
+        healthLossPerSecondWhileSprintingExhausted = Mathf.Max(0, healthLossPerSecondWhileSprintingExhausted);
     }
 
     private float LimitarEnergiaMaxima(float valor)
@@ -144,7 +201,7 @@ public class PlayerEnergy : MonoBehaviour
 
         if (IsExhausted)
         {
-            movimientoPlayer.SetCanSprint(false);
+            movimientoPlayer.SetCanSprint(true);
             movimientoPlayer.SetEnergySpeedMultiplier(movementMultiplierWhenExhausted);
         }
         else
