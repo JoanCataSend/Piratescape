@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class InteractionUI : MonoBehaviour
     [SerializeField] private TMP_Text actionText;
 
     private Object currentOwner;
+    private Coroutine temporaryMessageRoutine;
 
     private void Awake()
     {
@@ -29,6 +31,8 @@ public class InteractionUI : MonoBehaviour
             return;
         }
 
+        StopTemporaryRoutineIfNeeded();
+
         currentOwner = owner;
 
         if (actionText != null)
@@ -40,6 +44,17 @@ public class InteractionUI : MonoBehaviour
         {
             prompt.SetActive(true);
         }
+    }
+
+    public void ShowTemporary(Object owner, string message, float duration)
+    {
+        if (owner == null)
+        {
+            return;
+        }
+
+        StopTemporaryRoutineIfNeeded();
+        temporaryMessageRoutine = StartCoroutine(ShowTemporaryRoutine(owner, message, duration));
     }
 
     public void Hide(Object owner)
@@ -54,6 +69,8 @@ public class InteractionUI : MonoBehaviour
             return;
         }
 
+        StopTemporaryRoutineIfNeeded();
+
         currentOwner = null;
 
         if (prompt != null)
@@ -64,6 +81,8 @@ public class InteractionUI : MonoBehaviour
 
     public void HideImmediate()
     {
+        StopTemporaryRoutineIfNeeded();
+
         currentOwner = null;
 
         if (prompt != null)
@@ -75,5 +94,45 @@ public class InteractionUI : MonoBehaviour
     public bool IsOwnedBy(Object owner)
     {
         return currentOwner == owner;
+    }
+
+    private IEnumerator ShowTemporaryRoutine(Object owner, string message, float duration)
+    {
+        currentOwner = owner;
+
+        if (actionText != null)
+        {
+            actionText.text = message;
+        }
+
+        if (prompt != null)
+        {
+            prompt.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        if (currentOwner == owner)
+        {
+            currentOwner = null;
+
+            if (prompt != null)
+            {
+                prompt.SetActive(false);
+            }
+        }
+
+        temporaryMessageRoutine = null;
+    }
+
+    private void StopTemporaryRoutineIfNeeded()
+    {
+        if (temporaryMessageRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(temporaryMessageRoutine);
+        temporaryMessageRoutine = null;
     }
 }

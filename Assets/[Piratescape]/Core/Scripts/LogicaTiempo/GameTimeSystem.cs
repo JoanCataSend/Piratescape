@@ -16,6 +16,10 @@ public class GameTimeSystem : MonoBehaviour
     [SerializeField] private float realSecondsPerGameMinute = 1f;
     [SerializeField] private bool startPaused = false;
 
+    [Header("Sleep Settings")]
+    [SerializeField] private int defaultWakeHour = 8;
+    [SerializeField] private int defaultWakeMinute = 0;
+
     private float accumulatedRealTime;
     private int currentDay;
     private int currentHour;
@@ -34,7 +38,6 @@ public class GameTimeSystem : MonoBehaviour
     public int CurrentMinute => currentMinute;
     public bool IsPaused => isPaused;
 
-    // ✅ NUEVO
     public bool IsNight => currentHour >= 18;
     public bool IsDay => currentHour >= 6 && currentHour < 18;
 
@@ -185,20 +188,31 @@ public class GameTimeSystem : MonoBehaviour
         OnDayChanged?.Invoke(currentDay);
     }
 
-    // ✅ NUEVO → dormir
     public void SleepToNextDay()
     {
+        SleepToNextDay(defaultWakeHour, defaultWakeMinute);
+    }
+
+    public void SleepToNextDay(int wakeHour, int wakeMinute)
+    {
+        wakeHour = Mathf.Clamp(wakeHour, 0, HoursPerDay - 1);
+        wakeMinute = Mathf.Clamp(wakeMinute, 0, MinutesPerHour - 1);
+
         currentDay++;
-        currentHour = 6;
-        currentMinute = 0;
+        currentHour = wakeHour;
+        currentMinute = wakeMinute;
         accumulatedRealTime = 0f;
 
-        wasNight = false;
+        wasNight = IsNight;
 
         OnDayChanged?.Invoke(currentDay);
-        OnDayNightChanged?.Invoke(false);
-
+        OnDayNightChanged?.Invoke(wasNight);
         NotifyTimeChanged();
+    }
+
+    public bool CanSleepFromHour(int minSleepHour)
+    {
+        return currentHour >= minSleepHour;
     }
 
     public float GetNormalizedTimeOfDay()
@@ -256,6 +270,9 @@ public class GameTimeSystem : MonoBehaviour
         startHour = Mathf.Clamp(startHour, 0, HoursPerDay - 1);
         startMinute = Mathf.Clamp(startMinute, 0, MinutesPerHour - 1);
 
+        defaultWakeHour = Mathf.Clamp(defaultWakeHour, 0, HoursPerDay - 1);
+        defaultWakeMinute = Mathf.Clamp(defaultWakeMinute, 0, MinutesPerHour - 1);
+
         if (realSecondsPerGameMinute <= 0f)
         {
             realSecondsPerGameMinute = 1f;
@@ -278,6 +295,12 @@ public class GameTimeSystem : MonoBehaviour
     private void DebugAdd1Day()
     {
         AddDays(1);
+    }
+
+    [ContextMenu("Debug/Sleep To Next Day")]
+    private void DebugSleepToNextDay()
+    {
+        SleepToNextDay();
     }
 
     [ContextMenu("Debug/Pause")]
