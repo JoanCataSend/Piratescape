@@ -38,8 +38,8 @@ public class GameTimeSystem : MonoBehaviour
     public int CurrentMinute => currentMinute;
     public bool IsPaused => isPaused;
 
-    public bool IsNight => currentHour >= 18 || currentHour < 8;
-    public bool IsDay => currentHour >= 8 && currentHour < 18;
+    public bool IsNight => currentHour >= 18 || currentHour < 6;
+    public bool IsDay => currentHour >= 6 && currentHour < 18;
 
     public string CurrentTimeFormatted => $"{currentHour:00}:{currentMinute:00}";
     public string CurrentDayAndTimeFormatted => $"dia {currentDay} hora {currentHour:00}:{currentMinute:00}";
