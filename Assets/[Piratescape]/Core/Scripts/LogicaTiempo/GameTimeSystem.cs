@@ -31,7 +31,7 @@ public class GameTimeSystem : MonoBehaviour
     public event Action<int> OnDayChanged;
     public event Action<int, int> OnHourMinuteChanged;
     public event Action<int, int, int> OnTimeChanged;
-    public event Action<bool> OnDayNightChanged; // true = noche
+    public event Action<bool> OnDayNightChanged;
 
     public int CurrentDay => currentDay;
     public int CurrentHour => currentHour;
@@ -103,6 +103,11 @@ public class GameTimeSystem : MonoBehaviour
         }
 
         realSecondsPerGameMinute = newRealSecondsPerGameMinute;
+    }
+
+    public void SetTime(int hour, int minute)
+    {
+        SetTime(currentDay, hour, minute);
     }
 
     public void SetTime(int day, int hour, int minute)
