@@ -7,7 +7,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private string objectName = "tienda";
     [SerializeField] private float rango = 2.5f;
     [SerializeField] private bool interactuable = true;
-
+    [SerializeField] private NightThreatSystem nightThreatSystem;
     [Header("Punto de interaccion opcional")]
     [SerializeField] private Transform interactionPoint;
 
@@ -182,6 +182,10 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         {
             yield return fadeUI.FadeOutRoutine();
         }
+        if (nightThreatSystem != null)
+        {
+            nightThreatSystem.ResolveNightEvent();
+        }
 
         AplicarRecuperacionEnergia();
         timeSystem.SleepToNextDay(wakeHour, wakeMinute);
@@ -206,6 +210,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield return fadeUI.FadeInRoutine();
         }
 
+
         isSleeping = false;
 
         activo = interactuable && EstaJugadorEnRango();
@@ -214,6 +219,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         {
             ActualizarPromptSegunHora();
         }
+
     }
 
     private void AplicarRecuperacionEnergia()

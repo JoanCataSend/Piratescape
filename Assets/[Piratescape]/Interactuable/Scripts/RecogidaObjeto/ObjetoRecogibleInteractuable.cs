@@ -36,8 +36,8 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
     public void Interactuar()
     {
-        // La interacción real la gestiona PlayerPickupController.
-        // Este método se deja por compatibilidad con la interfaz Interactuable.
+        // La interacciï¿½n real la gestiona PlayerPickupController.
+        // Este mï¿½todo se deja por compatibilidad con la interfaz Interactuable.
     }
 
     public bool EstaEnRango(Vector3 posicionJugador)
@@ -104,6 +104,6 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
     private void SetIndicatorVisible(bool visible)
     {
-        // Aquí puedes activar/desactivar un icono 3D, outline, partícula, etc.
+        // Aquï¿½ puedes activar/desactivar un icono 3D, outline, partï¿½cula, etc.
     }
 }

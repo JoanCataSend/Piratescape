@@ -298,12 +298,17 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         return slots[index];
     }
 
-    private void NotifyInventoryChanged()
+    public void NotifyInventoryChanged()
     {
         OnInventoryChanged?.Invoke();
     }
 
-    /* Métodos añadidos para la construcción del barco */
+    public void ForceUpdateUI()
+    {
+        NotifyInventoryChanged();
+    }
+
+    /* Mï¿½todos aï¿½adidos para la construcciï¿½n del barco */
     public int ObtenerCantidad(ItemData itemData)
     {
         if (itemData == null)
