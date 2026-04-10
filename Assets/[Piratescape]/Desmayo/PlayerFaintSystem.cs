@@ -13,6 +13,7 @@ public class PlayerFaintSystem : MonoBehaviour
     [SerializeField] private CharacterController playerController;
     [SerializeField] private GameObject faintCarrySequence;
     [SerializeField] private GameObject playerVisualRoot;
+    [SerializeField] private NightThreatSystem nightThreatSystem;
 
     [Header("Camara Cinemachine")]
     [SerializeField] private CinemachineCamera freeLookCamera;
@@ -153,6 +154,15 @@ public class PlayerFaintSystem : MonoBehaviour
         if (playerEnergy != null)
         {
             playerEnergy.SetEnergy(0f);
+        }
+
+        if (nightThreatSystem != null)
+        {
+            nightThreatSystem.ResolveFaintEvent();
+        }
+        else
+        {
+            Debug.LogWarning("PlayerFaintSystem: falta referencia a NightThreatSystem", this);
         }
 
         if (faintCarrySequence != null)
@@ -300,19 +310,24 @@ public class PlayerFaintSystem : MonoBehaviour
             }
         }
 
-        if (playerTransform != null && movimientoPlayer == null)
+        if (movimientoPlayer == null && playerTransform != null)
         {
             movimientoPlayer = playerTransform.GetComponent<movimientoplayer>();
         }
 
-        if (playerTransform != null && playerEnergy == null)
+        if (playerEnergy == null && playerTransform != null)
         {
             playerEnergy = playerTransform.GetComponent<PlayerEnergy>();
         }
 
-        if (playerTransform != null && playerController == null)
+        if (playerController == null && playerTransform != null)
         {
             playerController = playerTransform.GetComponent<CharacterController>();
+        }
+
+        if (nightThreatSystem == null)
+        {
+            nightThreatSystem = FindFirstObjectByType<NightThreatSystem>();
         }
     }
 }
