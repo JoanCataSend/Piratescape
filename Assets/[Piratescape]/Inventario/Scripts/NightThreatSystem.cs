@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NightThreatSystem : MonoBehaviour
 {
     [Header("Probabilidad")]
     [Range(0f, 1f)]
-    [SerializeField] private float probability = 0.4f; // 40% de probabilidad
+    [SerializeField] private float probability = 0.4f;
 
     [Header("Cantidad a robar")]
     [SerializeField] private int minItemsToSteal = 1;
@@ -21,42 +22,17 @@ public class NightThreatSystem : MonoBehaviour
             return;
         }
 
-        float roll = Random.value;
-
-        if (roll > probability)
+        // 🔹 Probabilidad de que ocurra el evento
+        if (Random.value > probability)
         {
             Debug.Log("🌙 Noche tranquila... no pasó nada.");
+            MostrarMensaje("Has dormido tranquilo.");
             return;
         }
 
-        Debug.Log("🐒 ¡Monos ladrones han aparecido!");
-
-        int itemsToSteal = Random.Range(minItemsToSteal, maxItemsToSteal + 1);
-
-        int stolen = 0; // 👈 IMPORTANTE
-
-        for (int i = 0; i < itemsToSteal; i++)
-        {
-            if (StealMostValuableItem()) // 👈 ahora devuelve bool
-            {
-                stolen++;
-            }
-        }
-
-        if (stolen > 0)
-        {
-            Debug.Log($"⚠️ Te han robado {stolen} objetos.");
-        }
-        else
-        {
-            Debug.Log("😴 Han venido monos... pero no tenías nada.");
-        }
-    }
-
-    private bool StealMostValuableItem()
-    {
         var slots = playerInventory.GetSlots();
 
+        // 🔹 Buscar el item más valioso
         InventorySlot bestSlot = null;
         int highestValue = -1;
 
@@ -64,22 +40,34 @@ public class NightThreatSystem : MonoBehaviour
         {
             if (slot.IsEmpty()) continue;
 
-            int itemValue = slot.itemData.Value;
+            int value = slot.itemData.Value;
 
-            if (itemValue > highestValue)
+            if (value > highestValue)
             {
-                highestValue = itemValue;
+                highestValue = value;
                 bestSlot = slot;
             }
         }
 
+        // 🔹 Si no hay nada
         if (bestSlot == null)
         {
-            return false; // no hay nada
+            Debug.Log("🐒 Han venido monos... pero no tenías nada.");
+            MostrarMensaje("Han venido monos... pero no tenías nada.");
+            return;
         }
 
-        // quitar 1 unidad del item más valioso
-        bestSlot.amount--;
+        // 🔹 Cantidad a robar (pero SOLO de ese item)
+        int amountAvailable = bestSlot.amount;
+        int amountToSteal = Random.Range(minItemsToSteal, maxItemsToSteal + 1);
+
+        // 👇 CLAVE: no robar más de lo que tienes
+        int finalAmount = Mathf.Min(amountToSteal, amountAvailable);
+
+        string itemName = bestSlot.itemData.DisplayName;
+
+        // 🔹 Quitar items
+        bestSlot.amount -= finalAmount;
 
         if (bestSlot.amount <= 0)
         {
@@ -88,6 +76,22 @@ public class NightThreatSystem : MonoBehaviour
 
         playerInventory.ForceUpdateUI();
 
-        return true;
+        // 🔹 Mensaje bonito
+        string mensaje = $"Te han robado {finalAmount} {itemName}";
+        if (finalAmount > 1) mensaje += "s";
+
+        Debug.Log("🐒 " + mensaje);
+        MostrarMensaje(mensaje);
+    }
+
+    // 🔹 Método para UI (puedes conectarlo luego)
+    private void MostrarMensaje(string texto)
+    {
+        Debug.Log("📢 " + texto);
+
+        if (NightMessageUI.Instance != null)
+        {
+            NightMessageUI.Instance.ShowMessage(texto);
+        }
     }
 }
