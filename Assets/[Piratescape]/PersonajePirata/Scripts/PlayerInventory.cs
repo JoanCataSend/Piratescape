@@ -33,7 +33,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     private void InitializeSlots()
     {
-        // TECLADO: seleccionar slots 1-5
+        // TECLADO
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
@@ -42,10 +42,31 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
             if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
 
-            // Q para consumir/usar
+            // Q para soltar
             if (Keyboard.current.qKey.wasPressedThisFrame)
             {
+                DropSelectedItem();
+            }
+        }
+
+        // RATON
+        if (Mouse.current != null)
+        {
+            // Clic derecho para consumir/usar
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
                 UseSelectedItem();
+            }
+
+            float scrollY = Mouse.current.scroll.ReadValue().y;
+
+            if (scrollY > 0f)
+            {
+                SelectPreviousSlot();
+            }
+            else if (scrollY < 0f)
+            {
+                SelectNextSlot();
             }
         }
 
@@ -102,7 +123,36 @@ public bool TryAddItem(ItemData itemData, int amount)
         return false;
     }
 
-    if (amount <= 0)
+    private bool CanAddItem(ItemData itemData, int amount)
+    {
+        if (itemData == null || amount <= 0)
+        {
+            return false;
+        }
+
+        int freeSpaceTotal = 0;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == null)
+            {
+                continue;
+            }
+
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+            {
+                freeSpaceTotal += InventorySlot.MaxStack - slots[i].amount;
+            }
+            else if (slots[i].IsEmpty())
+            {
+                freeSpaceTotal += InventorySlot.MaxStack;
+            }
+        }
+
+        return freeSpaceTotal >= amount;
+    }
+
+    public bool TryAddItem(ItemData itemData, int amount)
     {
         Debug.LogWarning("PlayerInventory: amount debe ser mayor que 0.");
         return false;
@@ -129,7 +179,13 @@ public bool TryAddItem(ItemData itemData, int amount)
             int freeSpace = InventorySlot.MaxStack - slots[i].amount;
             int amountToAdd = Mathf.Min(remainingAmount, freeSpace);
 
-            slots[i].amount += amountToAdd;
+        if (!CanAddItem(itemData, amount))
+        {
+            OnInventoryMessageRequested?.Invoke("¡Oh no! Mis bolsillos están llenos");
+            return false;
+        }
+
+        int remainingAmount = amount;
 
             remainingAmount -= amountToAdd;
 
@@ -398,7 +454,7 @@ public bool TryAddItem(ItemData itemData, int amount)
         NotifyInventoryChanged();
     }
 
-    /* M�todos a�adidos para la construcci�n del barco */
+    /* Métodos añadidos para la construcción del barco */
     public int ObtenerCantidad(ItemData itemData)
     {
         if (itemData == null)
