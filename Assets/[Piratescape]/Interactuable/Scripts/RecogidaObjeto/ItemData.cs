@@ -8,6 +8,10 @@ public class ItemData : ScriptableObject
     [SerializeField] private Sprite icon;
     [SerializeField] private GameObject worldPrefab;
 
+    [Header("Valor del item")]
+    [SerializeField] private int value = 1;
+    public int Value => value;
+
     public string ItemId => itemId;
     public string DisplayName => displayName;
     public Sprite Icon => icon;

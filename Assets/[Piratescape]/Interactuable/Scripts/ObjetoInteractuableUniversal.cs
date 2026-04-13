@@ -1,14 +1,12 @@
 using UnityEngine;
 
-/// <summary>
-/// Objeto interactuable gen rico reutilizable para cualquier asset.
-/// </summary>
+
 public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
 {
     [Header("Datos del objeto")]
     [SerializeField] private string objectId = "objeto_001";
     [SerializeField] private string objectName = "Objeto interactuable";
-    [SerializeField] private string interactionMessage = "Interacci n realizada.";
+    [SerializeField] private string interactionMessage = "Interaccion realizada.";
     [SerializeField] private string promptAction = "Recoger";
 
     [Header("Configuraci n")]
@@ -47,9 +45,9 @@ public class ObjetoInteractuableUniversal : MonoBehaviour, Interactuable
             activo = nuevoEstado;
 
             if (activo)
-                InteractionUI.Instance.Show($"{promptAction} {objectName}");
+                InteractionUI.Instance.Show(this, $"{promptAction} {objectName}");
             else
-                InteractionUI.Instance.Hide();
+                InteractionUI.Instance.Hide(this);
         }
     }
 

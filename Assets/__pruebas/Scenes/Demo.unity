@@ -8867,8 +8867,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7011040e40e36d446b29ed66d38bd5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visualizador: {fileID: 0}
+  movimientoPlayer: {fileID: 0}
   maxEnergy: 100
   currentEnergy: 80
+  energyLossPerSecondWhileSprinting: 10
 --- !u!114 &1588489904
 MonoBehaviour:
   m_ObjectHideFlags: 0

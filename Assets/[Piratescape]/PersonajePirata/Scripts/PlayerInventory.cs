@@ -33,21 +33,43 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     private void InitializeSlots()
     {
-        slots = new List<InventorySlot>();
-
-        for (int i = 0; i < inventorySize; i++)
+        // TECLADO: seleccionar slots 1-5
+        if (Keyboard.current != null)
         {
-            slots.Add(new InventorySlot());
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) SelectSlot(1);
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) SelectSlot(2);
+            if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
+
+            // Q para consumir/usar
+            if (Keyboard.current.qKey.wasPressedThisFrame)
+            {
+                UseSelectedItem();
+            }
         }
 
-        NotifyInventoryChanged();
-    }
+        // MANDO
+        if (Gamepad.current != null)
+        {
+            // L1
+            if (Gamepad.current.leftShoulder.wasPressedThisFrame)
+            {
+                SelectPreviousSlot();
+            }
 
-    private bool CanAddItem(ItemData itemData, int amount)
-{
-    if (itemData == null || amount <= 0)
-    {
-        return false;
+            // R1
+            if (Gamepad.current.rightShoulder.wasPressedThisFrame)
+            {
+                SelectNextSlot();
+            }
+
+            // TRIANGULO / Y para consumir/usar
+            if (Gamepad.current.buttonNorth.wasPressedThisFrame)
+            {
+                UseSelectedItem();
+            }
+        }
     }
 
     int freeSpaceTotal = 0;
@@ -195,6 +217,11 @@ public bool TryAddItem(ItemData itemData, int amount)
 
     public void SelectNextSlot()
     {
+        if (slots == null || slots.Count == 0)
+        {
+            return;
+        }
+
         selectedSlotIndex++;
 
         if (selectedSlotIndex >= slots.Count)
@@ -207,6 +234,11 @@ public bool TryAddItem(ItemData itemData, int amount)
 
     public void SelectPreviousSlot()
     {
+        if (slots == null || slots.Count == 0)
+        {
+            return;
+        }
+
         selectedSlotIndex--;
 
         if (selectedSlotIndex < 0)
@@ -356,8 +388,62 @@ public bool TryAddItem(ItemData itemData, int amount)
         return slots[index];
     }
 
-    private void NotifyInventoryChanged()
+    public void NotifyInventoryChanged()
     {
         OnInventoryChanged?.Invoke();
+    }
+
+    public void ForceUpdateUI()
+    {
+        NotifyInventoryChanged();
+    }
+
+    /* M�todos a�adidos para la construcci�n del barco */
+    public int ObtenerCantidad(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return 0;
+        }
+
+        int cantidadTotal = 0;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            InventorySlot slot = slots[i];
+
+            if (slot.IsEmpty())
+            {
+                continue;
+            }
+
+            if (slot.itemData != itemData)
+            {
+                continue;
+            }
+
+            cantidadTotal += slot.amount;
+        }
+
+        return cantidadTotal;
+    }
+
+    public int RemoverHasta(ItemData itemData, int cantidadSolicitada)
+    {
+        if (itemData == null || cantidadSolicitada <= 0)
+        {
+            return 0;
+        }
+
+        int cantidadDisponible = ObtenerCantidad(itemData);
+        int cantidadARemover = Mathf.Min(cantidadDisponible, cantidadSolicitada);
+
+        if (cantidadARemover <= 0)
+        {
+            return 0;
+        }
+
+        RemoveItem(itemData, cantidadARemover);
+        return cantidadARemover;
     }
 }
