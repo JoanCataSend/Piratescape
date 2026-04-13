@@ -92,7 +92,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             }
 
             // RUEDITA DEL RATÓN
-            float scroll = Mouse.current.scroll.ReadValue().y;
+            float scroll = -Mouse.current.scroll.ReadValue().y;
 
             if (scroll > 0f)
             {
