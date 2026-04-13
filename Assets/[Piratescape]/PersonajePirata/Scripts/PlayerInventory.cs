@@ -6,12 +6,17 @@ using UnityEngine.InputSystem;
 public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 {
     public event Action OnInventoryChanged;
+    public event Action<string> OnInventoryMessageRequested;
 
     [Header("Configuracion del inventario")]
     [SerializeField] private int inventorySize = 5;
 
     [Header("Seleccion")]
     [SerializeField] private int selectedSlotIndex = 0;
+
+    [Header("Drop")]
+    [SerializeField] private Transform dropPoint;
+    [SerializeField] private float dropDistance = 1.5f;
 
     private List<InventorySlot> slots = new List<InventorySlot>();
     private PlayerHealth playerHealth;
@@ -28,7 +33,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     private void Update()
     {
-        // TECLADO: seleccionar slots 1-5
+        // TECLADO
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
@@ -37,10 +42,31 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
             if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
 
-            // Q para consumir/usar
+            // Q para soltar
             if (Keyboard.current.qKey.wasPressedThisFrame)
             {
+                DropSelectedItem();
+            }
+        }
+
+        // RATON
+        if (Mouse.current != null)
+        {
+            // Clic derecho para consumir/usar
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
                 UseSelectedItem();
+            }
+
+            float scrollY = Mouse.current.scroll.ReadValue().y;
+
+            if (scrollY > 0f)
+            {
+                SelectPreviousSlot();
+            }
+            else if (scrollY < 0f)
+            {
+                SelectNextSlot();
             }
         }
 
@@ -79,6 +105,35 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         NotifyInventoryChanged();
     }
 
+    private bool CanAddItem(ItemData itemData, int amount)
+    {
+        if (itemData == null || amount <= 0)
+        {
+            return false;
+        }
+
+        int freeSpaceTotal = 0;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == null)
+            {
+                continue;
+            }
+
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+            {
+                freeSpaceTotal += InventorySlot.MaxStack - slots[i].amount;
+            }
+            else if (slots[i].IsEmpty())
+            {
+                freeSpaceTotal += InventorySlot.MaxStack;
+            }
+        }
+
+        return freeSpaceTotal >= amount;
+    }
+
     public bool TryAddItem(ItemData itemData, int amount)
     {
         if (itemData == null)
@@ -90,6 +145,12 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         if (amount <= 0)
         {
             Debug.LogWarning("PlayerInventory: amount debe ser mayor que 0.");
+            return false;
+        }
+
+        if (!CanAddItem(itemData, amount))
+        {
+            OnInventoryMessageRequested?.Invoke("¡Oh no! Mis bolsillos están llenos");
             return false;
         }
 
@@ -245,6 +306,57 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
     }
 
+    public void DropSelectedItem()
+    {
+        InventorySlot slot = GetSlot(selectedSlotIndex);
+
+        if (slot == null || slot.IsEmpty())
+        {
+            Debug.Log("No hay item para tirar.");
+            return;
+        }
+
+        ItemData item = slot.itemData;
+
+        if (item.WorldPrefab == null)
+        {
+            Debug.LogWarning("El item " + item.DisplayName + " no tiene WorldPrefab asignado.");
+            return;
+        }
+
+        Vector3 spawnPosition = GetDropPosition();
+        Quaternion spawnRotation = Quaternion.identity;
+
+        GameObject droppedObject = Instantiate(item.WorldPrefab, spawnPosition, spawnRotation);
+
+        Rigidbody rb = droppedObject.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            Vector3 throwDirection = transform.forward + Vector3.up * 0.2f;
+            rb.AddForce(throwDirection.normalized * 2f, ForceMode.Impulse);
+        }
+
+        slot.amount--;
+
+        if (slot.amount <= 0)
+        {
+            slot.Clear();
+        }
+
+        Debug.Log("Tirado al suelo: " + item.DisplayName);
+        NotifyInventoryChanged();
+    }
+
+    private Vector3 GetDropPosition()
+    {
+        if (dropPoint != null)
+        {
+            return dropPoint.position;
+        }
+
+        return transform.position + transform.forward * dropDistance + Vector3.up * 0.5f;
+    }
+
     private bool ConsumeItem(ConsumibleItemData item)
     {
         if (item == null)
@@ -308,7 +420,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         NotifyInventoryChanged();
     }
 
-    /* M�todos a�adidos para la construcci�n del barco */
+    /* Métodos añadidos para la construcción del barco */
     public int ObtenerCantidad(ItemData itemData)
     {
         if (itemData == null)

@@ -3,7 +3,7 @@ using System;
 [Serializable]
 public class InventorySlot
 {
-    public const int MaxStack = 24; // Máximo de objetos por slot
+    public const int MaxStack = 25; // Máximo de objetos por slot
 
     public ItemData itemData;
     public int amount;
