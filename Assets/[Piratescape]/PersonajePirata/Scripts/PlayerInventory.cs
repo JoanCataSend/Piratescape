@@ -82,6 +82,27 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
                 UseSelectedItem();
             }
         }
+
+        if (Mouse.current != null)
+        {
+            // Click izquierdo para usar
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                UseSelectedItem();
+            }
+
+            // RUEDITA DEL RATÓN
+            float scroll = Mouse.current.scroll.ReadValue().y;
+
+            if (scroll > 0f)
+            {
+                SelectNextSlot();
+            }
+            else if (scroll < 0f)
+            {
+                SelectPreviousSlot();
+            }
+        }
     }
 
     private void HandleGamepadInput()
