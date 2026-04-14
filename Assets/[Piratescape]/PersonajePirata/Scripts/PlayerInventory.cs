@@ -31,9 +31,34 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         InitializeSlots();
     }
 
+    private void Update()
+    {
+        HandleKeyboardInput();
+        HandleGamepadInput();
+    }
+
     private void InitializeSlots()
     {
-        // TECLADO: seleccionar slots 1-5
+        slots.Clear();
+
+        for (int i = 0; i < inventorySize; i++)
+        {
+            slots.Add(new InventorySlot());
+        }
+
+        if (selectedSlotIndex < 0)
+        {
+            selectedSlotIndex = 0;
+        }
+
+        if (selectedSlotIndex >= slots.Count)
+        {
+            selectedSlotIndex = slots.Count - 1;
+        }
+    }
+
+    private void HandleKeyboardInput()
+    {
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SelectSlot(0);
@@ -42,133 +67,176 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
             if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
 
-            // Q para consumir/usar
+            // Q para tirar
             if (Keyboard.current.qKey.wasPressedThisFrame)
+            {
+                DropSelectedItem();
+            }
+        }
+
+        if (Mouse.current != null)
+        {
+            // Click izquierdo para consumir/usar
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 UseSelectedItem();
             }
         }
 
-        // MANDO
-        if (Gamepad.current != null)
+        if (Mouse.current != null)
         {
-            // L1
-            if (Gamepad.current.leftShoulder.wasPressedThisFrame)
+            // Click izquierdo para usar
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                SelectPreviousSlot();
+                UseSelectedItem();
             }
 
-            // R1
-            if (Gamepad.current.rightShoulder.wasPressedThisFrame)
+            // RUEDITA DEL RATÓN
+            float scroll = -Mouse.current.scroll.ReadValue().y;
+
+            if (scroll > 0f)
             {
                 SelectNextSlot();
             }
-
-            // TRIANGULO / Y para consumir/usar
-            if (Gamepad.current.buttonNorth.wasPressedThisFrame)
+            else if (scroll < 0f)
             {
-                UseSelectedItem();
+                SelectPreviousSlot();
             }
         }
     }
 
-    int freeSpaceTotal = 0;
-
-    for (int i = 0; i < slots.Count; i++)
+    private void HandleGamepadInput()
     {
-        if (slots[i] == null)
+        if (Gamepad.current == null)
         {
-            continue;
+            return;
         }
 
-        if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+        if (Gamepad.current.leftShoulder.wasPressedThisFrame)
         {
-            freeSpaceTotal += InventorySlot.MaxStack - slots[i].amount;
+            SelectPreviousSlot();
         }
-        else if (slots[i].IsEmpty())
+
+        if (Gamepad.current.rightShoulder.wasPressedThisFrame)
         {
-            freeSpaceTotal += InventorySlot.MaxStack;
+            SelectNextSlot();
+        }
+
+        // TRIANGULO / Y para consumir o usar
+        if (Gamepad.current.buttonNorth.wasPressedThisFrame)
+        {
+            UseSelectedItem();
+        }
+
+        // CIRCULO / B para soltar
+        if (Gamepad.current.buttonEast.wasPressedThisFrame)
+        {
+            DropSelectedItem();
         }
     }
 
-    return freeSpaceTotal >= amount;
-}
-
-public bool TryAddItem(ItemData itemData, int amount)
-{
-    if (itemData == null)
+    public bool CanAddItem(ItemData itemData, int amount)
     {
-        Debug.LogWarning("PlayerInventory: itemData es null.");
-        return false;
-    }
-
-    if (amount <= 0)
-    {
-        Debug.LogWarning("PlayerInventory: amount debe ser mayor que 0.");
-        return false;
-    }
-
-    if (!CanAddItem(itemData, amount))
-    {
-        OnInventoryMessageRequested?.Invoke("¡Oh no! Mis bolsillos están llenos");
-        return false;
-    }
-
-    int remainingAmount = amount;
-
-    // Primero apilar en slots existentes
-    for (int i = 0; i < slots.Count; i++)
-    {
-        if (slots[i] == null)
+        if (itemData == null || amount <= 0)
         {
-            continue;
+            return false;
         }
 
-        if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+        int freeSpaceTotal = 0;
+
+        for (int i = 0; i < slots.Count; i++)
         {
-            int freeSpace = InventorySlot.MaxStack - slots[i].amount;
-            int amountToAdd = Mathf.Min(remainingAmount, freeSpace);
-
-            slots[i].amount += amountToAdd;
-
-            remainingAmount -= amountToAdd;
-
-            if (remainingAmount <= 0)
+            if (slots[i] == null)
             {
-                NotifyInventoryChanged();
-                return true;
+                continue;
+            }
+
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+            {
+                freeSpaceTotal += InventorySlot.MaxStack - slots[i].amount;
+            }
+            else if (slots[i].IsEmpty())
+            {
+                freeSpaceTotal += InventorySlot.MaxStack;
             }
         }
+
+        return freeSpaceTotal >= amount;
     }
 
-    // Luego meter en slots vacíos
-    for (int i = 0; i < slots.Count; i++)
+    public bool TryAddItem(ItemData itemData, int amount)
     {
-        if (slots[i] == null)
+        if (itemData == null)
         {
-            continue;
+            Debug.LogWarning("PlayerInventory: itemData es null.");
+            return false;
         }
 
-        if (slots[i].IsEmpty())
+        if (amount <= 0)
         {
-            int amountToAdd = Mathf.Min(remainingAmount, InventorySlot.MaxStack);
+            Debug.LogWarning("PlayerInventory: amount debe ser mayor que 0.");
+            return false;
+        }
 
-            slots[i].itemData = itemData;
-            slots[i].amount = amountToAdd;
+        if (!CanAddItem(itemData, amount))
+        {
+            OnInventoryMessageRequested?.Invoke("¡Oh no! Mis bolsillos están llenos");
+            return false;
+        }
 
-            remainingAmount -= amountToAdd;
+        int remainingAmount = amount;
 
-            if (remainingAmount <= 0)
+        // Primero apilar en slots existentes
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == null)
             {
-                NotifyInventoryChanged();
-                return true;
+                continue;
+            }
+
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+            {
+                int freeSpace = InventorySlot.MaxStack - slots[i].amount;
+                int amountToAdd = Mathf.Min(remainingAmount, freeSpace);
+
+                slots[i].amount += amountToAdd;
+                remainingAmount -= amountToAdd;
+
+                if (remainingAmount <= 0)
+                {
+                    NotifyInventoryChanged();
+                    return true;
+                }
             }
         }
-    }
 
-    NotifyInventoryChanged();
-    return false;
-}
+        // Luego meter en slots vacíos
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == null)
+            {
+                continue;
+            }
+
+            if (slots[i].IsEmpty())
+            {
+                int amountToAdd = Mathf.Min(remainingAmount, InventorySlot.MaxStack);
+
+                slots[i].itemData = itemData;
+                slots[i].amount = amountToAdd;
+                remainingAmount -= amountToAdd;
+
+                if (remainingAmount <= 0)
+                {
+                    NotifyInventoryChanged();
+                    return true;
+                }
+            }
+        }
+
+        NotifyInventoryChanged();
+        return false;
+    }
 
     public bool RemoveItem(ItemData itemData, int amount = 1)
     {
@@ -398,7 +466,6 @@ public bool TryAddItem(ItemData itemData, int amount)
         NotifyInventoryChanged();
     }
 
-    /* M�todos a�adidos para la construcci�n del barco */
     public int ObtenerCantidad(ItemData itemData)
     {
         if (itemData == null)
@@ -412,7 +479,7 @@ public bool TryAddItem(ItemData itemData, int amount)
         {
             InventorySlot slot = slots[i];
 
-            if (slot.IsEmpty())
+            if (slot == null || slot.IsEmpty())
             {
                 continue;
             }
