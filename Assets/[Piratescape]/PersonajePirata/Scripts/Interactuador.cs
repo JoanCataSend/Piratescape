@@ -1,10 +1,7 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-/// <summary>
-/// Gestiona la interacción del jugador con los objetos activos,
-/// priorizando el interactuable activo más cercano.
-/// </summary>
 public class Interactuador : MonoBehaviour
 {
     private Interactuable[] interactuables;
@@ -24,14 +21,28 @@ public class Interactuador : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Interactuable objetivo = ObtenerInteractuableActivoMasCercano();
+        bool interactuar = false;
 
-            if (objetivo != null)
-            {
-                objetivo.Interactuar();
-            }
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            interactuar = true;
+        }
+
+        if (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame)
+        {
+            interactuar = true;
+        }
+
+        if (!interactuar)
+        {
+            return;
+        }
+
+        Interactuable objetivo = ObtenerInteractuableActivoMasCercano();
+
+        if (objetivo != null)
+        {
+            objetivo.Interactuar();
         }
     }
 
