@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ShelterSleep : MonoBehaviour, Interactuable
 {
@@ -8,6 +9,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private float rango = 2.5f;
     [SerializeField] private bool interactuable = true;
     [SerializeField] private NightThreatSystem nightThreatSystem;
+
     [Header("Punto de interaccion opcional")]
     [SerializeField] private Transform interactionPoint;
 
@@ -41,12 +43,22 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private string sleepTriggerName = "Sleep";
 
     [Header("Mensajes")]
-    [SerializeField] private string sleepPromptMessage = "Pulsa E para dormir";
+    [SerializeField] private string sleepPromptMessage = "dormir";
     [SerializeField] private string blockedPromptMessage = "No puedes dormir hasta las 18:00";
 
     private bool activo;
     private bool isSleeping;
     private IActivador jugador;
+
+    private InputDeviceType lastInputDevice = InputDeviceType.KeyboardMouse;
+
+    private enum InputDeviceType
+    {
+        KeyboardMouse,
+        PlayStation,
+        Xbox,
+        GenericGamepad
+    }
 
     public float Rango
     {
@@ -85,6 +97,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         {
             return;
         }
+
+        ActualizarUltimoDispositivoUsado();
 
         bool nuevoEstado = interactuable &&
                            !isSleeping &&
@@ -182,6 +196,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         {
             yield return fadeUI.FadeOutRoutine();
         }
+
         if (nightThreatSystem != null)
         {
             nightThreatSystem.ResolveNightEvent();
@@ -210,7 +225,6 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield return fadeUI.FadeInRoutine();
         }
 
-
         isSleeping = false;
 
         activo = interactuable && EstaJugadorEnRango();
@@ -219,7 +233,6 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         {
             ActualizarPromptSegunHora();
         }
-
     }
 
     private void AplicarRecuperacionEnergia()
@@ -309,7 +322,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             return;
         }
 
-        InteractionUI.Instance.Show(this, sleepPromptMessage);
+        string mensaje = $"Pulsa {GetInteractionIcon()} {sleepPromptMessage}";
+        InteractionUI.Instance.Show(this, mensaje);
     }
 
     private void MostrarPromptBloqueado()
@@ -386,6 +400,110 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         if (playerController == null && playerTransform != null)
         {
             playerController = playerTransform.GetComponent<CharacterController>();
+        }
+    }
+
+    private void ActualizarUltimoDispositivoUsado()
+    {
+        if (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame)
+        {
+            lastInputDevice = InputDeviceType.KeyboardMouse;
+            return;
+        }
+
+        if (Mouse.current != null)
+        {
+            bool mouseUsado =
+                Mouse.current.leftButton.wasPressedThisFrame ||
+                Mouse.current.rightButton.wasPressedThisFrame ||
+                Mouse.current.middleButton.wasPressedThisFrame ||
+                Mouse.current.delta.ReadValue() != Vector2.zero ||
+                Mouse.current.scroll.ReadValue() != Vector2.zero;
+
+            if (mouseUsado)
+            {
+                lastInputDevice = InputDeviceType.KeyboardMouse;
+                return;
+            }
+        }
+
+        if (Gamepad.current != null)
+        {
+            bool mandoUsado =
+                Gamepad.current.leftStick.ReadValue().sqrMagnitude > 0.01f ||
+                Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.01f ||
+                Gamepad.current.dpad.ReadValue().sqrMagnitude > 0.01f ||
+                Gamepad.current.leftTrigger.ReadValue() > 0.1f ||
+                Gamepad.current.rightTrigger.ReadValue() > 0.1f ||
+                Gamepad.current.buttonSouth.wasPressedThisFrame ||
+                Gamepad.current.buttonNorth.wasPressedThisFrame ||
+                Gamepad.current.buttonEast.wasPressedThisFrame ||
+                Gamepad.current.buttonWest.wasPressedThisFrame ||
+                Gamepad.current.startButton.wasPressedThisFrame ||
+                Gamepad.current.selectButton.wasPressedThisFrame;
+
+            if (mandoUsado)
+            {
+                lastInputDevice = DetectarTipoMando(Gamepad.current);
+            }
+        }
+    }
+
+    private InputDeviceType DetectarTipoMando(Gamepad gamepad)
+    {
+        if (gamepad == null)
+        {
+            return InputDeviceType.GenericGamepad;
+        }
+
+        string displayName = gamepad.displayName != null ? gamepad.displayName.ToLower() : "";
+        string name = gamepad.name != null ? gamepad.name.ToLower() : "";
+        string manufacturer = gamepad.description.manufacturer != null
+            ? gamepad.description.manufacturer.ToLower()
+            : "";
+        string product = gamepad.description.product != null
+            ? gamepad.description.product.ToLower()
+            : "";
+
+        string combinedInfo = displayName + " " + name + " " + manufacturer + " " + product;
+
+        Debug.Log("MANDO DETECTADO SHELTER -> " + combinedInfo);
+
+        if (combinedInfo.Contains("sony") ||
+            combinedInfo.Contains("playstation") ||
+            combinedInfo.Contains("dualshock") ||
+            combinedInfo.Contains("dualsense") ||
+            combinedInfo.Contains("wireless controller"))
+        {
+            return InputDeviceType.PlayStation;
+        }
+
+        if (combinedInfo.Contains("xbox") ||
+            combinedInfo.Contains("microsoft") ||
+            combinedInfo.Contains("xinput"))
+        {
+            return InputDeviceType.Xbox;
+        }
+
+        return InputDeviceType.GenericGamepad;
+    }
+
+    private string GetInteractionIcon()
+    {
+        switch (lastInputDevice)
+        {
+            case InputDeviceType.PlayStation:
+                return "□";
+
+            case InputDeviceType.Xbox:
+                return "X";
+
+            case InputDeviceType.GenericGamepad:
+                return "X";
+
+            case InputDeviceType.KeyboardMouse:
+            default:
+                return "E";
         }
     }
 
