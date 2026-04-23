@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45aeda4d9c7f67b46a4fe9ca07cdecf0, type: 3}
+  m_Script: {fileID: 11500000, guid: 92561ced9b5f01c4b9af7058a0dbea0a, type: 3}
   m_Name: Tulipan
   m_EditorClassIdentifier: 
   itemId: tulipan
   displayName: "Tulip\xE1n"
   icon: {fileID: 0}
-  currencyType: 1
-  value: 1
+  worldPrefab: {fileID: 0}
+  tipoMoneda: 1
+  valor: 1
