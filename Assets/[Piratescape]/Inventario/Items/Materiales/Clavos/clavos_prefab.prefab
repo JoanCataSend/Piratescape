@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -58,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: ebd3cac66fc1b334d9b8d592efe38e3f, type: 2}
     - target: {fileID: 919132149155446097, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
       propertyPath: m_Name
-      value: clavos
+      value: clavos_prefab
       objectReference: {fileID: 0}
     - target: {fileID: 8042945548056573905, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -67,5 +79,56 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7969723280319867456}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8792803810264265953}
   m_SourcePrefab: {fileID: 100100000, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+--- !u!1 &7006138116254847820 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 17e943617e5919248a49250c400b1ebb, type: 3}
+  m_PrefabInstance: {fileID: 7925109039854054941}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &-7969723280319867456
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7006138116254847820}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.26221263, y: 0.095515236, z: 0.36866984}
+  m_Center: {x: 0.0044804616, y: 0.004193356, z: 0.15580958}
+--- !u!114 &-8792803810264265953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7006138116254847820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd44853c4ae215846808bcd943c6c2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectId: clavos
+  objectName: Clavos
+  interactionMessage: Clavo recogido
+  rango: 2.5
+  interactuable: 1
+  itemData: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
+  amount: 1
