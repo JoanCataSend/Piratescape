@@ -5,86 +5,95 @@ public sealed class ConstruccionBarco : MonoBehaviour
 {
     public event Action OnConstruccionActualizada;
     public event Action OnConstruccionCompletada;
+    public event Action<string, Color> OnMensajeConstruccionSolicitado;
 
     [Header("Referencias")]
     [SerializeField] private PlayerInventory inventarioJugador;
     [SerializeField] private PlayerEnergy energiaJugador;
-    [SerializeField] private GameObject barcoNivel1;
     [SerializeField] private GameObject zonaConstruccionVisual;
     [SerializeField] private GameObject marcadorMiniMapaBarco;
 
-    [Header("Requisitos")]
-    [SerializeField] private RequisitoConstruccion[] requisitos;
+    [Header("Niveles de construccion")]
+    [SerializeField] private NivelConstruccionBarco[] nivelesConstruccion;
 
     [Header("Configuracion")]
-    [SerializeField] private bool ocultarBaseAlCompletar = true;
+    [SerializeField] private bool ocultarBaseAlCompletarTodosLosNiveles = true;
 
     [Header("Coste al construir")]
     [SerializeField] private float energiaGastadaPorMaterial = 5f;
     [SerializeField] private int vidaGastadaPorMaterialSinEnergia = 2;
 
-    private bool construccionCompletada;
+    private int indiceNivelActual;
+    private string ultimoMensajeCompletado = "";
 
-    public bool ConstruccionCompletada => construccionCompletada;
-    public RequisitoConstruccion[] Requisitos => requisitos;
+    public bool ConstruccionCompletada => EstanTodosLosNivelesCompletados;
+    public bool NivelActualCompletado => ObtenerNivelActual() == null;
+    public int IndiceNivelActual => indiceNivelActual;
+    public string UltimoMensajeCompletado => ultimoMensajeCompletado;
+
+    public NivelConstruccionBarco NivelActual => ObtenerNivelActual();
+
+    private bool EstanTodosLosNivelesCompletados
+    {
+        get
+        {
+            return nivelesConstruccion != null && indiceNivelActual >= nivelesConstruccion.Length;
+        }
+    }
 
     private void Awake()
     {
-        if (inventarioJugador == null)
-        {
-            inventarioJugador = FindFirstObjectByType<PlayerInventory>();
-        }
-
-        if (energiaJugador == null)
-        {
-            energiaJugador = FindFirstObjectByType<PlayerEnergy>();
-        }
-
+        CachearReferencias();
         AplicarEstadoVisualInicial();
     }
 
     public bool IntentarEntregarUnaUnidad()
     {
-        if (construccionCompletada)
+        NivelConstruccionBarco nivelActual = ObtenerNivelActual();
+
+        if (nivelActual == null || inventarioJugador == null)
         {
             return false;
         }
 
-        if (inventarioJugador == null || requisitos == null || requisitos.Length == 0)
+        InventorySlot slotSeleccionado = inventarioJugador.GetSlot(inventarioJugador.SelectedSlotIndex);
+
+        if (slotSeleccionado == null || slotSeleccionado.IsEmpty() || slotSeleccionado.itemData == null)
         {
+            SolicitarMensajeConstruccion("         Selecciona un material del inventario.", Color.white);
             return false;
         }
 
-        for (int i = 0; i < requisitos.Length; i++)
+        ItemData itemSeleccionado = slotSeleccionado.itemData;
+        RequisitoConstruccion requisito = nivelActual.BuscarRequisito(itemSeleccionado);
+
+        if (requisito == null)
         {
-            RequisitoConstruccion requisito = requisitos[i];
-
-            if (requisito == null || requisito.ItemRequerido == null)
-            {
-                continue;
-            }
-
-            if (requisito.EstaCompletado)
-            {
-                continue;
-            }
-
-            int cantidadRemovida = inventarioJugador.RemoverHasta(requisito.ItemRequerido, 1);
-
-            if (cantidadRemovida <= 0)
-            {
-                continue;
-            }
-
-            requisito.Entregar(cantidadRemovida);
-            AplicarCosteConstruccion(cantidadRemovida);
-
-            OnConstruccionActualizada?.Invoke();
-            IntentarCompletarConstruccion();
-            return true;
+            SolicitarMensajeConstruccion("     Ese material no sirve para esta construccion.", new Color(0.8f, 0.25f, 0.25f));
+            return false;
         }
 
-        return false;
+        if (requisito.EstaCompletado)
+        {
+            SolicitarMensajeConstruccion("Ya has entregado todo ese material.", Color.white);
+            return false;
+        }
+
+        int cantidadRemovida = inventarioJugador.RemoverHasta(itemSeleccionado, 1);
+
+        if (cantidadRemovida <= 0)
+        {
+            SolicitarMensajeConstruccion("No tienes suficiente material.", new Color(0.8f, 0.25f, 0.25f));
+            return false;
+        }
+
+        requisito.Entregar(cantidadRemovida);
+        AplicarCosteConstruccion(cantidadRemovida);
+
+        OnConstruccionActualizada?.Invoke();
+        IntentarCompletarNivelActual();
+
+        return true;
     }
 
     public int ObtenerCantidadDisponible(ItemData itemData)
@@ -99,20 +108,60 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     public int ObtenerCantidadEntregada(ItemData itemData)
     {
-        RequisitoConstruccion requisito = BuscarRequisito(itemData);
+        RequisitoConstruccion requisito = BuscarRequisitoEnNivelActual(itemData);
         return requisito == null ? 0 : requisito.CantidadEntregada;
     }
 
     public int ObtenerCantidadNecesaria(ItemData itemData)
     {
-        RequisitoConstruccion requisito = BuscarRequisito(itemData);
+        RequisitoConstruccion requisito = BuscarRequisitoEnNivelActual(itemData);
         return requisito == null ? 0 : requisito.CantidadNecesaria;
     }
 
     public int ObtenerCantidadPendiente(ItemData itemData)
     {
-        RequisitoConstruccion requisito = BuscarRequisito(itemData);
+        RequisitoConstruccion requisito = BuscarRequisitoEnNivelActual(itemData);
         return requisito == null ? 0 : requisito.CantidadPendiente;
+    }
+
+    public RequisitoConstruccion[] ObtenerRequisitosNivelActual()
+    {
+        NivelConstruccionBarco nivelActual = ObtenerNivelActual();
+        return nivelActual == null ? null : nivelActual.Requisitos;
+    }
+
+    private void CachearReferencias()
+    {
+        if (inventarioJugador == null)
+        {
+            inventarioJugador = FindFirstObjectByType<PlayerInventory>();
+        }
+
+        if (energiaJugador == null)
+        {
+            energiaJugador = FindFirstObjectByType<PlayerEnergy>();
+        }
+    }
+
+    private NivelConstruccionBarco ObtenerNivelActual()
+    {
+        if (nivelesConstruccion == null)
+        {
+            return null;
+        }
+
+        if (indiceNivelActual < 0 || indiceNivelActual >= nivelesConstruccion.Length)
+        {
+            return null;
+        }
+
+        return nivelesConstruccion[indiceNivelActual];
+    }
+
+    private RequisitoConstruccion BuscarRequisitoEnNivelActual(ItemData itemData)
+    {
+        NivelConstruccionBarco nivelActual = ObtenerNivelActual();
+        return nivelActual == null ? null : nivelActual.BuscarRequisito(itemData);
     }
 
     private void AplicarCosteConstruccion(int cantidadEntregada)
@@ -128,73 +177,43 @@ public sealed class ConstruccionBarco : MonoBehaviour
         }
     }
 
-    private void IntentarCompletarConstruccion()
+    private void IntentarCompletarNivelActual()
     {
-        if (!EstanTodosLosRequisitosCompletados())
+        NivelConstruccionBarco nivelActual = ObtenerNivelActual();
+
+        if (nivelActual == null || !nivelActual.EstaCompletado)
         {
             return;
         }
 
-        construccionCompletada = true;
-        AplicarEstadoVisualFinal();
+        OcultarModelosAnteriores(indiceNivelActual);
+        nivelActual.ActivarModelo();
+
+        ultimoMensajeCompletado = nivelActual.MensajeCompletado;
+
+        indiceNivelActual++;
+
+        AplicarEstadoVisualTrasCompletarNivel();
+
         OnConstruccionCompletada?.Invoke();
-    }
-
-    private bool EstanTodosLosRequisitosCompletados()
-    {
-        if (requisitos == null || requisitos.Length == 0)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < requisitos.Length; i++)
-        {
-            RequisitoConstruccion requisito = requisitos[i];
-
-            if (requisito == null)
-            {
-                continue;
-            }
-
-            if (!requisito.EstaCompletado)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private RequisitoConstruccion BuscarRequisito(ItemData itemData)
-    {
-        if (itemData == null || requisitos == null)
-        {
-            return null;
-        }
-
-        for (int i = 0; i < requisitos.Length; i++)
-        {
-            RequisitoConstruccion requisito = requisitos[i];
-
-            if (requisito == null)
-            {
-                continue;
-            }
-
-            if (requisito.ItemRequerido == itemData)
-            {
-                return requisito;
-            }
-        }
-
-        return null;
+        OnConstruccionActualizada?.Invoke();
     }
 
     private void AplicarEstadoVisualInicial()
     {
-        if (barcoNivel1 != null)
+        if (nivelesConstruccion != null)
         {
-            barcoNivel1.SetActive(false);
+            for (int i = 0; i < nivelesConstruccion.Length; i++)
+            {
+                NivelConstruccionBarco nivel = nivelesConstruccion[i];
+
+                if (nivel == null)
+                {
+                    continue;
+                }
+
+                nivel.DesactivarModelo();
+            }
         }
 
         if (marcadorMiniMapaBarco != null)
@@ -203,21 +222,41 @@ public sealed class ConstruccionBarco : MonoBehaviour
         }
     }
 
-    private void AplicarEstadoVisualFinal()
+    private void AplicarEstadoVisualTrasCompletarNivel()
     {
-        if (barcoNivel1 != null)
-        {
-            barcoNivel1.SetActive(true);
-        }
-
         if (marcadorMiniMapaBarco != null)
         {
             marcadorMiniMapaBarco.SetActive(true);
         }
 
-        if (ocultarBaseAlCompletar && zonaConstruccionVisual != null)
+        if (indiceNivelActual >= 1 && zonaConstruccionVisual != null)
         {
             zonaConstruccionVisual.SetActive(false);
+        }
+    }
+
+    private void SolicitarMensajeConstruccion(string mensaje, Color color)
+    {
+        OnMensajeConstruccionSolicitado?.Invoke(mensaje, color);
+    }
+
+    private void OcultarModelosAnteriores(int indiceNivelCompletado)
+    {
+        if (nivelesConstruccion == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < indiceNivelCompletado; i++)
+        {
+            NivelConstruccionBarco nivelAnterior = nivelesConstruccion[i];
+
+            if (nivelAnterior == null)
+            {
+                continue;
+            }
+
+            nivelAnterior.DesactivarModelo();
         }
     }
 }

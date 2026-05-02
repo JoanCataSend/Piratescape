@@ -36,7 +36,13 @@ public sealed class InteraccionConstruccionBarco : MonoBehaviour
             return;
         }
 
-        if (construccionBarco == null || construccionBarco.ConstruccionCompletada)
+        if (construccionBarco == null)
+        {
+            OcultarPrompt();
+            return;
+        }
+
+        if (construccionBarco.ConstruccionCompletada)
         {
             OcultarPrompt();
             return;
