@@ -7,12 +7,21 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private ConstruccionBarco construccionBarco;
-    [SerializeField] private ItemData itemConstruccion;
 
-    [Header("Indicador")]
+    [Header("Indicador general")]
     [SerializeField] private GameObject raizIndicador;
-    [SerializeField] private Image iconoIndicador;
-    [SerializeField] private TMP_Text textoIndicador;
+
+    [Header("Indicador madera")]
+    [SerializeField] private GameObject filaMadera;
+    [SerializeField] private Image iconoMadera;
+    [SerializeField] private TMP_Text textoMadera;
+    [SerializeField] private ItemData itemMadera;
+
+    [Header("Indicador clavos")]
+    [SerializeField] private GameObject filaClavos;
+    [SerializeField] private Image iconoClavos;
+    [SerializeField] private TMP_Text textoClavos;
+    [SerializeField] private ItemData itemClavos;
 
     [Header("Mensaje final")]
     [SerializeField] private GameObject raizMensajeCompletado;
@@ -42,6 +51,7 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
 
         construccionBarco.OnConstruccionActualizada += ManejarConstruccionActualizada;
         construccionBarco.OnConstruccionCompletada += ManejarConstruccionCompletada;
+        construccionBarco.OnMensajeConstruccionSolicitado += MostrarMensajeTemporal;
     }
 
     private void OnDisable()
@@ -53,6 +63,7 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
 
         construccionBarco.OnConstruccionActualizada -= ManejarConstruccionActualizada;
         construccionBarco.OnConstruccionCompletada -= ManejarConstruccionCompletada;
+        construccionBarco.OnMensajeConstruccionSolicitado -= MostrarMensajeTemporal;
     }
 
     public void EstablecerJugadorDentro(bool valor)
@@ -63,15 +74,22 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
 
     private void ConfigurarVisualInicial()
     {
-        if (iconoIndicador != null && itemConstruccion != null)
-        {
-            iconoIndicador.sprite = itemConstruccion.Icon;
-            iconoIndicador.enabled = itemConstruccion.Icon != null;
-        }
+        ConfigurarIcono(iconoMadera, itemMadera);
+        ConfigurarIcono(iconoClavos, itemClavos);
 
         if (raizIndicador != null)
         {
             raizIndicador.SetActive(false);
+        }
+
+        if (filaMadera != null)
+        {
+            filaMadera.SetActive(false);
+        }
+
+        if (filaClavos != null)
+        {
+            filaClavos.SetActive(false);
         }
 
         if (raizMensajeCompletado != null)
@@ -86,7 +104,7 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
 
     private void ActualizarIndicador()
     {
-        if (raizIndicador == null || textoIndicador == null || construccionBarco == null || itemConstruccion == null)
+        if (raizIndicador == null || construccionBarco == null)
         {
             return;
         }
@@ -94,10 +112,60 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
         bool mostrarIndicador = jugadorDentro && !construccionBarco.ConstruccionCompletada;
         raizIndicador.SetActive(mostrarIndicador);
 
-        int cantidadEntregada = construccionBarco.ObtenerCantidadEntregada(itemConstruccion);
-        int cantidadNecesaria = construccionBarco.ObtenerCantidadNecesaria(itemConstruccion);
+        if (!mostrarIndicador)
+        {
+            OcultarFilas();
+            return;
+        }
 
-        textoIndicador.text = cantidadEntregada + "/" + cantidadNecesaria;
+        ActualizarFilaMaterial(filaMadera, textoMadera, itemMadera);
+        ActualizarFilaMaterial(filaClavos, textoClavos, itemClavos);
+    }
+
+    private void ActualizarFilaMaterial(GameObject fila, TMP_Text texto, ItemData item)
+    {
+        if (fila == null || texto == null || item == null || construccionBarco == null)
+        {
+            return;
+        }
+
+        int cantidadNecesaria = construccionBarco.ObtenerCantidadNecesaria(item);
+        bool materialNecesarioEnNivelActual = cantidadNecesaria > 0;
+
+        fila.SetActive(materialNecesarioEnNivelActual);
+
+        if (!materialNecesarioEnNivelActual)
+        {
+            return;
+        }
+
+        int cantidadEntregada = construccionBarco.ObtenerCantidadEntregada(item);
+
+        texto.text = cantidadEntregada + "/" + cantidadNecesaria;
+    }
+
+    private void ConfigurarIcono(Image icono, ItemData item)
+    {
+        if (icono == null || item == null)
+        {
+            return;
+        }
+
+        icono.sprite = item.Icon;
+        icono.enabled = item.Icon != null;
+    }
+
+    private void OcultarFilas()
+    {
+        if (filaMadera != null)
+        {
+            filaMadera.SetActive(false);
+        }
+
+        if (filaClavos != null)
+        {
+            filaClavos.SetActive(false);
+        }
     }
 
     private void ManejarConstruccionActualizada()
@@ -116,6 +184,28 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
         if (raizMensajeCompletado == null && textoMensajeCompletado == null)
         {
             return;
+        }
+
+        if (textoMensajeCompletado != null)
+        {
+            textoMensajeCompletado.text = construccionBarco.UltimoMensajeCompletado;
+            textoMensajeCompletado.color = Color.white;
+        }
+
+        if (rutinaMensajeCompletado != null)
+        {
+            StopCoroutine(rutinaMensajeCompletado);
+        }
+
+        rutinaMensajeCompletado = StartCoroutine(MostrarMensajeCompletadoRutina());
+    }
+
+    private void MostrarMensajeTemporal(string mensaje, Color color)
+    {
+        if (textoMensajeCompletado != null)
+        {
+            textoMensajeCompletado.text = mensaje;
+            textoMensajeCompletado.color = color;
         }
 
         if (rutinaMensajeCompletado != null)
