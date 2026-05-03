@@ -9,10 +9,21 @@ public sealed class MenuPausaUI : MonoBehaviour
     [SerializeField] private GameObject hud;
     [SerializeField] private MonoBehaviour[] componentesADesactivarAlPausar;
 
+    [Header("Estado del jugador")]
+    [SerializeField] private SistemaSaludJugador sistemaSaludJugador;
+
     [Header("Input")]
     [SerializeField] private InputActionReference accionPausa;
 
     private bool estaEnPausa;
+
+    private void Awake()
+    {
+        if (sistemaSaludJugador == null)
+        {
+            sistemaSaludJugador = FindFirstObjectByType<SistemaSaludJugador>();
+        }
+    }
 
     private void OnEnable()
     {
@@ -44,6 +55,16 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     private void AlPulsarPausa(InputAction.CallbackContext contexto)
     {
+        if (JugadorEstaMuerto())
+        {
+            if (estaEnPausa)
+            {
+                ForzarCerrarPausa();
+            }
+
+            return;
+        }
+
         if (estaEnPausa)
         {
             ReanudarJuego();
@@ -56,7 +77,7 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     public void PausarJuego()
     {
-        if (estaEnPausa)
+        if (estaEnPausa || JugadorEstaMuerto())
         {
             return;
         }
@@ -94,7 +115,7 @@ public sealed class MenuPausaUI : MonoBehaviour
             panelPausa.SetActive(false);
         }
 
-        if (hud != null)
+        if (hud != null && !JugadorEstaMuerto())
         {
             hud.SetActive(true);
         }
@@ -106,6 +127,22 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void ForzarCerrarPausa()
+    {
+        estaEnPausa = false;
+
+        if (panelPausa != null)
+        {
+            panelPausa.SetActive(false);
+        }
+
+        CambiarEstadoComponentesJugador(true);
+
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public void VolverAlMenuPrincipal()
     {
         Time.timeScale = 1f;
@@ -113,6 +150,11 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.visible = true;
 
         SceneManager.LoadScene("PantallaPrincipal");
+    }
+
+    private bool JugadorEstaMuerto()
+    {
+        return sistemaSaludJugador != null && sistemaSaludJugador.EstaMuerto;
     }
 
     private void CambiarEstadoComponentesJugador(bool valor)
