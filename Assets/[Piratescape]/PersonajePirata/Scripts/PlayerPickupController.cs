@@ -21,10 +21,8 @@ public sealed class PlayerPickupController : MonoBehaviour
 
     private void Awake()
     {
-        // 1. Intentar usar la referencia puesta en Inspector
         itemReceiver = itemReceiverSource as IItemReceiver;
 
-        // 2. Si no existe o no implementa la interfaz, buscar PlayerInventory automáticamente
         if (itemReceiver == null)
         {
             PlayerInventory inventory = GetComponent<PlayerInventory>();
@@ -90,6 +88,14 @@ public sealed class PlayerPickupController : MonoBehaviour
             return false;
         }
 
+        ObjetoRecogibleInteractuable objetoRecogible = collectible as ObjetoRecogibleInteractuable;
+
+        if (objetoRecogible != null && EsObjetoDelJugador(objetoRecogible))
+        {
+            objetoRecogible.OcultarPrompt();
+            return false;
+        }
+
         if (collectible.ItemData == null)
         {
             Debug.LogWarning("PlayerPickupController: collectible item data is null.");
@@ -115,7 +121,7 @@ public sealed class PlayerPickupController : MonoBehaviour
 
         collectible.OnCollected();
 
-        if (objetoActual == collectible as ObjetoRecogibleInteractuable)
+        if (objetoActual == objetoRecogible)
         {
             objetoActual = null;
         }
@@ -139,6 +145,12 @@ public sealed class PlayerPickupController : MonoBehaviour
                 continue;
             }
 
+            if (EsObjetoDelJugador(objeto))
+            {
+                objeto.OcultarPrompt();
+                continue;
+            }
+
             if (!objeto.EstaEnRango(posicionJugador))
             {
                 continue;
@@ -154,6 +166,16 @@ public sealed class PlayerPickupController : MonoBehaviour
         }
 
         return mejor;
+    }
+
+    private bool EsObjetoDelJugador(ObjetoRecogibleInteractuable objeto)
+    {
+        if (objeto == null)
+        {
+            return false;
+        }
+
+        return objeto.transform.IsChildOf(transform);
     }
 
     private bool SeHaPulsadoInteraccion()

@@ -76,22 +76,13 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         if (Mouse.current != null)
         {
-            // Click izquierdo para consumir/usar
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                UseSelectedItem();
-            }
-        }
-
-        if (Mouse.current != null)
-        {
-            // Click izquierdo para usar
+            // Click izquierdo → usar item
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 UseSelectedItem();
             }
 
-            // RUEDITA DEL RATÓN
+            // RUEDITA DEL RATÓN → cambiar slot
             float scroll = -Mouse.current.scroll.ReadValue().y;
 
             if (scroll > 0f)
