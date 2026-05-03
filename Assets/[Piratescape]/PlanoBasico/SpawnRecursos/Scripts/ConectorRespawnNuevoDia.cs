@@ -10,7 +10,7 @@ public sealed class ConectorRespawnNuevoDia : MonoBehaviour
     {
         if (sistemaTiempo != null)
         {
-            sistemaTiempo.OnDayChanged += GestionarCambioDeDia;
+            sistemaTiempo.OnDayNightChanged += GestionarCambioDiaNoche;
         }
     }
 
@@ -18,12 +18,17 @@ public sealed class ConectorRespawnNuevoDia : MonoBehaviour
     {
         if (sistemaTiempo != null)
         {
-            sistemaTiempo.OnDayChanged -= GestionarCambioDeDia;
+            sistemaTiempo.OnDayNightChanged -= GestionarCambioDiaNoche;
         }
     }
 
-    private void GestionarCambioDeDia(int nuevoDia)
+    private void GestionarCambioDiaNoche(bool esNoche)
     {
+        if (esNoche)
+        {
+            return;
+        }
+
         if (gestorRespawnRecursos == null)
         {
             return;
