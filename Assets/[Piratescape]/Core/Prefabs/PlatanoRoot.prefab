@@ -95,8 +95,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5321426344763683749}
-  - component: {fileID: -8101302891135027163}
   - component: {fileID: 3545881970850297993}
+  - component: {fileID: 2459718406051038578}
   m_Layer: 3
   m_Name: PlatanoRoot
   m_TagString: Untagged
@@ -120,7 +120,26 @@ Transform:
   - {fileID: 7084808093796216242}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &-8101302891135027163
+--- !u!114 &3545881970850297993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5235030195647688268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd44853c4ae215846808bcd943c6c2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectId: platano
+  objectName: "Pl\xE1tano"
+  interactionMessage: "Pl\xE1tano recogido"
+  rango: 2.5
+  interactuable: 1
+  itemData: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  amount: 1
+--- !u!65 &2459718406051038578
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,25 +160,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3545881970850297993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5235030195647688268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd44853c4ae215846808bcd943c6c2ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectId: platano
-  objectName: "Pl\xE1tano"
-  interactionMessage: "Pl\xE1tano recogido"
-  rango: 2.5
-  interactuable: 1
-  itemData: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
-  amount: 1
 --- !u!1 &7573255498380179208
 GameObject:
   m_ObjectHideFlags: 0
