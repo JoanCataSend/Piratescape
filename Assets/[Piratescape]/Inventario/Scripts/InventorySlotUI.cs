@@ -24,7 +24,7 @@ public class InventorySlotUI : MonoBehaviour
 
         iconImage.enabled = true;
         iconImage.sprite = itemData.Icon;
-        amountText.text = amount.ToString();
+        amountText.text = amount + "/" + InventorySlot.MaxStack;
     }
 
     public void SetSelected(bool selected)
