@@ -28,9 +28,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         jugador = FindFirstObjectByType<JugadorActivador>();
 
         if (shopUI != null)
-        {
             shopUI.SetActive(false);
-        }
     }
 
     private void Update()
@@ -51,33 +49,27 @@ public class GhostMerchant : MonoBehaviour, Interactuable
                 return;
             }
 
-            MostrarPrompt();
+            if (shopUI == null || !shopUI.activeSelf)
+                MostrarPrompt();
         }
     }
 
     public void Interactuar()
     {
-        if (!Activo)
-            return;
-
-        if (shopUI == null)
+        if (!Activo || shopUI == null)
             return;
 
         if (shopUI.activeSelf)
-        {
             CerrarTienda();
-        }
         else
-        {
             AbrirTienda();
-        }
     }
 
     private void AbrirTienda()
     {
         shopUI.SetActive(true);
+        OcultarPrompt();
 
-        // No pausamos el juego
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -88,6 +80,9 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             return;
 
         shopUI.SetActive(false);
+
+        if (Activo)
+            MostrarPrompt();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -101,16 +96,12 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     private void MostrarPrompt()
     {
         if (InteractionUI.Instance != null)
-        {
             InteractionUI.Instance.Show(this, mensaje);
-        }
     }
 
     private void OcultarPrompt()
     {
         if (InteractionUI.Instance != null)
-        {
             InteractionUI.Instance.Hide(this);
-        }
     }
 }
