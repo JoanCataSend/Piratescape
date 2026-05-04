@@ -44,7 +44,11 @@ public sealed class ConstruccionBarco : MonoBehaviour
     private void Awake()
     {
         CachearReferencias();
-        AplicarEstadoVisualInicial();
+    }
+
+    private void OnEnable()
+    {
+        AplicarEstadoVisualActual();
     }
 
     public bool IntentarEntregarUnaUnidad()
@@ -186,14 +190,11 @@ public sealed class ConstruccionBarco : MonoBehaviour
             return;
         }
 
-        OcultarModelosAnteriores(indiceNivelActual);
-        nivelActual.ActivarModelo();
-
         ultimoMensajeCompletado = nivelActual.MensajeCompletado;
 
         indiceNivelActual++;
 
-        AplicarEstadoVisualTrasCompletarNivel();
+        AplicarEstadoVisualActual();
 
         OnConstruccionCompletada?.Invoke();
         OnConstruccionActualizada?.Invoke();
@@ -257,6 +258,49 @@ public sealed class ConstruccionBarco : MonoBehaviour
             }
 
             nivelAnterior.DesactivarModelo();
+        }
+    }
+
+    private void AplicarEstadoVisualActual()
+    {
+        if (nivelesConstruccion != null)
+        {
+            for (int i = 0; i < nivelesConstruccion.Length; i++)
+            {
+                NivelConstruccionBarco nivel = nivelesConstruccion[i];
+
+                if (nivel == null)
+                {
+                    continue;
+                }
+
+                nivel.DesactivarModelo();
+            }
+        }
+
+        if (indiceNivelActual > 0 && nivelesConstruccion != null)
+        {
+            int indiceModeloVisible = indiceNivelActual - 1;
+
+            if (indiceModeloVisible >= 0 && indiceModeloVisible < nivelesConstruccion.Length)
+            {
+                NivelConstruccionBarco nivelVisible = nivelesConstruccion[indiceModeloVisible];
+
+                if (nivelVisible != null)
+                {
+                    nivelVisible.ActivarModelo();
+                }
+            }
+        }
+
+        if (marcadorMiniMapaBarco != null)
+        {
+            marcadorMiniMapaBarco.SetActive(indiceNivelActual > 0);
+        }
+
+        if (zonaConstruccionVisual != null)
+        {
+            zonaConstruccionVisual.SetActive(indiceNivelActual == 0);
         }
     }
 }
