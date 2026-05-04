@@ -201,7 +201,7 @@ public class PlayerEnergy : MonoBehaviour
 
         if (IsExhausted)
         {
-            movimientoPlayer.SetCanSprint(true);
+            movimientoPlayer.SetCanSprint(false);
             movimientoPlayer.SetEnergySpeedMultiplier(movementMultiplierWhenExhausted);
         }
         else

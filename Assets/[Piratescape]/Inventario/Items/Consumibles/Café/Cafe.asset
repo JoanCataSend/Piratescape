@@ -15,6 +15,10 @@ MonoBehaviour:
   itemId: cafe
   displayName: "Caf\xE9"
   icon: {fileID: 21300000, guid: 3e9140f398740a04580b493a420e0151, type: 3}
-  worldPrefab: {fileID: 6802979737261446924, guid: 6cf00a5c5ecd6014080e09c24b774d99, type: 3}
+  worldPrefab: {fileID: 7079499198939171103, guid: c4b152da78244bf4a91cef233289db75, type: 3}
+  handPrefab: {fileID: 7079499198939171103, guid: c4b152da78244bf4a91cef233289db75, type: 3}
+  handLocalPosition: {x: -0.3, y: -0.1, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 3, y: 3, z: 3}
   healthRestore: 0
   energyRestore: 30

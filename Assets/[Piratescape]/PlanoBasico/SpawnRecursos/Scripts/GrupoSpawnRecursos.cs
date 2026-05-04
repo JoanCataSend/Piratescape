@@ -42,11 +42,38 @@ public sealed class GrupoSpawnRecursos : MonoBehaviour
         StartCoroutine(ReaparecerTrasTiempo());
     }
 
+    public void ReiniciarRecursosDelGrupo()
+    {
+        StopAllCoroutines();
+
+        for (int i = 0; i < recursosActivos.Count; i++)
+        {
+            if (recursosActivos[i] != null)
+            {
+                Destroy(recursosActivos[i].gameObject);
+            }
+        }
+
+        recursosActivos.Clear();
+
+        for (int i = 0; i < puntosSpawn.Count; i++)
+        {
+            if (puntosSpawn[i] != null)
+            {
+                puntosSpawn[i].LimpiarRecursoActual();
+            }
+        }
+
+        ultimoPuntoUsado = null;
+
+        RellenarHastaObjetivo(cantidadMaximaActiva);
+    }
+
     public void RepoblarRecursosFaltantes()
     {
         LimpiarReferenciasDestruidas();
         RellenarHastaObjetivo(cantidadMaximaActiva);
-    }   
+    }
 
     private IEnumerator ReaparecerTrasTiempo()
     {
@@ -116,17 +143,7 @@ public sealed class GrupoSpawnRecursos : MonoBehaviour
         {
             PuntoSpawnRecurso puntoActual = puntosSpawn[i];
 
-            if (puntoActual == null)
-            {
-                continue;
-            }
-
-            if (puntoActual.EstaOcupado)
-            {
-                continue;
-            }
-
-            if (EstaBloqueado(puntoActual))
+            if (puntoActual == null || puntoActual.EstaOcupado || EstaBloqueado(puntoActual))
             {
                 continue;
             }
@@ -149,8 +166,7 @@ public sealed class GrupoSpawnRecursos : MonoBehaviour
             return null;
         }
 
-        int indiceAleatorio = Random.Range(0, puntosValidos.Count);
-        return puntosValidos[indiceAleatorio];
+        return puntosValidos[Random.Range(0, puntosValidos.Count)];
     }
 
     private bool EstaBloqueado(PuntoSpawnRecurso punto)
@@ -169,8 +185,7 @@ public sealed class GrupoSpawnRecursos : MonoBehaviour
             return null;
         }
 
-        int indiceAleatorio = Random.Range(0, prefabsRecurso.Count);
-        return prefabsRecurso[indiceAleatorio];
+        return prefabsRecurso[Random.Range(0, prefabsRecurso.Count)];
     }
 
     private void LimpiarReferenciasDestruidas()

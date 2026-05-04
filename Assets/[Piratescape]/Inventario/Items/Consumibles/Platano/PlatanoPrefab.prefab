@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.008
+      value: 0.006
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.008
+      value: 0.006
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.008
+      value: 0.006
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -99,8 +99,6 @@ MonoBehaviour:
   interactuable: 1
   itemData: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
   amount: 1
-  interactionIndicator: {fileID: 0}
-  visualRoot: {fileID: 0}
 --- !u!65 &-4774458290796676096
 BoxCollider:
   m_ObjectHideFlags: 0
