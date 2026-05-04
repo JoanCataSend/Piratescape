@@ -149,7 +149,21 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.LoadScene("PantallaPrincipal");
+        SceneManager.LoadScene("MenuPrincipal");
+    }
+
+    public void SalirDelJuego()
+    {
+        Time.timeScale = 1f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Application.Quit();
+
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #endif
     }
 
     private bool JugadorEstaMuerto()
