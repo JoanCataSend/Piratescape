@@ -70,6 +70,8 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         shopUI.SetActive(true);
         OcultarPrompt();
 
+        Time.timeScale = 0f;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -80,6 +82,8 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             return;
 
         shopUI.SetActive(false);
+
+        Time.timeScale = 1f;
 
         if (Activo)
             MostrarPrompt();
