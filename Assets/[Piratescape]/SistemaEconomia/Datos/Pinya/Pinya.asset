@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: pinya
   displayName: "Pi\xF1a"
-  icon: {fileID: 0}
-  worldPrefab: {fileID: 5093126710056138902, guid: 6527b7e021ddfa748bf940b0d30e46cd, type: 3}
+  icon: {fileID: 21300000, guid: b23d89c62e36c394481755115894b6db, type: 3}
+  worldPrefab: {fileID: 7968935146786981734, guid: 71f8bf13e9d0d744d817241b16c543c7, type: 3}
+  handPrefab: {fileID: 7968935146786981734, guid: 71f8bf13e9d0d744d817241b16c543c7, type: 3}
+  handLocalPosition: {x: 0, y: 0, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 1, y: 1, z: 1}
   tipoMoneda: 2
   valor: 1
