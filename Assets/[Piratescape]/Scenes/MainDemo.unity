@@ -74402,7 +74402,7 @@ MonoBehaviour:
   minItemsToSteal: 1
   maxItemsToSteal: 3
   playerInventory: {fileID: 1588489902}
-  sistemaEspantamonos: {fileID: 0}
+  sistemaEspantamonos: {fileID: 1814096004}
 --- !u!4 &1497435471
 Transform:
   m_ObjectHideFlags: 0
@@ -86819,6 +86819,54 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &1814096002
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1814096003}
+  - component: {fileID: 1814096004}
+  m_Layer: 0
+  m_Name: SistemaEspantamonos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1814096003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814096002}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1922425761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1814096004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814096002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc736213f72c4f4a85117761c4735f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeSystem: {fileID: 1975866679}
+  diasHastaRomperse: 2
+  mensajeColocado: Espantamonos colocado en base
+  mensajeRotura: El espantamonos se ha roto
 --- !u!43 &1816364074
 Mesh:
   m_ObjectHideFlags: 0
@@ -89696,6 +89744,7 @@ Transform:
   - {fileID: 526186494}
   - {fileID: 1497435471}
   - {fileID: 592822581}
+  - {fileID: 1814096003}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1922906550
