@@ -63315,11 +63315,11 @@ MonoBehaviour:
   sunsetSunColor: {r: 1, g: 0.62, b: 0.35, a: 1}
   duskSunColor: {r: 0.75, g: 0.45, b: 0.35, a: 1}
   moonColor: {r: 0.45, g: 0.55, b: 0.9, a: 1}
-  sunriseSunIntensity: 0.18
-  morningSunIntensity: 0.45
-  daySunIntensity: 1.1
-  sunsetSunIntensity: 0.55
-  duskSunIntensity: 0.18
+  sunriseSunIntensity: 0
+  morningSunIntensity: 0
+  daySunIntensity: 0
+  sunsetSunIntensity: 0
+  duskSunIntensity: 0
   nightSunIntensity: 0
   dawnMoonIntensity: 0.2
   dayMoonIntensity: 0
@@ -75202,7 +75202,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 6570
+  m_ColorTemperature: 4159
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
