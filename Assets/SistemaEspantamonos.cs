@@ -10,6 +10,7 @@ public class SistemaEspantamonos : MonoBehaviour
 
     [Header("Configuracion")]
     [SerializeField] private int diasHastaRomperse = 2;
+    [SerializeField] private string mensajeColocado = "Espantamonos colocado en base";
     [SerializeField] private string mensajeRotura = "El espantamonos se ha roto";
 
     private GameObject espantamonosActual;
@@ -84,7 +85,8 @@ public class SistemaEspantamonos : MonoBehaviour
 
         OnEstadoCambiado?.Invoke(estaActivo);
 
-        Debug.Log("Espantamonos colocado en la base.");
+        MostrarMensaje(mensajeColocado);
+        Debug.Log(mensajeColocado);
 
         return true;
     }

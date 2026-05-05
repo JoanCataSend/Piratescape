@@ -8,16 +8,20 @@ public sealed class ArticuloTienda : MonoBehaviour
     [Header("Datos del articulo")]
     [SerializeField] private string nombreArticulo;
     [SerializeField] private Sprite iconoArticulo;
+    [SerializeField] private ItemData itemInventario;
+    [SerializeField] private int cantidadItem = 1;
     [SerializeField] private GameObject prefabObjeto;
     [SerializeField] private CosteTienda[] costes;
 
     [Header("Referencias compra")]
     [SerializeField] private SistemaEconomia sistemaEconomia;
+    [SerializeField] private PlayerInventory inventarioJugador;
     [SerializeField] private Transform puntoAparicion;
     [SerializeField] private MensajeTienda mensajeTienda;
     [SerializeField] private GhostMerchant vendedorFantasma;
 
     [Header("Referencias UI")]
+    [SerializeField] private GameObject contenedorArticulo;
     [SerializeField] private Image imagenArticulo;
     [SerializeField] private TMP_Text textoNombre;
     [SerializeField] private Transform contenedorPrecios;
@@ -35,7 +39,7 @@ public sealed class ArticuloTienda : MonoBehaviour
 
     [Header("Configuracion")]
     [SerializeField] private bool desactivarBotonSiNoPuedeComprar = true;
-    [SerializeField] private bool cerrarTiendaAlComprar = true;
+    [SerializeField] private bool cerrarTiendaAlComprar = false;
 
     [Header("Espantamonos")]
     [SerializeField] private bool esEspantamonos;
@@ -107,34 +111,34 @@ public sealed class ArticuloTienda : MonoBehaviour
 
         if (!PuedeComprar())
         {
-            if (mensajeTienda != null)
-            {
-                mensajeTienda.MostrarError("No tienes suficiente dinero");
-            }
-
+            MostrarError("No tienes suficiente dinero");
             RefrescarUI();
             return;
         }
 
-        bool compraCorrecta = CrearObjetoComprado();
+        if (!esEspantamonos && !PuedeEntrarEnInventario())
+        {
+            MostrarError("Inventario lleno");
+            return;
+        }
+
+        bool compraCorrecta;
+
+        if (esEspantamonos)
+        {
+            compraCorrecta = ComprarEspantamonos();
+        }
+        else
+        {
+            compraCorrecta = ComprarItemInventario();
+        }
 
         if (!compraCorrecta)
         {
-            if (mensajeTienda != null)
-            {
-                mensajeTienda.MostrarError("No se pudo comprar " + nombreArticulo);
-            }
-
             return;
         }
 
         Cobrar();
-
-        if (mensajeTienda != null)
-        {
-            mensajeTienda.MostrarConfirmacion("Has comprado " + nombreArticulo);
-        }
-
         RefrescarUI();
 
         if (cerrarTiendaAlComprar && vendedorFantasma != null)
@@ -143,20 +147,54 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
     }
 
-    private bool CrearObjetoComprado()
+    private bool ComprarItemInventario()
     {
-        if (esEspantamonos)
+        if (inventarioJugador == null || itemInventario == null)
         {
-            if (sistemaEspantamonos == null)
-            {
-                return false;
-            }
-
-            return sistemaEspantamonos.ComprarEspantamonos(prefabObjeto, puntoAparicion);
+            MostrarError("Falta configurar el item de inventario");
+            return false;
         }
 
-        Instantiate(prefabObjeto, puntoAparicion.position, puntoAparicion.rotation);
+        bool anadido = inventarioJugador.TryAddItem(itemInventario, cantidadItem);
+
+        if (!anadido)
+        {
+            MostrarError("Inventario lleno");
+            return false;
+        }
+
+        MostrarConfirmacion("Has comprado " + nombreArticulo);
         return true;
+    }
+
+    private bool ComprarEspantamonos()
+    {
+        if (sistemaEspantamonos == null)
+        {
+            MostrarError("Falta SistemaEspantamonos");
+            return false;
+        }
+
+        bool colocado = sistemaEspantamonos.ComprarEspantamonos(prefabObjeto, puntoAparicion);
+
+        if (!colocado)
+        {
+            MostrarError("No se pudo colocar el espantamonos");
+            return false;
+        }
+
+        MostrarConfirmacion("Espantamonos colocado en base");
+        return true;
+    }
+
+    private bool PuedeEntrarEnInventario()
+    {
+        if (inventarioJugador == null || itemInventario == null)
+        {
+            return false;
+        }
+
+        return inventarioJugador.CanAddItem(itemInventario, cantidadItem);
     }
 
     private void PrepararUI()
@@ -210,6 +248,11 @@ public sealed class ArticuloTienda : MonoBehaviour
 
             CrearPrecioVisual(coste);
         }
+    }
+
+    private GameObject contenorPreciosGetChild(int index)
+    {
+        return contenedorPrecios.GetChild(index).gameObject;
     }
 
     private void CrearPrecioGratis()
@@ -304,10 +347,11 @@ public sealed class ArticuloTienda : MonoBehaviour
         BuscarReferenciasSiFaltan();
 
         bool ocultar = DebeOcultarsePorEspantamonos();
+        GameObject objetoAOcultar = contenedorArticulo != null ? contenedorArticulo : gameObject;
 
-        if (gameObject.activeSelf == ocultar)
+        if (objetoAOcultar.activeSelf == ocultar)
         {
-            gameObject.SetActive(!ocultar);
+            objetoAOcultar.SetActive(!ocultar);
         }
 
         if (ocultar)
@@ -332,15 +376,7 @@ public sealed class ArticuloTienda : MonoBehaviour
             }
 
             bool tieneSuficiente = sistemaEconomia.TieneMonedasSuficientes(coste.TipoMoneda, coste.Cantidad);
-
-            if (tieneSuficiente)
-            {
-                texto.color = colorPrecioNormal;
-            }
-            else
-            {
-                texto.color = colorPrecioInsuficiente;
-            }
+            texto.color = tieneSuficiente ? colorPrecioNormal : colorPrecioInsuficiente;
         }
     }
 
@@ -426,21 +462,33 @@ public sealed class ArticuloTienda : MonoBehaviour
             return false;
         }
 
-        if (prefabObjeto == null)
+        if (!esEspantamonos && inventarioJugador == null)
         {
-            Debug.LogError("Falta prefabObjeto en " + nombreArticulo, this);
+            Debug.LogError("Falta PlayerInventory en " + nombreArticulo, this);
             return false;
         }
 
-        if (puntoAparicion == null)
+        if (!esEspantamonos && itemInventario == null)
         {
-            Debug.LogError("Falta puntoAparicion en " + nombreArticulo, this);
+            Debug.LogError("Falta Item Inventario en " + nombreArticulo, this);
+            return false;
+        }
+
+        if (esEspantamonos && prefabObjeto == null)
+        {
+            Debug.LogError("Falta Prefab Objeto en " + nombreArticulo, this);
+            return false;
+        }
+
+        if (esEspantamonos && puntoAparicion == null)
+        {
+            Debug.LogError("Falta Punto Aparicion en " + nombreArticulo, this);
             return false;
         }
 
         if (botonComprar == null)
         {
-            Debug.LogError("Falta botonComprar en " + nombreArticulo, this);
+            Debug.LogError("Falta Boton Comprar en " + nombreArticulo, this);
             return false;
         }
 
@@ -458,6 +506,11 @@ public sealed class ArticuloTienda : MonoBehaviour
         if (sistemaEconomia == null)
         {
             sistemaEconomia = FindFirstObjectByType<SistemaEconomia>();
+        }
+
+        if (inventarioJugador == null)
+        {
+            inventarioJugador = FindFirstObjectByType<PlayerInventory>();
         }
 
         if (mensajeTienda == null)
@@ -494,6 +547,31 @@ public sealed class ArticuloTienda : MonoBehaviour
                 contenedorPrecios = precioTransform;
             }
         }
+
+        if (contenedorArticulo == null)
+        {
+            contenedorArticulo = gameObject;
+        }
+    }
+
+    private void MostrarError(string mensaje)
+    {
+        if (mensajeTienda != null)
+        {
+            mensajeTienda.MostrarError(mensaje);
+        }
+
+        Debug.LogWarning(mensaje);
+    }
+
+    private void MostrarConfirmacion(string mensaje)
+    {
+        if (mensajeTienda != null)
+        {
+            mensajeTienda.MostrarConfirmacion(mensaje);
+        }
+
+        Debug.Log(mensaje);
     }
 
     private void AlActualizarEconomia(int conchas, int tulipanes, int pinyas)
