@@ -9308,67 +9308,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
---- !u!1001 &205422359
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -52.29777
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5209904
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.9854455
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: m_Name
-      value: EspantamonospINTADO
-      objectReference: {fileID: 0}
-    - target: {fileID: 8006958694806783865, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: c7ecea210dd7a1843ab4aabd85d97ea5, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
 --- !u!43 &209404060
 Mesh:
   m_ObjectHideFlags: 0
@@ -32291,7 +32230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nombreArticulo: Espantamonos
-  iconoArticulo: {fileID: 0}
+  iconoArticulo: {fileID: 21300000, guid: 8c4bc2d51ee11a741b79cf2dbc545691, type: 3}
   itemInventario: {fileID: 0}
   cantidadItem: 1
   prefabObjeto: {fileID: 4644222791338693404, guid: 5e3d48d70eb94c1419b8f5074bdd8a41, type: 3}
@@ -34423,6 +34362,10 @@ PrefabInstance:
       propertyPath: iconoArticulo
       value: 
       objectReference: {fileID: 21300000, guid: 8c4bc2d51ee11a741b79cf2dbc545691, type: 3}
+    - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
+      propertyPath: itemInventario
+      value: 
+      objectReference: {fileID: 11400000, guid: 3cc8af838657f4a4d89879d8e73f6016, type: 2}
     - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: nombreArticulo
       value: Espantamonos
@@ -99514,7 +99457,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7598909232420672421, guid: c4b152da78244bf4a91cef233289db75, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.657
+      value: 1.96
       objectReference: {fileID: 0}
     - target: {fileID: 7598909232420672421, guid: c4b152da78244bf4a91cef233289db75, type: 3}
       propertyPath: m_LocalRotation.w
@@ -99633,7 +99576,6 @@ SceneRoots:
   - {fileID: 4462310518809275220}
   - {fileID: 64140523}
   - {fileID: 80238037}
-  - {fileID: 205422359}
   - {fileID: 372138482}
   - {fileID: 131407977}
   - {fileID: 997369738}
