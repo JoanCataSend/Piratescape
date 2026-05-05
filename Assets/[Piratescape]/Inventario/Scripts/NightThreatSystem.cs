@@ -14,6 +14,7 @@ public class NightThreatSystem : MonoBehaviour
 
     [Header("Referencias")]
     [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private SistemaEspantamonos sistemaEspantamonos;
 
     private void Awake()
     {
@@ -21,10 +22,21 @@ public class NightThreatSystem : MonoBehaviour
         {
             playerInventory = FindFirstObjectByType<PlayerInventory>();
         }
+
+        if (sistemaEspantamonos == null)
+        {
+            sistemaEspantamonos = FindFirstObjectByType<SistemaEspantamonos>();
+        }
     }
 
     public void ResolveNightEvent()
     {
+        if (HayEspantamonosActivo())
+        {
+            MostrarMensaje("El espantamonos ha ahuyentado a los monos.");
+            return;
+        }
+
         if (playerInventory == null)
         {
             Debug.LogWarning("NightThreatSystem: falta referencia a PlayerInventory.", this);
@@ -106,6 +118,12 @@ public class NightThreatSystem : MonoBehaviour
 
     public void ResolveFaintEvent()
     {
+        if (HayEspantamonosActivo())
+        {
+            MostrarMensaje("Te has desmayado, pero el espantamonos ha protegido la base.");
+            return;
+        }
+
         if (playerInventory == null)
         {
             Debug.LogWarning("NightThreatSystem: falta referencia a PlayerInventory.", this);
@@ -218,6 +236,16 @@ public class NightThreatSystem : MonoBehaviour
         }
 
         return sb.ToString();
+    }
+
+    private bool HayEspantamonosActivo()
+    {
+        if (sistemaEspantamonos == null)
+        {
+            sistemaEspantamonos = SistemaEspantamonos.Instance;
+        }
+
+        return sistemaEspantamonos != null && sistemaEspantamonos.EstaActivo;
     }
 
     private void MostrarMensaje(string texto)

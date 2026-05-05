@@ -15,12 +15,27 @@ public sealed class ArticuloTienda : MonoBehaviour
     [SerializeField] private MensajeTienda mensajeTienda;
     [SerializeField] private GhostMerchant vendedorFantasma;
 
+    [Header("Espantamonos")]
+    [SerializeField] private bool esEspantamonos;
+    [SerializeField] private SistemaEspantamonos sistemaEspantamonos;
+
     private Button botonComprar;
 
     private void Awake()
     {
         botonComprar = GetComponent<Button>();
         botonComprar.onClick.AddListener(Comprar);
+
+        if (sistemaEspantamonos == null)
+        {
+            sistemaEspantamonos = FindFirstObjectByType<SistemaEspantamonos>();
+        }
+
+        if (esEspantamonos && sistemaEspantamonos != null)
+        {
+            sistemaEspantamonos.OnEstadoCambiado += ActualizarVisibilidadEspantamonos;
+            ActualizarVisibilidadEspantamonos(sistemaEspantamonos.EstaActivo);
+        }
     }
 
     private void OnDestroy()
@@ -28,6 +43,11 @@ public sealed class ArticuloTienda : MonoBehaviour
         if (botonComprar != null)
         {
             botonComprar.onClick.RemoveListener(Comprar);
+        }
+
+        if (esEspantamonos && sistemaEspantamonos != null)
+        {
+            sistemaEspantamonos.OnEstadoCambiado -= ActualizarVisibilidadEspantamonos;
         }
     }
 
@@ -37,6 +57,17 @@ public sealed class ArticuloTienda : MonoBehaviour
 
         if (!ReferenciasValidas())
         {
+            return;
+        }
+
+        if (esEspantamonos && sistemaEspantamonos.EstaActivo)
+        {
+            if (mensajeTienda != null)
+            {
+                mensajeTienda.MostrarError("El espantamonos ya esta colocado");
+            }
+
+            ActualizarVisibilidadEspantamonos(true);
             return;
         }
 
@@ -53,7 +84,25 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
 
         Cobrar();
-        Instantiate(prefabObjeto, puntoAparicion.position, puntoAparicion.rotation);
+
+        if (esEspantamonos)
+        {
+            bool comprado = sistemaEspantamonos.ComprarEspantamonos(prefabObjeto, puntoAparicion);
+
+            if (!comprado)
+            {
+                if (mensajeTienda != null)
+                {
+                    mensajeTienda.MostrarError("No se pudo colocar el espantamonos");
+                }
+
+                return;
+            }
+        }
+        else
+        {
+            Instantiate(prefabObjeto, puntoAparicion.position, puntoAparicion.rotation);
+        }
 
         Debug.Log("Compra realizada: " + nombreArticulo);
 
@@ -80,6 +129,12 @@ public sealed class ArticuloTienda : MonoBehaviour
         if (puntoAparicion == null)
         {
             Debug.LogError("Falta puntoAparicion en " + nombreArticulo, this);
+            return false;
+        }
+
+        if (esEspantamonos && sistemaEspantamonos == null)
+        {
+            Debug.LogError("Falta SistemaEspantamonos en " + nombreArticulo, this);
             return false;
         }
 
@@ -122,5 +177,15 @@ public sealed class ArticuloTienda : MonoBehaviour
 
             sistemaEconomia.GastarMoneda(coste.TipoMoneda, coste.Cantidad);
         }
+    }
+
+    private void ActualizarVisibilidadEspantamonos(bool espantamonosActivo)
+    {
+        if (!esEspantamonos)
+        {
+            return;
+        }
+
+        gameObject.SetActive(!espantamonosActivo);
     }
 }

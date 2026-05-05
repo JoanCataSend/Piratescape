@@ -24,7 +24,6 @@ public sealed class DeveloperMenu : MonoBehaviour
     [SerializeField] private ItemData cocoItem;
     [SerializeField] private ItemData cafeItem;
     [SerializeField] private ItemData piedraItem;
-    [SerializeField] private ItemData cristalItem;
 
     [Header("Opciones iniciales")]
     [SerializeField] private bool mostrarFPSAlIniciar = false;
@@ -206,42 +205,68 @@ public sealed class DeveloperMenu : MonoBehaviour
 
         CrearSeccionTiempo(ventana.transform);
         CrearSeccionJugador(ventana.transform);
+        CrearSeccionEconomia(ventana.transform);
         CrearSeccionInventario(ventana.transform);
         CrearSeccionDebugVisual(ventana.transform);
     }
 
     private void CrearSeccionTiempo(Transform padre)
     {
-        GameObject contenido = CrearSeccionDesplegable(padre, "TIEMPO", true);
+        GameObject contenido = CrearSeccionDesplegable(padre, "PARTIDA / TIEMPO", true);
 
         CrearFilaBotones(contenido.transform,
-            ("Pausar tiempo", TogglePausarTiempo),
+            ("Pausar / Reanudar", TogglePausarTiempo),
             ("Tiempo x1", () => EstablecerVelocidadTiempo(1f)),
             ("Tiempo x5", () => EstablecerVelocidadTiempo(5f)),
             ("Tiempo x20", () => EstablecerVelocidadTiempo(20f))
         );
 
         CrearFilaBotones(contenido.transform,
-            ("Pasar a Día", PasarADia),
-            ("Pasar a Noche", PasarANoche)
+            ("Pasar a Día 06:00", PasarADia),
+            ("Pasar a Noche 18:00", PasarANoche)
         );
     }
 
     private void CrearSeccionJugador(Transform padre)
     {
-        GameObject contenido = CrearSeccionDesplegable(padre, "JUGADOR", false);
+        GameObject contenido = CrearSeccionDesplegable(padre, "JUGADOR / SUPERVIVENCIA", false);
 
         CrearFilaBotones(contenido.transform,
+            ("GodMode ON/OFF", ToggleGodMode),
             ("Vida al máximo", VidaAlMaximo),
-            ("Energía al máximo", EnergiaAlMaximo),
+            ("Energía al máximo", EnergiaAlMaximo)
+        );
+
+        CrearFilaBotones(contenido.transform,
             ("Vida baja", VidaBaja),
             ("Energía baja", EnergiaBaja)
         );
     }
 
+    private void CrearSeccionEconomia(Transform padre)
+    {
+        GameObject contenido = CrearSeccionDesplegable(padre, "ECONOMÍA", false);
+
+        CrearFilaBotones(contenido.transform,
+            ("+20 Conchas", () => AnadirMoneda(TipoMoneda.Concha, 20)),
+            ("+5 Tulipanes", () => AnadirMoneda(TipoMoneda.Tulipan, 5)),
+            ("+3 Pinyas", () => AnadirMoneda(TipoMoneda.Pinya, 3))
+        );
+
+        CrearFilaBotones(contenido.transform,
+            ("+100 Conchas", () => AnadirMoneda(TipoMoneda.Concha, 100)),
+            ("+20 Tulipanes", () => AnadirMoneda(TipoMoneda.Tulipan, 20)),
+            ("+20 Pinyas", () => AnadirMoneda(TipoMoneda.Pinya, 20))
+        );
+
+        CrearFilaBotones(contenido.transform,
+            ("Pack tienda", PackTienda)
+        );
+    }
+
     private void CrearSeccionInventario(Transform padre)
     {
-        GameObject contenido = CrearSeccionDesplegable(padre, "INVENTARIO / RECURSOS", false);
+        GameObject contenido = CrearSeccionDesplegable(padre, "INVENTARIO", false);
 
         CrearFilaBotones(contenido.transform,
             ("+20 Madera", () => AnadirItem(maderaItem, 20)),
@@ -251,13 +276,7 @@ public sealed class DeveloperMenu : MonoBehaviour
 
         CrearFilaBotones(contenido.transform,
             ("+5 Cafés", () => AnadirItem(cafeItem, 5)),
-            ("+20 Conchas", () => AnadirMoneda(TipoMoneda.Concha, 20)),
             ("+10 Piedras", () => AnadirItem(piedraItem, 10))
-        );
-
-        CrearFilaBotones(contenido.transform,
-            ("+5 Tulipanes", () => AnadirMoneda(TipoMoneda.Tulipan, 5)),
-            ("+3 Cristales", () => AnadirItem(cristalItem, 3))
         );
 
         CrearFilaBotones(contenido.transform,
@@ -597,6 +616,34 @@ public sealed class DeveloperMenu : MonoBehaviour
 
         energiaJugador.SetEnergy(10f);
         Debug.Log("DeveloperMenu: energía baja.");
+    }
+    private void ToggleGodMode()
+    {
+        if (saludJugador == null)
+        {
+            Debug.LogWarning("DeveloperMenu: falta referencia a PlayerHealth.");
+            return;
+        }
+
+        bool nuevoEstado = !saludJugador.GodModeActivo;
+
+        saludJugador.SetGodMode(nuevoEstado);
+
+        if (nuevoEstado)
+        {
+            VidaAlMaximo();
+        }
+
+        Debug.Log("DeveloperMenu: GodMode = " + nuevoEstado);
+    }
+
+    private void PackTienda()
+    {
+        AnadirMoneda(TipoMoneda.Concha, 100);
+        AnadirMoneda(TipoMoneda.Tulipan, 20);
+        AnadirMoneda(TipoMoneda.Pinya, 20);
+
+        Debug.Log("DeveloperMenu: pack de tienda añadido.");
     }
 
     private void AnadirItem(ItemData itemData, int cantidad)

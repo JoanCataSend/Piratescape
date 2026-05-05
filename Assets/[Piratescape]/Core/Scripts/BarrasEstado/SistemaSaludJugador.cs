@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public sealed class SistemaSaludJugador : MonoBehaviour
 {
     [Header("Referencias")]
@@ -14,11 +13,15 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     [Header("Configuracion desgaste")]
     [SerializeField] private float perdidaSaludPorMinuto = 0.1f;
 
+    [Header("Debug")]
+    [SerializeField] private bool modoDiosActivo;
+
     private bool estaMuerto;
 
     public float SaludActual => saludActual;
     public float SaludMaxima => saludMaxima;
     public bool EstaMuerto => estaMuerto;
+    public bool ModoDiosActivo => modoDiosActivo;
 
     private void OnEnable()
     {
@@ -45,7 +48,7 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     private void AlCambiarTiempo(int dia, int hora, int minuto)
     {
-        if (estaMuerto)
+        if (estaMuerto || modoDiosActivo)
         {
             return;
         }
@@ -55,6 +58,11 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     private void ReducirSaludPorTiempo()
     {
+        if (modoDiosActivo)
+        {
+            return;
+        }
+
         saludActual -= perdidaSaludPorMinuto;
         saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
 
@@ -64,7 +72,7 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     public void ReducirSaludDirecta(float cantidad)
     {
-        if (cantidad <= 0f || estaMuerto)
+        if (cantidad <= 0f || estaMuerto || modoDiosActivo)
         {
             return;
         }
@@ -89,6 +97,20 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         ActualizarHUD();
     }
 
+    public void EstablecerModoDios(bool activo)
+    {
+        modoDiosActivo = activo;
+
+        if (modoDiosActivo)
+        {
+            estaMuerto = false;
+            saludActual = saludMaxima;
+            ActualizarHUD();
+        }
+
+        Debug.Log("SistemaSaludJugador: GodMode = " + modoDiosActivo);
+    }
+
     private void ActualizarHUD()
     {
         if (visualizador != null)
@@ -99,7 +121,7 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     private void ComprobarMuerte()
     {
-        if (estaMuerto)
+        if (estaMuerto || modoDiosActivo)
         {
             return;
         }
