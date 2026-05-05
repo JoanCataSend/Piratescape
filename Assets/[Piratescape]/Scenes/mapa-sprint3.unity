@@ -12503,6 +12503,63 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radioComprobacion: 0.6
+--- !u!1001 &348137772
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 41014929709402553, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_Name
+      value: FantasmaPintao Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -53.040863
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9911709
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.0497475
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.00000008146034
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 8.08589e-31
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 9.926167e-24
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 854107714343752451, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ee7a9835352fe0040a117d5a5c91e66b, type: 3}
 --- !u!1 &349605507
 GameObject:
   m_ObjectHideFlags: 0
@@ -24876,6 +24933,7 @@ MonoBehaviour:
   saludMaxima: 100
   saludActual: 100
   perdidaSaludPorMinuto: 0.2
+  modoDiosActivo: 0
 --- !u!4 &576351768
 Transform:
   m_ObjectHideFlags: 0
@@ -27171,7 +27229,6 @@ MonoBehaviour:
   cocoItem: {fileID: 11400000, guid: f200f862a6f85ea4fa77d770fc1f275f, type: 2}
   cafeItem: {fileID: 11400000, guid: db275bd9098c0e74a92d39a5c4895188, type: 2}
   piedraItem: {fileID: 11400000, guid: e47affbb4c46e2543835ce15fb6535ec, type: 2}
-  cristalItem: {fileID: 11400000, guid: ae12cc9925370cc43b41e51bd6ed2db2, type: 2}
   mostrarFPSAlIniciar: 1
 --- !u!43 &594832774
 Mesh:
@@ -71743,6 +71800,7 @@ MonoBehaviour:
   minItemsToSteal: 1
   maxItemsToSteal: 3
   playerInventory: {fileID: 1588489902}
+  sistemaEspantamonos: {fileID: 0}
 --- !u!4 &1497435471
 Transform:
   m_ObjectHideFlags: 0
@@ -95641,63 +95699,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
---- !u!1001 &3244811825563679787
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -56.117992
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.61736965
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.031883717
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.00000008146034
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 8.08589e-31
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 9.926167e-24
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3192072188092015388, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      propertyPath: m_Name
-      value: FantasmaPintao
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
 --- !u!1001 &4462310518809275220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95852,7 +95853,6 @@ SceneRoots:
   - {fileID: 64140523}
   - {fileID: 80238037}
   - {fileID: 205422359}
-  - {fileID: 3244811825563679787}
   - {fileID: 372138482}
   - {fileID: 131407977}
   - {fileID: 997369738}
@@ -95978,3 +95978,4 @@ SceneRoots:
   - {fileID: 428169545}
   - {fileID: 1018510991}
   - {fileID: 1183927756}
+  - {fileID: 348137772}

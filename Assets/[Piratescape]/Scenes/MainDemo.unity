@@ -287,6 +287,8 @@ MonoBehaviour:
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
   vendedorFantasma: {fileID: 1881819176}
+  esEspantamonos: 0
+  sistemaEspantamonos: {fileID: 0}
 --- !u!1001 &64140523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9758,6 +9760,8 @@ MonoBehaviour:
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
   vendedorFantasma: {fileID: 1881819176}
+  esEspantamonos: 0
+  sistemaEspantamonos: {fileID: 0}
 --- !u!1 &556888289
 GameObject:
   m_ObjectHideFlags: 0
@@ -10367,6 +10371,7 @@ MonoBehaviour:
   saludMaxima: 100
   saludActual: 100
   perdidaSaludPorMinuto: 0.2
+  modoDiosActivo: 0
 --- !u!4 &576351768
 Transform:
   m_ObjectHideFlags: 0
@@ -11001,7 +11006,6 @@ MonoBehaviour:
   cocoItem: {fileID: 11400000, guid: f200f862a6f85ea4fa77d770fc1f275f, type: 2}
   cafeItem: {fileID: 11400000, guid: db275bd9098c0e74a92d39a5c4895188, type: 2}
   piedraItem: {fileID: 11400000, guid: e47affbb4c46e2543835ce15fb6535ec, type: 2}
-  cristalItem: {fileID: 11400000, guid: ae12cc9925370cc43b41e51bd6ed2db2, type: 2}
   mostrarFPSAlIniciar: 1
 --- !u!4 &595636883 stripped
 Transform:
@@ -11246,37 +11250,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 601870798}
   m_CullTransparentMesh: 1
---- !u!1 &606650875
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 606650876}
-  m_Layer: 0
-  m_Name: PuntoAparicionCompra
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &606650876
+--- !u!4 &606650876 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5738297488772198034, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+  m_PrefabInstance: {fileID: 3244811825563679787}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 606650875}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -6.5867933e-38, w: 1}
-  m_LocalPosition: {x: -0.163, y: 0.049, z: 1.917}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1881819179}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &606845543
 GameObject:
   m_ObjectHideFlags: 0
@@ -11792,6 +11770,8 @@ MonoBehaviour:
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
   vendedorFantasma: {fileID: 1881819176}
+  esEspantamonos: 0
+  sistemaEspantamonos: {fileID: 0}
 --- !u!1 &662970634
 GameObject:
   m_ObjectHideFlags: 0
@@ -29071,6 +29051,8 @@ MonoBehaviour:
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
   vendedorFantasma: {fileID: 1881819176}
+  esEspantamonos: 0
+  sistemaEspantamonos: {fileID: 0}
 --- !u!1 &1403286555
 GameObject:
   m_ObjectHideFlags: 0
@@ -33093,6 +33075,7 @@ MonoBehaviour:
   minItemsToSteal: 1
   maxItemsToSteal: 3
   playerInventory: {fileID: 1588489902}
+  sistemaEspantamonos: {fileID: 0}
 --- !u!4 &1497435471
 Transform:
   m_ObjectHideFlags: 0
@@ -36774,32 +36757,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &1881819175 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3192072188092015388, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+--- !u!114 &1881819176 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
   m_PrefabInstance: {fileID: 3244811825563679787}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1881819176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1881819175}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e623159a8233b4148bcceec89523a43a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rango: 2.5
-  interactuable: 1
-  shopUI: {fileID: 566540433}
-  mensaje: Pulsa E para comerciar
---- !u!4 &1881819179 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-  m_PrefabInstance: {fileID: 3244811825563679787}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1891355112
 GameObject:
   m_ObjectHideFlags: 0
@@ -41245,16 +41213,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: FantasmaPintao
       objectReference: {fileID: 0}
+    - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+      propertyPath: shopUI
+      value: 
+      objectReference: {fileID: 566540433}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 606650876}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3192072188092015388, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1881819176}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
 --- !u!1001 &4462310518809275220
 PrefabInstance:
