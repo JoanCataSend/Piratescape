@@ -48,4 +48,48 @@ public sealed class SistemaEconomia : MonoBehaviour
     {
         OnEconomiaActualizada?.Invoke(conchas, tulipanes, pinyas);
     }
+
+    public bool TieneMonedasSuficientes(TipoMoneda tipoMoneda, int cantidad)
+    {
+        if (cantidad <= 0)
+        {
+            return true;
+        }
+
+        if (tipoMoneda == TipoMoneda.Concha)
+        {
+            return conchas >= cantidad;
+        }
+
+        if (tipoMoneda == TipoMoneda.Tulipan)
+        {
+            return tulipanes >= cantidad;
+        }
+
+        return pinyas >= cantidad;
+    }
+
+    public bool GastarMoneda(TipoMoneda tipoMoneda, int cantidad)
+    {
+        if (!TieneMonedasSuficientes(tipoMoneda, cantidad))
+        {
+            return false;
+        }
+
+        if (tipoMoneda == TipoMoneda.Concha)
+        {
+            conchas -= cantidad;
+        }
+        else if (tipoMoneda == TipoMoneda.Tulipan)
+        {
+            tulipanes -= cantidad;
+        }
+        else
+        {
+            pinyas -= cantidad;
+        }
+
+        NotificarCambio();
+        return true;
+    }
 }

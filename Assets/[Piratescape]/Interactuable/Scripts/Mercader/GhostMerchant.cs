@@ -33,8 +33,11 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
     private void Update()
     {
+
         if (jugador == null)
+        {
             return;
+        }
 
         bool nuevoEstado = interactuable && EstaEnRango();
 
@@ -50,7 +53,9 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             }
 
             if (shopUI == null || !shopUI.activeSelf)
+            {
                 MostrarPrompt();
+            }
         }
     }
 
@@ -107,5 +112,10 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     {
         if (InteractionUI.Instance != null)
             InteractionUI.Instance.Hide(this);
+    }
+
+    public void CerrarTiendaDesdeUI()
+    {
+        CerrarTienda();
     }
 }
