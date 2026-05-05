@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class DayNightCycleController : MonoBehaviour
 {
@@ -12,40 +13,54 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private Material nightSkybox;
 
     [Header("Colores ambiente")]
-    [SerializeField] private Color sunriseAmbientColor = new Color(0.30f, 0.28f, 0.35f);
-    [SerializeField] private Color morningAmbientColor = new Color(0.55f, 0.52f, 0.45f);
-    [SerializeField] private Color dayAmbientColor = new Color(0.95f, 0.95f, 0.90f);
-    [SerializeField] private Color sunsetAmbientColor = new Color(0.35f, 0.25f, 0.25f);
-    [SerializeField] private Color duskAmbientColor = new Color(0.18f, 0.20f, 0.28f);
-    [SerializeField] private Color nightAmbientColor = new Color(0.08f, 0.10f, 0.16f);
+    [SerializeField] private Color sunriseAmbientColor = new Color(0.30f, 0.26f, 0.32f);
+    [SerializeField] private Color morningAmbientColor = new Color(0.42f, 0.45f, 0.46f);
+    [SerializeField] private Color dayAmbientColor = new Color(0.50f, 0.53f, 0.55f);
+    [SerializeField] private Color sunsetAmbientColor = new Color(0.30f, 0.20f, 0.18f);
+    [SerializeField] private Color duskAmbientColor = new Color(0.08f, 0.10f, 0.16f);
+    [SerializeField] private Color nightAmbientColor = new Color(0.01f, 0.015f, 0.04f);
 
     [Header("Color del sol")]
-    [SerializeField] private Color sunriseSunColor = new Color(1.00f, 0.72f, 0.42f);
-    [SerializeField] private Color morningSunColor = new Color(1.00f, 0.88f, 0.70f);
-    [SerializeField] private Color daySunColor = new Color(1.00f, 0.96f, 0.84f);
-    [SerializeField] private Color sunsetSunColor = new Color(1.00f, 0.55f, 0.32f);
-    [SerializeField] private Color duskSunColor = new Color(0.75f, 0.45f, 0.35f);
+    [SerializeField] private Color sunriseSunColor = new Color(1.00f, 0.65f, 0.40f);
+    [SerializeField] private Color morningSunColor = new Color(1.00f, 0.82f, 0.60f);
+    [SerializeField] private Color daySunColor = new Color(1.00f, 0.86f, 0.62f);
+    [SerializeField] private Color sunsetSunColor = new Color(1.00f, 0.42f, 0.22f);
+    [SerializeField] private Color duskSunColor = new Color(0.45f, 0.22f, 0.25f);
 
     [Header("Color de la luna")]
-    [SerializeField] private Color moonColor = new Color(0.45f, 0.55f, 0.90f);
+    [SerializeField] private Color moonColor = new Color(0.35f, 0.45f, 0.95f);
 
-    [Header("Intensidades")]
+    [Header("Intensidades del sol")]
     [SerializeField] private float sunriseSunIntensity = 0.18f;
-    [SerializeField] private float morningSunIntensity = 0.45f;
-    [SerializeField] private float daySunIntensity = 1.10f;
-    [SerializeField] private float sunsetSunIntensity = 0.55f;
-    [SerializeField] private float duskSunIntensity = 0.18f;
+    [SerializeField] private float morningSunIntensity = 0.35f;
+    [SerializeField] private float daySunIntensity = 0.55f;
+    [SerializeField] private float sunsetSunIntensity = 0.35f;
+    [SerializeField] private float duskSunIntensity = 0.05f;
     [SerializeField] private float nightSunIntensity = 0f;
 
-    [SerializeField] private float dawnMoonIntensity = 0.20f;
+    [Header("Intensidades de la luna")]
+    [SerializeField] private float dawnMoonIntensity = 0.06f;
     [SerializeField] private float dayMoonIntensity = 0f;
-    [SerializeField] private float nightMoonIntensity = 0.32f;
+    [SerializeField] private float nightMoonIntensity = 0.07f;
 
-    [Header("Rotacion")]
+    [Header("Rotación")]
     [SerializeField] private float sunYaw = 170f;
     [SerializeField] private float moonYaw = 170f;
 
+    [Header("Horas")]
+    [SerializeField] private float sunriseHour = 6f;
+    [SerializeField] private float dayHour = 8f;
+    [SerializeField] private float afternoonHour = 14f;
+    [SerializeField] private float sunsetHour = 18f;
+    [SerializeField] private float duskHour = 20f;
+    [SerializeField] private float nightHour = 22f;
+
     private Material runtimeSkybox;
+
+    private void Awake()
+    {
+        RenderSettings.ambientMode = AmbientMode.Flat;
+    }
 
     private void Start()
     {
@@ -60,8 +75,10 @@ public class DayNightCycleController : MonoBehaviour
 
     private void CrearSkyboxRuntime()
     {
-        if (daySkybox == null)
+        if (daySkybox == null || nightSkybox == null)
         {
+            RenderSettings.skybox = null;
+            DynamicGI.UpdateEnvironment();
             return;
         }
 
@@ -87,9 +104,16 @@ public class DayNightCycleController : MonoBehaviour
 
     private void ActualizarSkybox(float hour)
     {
-        if (runtimeSkybox == null || daySkybox == null || nightSkybox == null)
+        if (daySkybox == null || nightSkybox == null)
         {
+            RenderSettings.skybox = null;
             return;
+        }
+
+        if (runtimeSkybox == null)
+        {
+            runtimeSkybox = new Material(daySkybox);
+            RenderSettings.skybox = runtimeSkybox;
         }
 
         float dayFactor = ObtenerFactorDia(hour);
@@ -99,6 +123,7 @@ public class DayNightCycleController : MonoBehaviour
 
     private void ActualizarAmbiente(float hour)
     {
+        RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = ObtenerColorAmbiente(hour);
     }
 
@@ -111,6 +136,7 @@ public class DayNightCycleController : MonoBehaviour
 
         sunLight.intensity = ObtenerIntensidadSol(hour);
         sunLight.color = ObtenerColorSol(hour);
+        sunLight.enabled = sunLight.intensity > 0.001f;
 
         float anguloX = ObtenerAnguloSol(hour);
         sunLight.transform.rotation = Quaternion.Euler(anguloX, sunYaw, 0f);
@@ -125,6 +151,7 @@ public class DayNightCycleController : MonoBehaviour
 
         moonLight.intensity = ObtenerIntensidadLuna(hour);
         moonLight.color = moonColor;
+        moonLight.enabled = moonLight.intensity > 0.001f;
 
         float anguloX = ObtenerAnguloLuna(hour);
         moonLight.transform.rotation = Quaternion.Euler(anguloX, moonYaw, 0f);
@@ -132,321 +159,234 @@ public class DayNightCycleController : MonoBehaviour
 
     private float ObtenerFactorDia(float hour)
     {
-        // 23:00 - 06:00 -> noche cerrada
-        if (hour >= 23f || hour < 6f)
+        if (hour >= nightHour || hour < sunriseHour)
         {
             return 0f;
         }
 
-        // 06:00 - 07:00 -> amanecer inicial
-        if (hour >= 6f && hour < 7f)
+        if (hour >= sunriseHour && hour < dayHour)
         {
-            float t = Mathf.InverseLerp(6f, 7f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(0.08f, 0.22f, t);
+            float t = Suavizar(sunriseHour, dayHour, hour);
+            return Mathf.Lerp(0.08f, 0.60f, t);
         }
 
-        // 07:00 - 08:00 -> salida de sol visible
-        if (hour >= 7f && hour < 8f)
+        if (hour >= dayHour && hour < afternoonHour)
         {
-            float t = Mathf.InverseLerp(7f, 8f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(0.22f, 0.45f, t);
+            float t = Suavizar(dayHour, afternoonHour, hour);
+            return Mathf.Lerp(0.60f, 1f, t);
         }
 
-        // 08:00 - 14:00 -> dia progresivo
-        if (hour >= 8f && hour < 14f)
-        {
-            float t = Mathf.InverseLerp(8f, 14f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(0.45f, 1f, t);
-        }
-
-        // 14:00 - 18:00 -> tarde luminosa
-        if (hour >= 14f && hour < 18f)
+        if (hour >= afternoonHour && hour < sunsetHour)
         {
             return 1f;
         }
 
-        // 18:00 - 20:00 -> atardecer
-        if (hour >= 18f && hour < 20f)
+        if (hour >= sunsetHour && hour < duskHour)
         {
-            float t = Mathf.InverseLerp(18f, 20f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(1f, 0.55f, t);
+            float t = Suavizar(sunsetHour, duskHour, hour);
+            return Mathf.Lerp(1f, 0.35f, t);
         }
 
-        // 20:00 - 21:00 -> oscurece bastante
-        if (hour >= 20f && hour < 21f)
+        if (hour >= duskHour && hour < nightHour)
         {
-            float t = Mathf.InverseLerp(20f, 21f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(0.55f, 0.28f, t);
+            float t = Suavizar(duskHour, nightHour, hour);
+            return Mathf.Lerp(0.35f, 0f, t);
         }
 
-        // 21:00 - 22:00 -> casi noche
-        if (hour >= 21f && hour < 22f)
-        {
-            float t = Mathf.InverseLerp(21f, 22f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(0.28f, 0.10f, t);
-        }
-
-        // 22:00 - 23:00 -> entrada a noche cerrada
-        {
-            float t = Mathf.InverseLerp(22f, 23f, hour);
-            t = Mathf.SmoothStep(0f, 1f, t);
-            return Mathf.Lerp(0.10f, 0f, t);
-        }
+        return 0f;
     }
 
     private Color ObtenerColorAmbiente(float hour)
     {
-        if (hour >= 23f || hour < 6f)
+        if (hour >= nightHour || hour < sunriseHour)
         {
             return nightAmbientColor;
         }
 
-        if (hour >= 6f && hour < 7f)
+        if (hour >= sunriseHour && hour < dayHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(6f, 7f, hour));
+            float t = Suavizar(sunriseHour, dayHour, hour);
             return Color.Lerp(nightAmbientColor, sunriseAmbientColor, t);
         }
 
-        if (hour >= 7f && hour < 8f)
+        if (hour >= dayHour && hour < afternoonHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(7f, 8f, hour));
-            return Color.Lerp(sunriseAmbientColor, morningAmbientColor, t);
-        }
-
-        if (hour >= 8f && hour < 14f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(8f, 14f, hour));
+            float t = Suavizar(dayHour, afternoonHour, hour);
             return Color.Lerp(morningAmbientColor, dayAmbientColor, t);
         }
 
-        if (hour >= 14f && hour < 18f)
+        if (hour >= afternoonHour && hour < sunsetHour)
         {
             return dayAmbientColor;
         }
 
-        if (hour >= 18f && hour < 20f)
+        if (hour >= sunsetHour && hour < duskHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(18f, 20f, hour));
+            float t = Suavizar(sunsetHour, duskHour, hour);
             return Color.Lerp(dayAmbientColor, sunsetAmbientColor, t);
         }
 
-        if (hour >= 20f && hour < 21f)
+        if (hour >= duskHour && hour < nightHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(20f, 21f, hour));
-            return Color.Lerp(sunsetAmbientColor, duskAmbientColor, t);
+            float t = Suavizar(duskHour, nightHour, hour);
+            return Color.Lerp(sunsetAmbientColor, nightAmbientColor, t);
         }
 
-        if (hour >= 21f && hour < 22f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(21f, 22f, hour));
-            return Color.Lerp(duskAmbientColor, new Color(0.12f, 0.13f, 0.20f), t);
-        }
-
-        float tFinal = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(22f, 23f, hour));
-        return Color.Lerp(new Color(0.12f, 0.13f, 0.20f), nightAmbientColor, tFinal);
+        return nightAmbientColor;
     }
 
     private float ObtenerIntensidadSol(float hour)
     {
-        if (hour >= 23f || hour < 6f)
+        if (hour >= nightHour || hour < sunriseHour)
         {
             return nightSunIntensity;
         }
 
-        if (hour >= 6f && hour < 7f)
+        if (hour >= sunriseHour && hour < dayHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(6f, 7f, hour));
-            return Mathf.Lerp(0f, sunriseSunIntensity, t);
+            float t = Suavizar(sunriseHour, dayHour, hour);
+            return Mathf.Lerp(0f, morningSunIntensity, t);
         }
 
-        if (hour >= 7f && hour < 8f)
+        if (hour >= dayHour && hour < afternoonHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(7f, 8f, hour));
-            return Mathf.Lerp(sunriseSunIntensity, morningSunIntensity, t);
-        }
-
-        if (hour >= 8f && hour < 14f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(8f, 14f, hour));
+            float t = Suavizar(dayHour, afternoonHour, hour);
             return Mathf.Lerp(morningSunIntensity, daySunIntensity, t);
         }
 
-        if (hour >= 14f && hour < 18f)
+        if (hour >= afternoonHour && hour < sunsetHour)
         {
             return daySunIntensity;
         }
 
-        if (hour >= 18f && hour < 20f)
+        if (hour >= sunsetHour && hour < duskHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(18f, 20f, hour));
+            float t = Suavizar(sunsetHour, duskHour, hour);
             return Mathf.Lerp(daySunIntensity, sunsetSunIntensity, t);
         }
 
-        if (hour >= 20f && hour < 21f)
+        if (hour >= duskHour && hour < nightHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(20f, 21f, hour));
-            return Mathf.Lerp(sunsetSunIntensity, duskSunIntensity, t);
+            float t = Suavizar(duskHour, nightHour, hour);
+            return Mathf.Lerp(sunsetSunIntensity, 0f, t);
         }
 
-        if (hour >= 21f && hour < 22f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(21f, 22f, hour));
-            return Mathf.Lerp(duskSunIntensity, 0.05f, t);
-        }
-
-        float tFinal = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(22f, 23f, hour));
-        return Mathf.Lerp(0.05f, 0f, tFinal);
+        return 0f;
     }
 
     private Color ObtenerColorSol(float hour)
     {
-        if (hour >= 23f || hour < 6f)
+        if (hour >= nightHour || hour < sunriseHour)
         {
             return duskSunColor;
         }
 
-        if (hour >= 6f && hour < 7f)
+        if (hour >= sunriseHour && hour < dayHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(6f, 7f, hour));
-            return Color.Lerp(duskSunColor, sunriseSunColor, t);
-        }
-
-        if (hour >= 7f && hour < 8f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(7f, 8f, hour));
+            float t = Suavizar(sunriseHour, dayHour, hour);
             return Color.Lerp(sunriseSunColor, morningSunColor, t);
         }
 
-        if (hour >= 8f && hour < 14f)
+        if (hour >= dayHour && hour < afternoonHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(8f, 14f, hour));
+            float t = Suavizar(dayHour, afternoonHour, hour);
             return Color.Lerp(morningSunColor, daySunColor, t);
         }
 
-        if (hour >= 14f && hour < 18f)
+        if (hour >= afternoonHour && hour < sunsetHour)
         {
             return daySunColor;
         }
 
-        if (hour >= 18f && hour < 20f)
+        if (hour >= sunsetHour && hour < duskHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(18f, 20f, hour));
+            float t = Suavizar(sunsetHour, duskHour, hour);
             return Color.Lerp(daySunColor, sunsetSunColor, t);
         }
 
-        if (hour >= 20f && hour < 21f)
+        if (hour >= duskHour && hour < nightHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(20f, 21f, hour));
+            float t = Suavizar(duskHour, nightHour, hour);
             return Color.Lerp(sunsetSunColor, duskSunColor, t);
         }
 
-        if (hour >= 21f && hour < 23f)
-        {
-            return duskSunColor;
-        }
-
-        return daySunColor;
+        return duskSunColor;
     }
 
     private float ObtenerIntensidadLuna(float hour)
     {
-        if (hour >= 23f || hour < 6f)
+        if (hour >= nightHour || hour < sunriseHour)
         {
             return nightMoonIntensity;
         }
 
-        if (hour >= 6f && hour < 7f)
+        if (hour >= sunriseHour && hour < dayHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(6f, 7f, hour));
+            float t = Suavizar(sunriseHour, dayHour, hour);
             return Mathf.Lerp(nightMoonIntensity, dawnMoonIntensity, t);
         }
 
-        if (hour >= 7f && hour < 8f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(7f, 8f, hour));
-            return Mathf.Lerp(dawnMoonIntensity, 0.08f, t);
-        }
-
-        if (hour >= 8f && hour < 14f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(8f, 14f, hour));
-            return Mathf.Lerp(0.08f, dayMoonIntensity, t);
-        }
-
-        if (hour >= 14f && hour < 18f)
+        if (hour >= dayHour && hour < sunsetHour)
         {
             return dayMoonIntensity;
         }
 
-        if (hour >= 18f && hour < 20f)
+        if (hour >= sunsetHour && hour < duskHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(18f, 20f, hour));
-            return Mathf.Lerp(0f, 0.10f, t);
+            float t = Suavizar(sunsetHour, duskHour, hour);
+            return Mathf.Lerp(0f, 0.03f, t);
         }
 
-        if (hour >= 20f && hour < 21f)
+        if (hour >= duskHour && hour < nightHour)
         {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(20f, 21f, hour));
-            return Mathf.Lerp(0.10f, 0.18f, t);
+            float t = Suavizar(duskHour, nightHour, hour);
+            return Mathf.Lerp(0.03f, nightMoonIntensity, t);
         }
 
-        if (hour >= 21f && hour < 22f)
-        {
-            float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(21f, 22f, hour));
-            return Mathf.Lerp(0.18f, 0.25f, t);
-        }
-
-        float tFinal = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(22f, 23f, hour));
-        return Mathf.Lerp(0.25f, nightMoonIntensity, tFinal);
+        return nightMoonIntensity;
     }
 
     private float ObtenerAnguloSol(float hour)
     {
-        // 06:00 -> 15:00   sube hasta el cenit
-        if (hour >= 6f && hour < 15f)
+        if (hour >= sunriseHour && hour < afternoonHour)
         {
-            float t = Mathf.InverseLerp(6f, 15f, hour);
+            float t = Mathf.InverseLerp(sunriseHour, afternoonHour, hour);
             return Mathf.Lerp(-5f, 90f, t);
         }
 
-        // 15:00 -> 23:00   baja hasta desaparecer
-        if (hour >= 15f && hour < 23f)
+        if (hour >= afternoonHour && hour < nightHour)
         {
-            float t = Mathf.InverseLerp(15f, 23f, hour);
+            float t = Mathf.InverseLerp(afternoonHour, nightHour, hour);
             return Mathf.Lerp(90f, 200f, t);
         }
 
-        // noche
-        if (hour >= 23f || hour < 6f)
-        {
-            return 200f;
-        }
-
-        return -5f;
+        return 200f;
     }
 
     private float ObtenerAnguloLuna(float hour)
     {
         float adjustedHour = hour;
 
-        if (adjustedHour < 6f)
+        if (adjustedHour < sunriseHour)
         {
             adjustedHour += 24f;
         }
 
-        // 18:00 -> 30:00 (06:00 del dia siguiente)
-        if (adjustedHour >= 18f && adjustedHour <= 30f)
+        float moonStart = sunsetHour;
+        float moonEnd = sunriseHour + 24f;
+
+        if (adjustedHour >= moonStart && adjustedHour <= moonEnd)
         {
-            float t = Mathf.InverseLerp(18f, 30f, adjustedHour);
+            float t = Mathf.InverseLerp(moonStart, moonEnd, adjustedHour);
             return Mathf.Lerp(-5f, 200f, t);
         }
 
         return 200f;
+    }
+
+    private float Suavizar(float inicio, float fin, float valor)
+    {
+        float t = Mathf.InverseLerp(inicio, fin, valor);
+        return Mathf.SmoothStep(0f, 1f, t);
     }
 }
