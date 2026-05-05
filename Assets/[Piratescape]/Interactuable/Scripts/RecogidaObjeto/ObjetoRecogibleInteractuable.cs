@@ -23,9 +23,23 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
         set => rango = value;
     }
 
-    public bool Activo => EstaDisponible;
+    public bool Activo
+    {
+        get
+        {
+            if (this == null) return false;
+            return EstaDisponible;
+        }
+    }
 
-    public bool EstaDisponible => interactuable && gameObject.activeInHierarchy;
+    public bool EstaDisponible
+    {
+        get
+        {
+            if (this == null) return false;
+            return interactuable && gameObject.activeInHierarchy;
+        }
+    }
 
     public ItemData ItemData => itemData;
     public int Amount => amount;

@@ -23,20 +23,34 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
     public bool Activo => activo && interactuable;
 
-    private void Start()
+    private void OnEnable()
     {
         jugador = FindFirstObjectByType<JugadorActivador>();
+        activo = false;
 
         if (shopUI != null)
             shopUI.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        OcultarPrompt();
+
+        if (shopUI != null && shopUI.activeSelf)
+        {
+            shopUI.SetActive(false);
+            Time.timeScale = 1f;
+        }
+    }
+
     private void Update()
     {
-
         if (jugador == null)
         {
-            return;
+            jugador = FindFirstObjectByType<JugadorActivador>();
+
+            if (jugador == null)
+                return;
         }
 
         bool nuevoEstado = interactuable && EstaEnRango();
@@ -48,7 +62,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             if (!activo)
             {
                 OcultarPrompt();
-                CerrarTienda();
+                CerrarTienda(false);
                 return;
             }
 
@@ -65,7 +79,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             return;
 
         if (shopUI.activeSelf)
-            CerrarTienda();
+            CerrarTienda(true);
         else
             AbrirTienda();
     }
@@ -81,7 +95,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         Cursor.visible = true;
     }
 
-    private void CerrarTienda()
+    private void CerrarTienda(bool mostrarPrompt)
     {
         if (shopUI == null)
             return;
@@ -90,7 +104,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
         Time.timeScale = 1f;
 
-        if (Activo)
+        if (mostrarPrompt && Activo)
             MostrarPrompt();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -116,6 +130,6 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
     public void CerrarTiendaDesdeUI()
     {
-        CerrarTienda();
+        CerrarTienda(true);
     }
 }
