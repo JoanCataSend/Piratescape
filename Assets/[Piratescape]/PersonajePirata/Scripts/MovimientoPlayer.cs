@@ -21,6 +21,9 @@ public class movimientoplayer : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform cameraTransform;
 
+    [Header("Animación")]
+    [SerializeField] private Animator animator;
+
     [Header("Estado afectado por energia")]
     [SerializeField] private float energySpeedMultiplier = 1f;
     [SerializeField] private bool canSprint = true;
@@ -39,6 +42,11 @@ public class movimientoplayer : MonoBehaviour
         if (cameraTransform == null && Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
+        }
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
         }
 
         CrearInputs();
@@ -84,6 +92,7 @@ public class movimientoplayer : MonoBehaviour
         MoverJugador();
         Saltar();
         AplicarGravedad();
+        ActualizarAnimaciones();
     }
 
     private void CrearInputs()
@@ -170,6 +179,11 @@ public class movimientoplayer : MonoBehaviour
         if (jumpPressed && groundedPlayer)
         {
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+
+            if (animator != null)
+            {
+                animator.SetTrigger("jump");
+            }
         }
 
         jumpPressed = false;
@@ -179,6 +193,18 @@ public class movimientoplayer : MonoBehaviour
     {
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
+    }
+
+    private void ActualizarAnimaciones()
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        bool isWalking = moveInput.magnitude > 0.1f;
+
+        animator.SetBool("isWalking", isWalking);
     }
 
     public bool IsActuallySprinting()
