@@ -204,7 +204,11 @@ public class movimientoplayer : MonoBehaviour
 
         bool isWalking = moveInput.magnitude > 0.1f;
 
+        bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
+        bool isRunning = isWalking && isTryingToSprint && canSprint;
+
         animator.SetBool("isWalking", isWalking);
+        animator.SetBool("isRunning", isRunning);
     }
 
     public bool IsActuallySprinting()
