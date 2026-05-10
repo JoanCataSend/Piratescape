@@ -4,17 +4,52 @@ using UnityEngine.UI;
 
 public class SleepFadeUI : MonoBehaviour
 {
+    [Header("Referencias")]
     [SerializeField] private Image fadeImage;
+
+    [Header("Duración")]
     [SerializeField] private float fadeDuration = 1f;
 
+    [Header("Iris Transition")]
+    [SerializeField] private float openRadius = 1.5f;
+    [SerializeField] private float closedRadius = -0.15f;
+    [SerializeField] private float softness = 0.08f;
+    [SerializeField] private Vector2 center = new Vector2(0.5f, 0.5f);
+
     private Coroutine currentRoutine;
+    private Material runtimeMaterial;
+
+    private static readonly int RadiusID = Shader.PropertyToID("_Radius");
+    private static readonly int SoftnessID = Shader.PropertyToID("_Softness");
+    private static readonly int CenterID = Shader.PropertyToID("_Center");
+    private static readonly int AspectID = Shader.PropertyToID("_Aspect");
 
     private void Awake()
     {
-        if (fadeImage != null)
+        if (fadeImage == null)
         {
-            SetAlphaImmediate(0f);
+            Debug.LogWarning("SleepFadeUI: falta la referencia a fadeImage.", this);
+            return;
         }
+
+        if (fadeImage.material == null)
+        {
+            Debug.LogWarning("SleepFadeUI: la Image no tiene material asignado.", this);
+            return;
+        }
+
+        // Creamos una copia del material para no modificar el material original del proyecto.
+        runtimeMaterial = new Material(fadeImage.material);
+        fadeImage.material = runtimeMaterial;
+
+        ConfigurarMaterial();
+        SetRadiusImmediate(openRadius);
+    }
+
+    private void Update()
+    {
+        // Mantiene el círculo redondo aunque cambie la resolución o el aspect ratio.
+        ConfigurarMaterial();
     }
 
     public void Sleep()
@@ -29,12 +64,12 @@ public class SleepFadeUI : MonoBehaviour
 
     public IEnumerator FadeOutRoutine()
     {
-        yield return FadeTo(1f);
+        yield return FadeTo(closedRadius);
     }
 
     public IEnumerator FadeInRoutine()
     {
-        yield return FadeTo(0f);
+        yield return FadeTo(openRadius);
     }
 
     private IEnumerator SleepRoutine()
@@ -44,37 +79,85 @@ public class SleepFadeUI : MonoBehaviour
         currentRoutine = null;
     }
 
-    private IEnumerator FadeTo(float targetAlpha)
+    private IEnumerator FadeTo(float targetRadius)
     {
-        if (fadeImage == null)
+        if (runtimeMaterial == null)
         {
             yield break;
         }
 
         float elapsed = 0f;
-        float startAlpha = fadeImage.color.a;
+        float startRadius = runtimeMaterial.GetFloat(RadiusID);
 
         while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
+
             float t = fadeDuration <= 0f ? 1f : elapsed / fadeDuration;
-            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, t);
-            SetAlphaImmediate(newAlpha);
+            float newRadius = Mathf.Lerp(startRadius, targetRadius, t);
+
+            SetRadiusImmediate(newRadius);
+
             yield return null;
         }
 
-        SetAlphaImmediate(targetAlpha);
+        SetRadiusImmediate(targetRadius);
     }
 
-    private void SetAlphaImmediate(float alpha)
+    private void ConfigurarMaterial()
     {
-        if (fadeImage == null)
+        if (runtimeMaterial == null)
         {
             return;
         }
 
-        Color color = fadeImage.color;
-        color.a = Mathf.Clamp01(alpha);
-        fadeImage.color = color;
+        float aspect = 1f;
+
+        if (Screen.height > 0)
+        {
+            aspect = Screen.width / (float)Screen.height;
+        }
+
+        runtimeMaterial.SetFloat(SoftnessID, softness);
+        runtimeMaterial.SetVector(CenterID, new Vector4(center.x, center.y, 0f, 0f));
+        runtimeMaterial.SetFloat(AspectID, aspect);
+    }
+
+    private void SetRadiusImmediate(float radius)
+    {
+        if (runtimeMaterial == null)
+        {
+            return;
+        }
+
+        runtimeMaterial.SetFloat(RadiusID, radius);
+    }
+
+    [ContextMenu("Debug/Iris Close")]
+    private void DebugIrisClose()
+    {
+        if (currentRoutine != null)
+        {
+            StopCoroutine(currentRoutine);
+        }
+
+        currentRoutine = StartCoroutine(FadeOutRoutine());
+    }
+
+    [ContextMenu("Debug/Iris Open")]
+    private void DebugIrisOpen()
+    {
+        if (currentRoutine != null)
+        {
+            StopCoroutine(currentRoutine);
+        }
+
+        currentRoutine = StartCoroutine(FadeInRoutine());
+    }
+
+    [ContextMenu("Debug/Iris Sleep Test")]
+    private void DebugIrisSleepTest()
+    {
+        Sleep();
     }
 }

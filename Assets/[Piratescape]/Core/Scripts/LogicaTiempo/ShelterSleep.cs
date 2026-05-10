@@ -36,11 +36,15 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private float halfRecoveryPercent = 0.5f;
     [SerializeField] private float lateRecoveryPercent = 0.25f;
 
-    [Header("Animacion provisional")]
+    [Header("Animacion de dormir")]
     [SerializeField] private bool movePlayerToSleepPoint = true;
-    [SerializeField] private float moveToSleepDuration = 0.5f;
-    [SerializeField] private float delayBeforeFade = 0.2f;
+    [SerializeField] private float moveToSleepDuration = 0.15f;
+    [SerializeField] private float delayBeforeFade = 0f;
     [SerializeField] private string sleepTriggerName = "Sleep";
+
+    [Header("Despertar")]
+    [SerializeField] private string idleStateName = "Idle";
+    [SerializeField] private float teleportDelayAfterFadeStarts = 0.6f;
 
     [Header("Mensajes")]
     [SerializeField] private string sleepPromptMessage = "dormir";
@@ -192,9 +196,16 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield return new WaitForSeconds(delayBeforeFade);
         }
 
+        Coroutine fadeOutCoroutine = null;
+
         if (fadeUI != null)
         {
-            yield return fadeUI.FadeOutRoutine();
+            fadeOutCoroutine = StartCoroutine(fadeUI.FadeOutRoutine());
+        }
+
+        if (teleportDelayAfterFadeStarts > 0f)
+        {
+            yield return new WaitForSeconds(teleportDelayAfterFadeStarts);
         }
 
         if (nightThreatSystem != null)
@@ -203,11 +214,33 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         }
 
         AplicarRecuperacionEnergia();
-        timeSystem.SleepToNextDay(wakeHour, wakeMinute);
+
+        if (timeSystem != null)
+        {
+            timeSystem.SleepToNextDay(wakeHour, wakeMinute);
+        }
 
         if (playerTransform != null && wakePoint != null)
         {
             playerTransform.SetPositionAndRotation(wakePoint.position, wakePoint.rotation);
+        }
+
+        if (playerAnimator != null)
+        {
+            if (!string.IsNullOrWhiteSpace(sleepTriggerName))
+            {
+                playerAnimator.ResetTrigger(sleepTriggerName);
+            }
+
+            if (!string.IsNullOrWhiteSpace(idleStateName))
+            {
+                playerAnimator.Play(idleStateName, 0, 0f);
+            }
+        }
+
+        if (fadeOutCoroutine != null)
+        {
+            yield return fadeOutCoroutine;
         }
 
         if (playerController != null)
@@ -400,6 +433,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         if (playerController == null && playerTransform != null)
         {
             playerController = playerTransform.GetComponent<CharacterController>();
+        }
+
+        if (playerAnimator == null && playerTransform != null)
+        {
+            playerAnimator = playerTransform.GetComponentInChildren<Animator>();
         }
     }
 
