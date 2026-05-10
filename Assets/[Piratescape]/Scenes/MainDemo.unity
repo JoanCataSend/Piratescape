@@ -58893,6 +58893,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1674145774}
+    - targetCorrespondingSourceObject: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1871079143}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       insertIndex: -1
@@ -78966,7 +78969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInventory: {fileID: 1588489902}
-  handItemPoint: {fileID: 0}
+  handItemPoint: {fileID: 1871079143}
 --- !u!43 &1589074941
 Mesh:
   m_ObjectHideFlags: 0
@@ -88721,6 +88724,37 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1871079142
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1871079143}
+  m_Layer: 3
+  m_Name: ManoPirata
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1871079143
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871079142}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.677, y: 0.708, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1588489899}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1881819175 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3192072188092015388, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
