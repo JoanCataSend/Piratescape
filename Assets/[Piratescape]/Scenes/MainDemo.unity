@@ -2842,10 +2842,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 166150681ddccfa4286a491f2585fd7d, type: 2}
     - target: {fileID: 5866666021909216657, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig:Spine'\n\tFrom animation clip
-        'New Animation'"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       propertyPath: m_ApplyRootMotion
@@ -79574,6 +79571,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemReceiverSource: {fileID: 1588489907}
+  playerAnimator: {fileID: 0}
+  pickupTriggerName: PickUp
+  pickupDelayBeforeCollect: 0.45
 --- !u!114 &1588489895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79619,6 +79619,9 @@ MonoBehaviour:
   selectedSlotIndex: 0
   dropPoint: {fileID: 0}
   dropDistance: 1.5
+  playerAnimator: {fileID: 0}
+  dropTriggerName: Drop
+  dropDelayBeforeSpawn: 0.35
 --- !u!114 &1588489903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89362,7 +89365,7 @@ Transform:
   m_GameObject: {fileID: 1871079142}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.677, y: 0.708, z: 0}
+  m_LocalPosition: {x: 0.653, y: 0.595, z: 0.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
