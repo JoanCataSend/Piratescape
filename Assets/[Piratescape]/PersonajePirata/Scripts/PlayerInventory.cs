@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,9 +19,15 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     [SerializeField] private Transform dropPoint;
     [SerializeField] private float dropDistance = 1.5f;
 
+    [Header("Animación")]
+    [SerializeField] private Animator playerAnimator;
+    [SerializeField] private string dropTriggerName = "Drop";
+    [SerializeField] private float dropDelayBeforeSpawn = 0.35f;
+
     private List<InventorySlot> slots = new List<InventorySlot>();
     private PlayerHealth playerHealth;
     private PlayerEnergy playerEnergy;
+    private bool isDropping;
 
     public int SelectedSlotIndex => selectedSlotIndex;
 
@@ -28,6 +35,12 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     {
         playerHealth = GetComponent<PlayerHealth>();
         playerEnergy = GetComponent<PlayerEnergy>();
+
+        if (playerAnimator == null)
+        {
+            playerAnimator = GetComponentInChildren<Animator>();
+        }
+
         InitializeSlots();
     }
 
@@ -67,7 +80,6 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             if (Keyboard.current.digit4Key.wasPressedThisFrame) SelectSlot(3);
             if (Keyboard.current.digit5Key.wasPressedThisFrame) SelectSlot(4);
 
-            // Q para tirar
             if (Keyboard.current.qKey.wasPressedThisFrame)
             {
                 DropSelectedItem();
@@ -76,13 +88,11 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         if (Mouse.current != null)
         {
-            // Click izquierdo → usar item
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 UseSelectedItem();
             }
 
-            // RUEDITA DEL RATÓN → cambiar slot
             float scroll = -Mouse.current.scroll.ReadValue().y;
 
             if (scroll > 0f)
@@ -113,13 +123,11 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             SelectNextSlot();
         }
 
-        // TRIANGULO / Y para consumir o usar
         if (Gamepad.current.buttonNorth.wasPressedThisFrame)
         {
             UseSelectedItem();
         }
 
-        // CIRCULO / B para soltar
         if (Gamepad.current.buttonEast.wasPressedThisFrame)
         {
             DropSelectedItem();
@@ -177,7 +185,6 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         int remainingAmount = amount;
 
-        // Primero apilar en slots existentes
         for (int i = 0; i < slots.Count; i++)
         {
             if (slots[i] == null)
@@ -201,7 +208,6 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             }
         }
 
-        // Luego meter en slots vacíos
         for (int i = 0; i < slots.Count; i++)
         {
             if (slots[i] == null)
@@ -345,6 +351,11 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     public void DropSelectedItem()
     {
+        if (isDropping)
+        {
+            return;
+        }
+
         InventorySlot slot = GetSlot(selectedSlotIndex);
 
         if (slot == null || slot.IsEmpty())
@@ -359,6 +370,39 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         {
             Debug.LogWarning("El item " + item.DisplayName + " no tiene WorldPrefab asignado.");
             return;
+        }
+
+        StartCoroutine(DropSelectedItemRoutine());
+    }
+
+    private IEnumerator DropSelectedItemRoutine()
+    {
+        isDropping = true;
+
+        InventorySlot slot = GetSlot(selectedSlotIndex);
+
+        if (slot == null || slot.IsEmpty())
+        {
+            isDropping = false;
+            yield break;
+        }
+
+        ItemData item = slot.itemData;
+
+        if (item == null || item.WorldPrefab == null)
+        {
+            isDropping = false;
+            yield break;
+        }
+
+        if (playerAnimator != null && !string.IsNullOrWhiteSpace(dropTriggerName))
+        {
+            playerAnimator.SetTrigger(dropTriggerName);
+        }
+
+        if (dropDelayBeforeSpawn > 0f)
+        {
+            yield return new WaitForSeconds(dropDelayBeforeSpawn);
         }
 
         Vector3 spawnPosition = GetDropPosition();
@@ -382,6 +426,8 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         Debug.Log("Tirado al suelo: " + item.DisplayName);
         NotifyInventoryChanged();
+
+        isDropping = false;
     }
 
     private Vector3 GetDropPosition()

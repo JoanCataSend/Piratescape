@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,9 +6,16 @@ public sealed class PlayerPickupController : MonoBehaviour
 {
     [SerializeField] private MonoBehaviour itemReceiverSource;
 
+    [Header("Animación")]
+    [SerializeField] private Animator playerAnimator;
+    [SerializeField] private string pickupTriggerName = "PickUp";
+    [SerializeField] private float pickupDelayBeforeCollect = 0.45f;
+
     private IItemReceiver itemReceiver;
     private JugadorActivador jugadorActivador;
     private ObjetoRecogibleInteractuable objetoActual;
+
+    private bool isPickingUp;
 
     private InputDeviceType lastInputDevice = InputDeviceType.KeyboardMouse;
 
@@ -46,11 +54,16 @@ public sealed class PlayerPickupController : MonoBehaviour
         {
             Debug.LogError("PlayerPickupController: JugadorActivador not found on player.", this);
         }
+
+        if (playerAnimator == null)
+        {
+            playerAnimator = GetComponentInChildren<Animator>();
+        }
     }
 
     private void Update()
     {
-        if (jugadorActivador == null)
+        if (jugadorActivador == null || isPickingUp)
         {
             return;
         }
@@ -108,25 +121,57 @@ public sealed class PlayerPickupController : MonoBehaviour
             return false;
         }
 
+        if (isPickingUp)
+        {
+            return false;
+        }
+
+        StartCoroutine(CollectRoutine(collectible, objetoRecogible));
+        return true;
+    }
+
+    private IEnumerator CollectRoutine(ICollectible collectible, ObjetoRecogibleInteractuable objetoRecogible)
+    {
+        isPickingUp = true;
+
+        if (objetoRecogible != null)
+        {
+            objetoRecogible.OcultarPrompt();
+        }
+
+        if (playerAnimator != null && !string.IsNullOrWhiteSpace(pickupTriggerName))
+        {
+            playerAnimator.SetTrigger(pickupTriggerName);
+        }
+
+        if (pickupDelayBeforeCollect > 0f)
+        {
+            yield return new WaitForSeconds(pickupDelayBeforeCollect);
+        }
+
+        if (collectible == null || collectible.ItemData == null)
+        {
+            isPickingUp = false;
+            yield break;
+        }
+
         Debug.Log("Intentando recoger: " + collectible.ItemData.DisplayName + " x" + collectible.Amount);
 
         bool added = itemReceiver.TryAddItem(collectible.ItemData, collectible.Amount);
 
         Debug.Log("Resultado TryAddItem: " + added);
 
-        if (!added)
+        if (added)
         {
-            return false;
+            collectible.OnCollected();
+
+            if (objetoActual == objetoRecogible)
+            {
+                objetoActual = null;
+            }
         }
 
-        collectible.OnCollected();
-
-        if (objetoActual == objetoRecogible)
-        {
-            objetoActual = null;
-        }
-
-        return true;
+        isPickingUp = false;
     }
 
     private ObjetoRecogibleInteractuable BuscarRecogibleMasCercano()
