@@ -26495,8 +26495,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sistemaTiempo: {fileID: 1975866679}
   visualizador: {fileID: 1846573672}
+  movimientoPlayer: {fileID: 1588489905}
   saludMaxima: 100
-  saludActual: 100
+  saludActual: 10
   perdidaSaludPorMinuto: 0.2
   modoDiosActivo: 0
 --- !u!4 &576351768
@@ -69962,6 +69963,7 @@ MonoBehaviour:
   panelMuerte: {fileID: 1262491190}
   hud: {fileID: 0}
   audioMuerte: {fileID: 1435002601}
+  retrasoMostrarPantalla: 2.5
 --- !u!224 &1435002600
 RectTransform:
   m_ObjectHideFlags: 0
@@ -78891,7 +78893,7 @@ MonoBehaviour:
   movimientoPlayer: {fileID: 1588489905}
   playerHealth: {fileID: 0}
   maxEnergy: 100
-  currentEnergy: 10
+  currentEnergy: 80
   energyLossPerSecondWhileSprinting: 1
   healthLossPerSecondWhileSprintingExhausted: 5
   movementMultiplierWhenExhausted: 0.5
@@ -91779,8 +91781,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDay: 1
-  startHour: 16
-  startMinute: 0
+  startHour: 1
+  startMinute: 40
   realSecondsPerGameMinute: 1
   startPaused: 0
   dayStartHour: 6

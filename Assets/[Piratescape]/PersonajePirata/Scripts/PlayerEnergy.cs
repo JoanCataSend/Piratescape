@@ -203,11 +203,13 @@ public class PlayerEnergy : MonoBehaviour
         {
             movimientoPlayer.SetCanSprint(false);
             movimientoPlayer.SetEnergySpeedMultiplier(movementMultiplierWhenExhausted);
+            movimientoPlayer.SetTired(true);
         }
         else
         {
             movimientoPlayer.SetCanSprint(true);
             movimientoPlayer.SetEnergySpeedMultiplier(1f);
+            movimientoPlayer.SetTired(false);
         }
     }
 

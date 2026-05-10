@@ -27,6 +27,10 @@ public class movimientoplayer : MonoBehaviour
     [Header("Estado afectado por energia")]
     [SerializeField] private float energySpeedMultiplier = 1f;
     [SerializeField] private bool canSprint = true;
+    [SerializeField] private bool isTired = false;
+
+    [Header("Estado especial")]
+    [SerializeField] private bool isFainted = false;
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -82,6 +86,12 @@ public class movimientoplayer : MonoBehaviour
 
     private void Update()
     {
+        if (isFainted)
+        {
+            ActualizarAnimaciones();
+            return;
+        }
+
         groundedPlayer = controller.isGrounded;
 
         if (groundedPlayer && playerVelocity.y < 0f)
@@ -126,6 +136,12 @@ public class movimientoplayer : MonoBehaviour
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
+        if (isFainted)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         moveInput = context.ReadValue<Vector2>();
     }
 
@@ -136,6 +152,11 @@ public class movimientoplayer : MonoBehaviour
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
+        if (isFainted)
+        {
+            return;
+        }
+
         jumpPressed = true;
     }
 
@@ -166,7 +187,7 @@ public class movimientoplayer : MonoBehaviour
         Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
         bool isTryingToSprint = sprintAction.ReadValue<float>() > 0.5f;
-        bool isSprinting = isTryingToSprint && canSprint;
+        bool isSprinting = isTryingToSprint && canSprint && !isTired;
 
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
         currentSpeed *= energySpeedMultiplier;
@@ -202,13 +223,15 @@ public class movimientoplayer : MonoBehaviour
             return;
         }
 
-        bool isWalking = moveInput.magnitude > 0.1f;
+        bool isWalking = moveInput.magnitude > 0.1f && !isFainted;
 
         bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
-        bool isRunning = isWalking && isTryingToSprint && canSprint;
+        bool isRunning = isWalking && isTryingToSprint && canSprint && !isTired && !isFainted;
 
         animator.SetBool("isWalking", isWalking);
         animator.SetBool("isRunning", isRunning);
+        animator.SetBool("isTired", isTired);
+        animator.SetBool("isFainted", isFainted);
     }
 
     public bool IsActuallySprinting()
@@ -216,7 +239,7 @@ public class movimientoplayer : MonoBehaviour
         bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
         bool isMoving = moveInput.magnitude > 0.1f;
 
-        return isTryingToSprint && isMoving && canSprint;
+        return isTryingToSprint && isMoving && canSprint && !isTired && !isFainted;
     }
 
     public void SetEnergySpeedMultiplier(float multiplier)
@@ -227,5 +250,60 @@ public class movimientoplayer : MonoBehaviour
     public void SetCanSprint(bool value)
     {
         canSprint = value;
+    }
+
+    public void SetTired(bool value)
+    {
+        isTired = value;
+
+        if (isTired)
+        {
+            canSprint = false;
+        }
+
+        ActualizarAnimaciones();
+    }
+
+    public bool IsTired()
+    {
+        return isTired;
+    }
+
+    public void PlayFaintAnimation()
+    {
+        if (isFainted)
+        {
+            return;
+        }
+
+        isFainted = true;
+        moveInput = Vector2.zero;
+        jumpPressed = false;
+        playerVelocity = Vector3.zero;
+
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isFainted", true);
+            animator.SetTrigger("faint");
+        }
+    }
+
+    public void RecoverFromFaint()
+    {
+        isFainted = false;
+        jumpPressed = false;
+        playerVelocity = Vector3.zero;
+
+        if (animator != null)
+        {
+            animator.SetBool("isFainted", false);
+        }
+    }
+
+    public bool IsFainted()
+    {
+        return isFainted;
     }
 }

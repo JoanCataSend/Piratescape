@@ -5,6 +5,7 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private GameTimeSystem sistemaTiempo;
     [SerializeField] private VisualizadorBarrasEstado visualizador;
+    [SerializeField] private movimientoplayer movimientoPlayer;
 
     [Header("Salud")]
     [SerializeField] private float saludMaxima = 100f;
@@ -22,6 +23,14 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     public float SaludMaxima => saludMaxima;
     public bool EstaMuerto => estaMuerto;
     public bool ModoDiosActivo => modoDiosActivo;
+
+    private void Awake()
+    {
+        if (movimientoPlayer == null)
+        {
+            movimientoPlayer = GetComponent<movimientoplayer>();
+        }
+    }
 
     private void OnEnable()
     {
@@ -106,6 +115,11 @@ public sealed class SistemaSaludJugador : MonoBehaviour
             estaMuerto = false;
             saludActual = saludMaxima;
             ActualizarHUD();
+
+            if (movimientoPlayer != null)
+            {
+                movimientoPlayer.RecoverFromFaint();
+            }
         }
 
         Debug.Log("SistemaSaludJugador: GodMode = " + modoDiosActivo);
@@ -132,6 +146,11 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         }
 
         estaMuerto = true;
+
+        if (movimientoPlayer != null)
+        {
+            movimientoPlayer.PlayFaintAnimation();
+        }
 
         if (sistemaTiempo != null)
         {

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +10,11 @@ public sealed class PantallaMuerteUI : MonoBehaviour
     [SerializeField] private GameObject hud;
     [SerializeField] private AudioSource audioMuerte;
 
+    [Header("Configuración")]
+    [SerializeField] private float retrasoMostrarPantalla = 2.5f;
+
     private bool pantallaMostrada;
+    private bool procesoMuerteIniciado;
 
     private void Start()
     {
@@ -31,19 +36,36 @@ public sealed class PantallaMuerteUI : MonoBehaviour
             return;
         }
 
-        if (sistemaSaludJugador.EstaMuerto && !pantallaMostrada)
+        if (sistemaSaludJugador.EstaMuerto && !procesoMuerteIniciado)
         {
-            MostrarPantallaMuerte();
+            procesoMuerteIniciado = true;
+            StartCoroutine(MostrarPantallaMuerteConRetraso());
         }
+    }
+
+    private IEnumerator MostrarPantallaMuerteConRetraso()
+    {
+        yield return new WaitForSecondsRealtime(retrasoMostrarPantalla);
+        MostrarPantallaMuerte();
     }
 
     private void MostrarPantallaMuerte()
     {
+        if (pantallaMostrada)
+        {
+            return;
+        }
+
         pantallaMostrada = true;
 
         if (hud != null)
         {
             hud.SetActive(false);
+        }
+
+        if (audioMuerte != null)
+        {
+            audioMuerte.Play();
         }
 
         panelMuerte.SetActive(true);
