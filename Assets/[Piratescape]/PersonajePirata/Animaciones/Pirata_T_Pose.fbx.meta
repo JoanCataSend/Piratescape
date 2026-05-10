@@ -3,7 +3,52 @@ guid: f72c6c224b6dcc54fbdda23b137a0459
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #12
+    second: {fileID: 6959854345570979556, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #13
+    second: {fileID: -6436591170870349062, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #14
+    second: {fileID: 4994165885606464720, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #15
+    second: {fileID: 4633966528211553250, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #17
+    second: {fileID: 321398585397023164, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #18
+    second: {fileID: -604316626302413864, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #20
+    second: {fileID: -2881445276239496059, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #21
+    second: {fileID: 532364259400670332, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material #22
+    second: {fileID: -4510822905740073783, guid: cbfee4d539c2ac7419b5b5c534241843, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -69,7 +114,7 @@ ModelImporter:
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    normalImportMode: 0
+    normalImportMode: 1
     tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
