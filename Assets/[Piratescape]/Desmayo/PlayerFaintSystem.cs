@@ -96,12 +96,29 @@ public class PlayerFaintSystem : MonoBehaviour
         bool movimientoOriginalHabilitado = movimientoPlayer != null && movimientoPlayer.enabled;
         bool controllerOriginalHabilitado = playerController != null && playerController.enabled;
 
+        // Nueva parte:
+        // En vez de tumbar al jugador rotándolo a mano,
+        // lanzamos la misma animación de desmayo/muerte del Animator.
+        if (movimientoPlayer != null)
+        {
+            movimientoPlayer.PlayFaintAnimation();
+        }
+        else
+        {
+            // Si por algún motivo falta la referencia al movimiento,
+            // usamos el sistema antiguo como respaldo.
+            yield return StartCoroutine(FallDownRoutine());
+        }
+
+        // Tiempo para que se vea la animación de desmayo antes del fade.
+        yield return new WaitForSeconds(fallDuration);
+
+        // A partir de aquí ya empieza la secuencia antigua:
+        // fade, ocultar jugador, activar monos, mover a tienda, etc.
         if (movimientoPlayer != null)
         {
             movimientoPlayer.enabled = false;
         }
-
-        yield return StartCoroutine(FallDownRoutine());
 
         if (playerController != null)
         {
@@ -185,6 +202,7 @@ public class PlayerFaintSystem : MonoBehaviour
         if (movimientoPlayer != null)
         {
             movimientoPlayer.enabled = movimientoOriginalHabilitado;
+            movimientoPlayer.RecoverFromFaint();
         }
 
         isFainting = false;
