@@ -7,6 +7,7 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private GameTimeSystem timeSystem;
     [SerializeField] private Light sunLight;
     [SerializeField] private Light moonLight;
+    [SerializeField] private GhostSpawn ghostSpawn;
 
     [Header("Skybox")]
     [SerializeField] private Material daySkybox;
@@ -76,6 +77,7 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private float nightHour = 22f;
 
     private Material runtimeSkybox;
+    private bool eraDeNoche;
 
     private void Awake()
     {
@@ -87,6 +89,25 @@ public class DayNightCycleController : MonoBehaviour
     private void Start()
     {
         CrearSkyboxRuntime();
+
+        if (timeSystem != null)
+        {
+            float hour = timeSystem.CurrentHour + (timeSystem.CurrentMinute / 60f);
+            eraDeNoche = hour >= nightHour || hour < sunriseHour;
+
+            if (ghostSpawn != null)
+            {
+                if (eraDeNoche)
+                {
+                    ghostSpawn.EmpezarNoche();
+                }
+                else
+                {
+                    ghostSpawn.EmpezarDia();
+                }
+            }
+        }
+
         ActualizarCiclo();
     }
 
@@ -117,6 +138,22 @@ public class DayNightCycleController : MonoBehaviour
         }
 
         float hour = timeSystem.CurrentHour + (timeSystem.CurrentMinute / 60f);
+
+        bool esDeNoche = hour >= duskHour || hour < sunriseHour;
+        if (ghostSpawn != null)
+        {
+            if (esDeNoche && !eraDeNoche)
+            {
+                ghostSpawn.EmpezarNoche();
+            }
+
+            if (!esDeNoche && eraDeNoche)
+            {
+                ghostSpawn.EmpezarDia();
+            }
+        }
+
+        eraDeNoche = esDeNoche;
 
         ActualizarSkybox(hour);
         ActualizarAmbiente(hour);
