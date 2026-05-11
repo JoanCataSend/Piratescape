@@ -43,6 +43,26 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private float dayMoonIntensity = 0f;
     [SerializeField] private float nightMoonIntensity = 0.07f;
 
+    [Header("Niebla")]
+    [SerializeField] private bool usarNiebla = true;
+    [SerializeField] private FogMode fogMode = FogMode.ExponentialSquared;
+
+    [Header("Colores de niebla")]
+    [SerializeField] private Color sunriseFogColor = new Color(0.95f, 0.72f, 0.60f);
+    [SerializeField] private Color morningFogColor = new Color(0.85f, 0.80f, 0.72f);
+    [SerializeField] private Color dayFogColor = new Color(0.78f, 0.86f, 0.90f);
+    [SerializeField] private Color sunsetFogColor = new Color(0.95f, 0.55f, 0.42f);
+    [SerializeField] private Color duskFogColor = new Color(0.22f, 0.22f, 0.34f);
+    [SerializeField] private Color nightFogColor = new Color(0.04f, 0.06f, 0.13f);
+
+    [Header("Densidad de niebla")]
+    [SerializeField] private float sunriseFogDensity = 0.008f;
+    [SerializeField] private float morningFogDensity = 0.006f;
+    [SerializeField] private float dayFogDensity = 0.004f;
+    [SerializeField] private float sunsetFogDensity = 0.009f;
+    [SerializeField] private float duskFogDensity = 0.012f;
+    [SerializeField] private float nightFogDensity = 0.015f;
+
     [Header("Rotación")]
     [SerializeField] private float sunYaw = 170f;
     [SerializeField] private float moonYaw = 170f;
@@ -60,6 +80,8 @@ public class DayNightCycleController : MonoBehaviour
     private void Awake()
     {
         RenderSettings.ambientMode = AmbientMode.Flat;
+        RenderSettings.fog = usarNiebla;
+        RenderSettings.fogMode = fogMode;
     }
 
     private void Start()
@@ -100,6 +122,7 @@ public class DayNightCycleController : MonoBehaviour
         ActualizarAmbiente(hour);
         ActualizarSol(hour);
         ActualizarLuna(hour);
+        ActualizarNiebla(hour);
     }
 
     private void ActualizarSkybox(float hour)
@@ -155,6 +178,20 @@ public class DayNightCycleController : MonoBehaviour
 
         float anguloX = ObtenerAnguloLuna(hour);
         moonLight.transform.rotation = Quaternion.Euler(anguloX, moonYaw, 0f);
+    }
+
+    private void ActualizarNiebla(float hour)
+    {
+        RenderSettings.fog = usarNiebla;
+
+        if (!usarNiebla)
+        {
+            return;
+        }
+
+        RenderSettings.fogMode = fogMode;
+        RenderSettings.fogColor = ObtenerColorNiebla(hour);
+        RenderSettings.fogDensity = ObtenerDensidadNiebla(hour);
     }
 
     private float ObtenerFactorDia(float hour)
@@ -344,6 +381,84 @@ public class DayNightCycleController : MonoBehaviour
         }
 
         return nightMoonIntensity;
+    }
+
+    private Color ObtenerColorNiebla(float hour)
+    {
+        if (hour >= nightHour || hour < sunriseHour)
+        {
+            return nightFogColor;
+        }
+
+        if (hour >= sunriseHour && hour < dayHour)
+        {
+            float t = Suavizar(sunriseHour, dayHour, hour);
+            return Color.Lerp(nightFogColor, sunriseFogColor, t);
+        }
+
+        if (hour >= dayHour && hour < afternoonHour)
+        {
+            float t = Suavizar(dayHour, afternoonHour, hour);
+            return Color.Lerp(morningFogColor, dayFogColor, t);
+        }
+
+        if (hour >= afternoonHour && hour < sunsetHour)
+        {
+            return dayFogColor;
+        }
+
+        if (hour >= sunsetHour && hour < duskHour)
+        {
+            float t = Suavizar(sunsetHour, duskHour, hour);
+            return Color.Lerp(dayFogColor, sunsetFogColor, t);
+        }
+
+        if (hour >= duskHour && hour < nightHour)
+        {
+            float t = Suavizar(duskHour, nightHour, hour);
+            return Color.Lerp(sunsetFogColor, nightFogColor, t);
+        }
+
+        return nightFogColor;
+    }
+
+    private float ObtenerDensidadNiebla(float hour)
+    {
+        if (hour >= nightHour || hour < sunriseHour)
+        {
+            return nightFogDensity;
+        }
+
+        if (hour >= sunriseHour && hour < dayHour)
+        {
+            float t = Suavizar(sunriseHour, dayHour, hour);
+            return Mathf.Lerp(nightFogDensity, sunriseFogDensity, t);
+        }
+
+        if (hour >= dayHour && hour < afternoonHour)
+        {
+            float t = Suavizar(dayHour, afternoonHour, hour);
+            return Mathf.Lerp(morningFogDensity, dayFogDensity, t);
+        }
+
+        if (hour >= afternoonHour && hour < sunsetHour)
+        {
+            return dayFogDensity;
+        }
+
+        if (hour >= sunsetHour && hour < duskHour)
+        {
+            float t = Suavizar(sunsetHour, duskHour, hour);
+            return Mathf.Lerp(dayFogDensity, sunsetFogDensity, t);
+        }
+
+        if (hour >= duskHour && hour < nightHour)
+        {
+            float t = Suavizar(duskHour, nightHour, hour);
+            return Mathf.Lerp(sunsetFogDensity, nightFogDensity, t);
+        }
+
+        return nightFogDensity;
     }
 
     private float ObtenerAnguloSol(float hour)
