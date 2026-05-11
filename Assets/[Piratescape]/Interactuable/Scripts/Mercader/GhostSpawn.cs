@@ -66,6 +66,21 @@ public class GhostSpawn : MonoBehaviour
         float x = Mathf.Sin(tiempo) * amplitudX;
         float z = Mathf.Sin(tiempo * 2f) * amplitudZ;
 
-        transform.position = posicionBase + new Vector3(x, 0f, z);
+        Vector3 nuevaPosicion = posicionBase + new Vector3(x, 0f, z);
+
+        Vector3 direccion = (nuevaPosicion - transform.position).normalized;
+
+        if (direccion.sqrMagnitude > 0.001f)
+        {
+            Quaternion rotacionObjetivo = Quaternion.LookRotation(direccion);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                rotacionObjetivo,
+                Time.deltaTime * 8f
+            );
+        }
+
+        transform.position = nuevaPosicion;
     }
 }
