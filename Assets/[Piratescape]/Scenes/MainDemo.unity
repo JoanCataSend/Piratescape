@@ -2068,7 +2068,7 @@ MonoBehaviour:
   inventarioJugador: {fileID: 0}
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 1881819176}
+  vendedorFantasma: {fileID: 0}
   contenedorArticulo: {fileID: 0}
   imagenArticulo: {fileID: 0}
   textoNombre: {fileID: 0}
@@ -26320,7 +26320,7 @@ MonoBehaviour:
   inventarioJugador: {fileID: 0}
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 1881819176}
+  vendedorFantasma: {fileID: 0}
   contenedorArticulo: {fileID: 0}
   imagenArticulo: {fileID: 0}
   textoNombre: {fileID: 0}
@@ -31127,6 +31127,37 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &616497264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 616497265}
+  m_Layer: 0
+  m_Name: PuntoFantasma03
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &616497265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616497264}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -36.6, y: 1.29, z: -57.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682115061}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &626788004
 GameObject:
   m_ObjectHideFlags: 0
@@ -33101,7 +33132,7 @@ MonoBehaviour:
   inventarioJugador: {fileID: 0}
   puntoAparicion: {fileID: 815671}
   mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 1881819176}
+  vendedorFantasma: {fileID: 0}
   contenedorArticulo: {fileID: 0}
   imagenArticulo: {fileID: 0}
   textoNombre: {fileID: 0}
@@ -33928,6 +33959,42 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
+--- !u!1 &682115060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 682115061}
+  m_Layer: 0
+  m_Name: PuntosFantasma
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &682115061
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682115060}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1483022087}
+  - {fileID: 1291963533}
+  - {fileID: 616497265}
+  - {fileID: 2100817561}
+  - {fileID: 1483322130}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &687038361 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9017844807287473221, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
@@ -54554,6 +54621,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
+      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -57369,14 +57444,6 @@ PrefabInstance:
     - target: {fileID: 8696847069942999147, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -64170,6 +64237,7 @@ MonoBehaviour:
   timeSystem: {fileID: 1975866679}
   sunLight: {fileID: 1504668338}
   moonLight: {fileID: 2135065400}
+  ghostSpawn: {fileID: 1881819183}
   daySkybox: {fileID: 2100000, guid: 9aa8ed67591432941bb76f12eb23ff91, type: 2}
   nightSkybox: {fileID: 2100000, guid: ed1387202b1349540a5d6464f0f27488, type: 2}
   sunriseAmbientColor: {r: 0.3, g: 0.28, b: 0.35, a: 1}
@@ -65081,6 +65149,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.004296574, y: 0.04292228, z: 0.16976063}
   m_Center: {x: 0.0000008775838, y: -0.01920322, z: 0.06422193}
+--- !u!1 &1291963532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1291963533}
+  m_Layer: 0
+  m_Name: PuntoFantasma02
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1291963533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291963532}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -105.1, y: 1.29, z: 0.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682115061}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1293353246
 Mesh:
   m_ObjectHideFlags: 0
@@ -68124,7 +68223,7 @@ MonoBehaviour:
   inventarioJugador: {fileID: 0}
   puntoAparicion: {fileID: 606650876}
   mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 1881819176}
+  vendedorFantasma: {fileID: 0}
   contenedorArticulo: {fileID: 0}
   imagenArticulo: {fileID: 0}
   textoNombre: {fileID: 0}
@@ -74979,6 +75078,68 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
+--- !u!1 &1483022086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1483022087}
+  m_Layer: 0
+  m_Name: PuntoFantasma01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1483022087
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483022086}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -31.2, y: 1.29, z: -12.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682115061}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1483322129
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1483322130}
+  m_Layer: 0
+  m_Name: PuntoFantasma05
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1483322130
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483322129}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -107.7, y: 1.29, z: -68.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682115061}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1483489530
 GameObject:
   m_ObjectHideFlags: 0
@@ -89601,7 +89762,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3192072188092015388, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
   m_PrefabInstance: {fileID: 3244811825563679787}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1881819176
+--- !u!4 &1881819179 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+  m_PrefabInstance: {fileID: 3244811825563679787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1881819183
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89610,18 +89776,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1881819175}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e623159a8233b4148bcceec89523a43a, type: 3}
+  m_Script: {fileID: 11500000, guid: ce098cfc46fa8bf4d992c84ab89c1c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rango: 2.5
-  interactuable: 1
-  shopUI: {fileID: 566540433}
-  mensaje: Pulsa E para comerciar
---- !u!4 &1881819179 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
-  m_PrefabInstance: {fileID: 3244811825563679787}
-  m_PrefabAsset: {fileID: 0}
+  puntosAparicion:
+  - {fileID: 1483022087}
+  - {fileID: 1291963533}
+  - {fileID: 616497265}
+  - {fileID: 2100817561}
+  - {fileID: 1483322130}
 --- !u!4 &1881969476 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5721417102470724968, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
@@ -98523,6 +98686,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9017844807287473221, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
   m_PrefabInstance: {fileID: 1643603109}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2100817560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2100817561}
+  m_Layer: 0
+  m_Name: PuntoFantasma04
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2100817561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100817560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.29, z: -121.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682115061}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2106425937 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5639971979702520442, guid: d8c62adb2d4407e4c95edc846a284f7b, type: 3}
@@ -100735,7 +100929,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3192072188092015388, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1881819176}
+      addedObject: {fileID: 1881819183}
   m_SourcePrefab: {fileID: 100100000, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
 --- !u!1001 &4462310518809275220
 PrefabInstance:
@@ -100881,3 +101075,4 @@ SceneRoots:
   - {fileID: 355002602}
   - {fileID: 815671}
   - {fileID: 3244811825563679787}
+  - {fileID: 682115061}
