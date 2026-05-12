@@ -11,6 +11,18 @@ public class PlayerStatusEffectsUI : MonoBehaviour
     [SerializeField] private Image healthLowOverlay;
     [SerializeField] private Image energyLowOverlay;
 
+    [Header("Ocultar efectos en muerte")]
+    [SerializeField] private bool ocultarSiJugadorMuerto = true;
+    [SerializeField] private GameObject panelMuerte;
+
+    [Header("Ocultar efectos en pausa")]
+    [SerializeField] private bool ocultarSiPausaActiva = true;
+    [SerializeField] private GameObject panelPausa;
+
+    [Header("Ocultar efectos en transicion")]
+    [SerializeField] private bool ocultarSiTransicionActiva = true;
+    [SerializeField] private SleepFadeUI sleepFadeUI;
+
     [Header("Vida baja")]
     [SerializeField] private float healthEffectStartPercent = 0.4f;
     [SerializeField] private float healthMaxAlpha = 0.55f;
@@ -37,14 +49,63 @@ public class PlayerStatusEffectsUI : MonoBehaviour
             sistemaSaludJugador = FindFirstObjectByType<SistemaSaludJugador>();
         }
 
-        SetImageAlpha(healthLowOverlay, 0f);
-        SetImageAlpha(energyLowOverlay, 0f);
+        if (sleepFadeUI == null)
+        {
+            sleepFadeUI = FindFirstObjectByType<SleepFadeUI>();
+        }
+
+        OcultarEfectos();
     }
 
     private void Update()
     {
+        if (DebeOcultarEfectos())
+        {
+            OcultarEfectos();
+            return;
+        }
+
         ActualizarEfectoVida();
         ActualizarEfectoEnergia();
+    }
+
+    private bool DebeOcultarEfectos()
+    {
+        if (ocultarSiJugadorMuerto &&
+            sistemaSaludJugador != null &&
+            sistemaSaludJugador.EstaMuerto)
+        {
+            return true;
+        }
+
+        if (ocultarSiJugadorMuerto &&
+            panelMuerte != null &&
+            panelMuerte.activeSelf)
+        {
+            return true;
+        }
+
+        if (ocultarSiPausaActiva &&
+            panelPausa != null &&
+            panelPausa.activeSelf)
+        {
+            return true;
+        }
+
+        if (ocultarSiTransicionActiva &&
+            sleepFadeUI != null &&
+            sleepFadeUI.IsFading)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void OcultarEfectos()
+    {
+        SetImageAlpha(healthLowOverlay, 0f);
+        SetImageAlpha(energyLowOverlay, 0f);
     }
 
     private void ActualizarEfectoVida()

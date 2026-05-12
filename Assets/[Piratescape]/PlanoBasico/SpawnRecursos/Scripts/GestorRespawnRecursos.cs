@@ -8,7 +8,7 @@ public sealed class GestorRespawnRecursos : MonoBehaviour
 
     public void GestionarInicioNuevoDia()
     {
-        LimpiarRecogiblesSueltosDelMapa();
+        LimpiarSoloRecursosGeneradosDelMapa();
 
         for (int i = 0; i < gruposSpawn.Count; i++)
         {
@@ -23,25 +23,25 @@ public sealed class GestorRespawnRecursos : MonoBehaviour
         }
     }
 
-    private void LimpiarRecogiblesSueltosDelMapa()
+    private void LimpiarSoloRecursosGeneradosDelMapa()
     {
-        ObjetoRecogibleInteractuable[] recogibles = FindObjectsByType<ObjetoRecogibleInteractuable>(FindObjectsSortMode.None);
+        RecursoGenerado[] recursosGenerados = FindObjectsByType<RecursoGenerado>(FindObjectsSortMode.None);
 
-        for (int i = 0; i < recogibles.Length; i++)
+        for (int i = 0; i < recursosGenerados.Length; i++)
         {
-            ObjetoRecogibleInteractuable recogible = recogibles[i];
+            RecursoGenerado recursoGenerado = recursosGenerados[i];
 
-            if (recogible == null)
+            if (recursoGenerado == null)
             {
                 continue;
             }
 
-            if (playerTransform != null && recogible.transform.IsChildOf(playerTransform))
+            if (playerTransform != null && recursoGenerado.transform.IsChildOf(playerTransform))
             {
                 continue;
             }
 
-            Destroy(recogible.gameObject);
+            Destroy(recursoGenerado.gameObject);
         }
     }
 }

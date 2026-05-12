@@ -16,6 +16,8 @@ public class SleepFadeUI : MonoBehaviour
     [SerializeField] private float softness = 0.08f;
     [SerializeField] private Vector2 center = new Vector2(0.5f, 0.5f);
 
+    public bool IsFading { get; private set; }
+
     private Coroutine currentRoutine;
     private Material runtimeMaterial;
 
@@ -38,17 +40,16 @@ public class SleepFadeUI : MonoBehaviour
             return;
         }
 
-        // Creamos una copia del material para no modificar el material original del proyecto.
         runtimeMaterial = new Material(fadeImage.material);
         fadeImage.material = runtimeMaterial;
 
         ConfigurarMaterial();
         SetRadiusImmediate(openRadius);
+        IsFading = false;
     }
 
     private void Update()
     {
-        // Mantiene el círculo redondo aunque cambie la resolución o el aspect ratio.
         ConfigurarMaterial();
     }
 
@@ -64,18 +65,27 @@ public class SleepFadeUI : MonoBehaviour
 
     public IEnumerator FadeOutRoutine()
     {
+        IsFading = true;
+
         yield return FadeTo(closedRadius);
+
+        IsFading = false;
     }
 
     public IEnumerator FadeInRoutine()
     {
+        IsFading = true;
+
         yield return FadeTo(openRadius);
+
+        IsFading = false;
     }
 
     private IEnumerator SleepRoutine()
     {
         yield return FadeOutRoutine();
         yield return FadeInRoutine();
+
         currentRoutine = null;
     }
 
