@@ -5,17 +5,23 @@ using UnityEngine.UI;
 
 public sealed class ArticuloTienda : MonoBehaviour
 {
-    [Header("Datos del articulo")]
+    [Header("Datos nuevos del articulo")]
+    [SerializeField] private ArticuloTiendaData articuloData;
+
+    [Header("Compatibilidad con tienda antigua")]
     [SerializeField] private string nombreArticulo;
     [SerializeField] private Sprite iconoArticulo;
     [SerializeField] private ItemData itemInventario;
     [SerializeField] private int cantidadItem = 1;
     [SerializeField] private GameObject prefabObjeto;
     [SerializeField] private CosteTienda[] costes;
+    [SerializeField] private bool esEspantamonos;
 
     [Header("Referencias compra")]
     [SerializeField] private SistemaEconomia sistemaEconomia;
     [SerializeField] private PlayerInventory inventarioJugador;
+    [SerializeField] private SistemaObjetosBase sistemaObjetosBase;
+    [SerializeField] private SistemaEspantamonos sistemaEspantamonos;
     [SerializeField] private Transform puntoAparicion;
     [SerializeField] private MensajeTienda mensajeTienda;
     [SerializeField] private GhostMerchant vendedorFantasma;
@@ -41,10 +47,6 @@ public sealed class ArticuloTienda : MonoBehaviour
     [SerializeField] private bool desactivarBotonSiNoPuedeComprar = true;
     [SerializeField] private bool cerrarTiendaAlComprar = false;
 
-    [Header("Espantamonos")]
-    [SerializeField] private bool esEspantamonos;
-    [SerializeField] private SistemaEspantamonos sistemaEspantamonos;
-
     private readonly List<TMP_Text> textosPrecio = new List<TMP_Text>();
     private readonly List<CosteTienda> costesPrecio = new List<CosteTienda>();
 
@@ -63,9 +65,14 @@ public sealed class ArticuloTienda : MonoBehaviour
             sistemaEconomia.OnEconomiaActualizada += AlActualizarEconomia;
         }
 
-        if (esEspantamonos && sistemaEspantamonos != null)
+        if (sistemaEspantamonos != null)
         {
             sistemaEspantamonos.OnEstadoCambiado += AlCambiarEstadoEspantamonos;
+        }
+
+        if (sistemaObjetosBase != null)
+        {
+            sistemaObjetosBase.OnObjetosBaseActualizados += AlActualizarObjetosBase;
         }
 
         RefrescarUI();
@@ -73,6 +80,7 @@ public sealed class ArticuloTienda : MonoBehaviour
 
     private void OnEnable()
     {
+        BuscarReferenciasSiFaltan();
         RefrescarUI();
     }
 
@@ -88,10 +96,23 @@ public sealed class ArticuloTienda : MonoBehaviour
             sistemaEconomia.OnEconomiaActualizada -= AlActualizarEconomia;
         }
 
-        if (esEspantamonos && sistemaEspantamonos != null)
+        if (sistemaEspantamonos != null)
         {
             sistemaEspantamonos.OnEstadoCambiado -= AlCambiarEstadoEspantamonos;
         }
+
+        if (sistemaObjetosBase != null)
+        {
+            sistemaObjetosBase.OnObjetosBaseActualizados -= AlActualizarObjetosBase;
+        }
+    }
+
+    public void Configurar(ArticuloTiendaData nuevoArticuloData)
+    {
+        articuloData = nuevoArticuloData;
+        BuscarReferenciasSiFaltan();
+        PrepararUI();
+        RefrescarUI();
     }
 
     private void Comprar()
@@ -103,7 +124,7 @@ public sealed class ArticuloTienda : MonoBehaviour
             return;
         }
 
-        if (DebeOcultarsePorEspantamonos())
+        if (DebeOcultarse())
         {
             RefrescarUI();
             return;
@@ -116,21 +137,25 @@ public sealed class ArticuloTienda : MonoBehaviour
             return;
         }
 
-        if (!esEspantamonos && !PuedeEntrarEnInventario())
+        if (EsItemInventario() && !PuedeEntrarEnInventario())
         {
             MostrarError("Inventario lleno");
             return;
         }
 
-        bool compraCorrecta;
+        bool compraCorrecta = false;
 
-        if (esEspantamonos)
+        if (EsItemInventario())
         {
-            compraCorrecta = ComprarEspantamonos();
+            compraCorrecta = ComprarItemInventario();
+        }
+        else if (EsObjetoBase())
+        {
+            compraCorrecta = ComprarObjetoBase();
         }
         else
         {
-            compraCorrecta = ComprarItemInventario();
+            MostrarError("Articulo de tienda sin tipo valido");
         }
 
         if (!compraCorrecta)
@@ -149,25 +174,76 @@ public sealed class ArticuloTienda : MonoBehaviour
 
     private bool ComprarItemInventario()
     {
-        if (inventarioJugador == null || itemInventario == null)
+        ItemData item = ObtenerItemInventario();
+        int cantidad = ObtenerCantidadItem();
+
+        if (inventarioJugador != null && item != null)
         {
-            MostrarError("Falta configurar el item de inventario");
+            bool anadido = inventarioJugador.TryAddItem(item, cantidad);
+
+            if (!anadido)
+            {
+                MostrarError("Inventario lleno");
+                return false;
+            }
+
+            MostrarConfirmacion("Has comprado " + ObtenerNombre());
+            return true;
+        }
+
+        if (articuloData == null && prefabObjeto != null)
+        {
+            return ComprarPrefabAntiguo();
+        }
+
+        MostrarError("Falta configurar el ItemData de " + ObtenerNombre());
+        return false;
+    }
+
+    private bool ComprarPrefabAntiguo()
+    {
+        Transform puntoFinal = puntoAparicion;
+
+        if (puntoFinal == null && inventarioJugador != null)
+        {
+            puntoFinal = inventarioJugador.transform;
+        }
+
+        if (puntoFinal == null)
+        {
+            MostrarError("Falta punto de aparicion para " + ObtenerNombre());
             return false;
         }
 
-        bool anadido = inventarioJugador.TryAddItem(itemInventario, cantidadItem);
-
-        if (!anadido)
-        {
-            MostrarError("Inventario lleno");
-            return false;
-        }
-
-        MostrarConfirmacion("Has comprado " + nombreArticulo);
+        Instantiate(prefabObjeto, puntoFinal.position, puntoFinal.rotation);
+        MostrarConfirmacion("Has comprado " + ObtenerNombre());
         return true;
     }
 
-    private bool ComprarEspantamonos()
+    private bool ComprarObjetoBase()
+    {
+        ObjetoBaseData objetoBase = ObtenerObjetoBase();
+
+        if (objetoBase != null)
+        {
+            if (objetoBase.TipoObjetoBase == TipoObjetoBase.Espantamonos)
+            {
+                return ComprarEspantamonos(objetoBase.Prefab, objetoBase.MensajeCompra, objetoBase.MensajeYaColocado);
+            }
+
+            return ComprarObjetoBaseNormal(objetoBase);
+        }
+
+        if (articuloData == null && esEspantamonos)
+        {
+            return ComprarEspantamonos(prefabObjeto, "Espantamonos colocado en base", "Ya tienes un espantamonos en la base");
+        }
+
+        MostrarError("Falta configurar el objeto de base");
+        return false;
+    }
+
+    private bool ComprarEspantamonos(GameObject prefab, string mensajeCompra, string mensajeYaColocado)
     {
         if (sistemaEspantamonos == null)
         {
@@ -175,38 +251,72 @@ public sealed class ArticuloTienda : MonoBehaviour
             return false;
         }
 
-        bool colocado = sistemaEspantamonos.ComprarEspantamonos(prefabObjeto, puntoAparicion);
+        bool colocado = sistemaEspantamonos.ComprarEspantamonos(prefab, puntoAparicion);
 
         if (!colocado)
         {
-            MostrarError("No se pudo colocar el espantamonos");
+            MostrarError(mensajeYaColocado);
             return false;
         }
 
-        MostrarConfirmacion("Espantamonos colocado en base");
+        MostrarConfirmacion(mensajeCompra);
+        return true;
+    }
+
+    private bool ComprarObjetoBaseNormal(ObjetoBaseData objetoBase)
+    {
+        if (sistemaObjetosBase == null)
+        {
+            MostrarError("Falta SistemaObjetosBase");
+            return false;
+        }
+
+        bool colocado = sistemaObjetosBase.ColocarObjeto(objetoBase, puntoAparicion);
+
+        if (!colocado)
+        {
+            MostrarError(objetoBase.MensajeYaColocado);
+            return false;
+        }
+
+        MostrarConfirmacion(objetoBase.MensajeCompra);
         return true;
     }
 
     private bool PuedeEntrarEnInventario()
     {
-        if (inventarioJugador == null || itemInventario == null)
+        ItemData item = ObtenerItemInventario();
+
+        if (articuloData == null && item == null && prefabObjeto != null)
+        {
+            return true;
+        }
+
+        if (inventarioJugador == null || item == null)
         {
             return false;
         }
 
-        return inventarioJugador.CanAddItem(itemInventario, cantidadItem);
+        return inventarioJugador.CanAddItem(item, ObtenerCantidadItem());
     }
 
     private void PrepararUI()
     {
+        BuscarReferenciasSiFaltan();
+
         if (textoNombre != null)
         {
-            textoNombre.text = nombreArticulo;
+            textoNombre.text = ObtenerNombre();
         }
 
         if (imagenArticulo != null)
         {
-            imagenArticulo.sprite = iconoArticulo;
+            Sprite icono = ObtenerIconoArticulo();
+            if (icono != null)
+            {
+                imagenArticulo.sprite = icono;
+            }
+
             imagenArticulo.preserveAspect = true;
         }
 
@@ -233,13 +343,15 @@ public sealed class ArticuloTienda : MonoBehaviour
             Destroy(contenedorPrecios.GetChild(i).gameObject);
         }
 
-        if (costes == null || costes.Length == 0)
+        CosteTienda[] costesArticulo = ObtenerCostes();
+
+        if (costesArticulo == null || costesArticulo.Length == 0)
         {
             CrearPrecioGratis();
             return;
         }
 
-        foreach (CosteTienda coste in costes)
+        foreach (CosteTienda coste in costesArticulo)
         {
             if (coste == null)
             {
@@ -248,11 +360,6 @@ public sealed class ArticuloTienda : MonoBehaviour
 
             CrearPrecioVisual(coste);
         }
-    }
-
-    private GameObject contenorPreciosGetChild(int index)
-    {
-        return contenedorPrecios.GetChild(index).gameObject;
     }
 
     private void CrearPrecioGratis()
@@ -302,7 +409,7 @@ public sealed class ArticuloTienda : MonoBehaviour
         iconoLayout.preferredHeight = 26f;
 
         Image imagen = iconoGO.AddComponent<Image>();
-        imagen.sprite = ObtenerIcono(coste.TipoMoneda);
+        imagen.sprite = ObtenerIconoMoneda(coste.TipoMoneda);
         imagen.preserveAspect = true;
         imagen.raycastTarget = false;
 
@@ -327,7 +434,7 @@ public sealed class ArticuloTienda : MonoBehaviour
         costesPrecio.Add(coste);
     }
 
-    private Sprite ObtenerIcono(TipoMoneda tipoMoneda)
+    private Sprite ObtenerIconoMoneda(TipoMoneda tipoMoneda)
     {
         if (tipoMoneda == TipoMoneda.Concha)
         {
@@ -346,7 +453,7 @@ public sealed class ArticuloTienda : MonoBehaviour
     {
         BuscarReferenciasSiFaltan();
 
-        bool ocultar = DebeOcultarsePorEspantamonos();
+        bool ocultar = DebeOcultarse();
         GameObject objetoAOcultar = contenedorArticulo != null ? contenedorArticulo : gameObject;
 
         if (objetoAOcultar.activeSelf == ocultar)
@@ -393,19 +500,51 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
     }
 
-    private bool DebeOcultarsePorEspantamonos()
+    private bool DebeOcultarse()
     {
-        if (!esEspantamonos)
+        if (!EsObjetoBase())
         {
             return false;
         }
 
-        if (sistemaEspantamonos == null)
+        ObjetoBaseData objetoBase = ObtenerObjetoBase();
+
+        if (objetoBase != null)
         {
-            sistemaEspantamonos = SistemaEspantamonos.Instance;
+            if (!objetoBase.OcultarEnTiendaMientrasEsteColocado)
+            {
+                return false;
+            }
+
+            if (objetoBase.TipoObjetoBase == TipoObjetoBase.Espantamonos)
+            {
+                if (sistemaEspantamonos == null)
+                {
+                    sistemaEspantamonos = SistemaEspantamonos.Instance;
+                }
+
+                return sistemaEspantamonos != null && sistemaEspantamonos.EstaActivo;
+            }
+
+            if (sistemaObjetosBase == null)
+            {
+                sistemaObjetosBase = SistemaObjetosBase.Instance;
+            }
+
+            return sistemaObjetosBase != null && sistemaObjetosBase.DebeOcultarseEnTienda(objetoBase);
         }
 
-        return sistemaEspantamonos != null && sistemaEspantamonos.EstaActivo;
+        if (articuloData == null && esEspantamonos)
+        {
+            if (sistemaEspantamonos == null)
+            {
+                sistemaEspantamonos = SistemaEspantamonos.Instance;
+            }
+
+            return sistemaEspantamonos != null && sistemaEspantamonos.EstaActivo;
+        }
+
+        return false;
     }
 
     private bool PuedeComprar()
@@ -415,12 +554,14 @@ public sealed class ArticuloTienda : MonoBehaviour
             return false;
         }
 
-        if (costes == null || costes.Length == 0)
+        CosteTienda[] costesArticulo = ObtenerCostes();
+
+        if (costesArticulo == null || costesArticulo.Length == 0)
         {
             return true;
         }
 
-        foreach (CosteTienda coste in costes)
+        foreach (CosteTienda coste in costesArticulo)
         {
             if (coste == null)
             {
@@ -438,12 +579,14 @@ public sealed class ArticuloTienda : MonoBehaviour
 
     private void Cobrar()
     {
-        if (costes == null)
+        CosteTienda[] costesArticulo = ObtenerCostes();
+
+        if (costesArticulo == null)
         {
             return;
         }
 
-        foreach (CosteTienda coste in costes)
+        foreach (CosteTienda coste in costesArticulo)
         {
             if (coste == null)
             {
@@ -458,44 +601,81 @@ public sealed class ArticuloTienda : MonoBehaviour
     {
         if (sistemaEconomia == null)
         {
-            Debug.LogError("Falta SistemaEconomia en " + nombreArticulo, this);
-            return false;
-        }
-
-        if (!esEspantamonos && inventarioJugador == null)
-        {
-            Debug.LogError("Falta PlayerInventory en " + nombreArticulo, this);
-            return false;
-        }
-
-        if (!esEspantamonos && itemInventario == null)
-        {
-            Debug.LogError("Falta Item Inventario en " + nombreArticulo, this);
-            return false;
-        }
-
-        if (esEspantamonos && prefabObjeto == null)
-        {
-            Debug.LogError("Falta Prefab Objeto en " + nombreArticulo, this);
-            return false;
-        }
-
-        if (esEspantamonos && puntoAparicion == null)
-        {
-            Debug.LogError("Falta Punto Aparicion en " + nombreArticulo, this);
+            Debug.LogError("Falta SistemaEconomia en " + ObtenerNombre(), this);
             return false;
         }
 
         if (botonComprar == null)
         {
-            Debug.LogError("Falta Boton Comprar en " + nombreArticulo, this);
+            Debug.LogError("Falta Boton Comprar en " + ObtenerNombre(), this);
             return false;
         }
 
-        if (esEspantamonos && sistemaEspantamonos == null)
+        if (EsItemInventario())
         {
-            Debug.LogError("Falta SistemaEspantamonos en " + nombreArticulo, this);
-            return false;
+            if (ObtenerItemInventario() == null && prefabObjeto == null)
+            {
+                Debug.LogError("Falta ItemData o Prefab Objeto en " + ObtenerNombre(), this);
+                return false;
+            }
+
+            if (ObtenerItemInventario() != null && inventarioJugador == null)
+            {
+                Debug.LogError("Falta PlayerInventory en " + ObtenerNombre(), this);
+                return false;
+            }
+        }
+
+        if (EsObjetoBase())
+        {
+            ObjetoBaseData objetoBase = ObtenerObjetoBase();
+
+            if (objetoBase != null)
+            {
+                if (objetoBase.Prefab == null)
+                {
+                    Debug.LogError("Falta prefab en " + ObtenerNombre(), this);
+                    return false;
+                }
+
+                if (puntoAparicion == null)
+                {
+                    Debug.LogError("Falta Punto Aparicion en " + ObtenerNombre(), this);
+                    return false;
+                }
+
+                if (objetoBase.TipoObjetoBase == TipoObjetoBase.Espantamonos && sistemaEspantamonos == null)
+                {
+                    Debug.LogError("Falta SistemaEspantamonos en " + ObtenerNombre(), this);
+                    return false;
+                }
+
+                if (objetoBase.TipoObjetoBase == TipoObjetoBase.Normal && sistemaObjetosBase == null)
+                {
+                    Debug.LogError("Falta SistemaObjetosBase en " + ObtenerNombre(), this);
+                    return false;
+                }
+            }
+            else if (esEspantamonos)
+            {
+                if (prefabObjeto == null)
+                {
+                    Debug.LogError("Falta Prefab Objeto en " + ObtenerNombre(), this);
+                    return false;
+                }
+
+                if (puntoAparicion == null)
+                {
+                    Debug.LogError("Falta Punto Aparicion en " + ObtenerNombre(), this);
+                    return false;
+                }
+
+                if (sistemaEspantamonos == null)
+                {
+                    Debug.LogError("Falta SistemaEspantamonos en " + ObtenerNombre(), this);
+                    return false;
+                }
+            }
         }
 
         return true;
@@ -513,20 +693,61 @@ public sealed class ArticuloTienda : MonoBehaviour
             inventarioJugador = FindFirstObjectByType<PlayerInventory>();
         }
 
+        if (sistemaObjetosBase == null)
+        {
+            sistemaObjetosBase = FindFirstObjectByType<SistemaObjetosBase>();
+        }
+
+        if (sistemaEspantamonos == null)
+        {
+            sistemaEspantamonos = FindFirstObjectByType<SistemaEspantamonos>();
+        }
+
         if (mensajeTienda == null)
         {
             mensajeTienda = FindFirstObjectByType<MensajeTienda>();
         }
 
-        if (esEspantamonos && sistemaEspantamonos == null)
+        if (vendedorFantasma == null)
         {
-            sistemaEspantamonos = FindFirstObjectByType<SistemaEspantamonos>();
+            vendedorFantasma = FindFirstObjectByType<GhostMerchant>();
+        }
+
+        if (contenedorArticulo == null)
+        {
+            contenedorArticulo = gameObject;
+        }
+
+        if (imagenArticulo == null)
+        {
+            Transform iconoTransform = BuscarHijoRecursivo(transform, "Icono");
+            if (iconoTransform != null)
+            {
+                imagenArticulo = iconoTransform.GetComponent<Image>();
+            }
+        }
+
+        if (textoNombre == null)
+        {
+            Transform nombreTransform = BuscarHijoRecursivo(transform, "Nombre");
+            if (nombreTransform != null)
+            {
+                textoNombre = nombreTransform.GetComponent<TMP_Text>();
+            }
+        }
+
+        if (contenedorPrecios == null)
+        {
+            Transform precioTransform = BuscarHijoRecursivo(transform, "PrecioContenedor");
+            if (precioTransform != null)
+            {
+                contenedorPrecios = precioTransform;
+            }
         }
 
         if (botonComprar == null)
         {
-            Transform botonTransform = transform.Find("BuyButton");
-
+            Transform botonTransform = BuscarHijoRecursivo(transform, "BuyButton");
             if (botonTransform != null)
             {
                 botonComprar = botonTransform.GetComponent<Button>();
@@ -538,20 +759,151 @@ public sealed class ArticuloTienda : MonoBehaviour
             }
         }
 
-        if (contenedorPrecios == null)
+        if (textoBotonComprar == null && botonComprar != null)
         {
-            Transform precioTransform = transform.Find("PrecioContenedor");
-
-            if (precioTransform != null)
+            Transform textoBotonTransform = BuscarHijoRecursivo(botonComprar.transform, "TxtComprar");
+            if (textoBotonTransform != null)
             {
-                contenedorPrecios = precioTransform;
+                textoBotonComprar = textoBotonTransform.GetComponent<TMP_Text>();
+            }
+
+            if (textoBotonComprar == null)
+            {
+                textoBotonComprar = botonComprar.GetComponentInChildren<TMP_Text>(true);
+            }
+        }
+    }
+
+    private Transform BuscarHijoRecursivo(Transform padre, string nombre)
+    {
+        if (padre == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < padre.childCount; i++)
+        {
+            Transform hijo = padre.GetChild(i);
+
+            if (hijo.name == nombre)
+            {
+                return hijo;
+            }
+
+            Transform encontrado = BuscarHijoRecursivo(hijo, nombre);
+
+            if (encontrado != null)
+            {
+                return encontrado;
             }
         }
 
-        if (contenedorArticulo == null)
+        return null;
+    }
+
+    private bool EsItemInventario()
+    {
+        if (articuloData != null)
         {
-            contenedorArticulo = gameObject;
+            return articuloData.TipoArticulo == TipoArticuloTienda.ItemInventario;
         }
+
+        return !esEspantamonos;
+    }
+
+    private bool EsObjetoBase()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.TipoArticulo == TipoArticuloTienda.ObjetoBase;
+        }
+
+        return esEspantamonos;
+    }
+
+    private ItemData ObtenerItemInventario()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.ItemInventario;
+        }
+
+        return itemInventario;
+    }
+
+    private ObjetoBaseData ObtenerObjetoBase()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.ObjetoBase;
+        }
+
+        return null;
+    }
+
+    private int ObtenerCantidadItem()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.CantidadItem;
+        }
+
+        return cantidadItem;
+    }
+
+    private CosteTienda[] ObtenerCostes()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.Costes;
+        }
+
+        return costes;
+    }
+
+    private string ObtenerNombre()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.Nombre;
+        }
+
+        if (!string.IsNullOrWhiteSpace(nombreArticulo))
+        {
+            return nombreArticulo;
+        }
+
+        if (itemInventario != null)
+        {
+            return itemInventario.DisplayName;
+        }
+
+        if (prefabObjeto != null)
+        {
+            return prefabObjeto.name;
+        }
+
+        return gameObject.name;
+    }
+
+    private Sprite ObtenerIconoArticulo()
+    {
+        if (articuloData != null)
+        {
+            return articuloData.Icono;
+        }
+
+        if (iconoArticulo != null)
+        {
+            return iconoArticulo;
+        }
+
+        if (itemInventario != null)
+        {
+            return itemInventario.Icon;
+        }
+
+        return null;
     }
 
     private void MostrarError(string mensaje)
@@ -561,7 +913,7 @@ public sealed class ArticuloTienda : MonoBehaviour
             mensajeTienda.MostrarError(mensaje);
         }
 
-        Debug.LogWarning(mensaje);
+        Debug.LogWarning(mensaje, this);
     }
 
     private void MostrarConfirmacion(string mensaje)
@@ -571,7 +923,7 @@ public sealed class ArticuloTienda : MonoBehaviour
             mensajeTienda.MostrarConfirmacion(mensaje);
         }
 
-        Debug.Log(mensaje);
+        Debug.Log(mensaje, this);
     }
 
     private void AlActualizarEconomia(int conchas, int tulipanes, int pinyas)
@@ -580,6 +932,11 @@ public sealed class ArticuloTienda : MonoBehaviour
     }
 
     private void AlCambiarEstadoEspantamonos(bool espantamonosActivo)
+    {
+        RefrescarUI();
+    }
+
+    private void AlActualizarObjetosBase()
     {
         RefrescarUI();
     }
