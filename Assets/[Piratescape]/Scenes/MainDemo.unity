@@ -2069,96 +2069,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45891621}
   m_CullTransparentMesh: 1
---- !u!1 &53115021 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 553397239}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &53115023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 53115021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 0}
-  mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
---- !u!1 &58634553 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 202080702}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &58634555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 58634553}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 606650876}
-  mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!1001 &64140523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9548,9 +9458,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1606604001}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 58634555}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!43 &203708047
 Mesh:
@@ -14819,9 +14726,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 155038132}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1598242777}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!1001 &338316367
 PrefabInstance:
@@ -27787,51 +27691,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5721417102470724968, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
   m_PrefabInstance: {fileID: 1698620992}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &545774314 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 1941197170}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &545774316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 545774314}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 606650876}
-  mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!1001 &551274813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28294,9 +28153,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1341085138}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 53115023}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!1 &556888289
 GameObject:
@@ -34631,51 +34487,6 @@ Transform:
   - {fileID: 1983264408}
   m_Father: {fileID: 1963672664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &660772561 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 726243255}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &660772563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 660772561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 815671}
-  mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!1 &662970634
 GameObject:
   m_ObjectHideFlags: 0
@@ -36867,6 +36678,10 @@ PrefabInstance:
       value: Espantamonos
       objectReference: {fileID: 0}
     - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
+      propertyPath: puntoAparicion
+      value: 
+      objectReference: {fileID: 815671}
+    - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: costes.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -36897,9 +36712,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1461005120}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 660772563}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!1001 &731758679
 PrefabInstance:
@@ -39597,6 +39409,10 @@ PrefabInstance:
       value: Cofre
       objectReference: {fileID: 0}
     - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
+      propertyPath: puntoAparicion
+      value: 
+      objectReference: {fileID: 949564488}
+    - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: costes.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -39614,7 +39430,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: costes.Array.data[0].tipoMoneda
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8988908146209839257, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: costes.Array.data[1].tipoMoneda
@@ -39631,9 +39447,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 520367069}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1624243378}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!1 &813482431
 GameObject:
@@ -56151,7 +55964,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: m_Name
-      value: 'ShopItemUI_Cafe '
+      value: ShopItemUI_Cafe
       objectReference: {fileID: 0}
     - target: {fileID: 2654978093948473436, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       propertyPath: m_text
@@ -56432,9 +56245,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1593702876}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1376242058}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!1001 &1097096689
 PrefabInstance:
@@ -71014,51 +70824,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2711046399066665076, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
   m_PrefabInstance: {fileID: 199726192}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1376242056 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 1094625837}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1376242058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1376242056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 606650876}
-  mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!1 &1378185171
 GameObject:
   m_ObjectHideFlags: 0
@@ -84071,51 +83836,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4907105465033273064, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
   m_PrefabInstance: {fileID: 570118356}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1598242775 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 338134172}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1598242777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598242775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 0}
-  mensajeTienda: {fileID: 0}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!1 &1602891700 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 22822852491965157, guid: d8c62adb2d4407e4c95edc846a284f7b, type: 3}
@@ -84417,51 +84137,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4907105465033273064, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
   m_PrefabInstance: {fileID: 1048916928}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1624243376 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-  m_PrefabInstance: {fileID: 807588666}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1624243378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624243376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  nombreArticulo: 
-  iconoArticulo: {fileID: 0}
-  itemInventario: {fileID: 0}
-  cantidadItem: 1
-  prefabObjeto: {fileID: 0}
-  costes: []
-  esEspantamonos: 0
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 949564488}
-  mensajeTienda: {fileID: 2026856238}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 1, g: 0, b: 0, a: 1}
-  iconoConcha: {fileID: 0}
-  iconoTulipan: {fileID: 0}
-  iconoPinya: {fileID: 0}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!43 &1628301639
 Mesh:
   m_ObjectHideFlags: 0
@@ -89369,6 +89044,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1784867414}
   m_CullTransparentMesh: 1
+--- !u!1 &1785757936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1785757937}
+  - component: {fileID: 1785757938}
+  m_Layer: 0
+  m_Name: SistemaObjetosBase
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1785757937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785757936}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1922425761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1785757938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785757936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7aaa03d2af347b49835daa1d625e6ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  puntoAparicionDefecto: {fileID: 949564488}
 --- !u!1001 &1802595829
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94187,6 +93907,7 @@ Transform:
   - {fileID: 1497435471}
   - {fileID: 592822581}
   - {fileID: 1814096003}
+  - {fileID: 1785757937}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1929124568 stripped
@@ -94719,9 +94440,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1195395420757383459, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 525384004}
-    - targetCorrespondingSourceObject: {fileID: 5340525172901881024, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 545774316}
   m_SourcePrefab: {fileID: 100100000, guid: 3e90c819c9d89ef43bcaaf52a52178d5, type: 3}
 --- !u!43 &1942819582
 Mesh:
