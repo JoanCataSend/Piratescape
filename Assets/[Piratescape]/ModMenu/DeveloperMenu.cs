@@ -223,7 +223,7 @@ public sealed class DeveloperMenu : MonoBehaviour
 
         CrearFilaBotones(contenido.transform,
             ("Pasar a Día 06:00", PasarADia),
-            ("Pasar a Noche 18:00", PasarANoche)
+            ("Pasar a Noche 22:00", PasarANoche)
         );
     }
 
@@ -549,8 +549,8 @@ public sealed class DeveloperMenu : MonoBehaviour
             return;
         }
 
-        sistemaTiempo.SetTime(18, 0);
-        Debug.Log("DeveloperMenu: hora cambiada a noche 18:00.");
+        sistemaTiempo.SetTime(22, 0);
+        Debug.Log("DeveloperMenu: hora cambiada a noche 22:00.");
     }
 
     private void VidaAlMaximo()

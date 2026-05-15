@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: concha
   displayName: Concha
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d5766e83c223e1f49ad0470ba33c5c67, type: 3}
   worldPrefab: {fileID: 0}
+  handPrefab: {fileID: 0}
+  handLocalPosition: {x: 0, y: 0, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 1, y: 1, z: 1}
   tipoMoneda: 0
   valor: 1
