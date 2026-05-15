@@ -3,6 +3,8 @@ using UnityEngine;
 
 public sealed class SistemaEconomia : MonoBehaviour
 {
+    private const int MonedasMaximas = 999;
+
     [Header("Valores iniciales")]
     [SerializeField] private int conchas;
     [SerializeField] private int tulipanes;
@@ -16,6 +18,7 @@ public sealed class SistemaEconomia : MonoBehaviour
 
     private void Start()
     {
+        LimitarTodasLasMonedas();
         NotificarCambio();
     }
 
@@ -28,25 +31,20 @@ public sealed class SistemaEconomia : MonoBehaviour
 
         if (tipoMoneda == TipoMoneda.Concha)
         {
-            conchas += cantidad;
+            conchas = LimitarMoneda(conchas + cantidad);
             NotificarCambio();
             return;
         }
 
         if (tipoMoneda == TipoMoneda.Tulipan)
         {
-            tulipanes += cantidad;
+            tulipanes = LimitarMoneda(tulipanes + cantidad);
             NotificarCambio();
             return;
         }
 
-        pinyas += cantidad;
+        pinyas = LimitarMoneda(pinyas + cantidad);
         NotificarCambio();
-    }
-
-    private void NotificarCambio()
-    {
-        OnEconomiaActualizada?.Invoke(conchas, tulipanes, pinyas);
     }
 
     public bool TieneMonedasSuficientes(TipoMoneda tipoMoneda, int cantidad)
@@ -91,5 +89,22 @@ public sealed class SistemaEconomia : MonoBehaviour
 
         NotificarCambio();
         return true;
+    }
+
+    private int LimitarMoneda(int cantidad)
+    {
+        return Mathf.Clamp(cantidad, 0, MonedasMaximas);
+    }
+
+    private void LimitarTodasLasMonedas()
+    {
+        conchas = LimitarMoneda(conchas);
+        tulipanes = LimitarMoneda(tulipanes);
+        pinyas = LimitarMoneda(pinyas);
+    }
+
+    private void NotificarCambio()
+    {
+        OnEconomiaActualizada?.Invoke(conchas, tulipanes, pinyas);
     }
 }

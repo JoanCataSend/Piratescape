@@ -5,6 +5,7 @@ public class ItemData : ScriptableObject
 {
     [SerializeField] private string itemId;
     [SerializeField] private string displayName;
+    [SerializeField] private string description;
     [SerializeField] private Sprite icon;
     [SerializeField] private GameObject worldPrefab;
 
@@ -16,6 +17,7 @@ public class ItemData : ScriptableObject
 
     public string ItemId => itemId;
     public string DisplayName => displayName;
+    public string Description => description;
     public Sprite Icon => icon;
     public GameObject WorldPrefab => worldPrefab;
 
