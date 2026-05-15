@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
@@ -28,6 +29,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     private PlayerHealth playerHealth;
     private PlayerEnergy playerEnergy;
     private bool isDropping;
+    private int frameInputBloqueado = -1;
 
     public int SelectedSlotIndex => selectedSlotIndex;
 
@@ -46,8 +48,39 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     private void Update()
     {
+        if (DebeBloquearInputInventario())
+        {
+            return;
+        }
+
         HandleKeyboardInput();
         HandleGamepadInput();
+    }
+
+
+    public void BloquearInputUnFrame()
+    {
+        frameInputBloqueado = Time.frameCount;
+    }
+
+    private bool DebeBloquearInputInventario()
+    {
+        if (Time.frameCount == frameInputBloqueado)
+        {
+            return true;
+        }
+
+        if (Time.timeScale == 0f)
+        {
+            return true;
+        }
+
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void InitializeSlots()

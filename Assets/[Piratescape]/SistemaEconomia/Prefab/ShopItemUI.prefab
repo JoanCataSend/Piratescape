@@ -220,8 +220,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1131860229260176526}
-  - component: {fileID: 8988908146209839257}
   - component: {fileID: 5734330129311102833}
+  - component: {fileID: 3790319113010080723}
   m_Layer: 5
   m_Name: ShopItemUI
   m_TagString: Untagged
@@ -253,39 +253,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8988908146209839257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195395420757383459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12742cc53d225d4aad5a89a2b6ede00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  articuloData: {fileID: 0}
-  sistemaEconomia: {fileID: 0}
-  inventarioJugador: {fileID: 0}
-  sistemaObjetosBase: {fileID: 0}
-  sistemaEspantamonos: {fileID: 0}
-  puntoAparicion: {fileID: 0}
-  mensajeTienda: {fileID: 0}
-  vendedorFantasma: {fileID: 0}
-  contenedorArticulo: {fileID: 0}
-  imagenArticulo: {fileID: 0}
-  textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 4484705053667051490}
-  botonComprar: {fileID: 0}
-  textoBotonComprar: {fileID: 0}
-  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorPrecioInsuficiente: {r: 0.6528301, g: 0.11701665, b: 0.11701665, a: 1}
-  iconoConcha: {fileID: 21300000, guid: 48d206d78dfb468428218c0681bfb74c, type: 3}
-  iconoTulipan: {fileID: 21300000, guid: 3cc28ecdd9920bf4fa3056b671b1cfed, type: 3}
-  iconoPinya: {fileID: 21300000, guid: b23d89c62e36c394481755115894b6db, type: 3}
-  desactivarBotonSiNoPuedeComprar: 1
-  cerrarTiendaAlComprar: 1
 --- !u!114 &5734330129311102833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,6 +273,39 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3790319113010080723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195395420757383459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc5f066f3b96384e936249686b65cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  articuloData: {fileID: 0}
+  sistemaEconomia: {fileID: 0}
+  inventarioJugador: {fileID: 0}
+  sistemaObjetosBase: {fileID: 0}
+  sistemaEspantamonos: {fileID: 0}
+  puntoAparicion: {fileID: 0}
+  mensajeTienda: {fileID: 0}
+  vendedorFantasma: {fileID: 0}
+  contenedorArticulo: {fileID: 0}
+  imagenArticulo: {fileID: 0}
+  textoNombre: {fileID: 0}
+  contenedorPrecios: {fileID: 0}
+  botonComprar: {fileID: 0}
+  textoBotonComprar: {fileID: 0}
+  colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
+  colorPrecioInsuficiente: {r: 0.4566037, g: 0.06461367, b: 0.06461367, a: 1}
+  iconoConcha: {fileID: 21300000, guid: 48d206d78dfb468428218c0681bfb74c, type: 3}
+  iconoTulipan: {fileID: 21300000, guid: 3cc28ecdd9920bf4fa3056b671b1cfed, type: 3}
+  iconoPinya: {fileID: 21300000, guid: b23d89c62e36c394481755115894b6db, type: 3}
+  desactivarBotonSiNoPuedeComprar: 1
+  cerrarTiendaAlComprar: 0
 --- !u!1 &3364098215112669176
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,8 +340,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -26, y: 0}
-  m_SizeDelta: {x: 301.8642, y: 100}
+  m_AnchoredPosition: {x: -129.43896, y: 0}
+  m_SizeDelta: {x: 210.9862, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7796573371321756517
 CanvasRenderer:
@@ -398,8 +398,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 1.1395264, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -476,7 +476,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 82.545654, y: 0}
-  m_SizeDelta: {x: 307.1146, y: 200}
+  m_SizeDelta: {x: 200, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6643364542039715587
 MonoBehaviour:
@@ -496,7 +496,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 8
+  m_Spacing: 2
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -538,7 +538,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 41, y: 50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &9069900695065645838
