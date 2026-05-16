@@ -297,7 +297,8 @@ MonoBehaviour:
   contenedorArticulo: {fileID: 0}
   imagenArticulo: {fileID: 0}
   textoNombre: {fileID: 0}
-  contenedorPrecios: {fileID: 0}
+  contenedorPrecios: {fileID: 4484705053667051490}
+  prefabPrecioMoneda: {fileID: 8589569253711574912, guid: cada2645b82c737428c371d667598d4f, type: 3}
   botonComprar: {fileID: 0}
   textoBotonComprar: {fileID: 0}
   colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
@@ -341,7 +342,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -56.267067, y: 25.902}
+  m_AnchoredPosition: {x: -56.267067, y: 22}
   m_SizeDelta: {x: 305.2522, y: 34.619}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7796573371321756517
@@ -452,7 +453,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4484705053667051490}
-  - component: {fileID: 6643364542039715587}
+  - component: {fileID: 3686140413345844906}
   m_Layer: 0
   m_Name: PrecioContenedor
   m_TagString: Untagged
@@ -477,9 +478,9 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 222.61, y: 25.9017}
-  m_SizeDelta: {x: 230.64, y: 34.6194}
+  m_SizeDelta: {x: 230, y: 33}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6643364542039715587
+--- !u!114 &3686140413345844906
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -492,12 +493,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: -10
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 2
+  m_Spacing: 10
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -539,8 +540,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 71.4, y: 50}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 84.9, y: 39.9}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &9069900695065645838
 CanvasRenderer:
@@ -593,7 +594,7 @@ GameObject:
   - component: {fileID: 831250265831815866}
   - component: {fileID: 1231369772777134910}
   m_Layer: 5
-  m_Name: BuyButton
+  m_Name: BtnComprar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

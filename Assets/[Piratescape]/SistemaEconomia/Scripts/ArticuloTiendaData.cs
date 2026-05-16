@@ -18,6 +18,8 @@ public sealed class ArticuloTiendaData : ScriptableObject
 
     [Header("Sobrescribir visual opcional")]
     [SerializeField] private string nombreManual;
+    [TextArea(2, 4)]
+    [SerializeField] private string descripcionManual;
     [SerializeField] private Sprite iconoManual;
 
     public TipoArticuloTienda TipoArticulo => tipoArticulo;
@@ -25,6 +27,24 @@ public sealed class ArticuloTiendaData : ScriptableObject
     public int CantidadItem => cantidadItem;
     public ObjetoBaseData ObjetoBase => objetoBase;
     public CosteTienda[] Costes => costes;
+
+    public string Descripcion
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(descripcionManual))
+            {
+                return descripcionManual;
+            }
+
+            if (tipoArticulo == TipoArticuloTienda.ItemInventario && itemInventario != null)
+            {
+                return itemInventario.Description;
+            }
+
+            return string.Empty;
+        }
+    }
 
     public string Nombre
     {

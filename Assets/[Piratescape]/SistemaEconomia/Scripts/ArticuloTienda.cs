@@ -21,13 +21,19 @@ public sealed class ArticuloTienda : MonoBehaviour
     [SerializeField] private GameObject contenedorArticulo;
     [SerializeField] private Image imagenArticulo;
     [SerializeField] private TMP_Text textoNombre;
+    [SerializeField] private TMP_Text textoDescripcion;
     [SerializeField] private Transform contenedorPrecios;
+    [SerializeField] private PrecioMonedaUI prefabPrecioMoneda;
     [SerializeField] private Button botonComprar;
     [SerializeField] private TMP_Text textoBotonComprar;
 
     [Header("Colores")]
     [SerializeField] private Color colorPrecioNormal = Color.white;
     [SerializeField] private Color colorPrecioInsuficiente = Color.red;
+
+    [Header("Diseno precios")]
+    [SerializeField] private bool configurarLayoutPreciosAutomaticamente = true;
+    [SerializeField] private float separacionPrecios = 18f;
 
     [Header("Iconos monedas")]
     [SerializeField] private Sprite iconoConcha;
@@ -296,6 +302,13 @@ public sealed class ArticuloTienda : MonoBehaviour
             textoNombre.text = articuloData.Nombre;
         }
 
+        if (textoDescripcion != null)
+        {
+            string descripcion = articuloData.Descripcion;
+            textoDescripcion.text = descripcion;
+            textoDescripcion.gameObject.SetActive(!string.IsNullOrWhiteSpace(descripcion));
+        }
+
         if (imagenArticulo != null)
         {
             imagenArticulo.sprite = articuloData.Icono;
@@ -319,6 +332,8 @@ public sealed class ArticuloTienda : MonoBehaviour
         {
             return;
         }
+
+        PrepararLayoutPrecios();
 
         for (int i = contenedorPrecios.childCount - 1; i >= 0; i--)
         {
@@ -344,6 +359,29 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
     }
 
+
+    private void PrepararLayoutPrecios()
+    {
+        if (!configurarLayoutPreciosAutomaticamente || contenedorPrecios == null)
+        {
+            return;
+        }
+
+        HorizontalLayoutGroup layout = contenedorPrecios.GetComponent<HorizontalLayoutGroup>();
+
+        if (layout == null)
+        {
+            layout = contenedorPrecios.gameObject.AddComponent<HorizontalLayoutGroup>();
+        }
+
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.spacing = separacionPrecios;
+        layout.childControlWidth = false;
+        layout.childControlHeight = false;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = false;
+    }
+
     private void CrearPrecioGratis()
     {
         GameObject textoGO = new GameObject("Precio_Gratis");
@@ -362,58 +400,23 @@ public sealed class ArticuloTienda : MonoBehaviour
 
     private void CrearPrecioVisual(CosteTienda coste)
     {
-        GameObject fila = new GameObject("Precio_" + coste.TipoMoneda);
-        fila.transform.SetParent(contenedorPrecios, false);
+        if (prefabPrecioMoneda == null)
+        {
+            Debug.LogError("ArticuloTienda: falta asignar el prefab PrecioMonedaUI.", this);
+            return;
+        }
 
-        RectTransform filaRect = fila.AddComponent<RectTransform>();
-        filaRect.sizeDelta = new Vector2(100f, 32f);
+        PrecioMonedaUI precioUI = Instantiate(prefabPrecioMoneda, contenedorPrecios);
+        precioUI.name = "Precio_" + coste.TipoMoneda;
 
-        HorizontalLayoutGroup layout = fila.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 5f;
-        layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.childControlWidth = false;
-        layout.childControlHeight = false;
-        layout.childForceExpandWidth = false;
-        layout.childForceExpandHeight = false;
+        Sprite icono = ObtenerIconoMoneda(coste.TipoMoneda);
+        precioUI.Configurar(icono, coste.Cantidad);
 
-        LayoutElement filaLayout = fila.AddComponent<LayoutElement>();
-        filaLayout.preferredWidth = 100f;
-        filaLayout.preferredHeight = 32f;
-
-        GameObject iconoGO = new GameObject("Icono");
-        iconoGO.transform.SetParent(fila.transform, false);
-
-        RectTransform iconoRect = iconoGO.AddComponent<RectTransform>();
-        iconoRect.sizeDelta = new Vector2(26f, 26f);
-
-        LayoutElement iconoLayout = iconoGO.AddComponent<LayoutElement>();
-        iconoLayout.preferredWidth = 26f;
-        iconoLayout.preferredHeight = 26f;
-
-        Image imagen = iconoGO.AddComponent<Image>();
-        imagen.sprite = ObtenerIconoMoneda(coste.TipoMoneda);
-        imagen.preserveAspect = true;
-        imagen.raycastTarget = false;
-
-        GameObject textoGO = new GameObject("Cantidad");
-        textoGO.transform.SetParent(fila.transform, false);
-
-        RectTransform textoRect = textoGO.AddComponent<RectTransform>();
-        textoRect.sizeDelta = new Vector2(50f, 30f);
-
-        LayoutElement textoLayout = textoGO.AddComponent<LayoutElement>();
-        textoLayout.preferredWidth = 50f;
-        textoLayout.preferredHeight = 30f;
-
-        TextMeshProUGUI texto = textoGO.AddComponent<TextMeshProUGUI>();
-        texto.text = coste.Cantidad.ToString();
-        texto.fontSize = 24f;
-        texto.alignment = TextAlignmentOptions.MidlineLeft;
-        texto.raycastTarget = false;
-        texto.color = colorPrecioNormal;
-
-        textosPrecio.Add(texto);
-        costesPrecio.Add(coste);
+        if (precioUI.TextoCantidad != null)
+        {
+            textosPrecio.Add(precioUI.TextoCantidad);
+            costesPrecio.Add(coste);
+        }
     }
 
     private Sprite ObtenerIconoMoneda(TipoMoneda tipoMoneda)
@@ -684,6 +687,15 @@ public sealed class ArticuloTienda : MonoBehaviour
             if (nombreTransform != null)
             {
                 textoNombre = nombreTransform.GetComponent<TMP_Text>();
+            }
+        }
+
+        if (textoDescripcion == null)
+        {
+            Transform descripcionTransform = BuscarHijoRecursivo(transform, "Descripcion");
+            if (descripcionTransform != null)
+            {
+                textoDescripcion = descripcionTransform.GetComponent<TMP_Text>();
             }
         }
 
