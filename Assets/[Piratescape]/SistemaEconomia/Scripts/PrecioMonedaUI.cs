@@ -16,11 +16,13 @@ public sealed class PrecioMonedaUI : MonoBehaviour
         {
             imagenMoneda.sprite = icono;
             imagenMoneda.preserveAspect = true;
+            imagenMoneda.raycastTarget = false;
         }
 
         if (textoCantidad != null)
         {
             textoCantidad.text = cantidad.ToString();
+            textoCantidad.raycastTarget = false;
         }
     }
 }

@@ -31,9 +31,6 @@ public sealed class ArticuloTienda : MonoBehaviour
     [SerializeField] private Color colorPrecioNormal = Color.white;
     [SerializeField] private Color colorPrecioInsuficiente = Color.red;
 
-    [Header("Diseno precios")]
-    [SerializeField] private bool configurarLayoutPreciosAutomaticamente = true;
-    [SerializeField] private float separacionPrecios = 18f;
 
     [Header("Iconos monedas")]
     [SerializeField] private Sprite iconoConcha;
@@ -333,7 +330,6 @@ public sealed class ArticuloTienda : MonoBehaviour
             return;
         }
 
-        PrepararLayoutPrecios();
 
         for (int i = contenedorPrecios.childCount - 1; i >= 0; i--)
         {
@@ -359,28 +355,6 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
     }
 
-
-    private void PrepararLayoutPrecios()
-    {
-        if (!configurarLayoutPreciosAutomaticamente || contenedorPrecios == null)
-        {
-            return;
-        }
-
-        HorizontalLayoutGroup layout = contenedorPrecios.GetComponent<HorizontalLayoutGroup>();
-
-        if (layout == null)
-        {
-            layout = contenedorPrecios.gameObject.AddComponent<HorizontalLayoutGroup>();
-        }
-
-        layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.spacing = separacionPrecios;
-        layout.childControlWidth = false;
-        layout.childControlHeight = false;
-        layout.childForceExpandWidth = false;
-        layout.childForceExpandHeight = false;
-    }
 
     private void CrearPrecioGratis()
     {

@@ -201,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a529ab4635ffc6f45890770955ffb523, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f96f43710a3ad664085eb363188211d2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -297,16 +297,17 @@ MonoBehaviour:
   contenedorArticulo: {fileID: 0}
   imagenArticulo: {fileID: 0}
   textoNombre: {fileID: 0}
+  textoDescripcion: {fileID: 0}
   contenedorPrecios: {fileID: 4484705053667051490}
   prefabPrecioMoneda: {fileID: 8589569253711574912, guid: cada2645b82c737428c371d667598d4f, type: 3}
   botonComprar: {fileID: 0}
   textoBotonComprar: {fileID: 0}
   colorPrecioNormal: {r: 1, g: 1, b: 1, a: 1}
   colorPrecioInsuficiente: {r: 0.4566037, g: 0.06461367, b: 0.06461367, a: 1}
-  iconoConcha: {fileID: 21300000, guid: 48d206d78dfb468428218c0681bfb74c, type: 3}
-  iconoTulipan: {fileID: 21300000, guid: 3cc28ecdd9920bf4fa3056b671b1cfed, type: 3}
-  iconoPinya: {fileID: 21300000, guid: b23d89c62e36c394481755115894b6db, type: 3}
-  desactivarBotonSiNoPuedeComprar: 1
+  iconoConcha: {fileID: 21300000, guid: d5766e83c223e1f49ad0470ba33c5c67, type: 3}
+  iconoTulipan: {fileID: 21300000, guid: 84aff67ecf1687a4ca7e7fadb56e5c2a, type: 3}
+  iconoPinya: {fileID: 21300000, guid: 8427d132e615c7242b4b5ce246ab188a, type: 3}
+  desactivarBotonSiNoPuedeComprar: 0
   cerrarTiendaAlComprar: 0
 --- !u!1 &3364098215112669176
 GameObject:
@@ -342,7 +343,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -56.267067, y: 22}
+  m_AnchoredPosition: {x: -56.267067, y: 20.3}
   m_SizeDelta: {x: 305.2522, y: 34.619}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7796573371321756517
@@ -477,7 +478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 222.61, y: 25.9017}
+  m_AnchoredPosition: {x: 222.77013, y: 25.9017}
   m_SizeDelta: {x: 230, y: 33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3686140413345844906
@@ -493,12 +494,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: -10
+    m_Left: 0
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 10
+  m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -736,8 +737,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -59.113586, y: -17.324}
-  m_SizeDelta: {x: 300.7728, y: 51.834}
+  m_AnchoredPosition: {x: -59.113586, y: -21.621}
+  m_SizeDelta: {x: 300.7728, y: 43.241}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6307340130045955636
 CanvasRenderer:
@@ -767,7 +768,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lorem ipsum dolor sit amet noseke
+  m_text: Lorem ipsum dolor sit amet nosekeLorem ipsum dolor sit amet noseke
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ea41e9efcf45de24ea3d01833cd4665f, type: 2}
   m_sharedMaterial: {fileID: 5021409263450967491, guid: ea41e9efcf45de24ea3d01833cd4665f, type: 2}
@@ -794,15 +795,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
