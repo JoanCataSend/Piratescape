@@ -640,8 +640,8 @@ public sealed class DeveloperMenu : MonoBehaviour
     private void PackTienda()
     {
         AnadirMoneda(TipoMoneda.Concha, 100);
-        AnadirMoneda(TipoMoneda.Tulipan, 20);
-        AnadirMoneda(TipoMoneda.Pinya, 20);
+        AnadirMoneda(TipoMoneda.Tulipan, 100);
+        AnadirMoneda(TipoMoneda.Pinya, 100);
 
         Debug.Log("DeveloperMenu: pack de tienda añadido.");
     }
