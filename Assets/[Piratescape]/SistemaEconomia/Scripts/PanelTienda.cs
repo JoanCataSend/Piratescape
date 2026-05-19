@@ -20,7 +20,15 @@ public sealed class PanelTienda : MonoBehaviour
     [SerializeField] private PuntoAparicionObjetoBase[] puntosObjetosBase;
 
     private bool articulosCreados;
+    [SerializeField] private ArticuloTiendaData articuloPlatano;
+    [SerializeField] private ArticuloTiendaData articuloCoco;
+    [SerializeField] private ArticuloTiendaData articuloCuerda;
+    [SerializeField] private ArticuloTiendaData articuloClavo;
+    [SerializeField] private ArticuloTiendaData articuloEspantamonos;
 
+    private bool mostrarPlatano = true;
+    private bool mostrarCuerda = true;
+    private bool espantamonosComprado;
     private void OnEnable()
     {
         CrearArticulos();
@@ -50,6 +58,33 @@ public sealed class PanelTienda : MonoBehaviour
             {
                 continue;
             }
+            // Ocultar espantamonos si ya fue comprado
+            if (articuloData == articuloEspantamonos && espantamonosComprado)
+            {
+                continue;
+            }
+
+            // Alternar platano y coco
+            if (articuloData == articuloPlatano && !mostrarPlatano)
+            {
+                continue;
+            }
+
+            if (articuloData == articuloCoco && mostrarPlatano)
+            {
+                continue;
+            }
+
+            // Alternar cuerda y clavo
+            if (articuloData == articuloCuerda && !mostrarCuerda)
+            {
+                continue;
+            }
+
+            if (articuloData == articuloClavo && mostrarCuerda)
+            {
+                continue;
+            }
 
             Transform puntoAparicion = ObtenerPuntoAparicion(articuloData);
 
@@ -58,6 +93,10 @@ public sealed class PanelTienda : MonoBehaviour
             articuloCreado.Configurar(articuloData, puntoAparicion);
         }
 
+        // Cambiar para la siguiente vez
+        mostrarPlatano = !mostrarPlatano;
+        mostrarCuerda = !mostrarCuerda;
+
         articulosCreados = true;
     }
 
@@ -65,6 +104,11 @@ public sealed class PanelTienda : MonoBehaviour
     {
         articulosCreados = false;
         CrearArticulos();
+    }
+
+    public void MarcarEspantamonosComprado()
+    {
+        espantamonosComprado = true;
     }
 
     private bool ReferenciasValidas()
