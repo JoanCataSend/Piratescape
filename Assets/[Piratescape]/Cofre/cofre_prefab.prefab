@@ -63,6 +63,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4217685866323185380}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1292808172429570408}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5515277485333145699}
   m_SourcePrefab: {fileID: 100100000, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
 --- !u!1 &784592557680331802 stripped
 GameObject:
@@ -90,3 +96,35 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.3910872, y: 0.9209633, z: 0.9078269}
   m_Center: {x: 0, y: 0.46053964, z: 0.013090327}
+--- !u!114 &1292808172429570408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784592557680331802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fb9cf0aadb91a54dbe97be550ab7262, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numeroSlots: 10
+  slots: []
+--- !u!114 &-5515277485333145699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784592557680331802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf5aa06bb6f730f488e3afbe0346f291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombreObjeto: cofre
+  rango: 2.5
+  interactuable: 1
+  indicadorInteraccion: {fileID: 0}
+  inventarioCofre: {fileID: 1292808172429570408}
+  cofreInventarioUI: {fileID: 0}

@@ -21,6 +21,11 @@ public class Interactuador : MonoBehaviour
 
     private void Update()
     {
+        if (CofreInventarioUI.HayAlgunaUIAbierta)
+        {
+            return;
+        }
+
         bool interactuar = false;
 
         if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
@@ -38,6 +43,7 @@ public class Interactuador : MonoBehaviour
             return;
         }
 
+        RefreshInteractuables();
         Interactuable objetivo = ObtenerInteractuableActivoMasCercano();
 
         if (objetivo != null)

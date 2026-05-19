@@ -38,8 +38,9 @@ public class InventoryBarUI : MonoBehaviour
         for (int i = 0; i < slotUIs.Length; i++)
         {
             InventorySlot slot = playerInventory.GetSlot(i);
+            bool slotTieneItem = slot != null && !slot.IsEmpty();
 
-            if (slot == null || slot.IsEmpty())
+            if (!slotTieneItem)
             {
                 slotUIs[i].SetEmpty();
             }
@@ -48,7 +49,7 @@ public class InventoryBarUI : MonoBehaviour
                 slotUIs[i].SetSlot(slot.itemData, slot.amount);
             }
 
-            slotUIs[i].SetSelected(i == playerInventory.SelectedSlotIndex);
+            slotUIs[i].SetSelected(slotTieneItem && i == playerInventory.SelectedSlotIndex);
         }
     }
 }

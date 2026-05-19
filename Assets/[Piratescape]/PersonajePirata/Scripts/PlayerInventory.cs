@@ -75,6 +75,11 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             return true;
         }
 
+        if (CofreInventarioUI.HayAlgunaUIAbierta)
+        {
+            return true;
+        }
+
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
             return true;
