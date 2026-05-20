@@ -55,6 +55,11 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     private void AlPulsarPausa(InputAction.CallbackContext contexto)
     {
+        if (CofreInventarioUI.HayAlgunaUIAbierta || CofreInventarioUI.SeHaCerradoUIEsteFrame)
+        {
+            return;
+        }
+
         if (JugadorEstaMuerto())
         {
             if (estaEnPausa)
@@ -78,6 +83,11 @@ public sealed class MenuPausaUI : MonoBehaviour
     public void PausarJuego()
     {
         if (estaEnPausa || JugadorEstaMuerto())
+        {
+            return;
+        }
+
+        if (CofreInventarioUI.HayAlgunaUIAbierta || CofreInventarioUI.SeHaCerradoUIEsteFrame)
         {
             return;
         }

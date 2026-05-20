@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 public sealed class CofreInventarioUI : MonoBehaviour
 {
     public static bool HayAlgunaUIAbierta { get; private set; }
+    public static int FrameUltimoCierre { get; private set; } = -1;
+    public static bool SeHaCerradoUIEsteFrame => FrameUltimoCierre == Time.frameCount;
 
     [Header("Panel")]
     [SerializeField] private GameObject panel;
@@ -19,10 +21,15 @@ public sealed class CofreInventarioUI : MonoBehaviour
     [SerializeField] private Transform contenedorSlotsCofre;
     [SerializeField] private SlotCofreUI[] slotsCofre;
 
+    [Header("Pausa")]
+    [SerializeField] private bool pausarJuegoAlAbrir = true;
+
     private InventarioCofre cofreActual;
     private CursorLockMode cursorLockAnterior;
     private bool cursorVisibleAnterior;
     private bool cursorGuardado;
+    private float timeScaleAnterior = 1f;
+    private bool timeScaleGuardado;
 
     public bool EstaAbierto
     {
@@ -58,7 +65,13 @@ public sealed class CofreInventarioUI : MonoBehaviour
             cofreActual = null;
         }
 
+        if (HayAlgunaUIAbierta)
+        {
+            FrameUltimoCierre = Time.frameCount;
+        }
+
         HayAlgunaUIAbierta = false;
+        RestaurarPausaSiHaceFalta();
     }
 
     private void Update()
@@ -134,13 +147,20 @@ public sealed class CofreInventarioUI : MonoBehaviour
             cursorLockAnterior = Cursor.lockState;
             cursorVisibleAnterior = Cursor.visible;
             cursorGuardado = true;
+
+            if (pausarJuegoAlAbrir)
+            {
+                timeScaleAnterior = Time.timeScale;
+                timeScaleGuardado = true;
+                Time.timeScale = 0f;
+            }
         }
 
+        HayAlgunaUIAbierta = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
         panel.SetActive(true);
-        HayAlgunaUIAbierta = true;
 
         MostrarMensaje("Click: mover 1 objeto. Shift + click: mover todo el stack. E/ESC: cerrar.");
         RefrescarUI();
@@ -156,7 +176,14 @@ public sealed class CofreInventarioUI : MonoBehaviour
             panel.SetActive(false);
         }
 
+        if (HayAlgunaUIAbierta)
+        {
+            FrameUltimoCierre = Time.frameCount;
+        }
+
         HayAlgunaUIAbierta = false;
+        FrameUltimoCierre = Time.frameCount;
+        RestaurarPausaSiHaceFalta();
 
         if (cursorGuardado)
         {
@@ -457,5 +484,16 @@ public sealed class CofreInventarioUI : MonoBehaviour
         {
             cofreActual.OnInventarioCofreCambiado -= RefrescarUI;
         }
+    }
+
+    private void RestaurarPausaSiHaceFalta()
+    {
+        if (!timeScaleGuardado)
+        {
+            return;
+        }
+
+        Time.timeScale = timeScaleAnterior;
+        timeScaleGuardado = false;
     }
 }

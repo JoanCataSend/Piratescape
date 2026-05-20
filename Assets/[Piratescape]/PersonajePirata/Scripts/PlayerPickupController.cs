@@ -63,6 +63,12 @@ public sealed class PlayerPickupController : MonoBehaviour
 
     private void Update()
     {
+        if (CofreInventarioUI.HayAlgunaUIAbierta || Time.timeScale == 0f)
+        {
+            LimpiarObjetoActual();
+            return;
+        }
+
         if (jugadorActivador == null || isPickingUp)
         {
             return;
@@ -185,7 +191,7 @@ public sealed class PlayerPickupController : MonoBehaviour
 
         foreach (ObjetoRecogibleInteractuable objeto in todos)
         {
-            if (objeto == null || !objeto.EstaDisponible)
+            if (objeto == null || !objeto.isActiveAndEnabled || !objeto.EstaDisponible)
             {
                 continue;
             }
@@ -304,8 +310,6 @@ public sealed class PlayerPickupController : MonoBehaviour
 
         string combinedInfo = displayName + " " + name + " " + manufacturer + " " + product;
 
-        Debug.Log("MANDO DETECTADO -> " + combinedInfo);
-
         if (combinedInfo.Contains("sony") ||
             combinedInfo.Contains("playstation") ||
             combinedInfo.Contains("dualshock") ||
@@ -316,8 +320,8 @@ public sealed class PlayerPickupController : MonoBehaviour
         }
 
         if (combinedInfo.Contains("xbox") ||
-            combinedInfo.Contains("microsoft") ||
-            combinedInfo.Contains("xinput"))
+            combinedInfo.Contains("xinput") ||
+            combinedInfo.Contains("microsoft"))
         {
             return InputDeviceType.Xbox;
         }
@@ -331,16 +335,21 @@ public sealed class PlayerPickupController : MonoBehaviour
         {
             case InputDeviceType.PlayStation:
                 return "□";
-
             case InputDeviceType.Xbox:
                 return "X";
-
             case InputDeviceType.GenericGamepad:
-                return "X";
-
-            case InputDeviceType.KeyboardMouse:
+                return "Boton Oeste";
             default:
                 return "E";
+        }
+    }
+
+    private void LimpiarObjetoActual()
+    {
+        if (objetoActual != null)
+        {
+            objetoActual.OcultarPrompt();
+            objetoActual = null;
         }
     }
 }
