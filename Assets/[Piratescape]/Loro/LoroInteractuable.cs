@@ -49,8 +49,8 @@ public sealed class LoroInteractuable : MonoBehaviour, Interactuable
             loroDialogoUI = FindFirstObjectByType<LoroDialogoUI>();
         }
 
-        bool uiAbierta = loroDialogoUI != null && loroDialogoUI.EstaAbierto;
-        bool nuevoActivo = interactuable && !uiAbierta && Vector3.Distance(transform.position, jugador.Position) <= rango;
+        bool menuLoroAbierto = LoroDialogoUI.HayAlgunaUIAbierta;
+        bool nuevoActivo = interactuable && !menuLoroAbierto && Vector3.Distance(transform.position, jugador.Position) <= rango;
 
         if (nuevoActivo != activo)
         {

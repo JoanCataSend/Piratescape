@@ -21,27 +21,17 @@ public sealed class LoroDialogoUI : MonoBehaviour
     [SerializeField] private Button botonSiguiente;
     [SerializeField] private Button botonCerrar;
 
-    [Header("Tutorial")]
-    [TextArea(2, 5)]
-    [SerializeField] private string[] frasesTutorial = new string[]
-    {
-        "¡Graaak! Bienvenido a la isla. Muevete con WASD y mira alrededor con el raton.",
-        "Recoge recursos acercandote a ellos y pulsa E cuando aparezca el mensaje.",
-        "Tu inventario esta abajo. Cambia de slot con los numeros o con la rueda del raton.",
-        "Habla con el fantasma para abrir la tienda. Compra objetos utiles para mejorar tu base.",
-        "El cofre sirve para guardar objetos. Acercate y pulsa E para abrirlo.",
-        "Cuando quieras guardar la partida, vuelve a hablar conmigo. ¡Graaak!"
-    };
+    [Header("Tutorial por misiones")]
+    [SerializeField] private TutorialMisionesLoro tutorialMisiones;
 
     [Header("Comportamiento")]
     [SerializeField] private bool pausarJuegoAlAbrir = true;
 
-    private int indiceTutorial;
-    private bool mostrandoTutorial;
     private CursorLockMode cursorLockAnterior;
     private bool cursorVisibleAnterior;
     private float timeScaleAnterior = 1f;
     private int frameApertura = -1;
+    private bool modoMenuModal;
 
     public bool EstaAbierto => panel != null && panel.activeSelf;
 
@@ -52,23 +42,29 @@ public sealed class LoroDialogoUI : MonoBehaviour
             panel.SetActive(false);
         }
 
+        if (tutorialMisiones == null)
+        {
+            tutorialMisiones = FindFirstObjectByType<TutorialMisionesLoro>();
+        }
+
         ConfigurarBotones();
         HayAlgunaUIAbierta = false;
     }
 
     private void OnDisable()
     {
-        if (EstaAbierto)
+        if (modoMenuModal)
         {
             RestaurarEstadoJuego();
         }
 
+        modoMenuModal = false;
         HayAlgunaUIAbierta = false;
     }
 
     private void Update()
     {
-        if (!EstaAbierto)
+        if (!EstaAbierto || !modoMenuModal)
         {
             return;
         }
@@ -83,58 +79,42 @@ public sealed class LoroDialogoUI : MonoBehaviour
             if (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame)
             {
                 Cerrar();
-                return;
-            }
-
-            if (mostrandoTutorial && (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame))
-            {
-                SiguienteTutorial();
             }
         }
     }
 
     public void AbrirMenuLoro()
     {
-        AbrirPanelBase();
-        mostrandoTutorial = false;
-        indiceTutorial = 0;
+        AbrirPanelComoMenuModal();
 
         EstablecerTitulo("Loro de la base");
-        EstablecerDialogo("¡Graaak! ¿Que necesitas? Puedo guardar tu partida o repetir el tutorial.");
+        EstablecerDialogo("¡Graaak! ¿Que necesitas? Puedo guardar tu partida, cargarla o repetir el tutorial.");
         EstablecerMensaje("");
-        ActualizarBotones();
+        MostrarBotonesMenu(true);
     }
 
     public void AbrirTutorialAutomatico()
     {
-        AbrirPanelBase();
         IniciarTutorial();
     }
 
     public void IniciarTutorial()
     {
-        mostrandoTutorial = true;
-        indiceTutorial = 0;
-        MostrarFraseTutorialActual();
-        ActualizarBotones();
-    }
-
-    public void SiguienteTutorial()
-    {
-        if (!mostrandoTutorial)
+        if (tutorialMisiones == null)
         {
-            return;
+            tutorialMisiones = FindFirstObjectByType<TutorialMisionesLoro>();
         }
 
-        indiceTutorial++;
+        CerrarSinMarcarFrame();
 
-        if (indiceTutorial >= frasesTutorial.Length)
+        if (tutorialMisiones != null)
         {
-            TerminarTutorial();
-            return;
+            tutorialMisiones.IniciarTutorialDesdeCero();
         }
-
-        MostrarFraseTutorialActual();
+        else
+        {
+            MostrarPanelTutorial("Tutorial", "No se ha encontrado TutorialMisionesLoro en la escena.", "Añade el script TutorialMisionesLoro al controlador del loro.");
+        }
     }
 
     public void GuardarPartida()
@@ -147,6 +127,16 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
         GestorPartida.Instance.GuardarPartida();
         EstablecerMensaje("Partida guardada correctamente.");
+
+        if (tutorialMisiones == null)
+        {
+            tutorialMisiones = FindFirstObjectByType<TutorialMisionesLoro>();
+        }
+
+        if (tutorialMisiones != null)
+        {
+            tutorialMisiones.NotificarPartidaGuardada();
+        }
     }
 
     public void CargarPartida()
@@ -168,33 +158,81 @@ public sealed class LoroDialogoUI : MonoBehaviour
             return;
         }
 
-        mostrandoTutorial = false;
-
-        if (panel != null)
-        {
-            panel.SetActive(false);
-        }
-
-        RestaurarEstadoJuego();
-        HayAlgunaUIAbierta = false;
+        CerrarSinMarcarFrame();
         FrameCierre = Time.frameCount;
     }
 
-    private void AbrirPanelBase()
+    public void MostrarPanelTutorial(string titulo, string dialogo, string mensaje)
     {
-        frameApertura = Time.frameCount;
-
-        if (!EstaAbierto)
+        if (modoMenuModal)
         {
-            GuardarEstadoJuego();
+            RestaurarEstadoJuego();
         }
+
+        modoMenuModal = false;
+        HayAlgunaUIAbierta = false;
 
         if (panel != null)
         {
             panel.SetActive(true);
         }
 
+        EstablecerTitulo(titulo);
+        EstablecerDialogo(dialogo);
+        EstablecerMensaje(mensaje);
+        MostrarBotonesMenu(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void OcultarPanelTutorial()
+    {
+        if (modoMenuModal)
+        {
+            return;
+        }
+
+        if (panel != null)
+        {
+            panel.SetActive(false);
+        }
+    }
+
+    private void AbrirPanelComoMenuModal()
+    {
+        frameApertura = Time.frameCount;
+
+        if (!modoMenuModal)
+        {
+            GuardarEstadoJuego();
+        }
+
+        modoMenuModal = true;
         HayAlgunaUIAbierta = true;
+
+        if (panel != null)
+        {
+            panel.SetActive(true);
+        }
+    }
+
+    private void CerrarSinMarcarFrame()
+    {
+        bool estabaEnMenuModal = modoMenuModal;
+
+        modoMenuModal = false;
+        HayAlgunaUIAbierta = false;
+
+        if (panel != null)
+        {
+            panel.SetActive(false);
+        }
+
+        if (estabaEnMenuModal)
+        {
+            RestaurarEstadoJuego();
+        }
     }
 
     private void GuardarEstadoJuego()
@@ -223,56 +261,31 @@ public sealed class LoroDialogoUI : MonoBehaviour
         Cursor.visible = cursorVisibleAnterior;
     }
 
-    private void MostrarFraseTutorialActual()
-    {
-        EstablecerTitulo("Tutorial del loro");
-
-        if (frasesTutorial == null || frasesTutorial.Length == 0)
-        {
-            EstablecerDialogo("No hay frases de tutorial configuradas.");
-            return;
-        }
-
-        indiceTutorial = Mathf.Clamp(indiceTutorial, 0, frasesTutorial.Length - 1);
-        EstablecerDialogo(frasesTutorial[indiceTutorial]);
-        EstablecerMensaje("Paso " + (indiceTutorial + 1) + "/" + frasesTutorial.Length + " - Pulsa Espacio o Enter para continuar.");
-    }
-
-    private void TerminarTutorial()
-    {
-        mostrandoTutorial = false;
-
-        if (GestorPartida.Instance != null)
-        {
-            GestorPartida.Instance.MarcarTutorialCompletado(true);
-        }
-
-        EstablecerTitulo("Tutorial completado");
-        EstablecerDialogo("¡Graaak! Ya sabes lo basico. Vuelve a hablar conmigo cuando quieras guardar la partida.");
-        EstablecerMensaje("Tutorial completado.");
-        ActualizarBotones();
-    }
-
-    private void ActualizarBotones()
+    private void MostrarBotonesMenu(bool visibles)
     {
         if (botonGuardar != null)
         {
-            botonGuardar.gameObject.SetActive(!mostrandoTutorial);
+            botonGuardar.gameObject.SetActive(visibles);
         }
 
         if (botonCargar != null)
         {
-            botonCargar.gameObject.SetActive(!mostrandoTutorial);
+            botonCargar.gameObject.SetActive(visibles);
         }
 
         if (botonTutorial != null)
         {
-            botonTutorial.gameObject.SetActive(!mostrandoTutorial);
+            botonTutorial.gameObject.SetActive(visibles);
         }
 
         if (botonSiguiente != null)
         {
-            botonSiguiente.gameObject.SetActive(mostrandoTutorial);
+            botonSiguiente.gameObject.SetActive(false);
+        }
+
+        if (botonCerrar != null)
+        {
+            botonCerrar.gameObject.SetActive(visibles);
         }
     }
 
@@ -298,8 +311,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
         if (botonSiguiente != null)
         {
-            botonSiguiente.onClick.RemoveListener(SiguienteTutorial);
-            botonSiguiente.onClick.AddListener(SiguienteTutorial);
+            botonSiguiente.gameObject.SetActive(false);
         }
 
         if (botonCerrar != null)

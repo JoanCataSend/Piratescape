@@ -3,20 +3,20 @@ using UnityEngine;
 
 public sealed class TutorialInicioLoro : MonoBehaviour
 {
-    [SerializeField] private LoroDialogoUI loroDialogoUI;
+    [SerializeField] private TutorialMisionesLoro tutorialMisionesLoro;
     [SerializeField] private float retrasoInicio = 0.5f;
     [SerializeField] private bool mostrarSoloUnaVez = true;
 
     private IEnumerator Start()
     {
-        if (loroDialogoUI == null)
+        if (tutorialMisionesLoro == null)
         {
-            loroDialogoUI = FindFirstObjectByType<LoroDialogoUI>();
+            tutorialMisionesLoro = FindFirstObjectByType<TutorialMisionesLoro>();
         }
 
         yield return new WaitForSecondsRealtime(retrasoInicio);
 
-        if (loroDialogoUI == null)
+        if (tutorialMisionesLoro == null)
         {
             yield break;
         }
@@ -26,6 +26,6 @@ public sealed class TutorialInicioLoro : MonoBehaviour
             yield break;
         }
 
-        loroDialogoUI.AbrirTutorialAutomatico();
+        tutorialMisionesLoro.IniciarTutorialAutomatico();
     }
 }
