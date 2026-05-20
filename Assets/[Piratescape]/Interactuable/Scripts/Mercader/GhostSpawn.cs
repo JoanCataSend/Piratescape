@@ -66,9 +66,13 @@ public class GhostSpawn : MonoBehaviour
         float x = Mathf.Sin(tiempo) * amplitudX;
         float z = Mathf.Sin(tiempo * 2f) * amplitudZ;
 
-        Vector3 nuevaPosicion = posicionBase + new Vector3(x, 0f, z);
+        float y = Mathf.Sin(Time.time * 2f) * 0.25f;
 
-        Vector3 direccion = (nuevaPosicion - transform.position).normalized;
+        Vector3 nuevaPosicion = posicionBase + new Vector3(x, y, z);
+
+        Vector3 direccion = nuevaPosicion - transform.position;
+        direccion.y = 0f;
+        direccion = direccion.normalized;
 
         if (direccion.sqrMagnitude > 0.001f)
         {
