@@ -55,7 +55,7 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     private void AlPulsarPausa(InputAction.CallbackContext contexto)
     {
-        if (CofreInventarioUI.HayAlgunaUIAbierta || CofreInventarioUI.SeHaCerradoUIEsteFrame)
+        if (HayOtraUIAbierta())
         {
             return;
         }
@@ -82,12 +82,7 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     public void PausarJuego()
     {
-        if (estaEnPausa || JugadorEstaMuerto())
-        {
-            return;
-        }
-
-        if (CofreInventarioUI.HayAlgunaUIAbierta || CofreInventarioUI.SeHaCerradoUIEsteFrame)
+        if (estaEnPausa || JugadorEstaMuerto() || HayOtraUIAbierta())
         {
             return;
         }
@@ -174,6 +169,11 @@ public sealed class MenuPausaUI : MonoBehaviour
     #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
     #endif
+    }
+
+    private bool HayOtraUIAbierta()
+    {
+        return CofreInventarioUI.HayAlgunaUIAbierta || LoroDialogoUI.HayAlgunaUIAbierta;
     }
 
     private bool JugadorEstaMuerto()

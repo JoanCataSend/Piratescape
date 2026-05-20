@@ -107,6 +107,76 @@ public sealed class SistemaObjetosBase : MonoBehaviour
         return true;
     }
 
+    public List<DatosObjetoBase> CrearDatosGuardado()
+    {
+        LimpiarReferenciasNulas();
+
+        List<DatosObjetoBase> datos = new List<DatosObjetoBase>();
+
+        for (int i = 0; i < objetosColocados.Count; i++)
+        {
+            ObjetoBaseColocado colocado = objetosColocados[i];
+
+            if (colocado == null || colocado.ObjetoBase == null || colocado.ObjetoCreado == null)
+            {
+                continue;
+            }
+
+            DatosObjetoBase dato = new DatosObjetoBase();
+            dato.idObjeto = colocado.ObjetoBase.IdObjeto;
+            dato.posicion = colocado.ObjetoCreado.transform.position;
+            dato.rotacionEuler = colocado.ObjetoCreado.transform.eulerAngles;
+
+            InventarioCofre inventarioCofre = colocado.ObjetoCreado.GetComponentInChildren<InventarioCofre>(true);
+            dato.inventarioCofre = InventarioGuardadoUtil.CrearDesdeCofre(inventarioCofre);
+
+            datos.Add(dato);
+        }
+
+        return datos;
+    }
+
+    public void CargarDatosGuardado(List<DatosObjetoBase> datos, BaseObjectDatabase baseObjectDatabase, ItemDatabase itemDatabase)
+    {
+        DestruirObjetosColocadosActuales();
+
+        if (datos == null || baseObjectDatabase == null)
+        {
+            OnObjetosBaseActualizados?.Invoke();
+            return;
+        }
+
+        for (int i = 0; i < datos.Count; i++)
+        {
+            DatosObjetoBase dato = datos[i];
+
+            if (dato == null || string.IsNullOrWhiteSpace(dato.idObjeto))
+            {
+                continue;
+            }
+
+            ObjetoBaseData objetoBase = baseObjectDatabase.BuscarPorId(dato.idObjeto);
+
+            if (objetoBase == null || objetoBase.Prefab == null)
+            {
+                continue;
+            }
+
+            GameObject objetoCreado = Instantiate(
+                objetoBase.Prefab,
+                dato.posicion,
+                Quaternion.Euler(dato.rotacionEuler)
+            );
+
+            InventarioCofre inventarioCofre = objetoCreado.GetComponentInChildren<InventarioCofre>(true);
+            InventarioGuardadoUtil.CargarEnCofre(inventarioCofre, dato.inventarioCofre, itemDatabase);
+
+            objetosColocados.Add(new ObjetoBaseColocado(objetoBase, objetoCreado));
+        }
+
+        OnObjetosBaseActualizados?.Invoke();
+    }
+
     private bool EsMismoObjeto(ObjetoBaseData a, ObjetoBaseData b)
     {
         if (a == null || b == null)
@@ -136,6 +206,19 @@ public sealed class SistemaObjetosBase : MonoBehaviour
                 objetosColocados.RemoveAt(i);
             }
         }
+    }
+
+    private void DestruirObjetosColocadosActuales()
+    {
+        for (int i = objetosColocados.Count - 1; i >= 0; i--)
+        {
+            if (objetosColocados[i] != null && objetosColocados[i].ObjetoCreado != null)
+            {
+                Destroy(objetosColocados[i].ObjetoCreado);
+            }
+        }
+
+        objetosColocados.Clear();
     }
 
     private sealed class ObjetoBaseColocado

@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfa92465034ab8b4a8afcbdd6105a430, type: 3}
-  m_Name: PezCocinado 1
+  m_Script: {fileID: 11500000, guid: d57c4fae5c480314fb120b7e0727d610, type: 3}
+  m_Name: ItemDatabase
   m_EditorClassIdentifier: 
-  itemId: pezCocinado
-  displayName: Pez cocinado
-  icon: {fileID: 21300000, guid: bde34b759c546f041b34d816b2f12cf2, type: 3}
-  healthRestore: 35
-  energyRestore: 15
+  items:
+  - {fileID: 11400000, guid: 1f868baa0f18b684da6f3cde3832f65e, type: 2}
+  - {fileID: 11400000, guid: db275bd9098c0e74a92d39a5c4895188, type: 2}

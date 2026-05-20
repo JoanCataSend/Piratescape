@@ -21,17 +21,12 @@ public class Interactuador : MonoBehaviour
 
     private void Update()
     {
-        if (CofreInventarioUI.SeHaCerradoUIEsteFrame)
+        if (CofreInventarioUI.HayAlgunaUIAbierta || LoroDialogoUI.HayAlgunaUIAbierta)
         {
             return;
         }
 
-        if (Time.timeScale == 0f)
-        {
-            return;
-        }
-
-        if (CofreInventarioUI.HayAlgunaUIAbierta)
+        if (Time.frameCount == LoroDialogoUI.FrameCierre)
         {
             return;
         }
@@ -81,9 +76,13 @@ public class Interactuador : MonoBehaviour
             return null;
         }
 
+        if (jugador == null)
+        {
+            return interactuables.FirstOrDefault(item => item != null && item.Activo);
+        }
+
         Interactuable mejor = null;
         float mejorDistancia = float.MaxValue;
-        Vector3 posicionJugador = jugador != null ? jugador.Position : transform.position;
 
         foreach (Interactuable item in interactuables)
         {
@@ -94,7 +93,7 @@ public class Interactuador : MonoBehaviour
 
             MonoBehaviour behaviour = item as MonoBehaviour;
 
-            if (behaviour == null || !behaviour.isActiveAndEnabled)
+            if (behaviour == null)
             {
                 continue;
             }
@@ -104,12 +103,14 @@ public class Interactuador : MonoBehaviour
                 continue;
             }
 
-            if (item is ObjetoRecogibleInteractuable)
+            ObjetoRecogibleInteractuable recogible = behaviour.GetComponent<ObjetoRecogibleInteractuable>();
+
+            if (recogible != null)
             {
                 continue;
             }
 
-            float distancia = Vector3.Distance(behaviour.transform.position, posicionJugador);
+            float distancia = Vector3.Distance(behaviour.transform.position, jugador.Position);
 
             if (distancia > item.Rango)
             {
