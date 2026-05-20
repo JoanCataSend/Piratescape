@@ -2820,9 +2820,9 @@ MonoBehaviour:
   animator: {fileID: 75485406}
   radioZona: 51.1
   velocidadPaseo: 1.5
-  velocidadHuida: 15
+  velocidadHuida: 20
   velocidadRotacion: 8
-  distanciaDetectarPlayer: 10.6
+  distanciaDetectarPlayer: 3
   distanciaPararHuida: 7
   gravedad: -20
   fuerzaPegadoSuelo: -2
@@ -41482,7 +41482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6142950902627478902, guid: 9b8ffb9b7fea8de4d9e3760d1b8e2f1e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.8955536
+      value: 0.26
       objectReference: {fileID: 0}
     - target: {fileID: -6142950902627478902, guid: 9b8ffb9b7fea8de4d9e3760d1b8e2f1e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -90270,11 +90270,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3152467359577209673, guid: 448d195c66e1a28489a58bd441a3804b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.39081383
+      value: 0.43
       objectReference: {fileID: 0}
     - target: {fileID: 3152467359577209673, guid: 448d195c66e1a28489a58bd441a3804b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 22.65
+      value: 27.4
       objectReference: {fileID: 0}
     - target: {fileID: 3152467359577209673, guid: 448d195c66e1a28489a58bd441a3804b, type: 3}
       propertyPath: m_LocalRotation.w
