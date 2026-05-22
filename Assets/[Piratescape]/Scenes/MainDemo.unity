@@ -104225,8 +104225,14 @@ MonoBehaviour:
   sunLight: {fileID: 1504668338}
   moonLight: {fileID: 2135065400}
   ghostSpawn: {fileID: 1881819183}
+  morningSkybox: {fileID: 2100000, guid: 5464c15ff9c6ca04cb5790c1773e76fa, type: 2}
   daySkybox: {fileID: 2100000, guid: 9aa8ed67591432941bb76f12eb23ff91, type: 2}
+  sunsetSkybox: {fileID: 2100000, guid: baef7505b9e48404cb74585601f49ff9, type: 2}
   nightSkybox: {fileID: 2100000, guid: ed1387202b1349540a5d6464f0f27488, type: 2}
+  morningReflectionIntensity: 0.45
+  dayReflectionIntensity: 1
+  sunsetReflectionIntensity: 0.35
+  nightReflectionIntensity: 0.03
   sunriseAmbientColor: {r: 0.3, g: 0.28, b: 0.35, a: 1}
   morningAmbientColor: {r: 0.55, g: 0.52, b: 0.45, a: 1}
   dayAmbientColor: {r: 0.46101815, g: 0.46377113, b: 0.5283019, a: 1}
@@ -126212,7 +126218,7 @@ Transform:
   m_GameObject: {fileID: 1542578967}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0721, z: -0}
+  m_LocalPosition: {x: 0, y: 0.0721, z: -0.0505}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -126242,7 +126248,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b36b11cc52c29c14fa355603870d9b97, type: 2}
+  - {fileID: 2100000, guid: 59075f775befbc94fb3f2bc60ca0f90b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -126272,8 +126278,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.8241081
-        value: 0.7578964
+        time: 0.75037766
+        value: 0.21244049
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -177727,7 +177733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -73.3
+      value: -72.968
       objectReference: {fileID: 0}
     - target: {fileID: 2812308931791075750, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: m_LocalRotation.w
