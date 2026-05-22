@@ -45,16 +45,16 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _BurstSharpness: 0.15
-    - _MaxGlow: 1.15
-    - _MinGlow: 0.12
-    - _Outline: 0.35
-    - _PulseSpeed: 1.2
+    - _BurstSharpness: 0
+    - _MaxGlow: 0.45
+    - _MinGlow: 0.03
+    - _Outline: 0.05
+    - _PulseSpeed: 0.7
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Transparency: 0.55
+    - _Transparency: 0.82
     m_Colors:
-    - _Ghost_Color: {r: 0.45, g: 0.85, b: 1, a: 0.16470589}
+    - _Ghost_Color: {r: 0.6622641, g: 0.782348, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1287749047787143400
