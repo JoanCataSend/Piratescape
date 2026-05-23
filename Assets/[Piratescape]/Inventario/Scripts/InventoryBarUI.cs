@@ -4,39 +4,81 @@ public class InventoryBarUI : MonoBehaviour
 {
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private InventorySlotUI[] slotUIs;
+    [SerializeField] private bool buscarSlotsAutomaticamente = true;
 
-    private void Start()
+    private bool suscrito;
+
+    private void Awake()
+    {
+        BuscarReferencias();
+    }
+
+    private void OnEnable()
+    {
+        BuscarReferencias();
+        SuscribirseInventario();
+        RefreshUI();
+    }
+
+    private void OnDisable()
+    {
+        DesuscribirseInventario();
+    }
+
+    private void BuscarReferencias()
     {
         if (playerInventory == null)
         {
             playerInventory = FindFirstObjectByType<PlayerInventory>();
         }
 
-        if (playerInventory != null)
+        if (buscarSlotsAutomaticamente && (slotUIs == null || slotUIs.Length == 0))
         {
-            playerInventory.OnInventoryChanged += RefreshUI;
+            slotUIs = GetComponentsInChildren<InventorySlotUI>(true);
         }
-
-        RefreshUI();
     }
 
-    private void OnDestroy()
+    private void SuscribirseInventario()
     {
-        if (playerInventory != null)
+        if (playerInventory == null || suscrito)
         {
-            playerInventory.OnInventoryChanged -= RefreshUI;
+            return;
         }
+
+        playerInventory.OnInventoryChanged += RefreshUI;
+        suscrito = true;
+    }
+
+    private void DesuscribirseInventario()
+    {
+        if (playerInventory == null || !suscrito)
+        {
+            return;
+        }
+
+        playerInventory.OnInventoryChanged -= RefreshUI;
+        suscrito = false;
     }
 
     public void RefreshUI()
     {
         if (playerInventory == null)
         {
+            BuscarReferencias();
+        }
+
+        if (playerInventory == null || slotUIs == null)
+        {
             return;
         }
 
         for (int i = 0; i < slotUIs.Length; i++)
         {
+            if (slotUIs[i] == null)
+            {
+                continue;
+            }
+
             InventorySlot slot = playerInventory.GetSlot(i);
             bool slotTieneItem = slot != null && !slot.IsEmpty();
 

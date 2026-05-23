@@ -4,6 +4,9 @@ using UnityEngine.InputSystem;
 
 public class Interactuador : MonoBehaviour
 {
+    [Header("Debug")]
+    [SerializeField] private bool mostrarDebugInteraccion = false;
+
     private Interactuable[] interactuables;
     private IActivador jugador;
 
@@ -53,7 +56,18 @@ public class Interactuador : MonoBehaviour
 
         if (objetivo != null)
         {
+            if (mostrarDebugInteraccion)
+            {
+                MonoBehaviour behaviour = objetivo as MonoBehaviour;
+                string nombre = behaviour != null ? behaviour.name : objetivo.ToString();
+                Debug.Log("Interactuando con: " + nombre, behaviour);
+            }
+
             objetivo.Interactuar();
+        }
+        else if (mostrarDebugInteraccion)
+        {
+            Debug.Log("No hay interactuable activo cerca.", this);
         }
     }
 
@@ -85,7 +99,12 @@ public class Interactuador : MonoBehaviour
 
         if (jugador == null)
         {
-            return interactuables.FirstOrDefault(item => item != null && item.Activo);
+            jugador = GetComponent<IActivador>();
+
+            if (jugador == null)
+            {
+                jugador = GetComponent<JugadorActivador>();
+            }
         }
 
         Interactuable mejor = null;
@@ -100,12 +119,7 @@ public class Interactuador : MonoBehaviour
 
             MonoBehaviour behaviour = item as MonoBehaviour;
 
-            if (behaviour == null)
-            {
-                continue;
-            }
-
-            if (!behaviour.isActiveAndEnabled)
+            if (behaviour == null || !behaviour.isActiveAndEnabled)
             {
                 continue;
             }
@@ -120,13 +134,18 @@ public class Interactuador : MonoBehaviour
                 continue;
             }
 
-            float distancia = Vector3.Distance(behaviour.transform.position, jugador.Position);
-
-            if (distancia > item.Rango)
+            if (jugador == null)
             {
-                continue;
+                mejor = item;
+                break;
             }
 
+            Vector3 posicionInteraccion = ObtenerPosicionInteraccion(item, behaviour);
+            float distancia = Vector3.Distance(posicionInteraccion, jugador.Position);
+
+            // No volvemos a descartar por rango aqui.
+            // Cada interactuable ya calcula su propio Activo con su propio punto de interaccion.
+            // Esto arregla la tienda: el prompt salia por el InteractionPoint, pero la E se media desde el centro del prefab.
             if (distancia < mejorDistancia)
             {
                 mejorDistancia = distancia;
@@ -135,5 +154,17 @@ public class Interactuador : MonoBehaviour
         }
 
         return mejor;
+    }
+
+    private Vector3 ObtenerPosicionInteraccion(Interactuable item, MonoBehaviour behaviour)
+    {
+        ShelterSleep shelterSleep = item as ShelterSleep;
+
+        if (shelterSleep != null)
+        {
+            return shelterSleep.PosicionInteraccion;
+        }
+
+        return behaviour.transform.position;
     }
 }

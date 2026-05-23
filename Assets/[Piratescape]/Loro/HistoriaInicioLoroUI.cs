@@ -239,7 +239,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         if (botonOmitirIntro != null)
         {
-            textoAyuda.text = "Espacio / Enter: continuar | Botón omitir: saltar intro";
+            textoAyuda.text = "Espacio / Enter: continuar";
         }
         else
         {
