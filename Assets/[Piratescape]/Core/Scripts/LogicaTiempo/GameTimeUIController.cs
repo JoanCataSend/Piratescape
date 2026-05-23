@@ -62,7 +62,7 @@ using UnityEngine.UI;
                 return;
             }
 
-            timeText.text = $"dia {day} hora {hour:00}:{minute:00}";
+            timeText.text = $"Día {day}  -  {hour:00}:{minute:00}";
         }
 
         private void UpdateDayNightIcon(int hour)
