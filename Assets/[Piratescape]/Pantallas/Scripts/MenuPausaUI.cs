@@ -160,7 +160,6 @@ public sealed class MenuPausaUI : MonoBehaviour
     public void SalirDelJuego()
     {
         Time.timeScale = 1f;
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -173,7 +172,10 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     private bool HayOtraUIAbierta()
     {
-        return CofreInventarioUI.HayAlgunaUIAbierta || LoroDialogoUI.HayAlgunaUIAbierta;
+        return CofreInventarioUI.HayAlgunaUIAbierta
+            || LoroDialogoUI.HayAlgunaUIAbierta
+            || HistoriaInicioLoroUI.HayAlgunaUIAbierta
+            || TutorialMisionesLoro.BloquearMenuPausa;
     }
 
     private bool JugadorEstaMuerto()

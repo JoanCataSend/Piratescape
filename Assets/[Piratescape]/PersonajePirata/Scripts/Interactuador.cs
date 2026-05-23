@@ -21,7 +21,7 @@ public class Interactuador : MonoBehaviour
 
     private void Update()
     {
-        if (CofreInventarioUI.HayAlgunaUIAbierta || LoroDialogoUI.HayAlgunaUIAbierta)
+        if (HayUIBloqueanteAbierta())
         {
             return;
         }
@@ -55,6 +55,13 @@ public class Interactuador : MonoBehaviour
         {
             objetivo.Interactuar();
         }
+    }
+
+    private bool HayUIBloqueanteAbierta()
+    {
+        return CofreInventarioUI.HayAlgunaUIAbierta
+            || LoroDialogoUI.HayAlgunaUIAbierta
+            || HistoriaInicioLoroUI.HayAlgunaUIAbierta;
     }
 
     private void RefreshInteractuables()
@@ -98,14 +105,17 @@ public class Interactuador : MonoBehaviour
                 continue;
             }
 
+            if (!behaviour.isActiveAndEnabled)
+            {
+                continue;
+            }
+
             if (behaviour.transform.IsChildOf(transform))
             {
                 continue;
             }
 
-            ObjetoRecogibleInteractuable recogible = behaviour.GetComponent<ObjetoRecogibleInteractuable>();
-
-            if (recogible != null)
+            if (behaviour.GetComponent<ObjetoRecogibleInteractuable>() != null)
             {
                 continue;
             }
