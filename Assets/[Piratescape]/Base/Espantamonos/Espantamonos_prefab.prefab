@@ -155,15 +155,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343101900870, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.3120021
+      value: 0.99215686
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343101900870, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.7132075
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343101900870, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.16551791
+      value: 0.47058824
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343101900871, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: m_Materials.Array.size
@@ -171,15 +171,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343621411456, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.3137255
+      value: 0.99215686
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343621411456, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.7137255
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343621411456, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.16470589
+      value: 0.47058824
       objectReference: {fileID: 0}
     - target: {fileID: 2504214343621411457, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: m_Materials.Array.size
@@ -228,6 +228,10 @@ PrefabInstance:
     - target: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: m_Name
       value: CFXR3 Hit Fire B (Air)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6484188613129301618, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
       propertyPath: m_IsActive
@@ -529,7 +533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7710086954383210093, guid: acdb90624a404aa438447006f1026065, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7710086954383210093, guid: acdb90624a404aa438447006f1026065, type: 3}
       propertyPath: m_Intensity
@@ -537,7 +541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8773184688824279198, guid: acdb90624a404aa438447006f1026065, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8986935675043883179, guid: acdb90624a404aa438447006f1026065, type: 3}
       propertyPath: m_Materials.Array.size
