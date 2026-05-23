@@ -112,7 +112,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         }
     }
 
-    private void AbrirTienda()
+    public void AbrirTienda()
     {
         if (shopUI == null)
         {
@@ -130,7 +130,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         Debug.Log("GhostMerchant: tienda abierta.");
     }
 
-    private void CerrarTienda(bool mostrarPrompt)
+    public void CerrarTienda(bool mostrarPrompt)
     {
         if (shopUI != null)
         {

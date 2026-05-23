@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public sealed class ArticuloTienda : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public sealed class ArticuloTienda : MonoBehaviour
 
     private readonly List<TMP_Text> textosPrecio = new List<TMP_Text>();
     private readonly List<CosteTienda> costesPrecio = new List<CosteTienda>();
+
 
     private bool eventosSuscritos;
 
@@ -182,6 +184,18 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
         else if (articuloData.TipoArticulo == TipoArticuloTienda.ObjetoBase)
         {
+            ObjetoBaseData objetoBase = articuloData.ObjetoBase;
+
+            if (objetoBase != null && objetoBase.TipoObjetoBase == TipoObjetoBase.Espantamonos)
+            {
+                if (vendedorFantasma != null)
+                {
+                    vendedorFantasma.StartCoroutine(ComprarEspantamonosConAnimacion(objetoBase));
+                }
+
+                return;
+            }
+
             compraCorrecta = ComprarObjetoBase();
         }
 
@@ -771,5 +785,40 @@ public sealed class ArticuloTienda : MonoBehaviour
     private void AlActualizarObjetosBase()
     {
         RefrescarUI();
+    }
+
+    private IEnumerator ComprarEspantamonosConAnimacion(ObjetoBaseData objetoBase)
+    {
+        if (sistemaEspantamonos == null)
+        {
+            MostrarError("Falta SistemaEspantamonos");
+            yield break;
+        }
+
+        vendedorFantasma.CerrarTienda(false);
+
+        bool colocado = sistemaEspantamonos.ComprarEspantamonos(objetoBase.Prefab, puntoAparicion);
+
+        if (!colocado)
+        {
+            MostrarError(objetoBase.MensajeYaColocado);
+            vendedorFantasma.AbrirTienda();
+            yield break;
+        }
+
+        Cobrar();
+        RefrescarUI();
+
+        Animator animator = sistemaEspantamonos.EspantamonosActual.GetComponentInChildren<Animator>();
+
+        if (animator != null)
+        {
+            yield return null;
+
+            AnimatorStateInfo estado = animator.GetCurrentAnimatorStateInfo(0);
+            yield return new WaitForSeconds(estado.length + 0.4f);
+        }
+
+        vendedorFantasma.AbrirTienda();
     }
 }

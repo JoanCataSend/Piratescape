@@ -18,6 +18,7 @@ public class SistemaEspantamonos : MonoBehaviour
     private bool estaActivo;
 
     public bool EstaActivo => estaActivo;
+    public GameObject EspantamonosActual => espantamonosActual;
 
     public event Action<bool> OnEstadoCambiado;
 
@@ -85,7 +86,7 @@ public class SistemaEspantamonos : MonoBehaviour
 
         OnEstadoCambiado?.Invoke(estaActivo);
 
-        MostrarMensaje(mensajeColocado);
+        //MostrarMensaje(mensajeColocado);
         Debug.Log(mensajeColocado);
 
         return true;
