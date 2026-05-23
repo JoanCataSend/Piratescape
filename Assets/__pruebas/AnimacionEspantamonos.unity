@@ -1032,7 +1032,7 @@ PrefabInstance:
       objectReference: {fileID: 1385315499}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8400
+      value: 8403
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[25].x
@@ -2435,7 +2435,7 @@ PrefabInstance:
       objectReference: {fileID: 479515294}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -18292,7 +18292,7 @@ PrefabInstance:
       objectReference: {fileID: 172468551}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8462
+      value: 8465
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[4].y
@@ -18935,7 +18935,7 @@ PrefabInstance:
       objectReference: {fileID: 861108668}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -23498,7 +23498,7 @@ PrefabInstance:
       objectReference: {fileID: 764951503}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8575
+      value: 8578
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -26060,7 +26060,7 @@ PrefabInstance:
       objectReference: {fileID: 1211420312}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8715
+      value: 8718
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[125].x
@@ -38461,7 +38461,7 @@ PrefabInstance:
       objectReference: {fileID: 1070971234}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8427
+      value: 8430
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[25].x
@@ -40007,7 +40007,7 @@ PrefabInstance:
       objectReference: {fileID: 141074726}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8426
+      value: 8429
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[5].x
@@ -41476,7 +41476,7 @@ PrefabInstance:
       objectReference: {fileID: 1973096673}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8392
+      value: 8395
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[125].x
@@ -45864,14 +45864,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb3342eaced276747beba93bcedddf5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel: {fileID: 641067216}
-  textoTitulo: {fileID: 1908111145}
+  panelMenuLoro: {fileID: 0}
   textoDialogo: {fileID: 1400889625}
   textoMensaje: {fileID: 161921682}
   botonGuardar: {fileID: 454658058}
-  botonCargar: {fileID: 0}
-  botonTutorial: {fileID: 440932732}
-  botonSiguiente: {fileID: 0}
+  botonRepetirTutorial: {fileID: 0}
   botonCerrar: {fileID: 1655192633}
   tutorialMisiones: {fileID: 0}
   pausarJuegoAlAbrir: 1
@@ -45887,13 +45884,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d211a58aa4ee542a287d187273e685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loroDialogoUI: {fileID: 452703423}
+  panelTutorial: {fileID: 0}
+  textoObjetivo: {fileID: 0}
+  textoProgreso: {fileID: 0}
+  botonOmitirTutorial: {fileID: 0}
   jugador: {fileID: 1588489899}
   inventarioJugador: {fileID: 1588489902}
   distanciaNecesaria: 3
   movimientoRatonNecesario: 80
-  iniciarSoloUnaVez: 1
   esperaEntreMisiones: 1
+  usarTeclaOParaOmitir: 0
+  bloquearMenuPausaDuranteTutorial: 0
 --- !u!1 &454530550
 GameObject:
   m_ObjectHideFlags: 0
@@ -50792,7 +50793,7 @@ PrefabInstance:
       objectReference: {fileID: 1574186199}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8451
+      value: 8454
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -51903,7 +51904,7 @@ PrefabInstance:
       objectReference: {fileID: 295565565}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8606
+      value: 8609
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -54831,7 +54832,7 @@ PrefabInstance:
       objectReference: {fileID: 532275671}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -55544,7 +55545,7 @@ PrefabInstance:
       objectReference: {fileID: 74992188}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8890
+      value: 8893
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -61309,7 +61310,7 @@ PrefabInstance:
       objectReference: {fileID: 172125248}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8394
+      value: 8397
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[125].x
@@ -68277,7 +68278,7 @@ PrefabInstance:
       objectReference: {fileID: 2091072853}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8523
+      value: 8526
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -69707,7 +69708,7 @@ PrefabInstance:
       objectReference: {fileID: 248718385}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8396
+      value: 8399
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[4].y
@@ -70028,7 +70029,7 @@ PrefabInstance:
       objectReference: {fileID: 2053456267}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8390
+      value: 8393
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[101].x
@@ -72623,7 +72624,7 @@ PrefabInstance:
       objectReference: {fileID: 1567864817}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -72922,7 +72923,7 @@ PrefabInstance:
       objectReference: {fileID: 843971990}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8402
+      value: 8405
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[149].x
@@ -79542,7 +79543,7 @@ PrefabInstance:
       objectReference: {fileID: 1597311487}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -79795,7 +79796,7 @@ PrefabInstance:
       objectReference: {fileID: 1052259189}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8533
+      value: 8536
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -80747,7 +80748,7 @@ PrefabInstance:
       objectReference: {fileID: 841140527}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8426
+      value: 8429
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[16].x
@@ -81332,7 +81333,7 @@ PrefabInstance:
       objectReference: {fileID: 1828722165}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8384
+      value: 8387
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[149].x
@@ -82121,7 +82122,7 @@ PrefabInstance:
       objectReference: {fileID: 9556863}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -82376,7 +82377,7 @@ PrefabInstance:
       objectReference: {fileID: 1397233621}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8382
+      value: 8385
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -83534,7 +83535,7 @@ PrefabInstance:
       objectReference: {fileID: 1240703926}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8376
+      value: 8379
       objectReference: {fileID: 0}
     - target: {fileID: 1262418563597031441, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Name
@@ -86090,7 +86091,7 @@ PrefabInstance:
       objectReference: {fileID: 575143007}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -91964,7 +91965,7 @@ PrefabInstance:
       objectReference: {fileID: 1675135023}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8410
+      value: 8413
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[56].x
@@ -104707,7 +104708,7 @@ PrefabInstance:
       objectReference: {fileID: 759369546}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8388
+      value: 8391
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -105530,7 +105531,7 @@ PrefabInstance:
       objectReference: {fileID: 363304695}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -107313,7 +107314,7 @@ PrefabInstance:
       objectReference: {fileID: 1492307518}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8479
+      value: 8482
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[81].x
@@ -111733,7 +111734,7 @@ PrefabInstance:
       objectReference: {fileID: 1942819582}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8384
+      value: 8387
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[149].x
@@ -114175,7 +114176,7 @@ PrefabInstance:
       objectReference: {fileID: 707230574}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8616
+      value: 8619
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[16].x
@@ -119401,7 +119402,7 @@ PrefabInstance:
       objectReference: {fileID: 657436229}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -119842,7 +119843,7 @@ PrefabInstance:
       objectReference: {fileID: 246735207}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8678
+      value: 8681
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -122151,7 +122152,7 @@ PrefabInstance:
       objectReference: {fileID: 1161851089}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8574
+      value: 8577
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[56].x
@@ -123469,7 +123470,7 @@ PrefabInstance:
       objectReference: {fileID: 2095047982}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -124039,7 +124040,7 @@ PrefabInstance:
       objectReference: {fileID: 388359908}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8507
+      value: 8510
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[13].x
@@ -125057,7 +125058,7 @@ PrefabInstance:
       objectReference: {fileID: 898767436}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8508
+      value: 8511
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
@@ -127307,7 +127308,7 @@ PrefabInstance:
       objectReference: {fileID: 266812561}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_VersionIndex
-      value: 8445
+      value: 8448
       objectReference: {fileID: 0}
     - target: {fileID: 975132203109386631, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
       propertyPath: m_Tangents.Array.data[8].y
@@ -128051,7 +128052,7 @@ PrefabInstance:
       objectReference: {fileID: 280714195}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -129358,6 +129359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed29963d28adac64dad06457455e6c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mostrarDebugInteraccion: 0
 --- !u!114 &1588489896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140967,7 +140969,7 @@ PrefabInstance:
       objectReference: {fileID: 944709634}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8370
+      value: 8373
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_SelectedVertices.Array.size
@@ -146378,7 +146380,7 @@ PrefabInstance:
       objectReference: {fileID: 693987903}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8376
+      value: 8379
       objectReference: {fileID: 0}
     - target: {fileID: 1262418563597031441, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Name
@@ -164348,7 +164350,7 @@ PrefabInstance:
       objectReference: {fileID: 476021280}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8594
+      value: 8597
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[185].x
@@ -175612,7 +175614,7 @@ PrefabInstance:
       objectReference: {fileID: 1271665210}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_VersionIndex
-      value: 8504
+      value: 8507
       objectReference: {fileID: 0}
     - target: {fileID: 1142370052173248014, guid: 411bf98de6af56b4fa4f95f017b42fd5, type: 3}
       propertyPath: m_Tangents.Array.data[53].x
@@ -177054,7 +177056,7 @@ PrefabInstance:
       objectReference: {fileID: 1628301639}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_VersionIndex
-      value: 8424
+      value: 8427
       objectReference: {fileID: 0}
     - target: {fileID: 6139002050096266678, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
       propertyPath: m_Tangents.Array.data[0].x
