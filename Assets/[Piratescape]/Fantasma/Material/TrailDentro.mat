@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Sin_Textura
+  m_Name: TrailDentro
   m_Shader: {fileID: -6465566751694194690, guid: a7e80d4c44a5fef4e95c44c737299ee4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -45,12 +45,16 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _Outline: 1.788
+    - _BurstSharpness: 0.15
+    - _MaxGlow: 1.15
+    - _MinGlow: 0.12
+    - _Outline: 0.35
+    - _PulseSpeed: 1.2
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Transparency: 0
+    - _Transparency: 0.55
     m_Colors:
-    - _Ghost_Color: {r: 0, g: 0.5686063, b: 0.9735848, a: 0}
+    - _Ghost_Color: {r: 0.25471687, g: 0.457008, b: 1, a: 0.16470589}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1287749047787143400

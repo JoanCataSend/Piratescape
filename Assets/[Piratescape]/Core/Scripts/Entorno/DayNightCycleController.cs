@@ -10,8 +10,16 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private GhostSpawn ghostSpawn;
 
     [Header("Skybox")]
+    [SerializeField] private Material morningSkybox;
     [SerializeField] private Material daySkybox;
+    [SerializeField] private Material sunsetSkybox;
     [SerializeField] private Material nightSkybox;
+
+    [Header("Reflejos del skybox")]
+    [SerializeField] private float morningReflectionIntensity = 0.45f;
+    [SerializeField] private float dayReflectionIntensity = 1f;
+    [SerializeField] private float sunsetReflectionIntensity = 0.35f;
+    [SerializeField] private float nightReflectionIntensity = 0.03f;
 
     [Header("Colores ambiente")]
     [SerializeField] private Color sunriseAmbientColor = new Color(0.30f, 0.26f, 0.32f);
@@ -19,7 +27,7 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private Color dayAmbientColor = new Color(0.50f, 0.53f, 0.55f);
     [SerializeField] private Color sunsetAmbientColor = new Color(0.30f, 0.20f, 0.18f);
     [SerializeField] private Color duskAmbientColor = new Color(0.08f, 0.10f, 0.16f);
-    [SerializeField] private Color nightAmbientColor = new Color(0.01f, 0.015f, 0.04f);
+    [SerializeField] private Color nightAmbientColor = new Color(0.003f, 0.005f, 0.015f);
 
     [Header("Color del sol")]
     [SerializeField] private Color sunriseSunColor = new Color(1.00f, 0.65f, 0.40f);
@@ -42,7 +50,7 @@ public class DayNightCycleController : MonoBehaviour
     [Header("Intensidades de la luna")]
     [SerializeField] private float dawnMoonIntensity = 0.06f;
     [SerializeField] private float dayMoonIntensity = 0f;
-    [SerializeField] private float nightMoonIntensity = 0.07f;
+    [SerializeField] private float nightMoonIntensity = 0.025f;
 
     [Header("Niebla")]
     [SerializeField] private bool usarNiebla = true;
@@ -118,14 +126,14 @@ public class DayNightCycleController : MonoBehaviour
 
     private void CrearSkyboxRuntime()
     {
-        if (daySkybox == null || nightSkybox == null)
+        if (morningSkybox == null || daySkybox == null || sunsetSkybox == null || nightSkybox == null)
         {
             RenderSettings.skybox = null;
             DynamicGI.UpdateEnvironment();
             return;
         }
 
-        runtimeSkybox = new Material(daySkybox);
+        runtimeSkybox = new Material(nightSkybox);
         RenderSettings.skybox = runtimeSkybox;
         DynamicGI.UpdateEnvironment();
     }
@@ -140,6 +148,7 @@ public class DayNightCycleController : MonoBehaviour
         float hour = timeSystem.CurrentHour + (timeSystem.CurrentMinute / 60f);
 
         bool esDeNoche = hour >= duskHour || hour < sunriseHour;
+
         if (ghostSpawn != null)
         {
             if (esDeNoche && !eraDeNoche)
@@ -164,7 +173,7 @@ public class DayNightCycleController : MonoBehaviour
 
     private void ActualizarSkybox(float hour)
     {
-        if (daySkybox == null || nightSkybox == null)
+        if (morningSkybox == null || daySkybox == null || sunsetSkybox == null || nightSkybox == null)
         {
             RenderSettings.skybox = null;
             return;
@@ -172,12 +181,52 @@ public class DayNightCycleController : MonoBehaviour
 
         if (runtimeSkybox == null)
         {
-            runtimeSkybox = new Material(daySkybox);
+            runtimeSkybox = new Material(nightSkybox);
             RenderSettings.skybox = runtimeSkybox;
         }
 
-        float dayFactor = ObtenerFactorDia(hour);
-        runtimeSkybox.Lerp(nightSkybox, daySkybox, dayFactor);
+        Material skyboxDesde = nightSkybox;
+        Material skyboxHasta = nightSkybox;
+        float t = 0f;
+
+        if (hour >= nightHour || hour < sunriseHour)
+        {
+            skyboxDesde = nightSkybox;
+            skyboxHasta = nightSkybox;
+            t = 0f;
+        }
+        else if (hour >= sunriseHour && hour < dayHour)
+        {
+            skyboxDesde = nightSkybox;
+            skyboxHasta = morningSkybox;
+            t = Suavizar(sunriseHour, dayHour, hour);
+        }
+        else if (hour >= dayHour && hour < afternoonHour)
+        {
+            skyboxDesde = morningSkybox;
+            skyboxHasta = daySkybox;
+            t = Suavizar(dayHour, afternoonHour, hour);
+        }
+        else if (hour >= afternoonHour && hour < sunsetHour)
+        {
+            skyboxDesde = daySkybox;
+            skyboxHasta = daySkybox;
+            t = 0f;
+        }
+        else if (hour >= sunsetHour && hour < duskHour)
+        {
+            skyboxDesde = daySkybox;
+            skyboxHasta = sunsetSkybox;
+            t = Suavizar(sunsetHour, duskHour, hour);
+        }
+        else if (hour >= duskHour && hour < nightHour)
+        {
+            skyboxDesde = sunsetSkybox;
+            skyboxHasta = nightSkybox;
+            t = Suavizar(duskHour, nightHour, hour);
+        }
+
+        runtimeSkybox.Lerp(skyboxDesde, skyboxHasta, t);
         DynamicGI.UpdateEnvironment();
     }
 
@@ -185,6 +234,7 @@ public class DayNightCycleController : MonoBehaviour
     {
         RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = ObtenerColorAmbiente(hour);
+        RenderSettings.reflectionIntensity = ObtenerIntensidadReflejos(hour);
     }
 
     private void ActualizarSol(float hour)
@@ -231,43 +281,43 @@ public class DayNightCycleController : MonoBehaviour
         RenderSettings.fogDensity = ObtenerDensidadNiebla(hour);
     }
 
-    private float ObtenerFactorDia(float hour)
+    private float ObtenerIntensidadReflejos(float hour)
     {
         if (hour >= nightHour || hour < sunriseHour)
         {
-            return 0f;
+            return nightReflectionIntensity;
         }
 
         if (hour >= sunriseHour && hour < dayHour)
         {
             float t = Suavizar(sunriseHour, dayHour, hour);
-            return Mathf.Lerp(0.08f, 0.60f, t);
+            return Mathf.Lerp(nightReflectionIntensity, morningReflectionIntensity, t);
         }
 
         if (hour >= dayHour && hour < afternoonHour)
         {
             float t = Suavizar(dayHour, afternoonHour, hour);
-            return Mathf.Lerp(0.60f, 1f, t);
+            return Mathf.Lerp(morningReflectionIntensity, dayReflectionIntensity, t);
         }
 
         if (hour >= afternoonHour && hour < sunsetHour)
         {
-            return 1f;
+            return dayReflectionIntensity;
         }
 
         if (hour >= sunsetHour && hour < duskHour)
         {
             float t = Suavizar(sunsetHour, duskHour, hour);
-            return Mathf.Lerp(1f, 0.35f, t);
+            return Mathf.Lerp(dayReflectionIntensity, sunsetReflectionIntensity, t);
         }
 
         if (hour >= duskHour && hour < nightHour)
         {
             float t = Suavizar(duskHour, nightHour, hour);
-            return Mathf.Lerp(0.35f, 0f, t);
+            return Mathf.Lerp(sunsetReflectionIntensity, nightReflectionIntensity, t);
         }
 
-        return 0f;
+        return nightReflectionIntensity;
     }
 
     private Color ObtenerColorAmbiente(float hour)
