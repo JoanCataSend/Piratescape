@@ -2,77 +2,120 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-    public sealed class GameTimeUIController : MonoBehaviour
+public sealed class GameTimeUIController : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private GameTimeSystem gameTimeSystem;
+    [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private Image dayNightIcon;
+
+    [Header("Sprites")]
+    [SerializeField] private Sprite daySprite;
+    [SerializeField] private Sprite nightSprite;
+
+    private void Awake()
     {
-        [Header("References")]
-        [SerializeField] private GameTimeSystem gameTimeSystem;
-        [SerializeField] private TextMeshProUGUI timeText;
-        [SerializeField] private Image dayNightIcon;
+        BuscarReferencias();
+    }
 
-        [Header("Sprites")]
-        [SerializeField] private Sprite daySprite;
-        [SerializeField] private Sprite nightSprite;
+    private void OnEnable()
+    {
+        BuscarReferencias();
+        SuscribirseEventos();
+        RefreshUI();
+    }
 
-        [Header("Day Night Hours")]
-        [SerializeField] private int dayStartHour = 6;
-        [SerializeField] private int nightStartHour = 18;
+    private void OnDisable()
+    {
+        DesuscribirseEventos();
+    }
 
-        private void OnEnable()
+    private void BuscarReferencias()
+    {
+        if (gameTimeSystem == null)
         {
-            if (gameTimeSystem == null)
-            {
-                Debug.LogWarning($"{nameof(GameTimeUIController)}: missing GameTimeSystem reference.");
-                return;
-            }
-
-            gameTimeSystem.OnTimeChanged += HandleTimeChanged;
-            RefreshUI();
-        }
-
-        private void OnDisable()
-        {
-            if (gameTimeSystem == null)
-            {
-                return;
-            }
-
-            gameTimeSystem.OnTimeChanged -= HandleTimeChanged;
-        }
-
-        private void HandleTimeChanged(int day, int hour, int minute)
-        {
-            UpdateTimeText(day, hour, minute);
-            UpdateDayNightIcon(hour);
-        }
-
-        private void RefreshUI()
-        {
-            UpdateTimeText(
-                gameTimeSystem.CurrentDay,
-                gameTimeSystem.CurrentHour,
-                gameTimeSystem.CurrentMinute);
-
-            UpdateDayNightIcon(gameTimeSystem.CurrentHour);
-        }
-
-        private void UpdateTimeText(int day, int hour, int minute)
-        {
-            if (timeText == null)
-            {
-                return;
-            }
-
-            timeText.text = $"dia {day} hora {hour:00}:{minute:00}";
-        }
-
-        private void UpdateDayNightIcon(int hour)
-        {
-            if (dayNightIcon == null)
-            {
-                return;
-            }
-
-            bool isDayTime = hour >= dayStartHour && hour < nightStartHour;
-            dayNightIcon.sprite = isDayTime ? daySprite : nightSprite;
+            gameTimeSystem = FindFirstObjectByType<GameTimeSystem>();
         }
     }
+
+    private void SuscribirseEventos()
+    {
+        if (gameTimeSystem == null)
+        {
+            Debug.LogWarning($"{nameof(GameTimeUIController)}: falta referencia a {nameof(GameTimeSystem)}.", this);
+            return;
+        }
+
+        gameTimeSystem.OnTimeChanged -= HandleTimeChanged;
+        gameTimeSystem.OnDayNightChanged -= HandleDayNightChanged;
+
+        gameTimeSystem.OnTimeChanged += HandleTimeChanged;
+        gameTimeSystem.OnDayNightChanged += HandleDayNightChanged;
+    }
+
+    private void DesuscribirseEventos()
+    {
+        if (gameTimeSystem == null)
+        {
+            return;
+        }
+
+        gameTimeSystem.OnTimeChanged -= HandleTimeChanged;
+        gameTimeSystem.OnDayNightChanged -= HandleDayNightChanged;
+    }
+
+    private void HandleTimeChanged(int day, int hour, int minute)
+    {
+        RefreshUI();
+    }
+
+    private void HandleDayNightChanged(bool isNight)
+    {
+        UpdateDayNightIcon();
+    }
+
+    public void RefreshUI()
+    {
+        if (gameTimeSystem == null)
+        {
+            BuscarReferencias();
+        }
+
+        if (gameTimeSystem == null)
+        {
+            return;
+        }
+
+        UpdateTimeText();
+        UpdateDayNightIcon();
+    }
+
+    private void UpdateTimeText()
+    {
+        if (timeText == null || gameTimeSystem == null)
+        {
+            return;
+        }
+
+        timeText.text = $"Día {gameTimeSystem.CurrentDay}  -  {gameTimeSystem.CurrentHour:00}:{gameTimeSystem.CurrentMinute:00}";
+    }
+
+    private void UpdateDayNightIcon()
+    {
+        if (dayNightIcon == null || gameTimeSystem == null)
+        {
+            return;
+        }
+
+        Sprite spriteCorrecto = gameTimeSystem.IsDay ? daySprite : nightSprite;
+
+        if (spriteCorrecto == null)
+        {
+            Debug.LogWarning($"{nameof(GameTimeUIController)}: falta asignar el sprite de {(gameTimeSystem.IsDay ? "día" : "noche")}. Espacio actual: {gameTimeSystem.CurrentTimeFormatted}", this);
+            return;
+        }
+
+        dayNightIcon.sprite = spriteCorrecto;
+        dayNightIcon.enabled = true;
+    }
+}

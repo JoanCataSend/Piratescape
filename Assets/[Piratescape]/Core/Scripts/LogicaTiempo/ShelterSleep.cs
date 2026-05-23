@@ -72,6 +72,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     public bool Activo => activo && !isSleeping && interactuable;
 
+    public Vector3 PosicionInteraccion => GetInteractionPosition();
+
     private void Awake()
     {
         CachearReferencias();
@@ -137,6 +139,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     public void TrySleep()
     {
+        CachearReferencias();
+
         if (isSleeping || !interactuable)
         {
             return;
@@ -355,8 +359,36 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             return;
         }
 
-        string mensaje = $"Pulsa {GetInteractionIcon()} {sleepPromptMessage}";
-        InteractionUI.Instance.Show(this, mensaje);
+        InteractionUI.Instance.Show(this, ConstruirMensajeDormir());
+    }
+
+    private string ConstruirMensajeDormir()
+    {
+        string icono = GetInteractionIcon();
+
+        if (string.IsNullOrWhiteSpace(sleepPromptMessage))
+        {
+            return $"Pulsa {icono} para dormir";
+        }
+
+        if (sleepPromptMessage.Contains("{0}"))
+        {
+            return string.Format(sleepPromptMessage, icono);
+        }
+
+        string textoNormalizado = sleepPromptMessage.ToLower();
+
+        if (textoNormalizado.Contains("pulsa") || textoNormalizado.Contains("press"))
+        {
+            return sleepPromptMessage;
+        }
+
+        if (textoNormalizado.StartsWith("para "))
+        {
+            return $"Pulsa {icono} {sleepPromptMessage}";
+        }
+
+        return $"Pulsa {icono} para {sleepPromptMessage}";
     }
 
     private void MostrarPromptBloqueado()
@@ -410,6 +442,21 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     private void CachearReferencias()
     {
+        if (timeSystem == null)
+        {
+            timeSystem = FindFirstObjectByType<GameTimeSystem>();
+        }
+
+        if (fadeUI == null)
+        {
+            fadeUI = FindFirstObjectByType<SleepFadeUI>();
+        }
+
+        if (nightThreatSystem == null)
+        {
+            nightThreatSystem = FindFirstObjectByType<NightThreatSystem>();
+        }
+
         if (playerTransform == null)
         {
             JugadorActivador jugadorActivador = FindFirstObjectByType<JugadorActivador>();

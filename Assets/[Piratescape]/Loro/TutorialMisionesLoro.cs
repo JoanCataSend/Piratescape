@@ -1,10 +1,15 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public sealed class TutorialMisionesLoro : MonoBehaviour
 {
     public static TutorialMisionesLoro Instance { get; private set; }
+    public static bool TutorialActivoGlobal { get; private set; }
+    public static bool BloquearMenuPausa { get; private set; }
+    public static bool BloquearInteraccionLoro => Instance != null && Instance.tutorialActivo && Instance.pasoActual != PasoTutorial.GuardarPartida;
 
     private enum PasoTutorial
     {
@@ -15,8 +20,15 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         Terminado
     }
 
+    [Header("Panel")]
+    [SerializeField] private GameObject panelTutorial;
+    [SerializeField] private TMP_Text textoObjetivo;
+    [SerializeField] private TMP_Text textoProgreso;
+
+    [Header("Boton opcional")]
+    [SerializeField] private Button botonOmitirTutorial;
+
     [Header("Referencias")]
-    [SerializeField] private LoroDialogoUI loroDialogoUI;
     [SerializeField] private Transform jugador;
     [SerializeField] private PlayerInventory inventarioJugador;
 
@@ -25,13 +37,13 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     [SerializeField] private float movimientoRatonNecesario = 80f;
 
     [Header("Comportamiento")]
-    [SerializeField] private bool iniciarSoloUnaVez = true;
     [SerializeField] private float esperaEntreMisiones = 1f;
+    [SerializeField] private bool usarTeclaOParaOmitir = false;
+    [SerializeField] private bool bloquearMenuPausaDuranteTutorial = false;
 
     private PasoTutorial pasoActual = PasoTutorial.Terminado;
     private bool tutorialActivo;
     private bool cambiandoPaso;
-
     private Vector3 posicionInicialPaso;
     private float movimientoRatonAcumulado;
     private int totalItemsInicial;
@@ -42,6 +54,21 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        if (panelTutorial != null)
+        {
+            panelTutorial.SetActive(false);
+        }
+
+        ConfigurarBotones();
+        TutorialActivoGlobal = false;
+        BloquearMenuPausa = false;
+    }
+
+    private void OnDisable()
+    {
+        TutorialActivoGlobal = false;
+        BloquearMenuPausa = false;
     }
 
     private void Start()
@@ -51,7 +78,18 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
     private void Update()
     {
-        if (!tutorialActivo || cambiandoPaso)
+        if (!tutorialActivo)
+        {
+            return;
+        }
+
+        if (usarTeclaOParaOmitir && Keyboard.current != null && Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            OmitirTutorial();
+            return;
+        }
+
+        if (cambiandoPaso)
         {
             return;
         }
@@ -81,20 +119,44 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         BuscarReferenciasSiFaltan();
 
         tutorialActivo = true;
+        TutorialActivoGlobal = true;
+        BloquearMenuPausa = bloquearMenuPausaDuranteTutorial;
         cambiandoPaso = false;
         partidaGuardadaEnTutorial = false;
+
+        if (panelTutorial != null)
+        {
+            panelTutorial.SetActive(true);
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         CambiarAPaso(PasoTutorial.MoverYMirar);
     }
 
-    public void IniciarTutorialAutomatico()
+    public void OmitirTutorial()
     {
-        if (iniciarSoloUnaVez && GestorPartida.Instance != null && GestorPartida.Instance.TutorialCompletado)
+        if (!tutorialActivo)
         {
             return;
         }
 
-        IniciarTutorialDesdeCero();
+        tutorialActivo = false;
+        TutorialActivoGlobal = false;
+        BloquearMenuPausa = false;
+        cambiandoPaso = false;
+        pasoActual = PasoTutorial.Terminado;
+
+        if (panelTutorial != null)
+        {
+            panelTutorial.SetActive(false);
+        }
+
+        if (GestorPartida.Instance != null)
+        {
+            GestorPartida.Instance.MarcarTutorialCompletado(true);
+        }
     }
 
     public void NotificarPartidaGuardada()
@@ -143,12 +205,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         }
 
         movimientoRatonAcumulado = 0f;
-
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Mision 1: muévete y mira alrededor.",
-            "Usa WASD para caminar y mueve el raton para mirar. Progreso: 0%"
-        );
+        MostrarObjetivo("Misión 1: muévete y mira alrededor.", "Usa WASD para caminar y mueve el ratón para mirar." + TextoOmitir());
     }
 
     private void ActualizarPasoMoverYMirar()
@@ -176,8 +233,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         string textoMirada = miro ? "Mirada completada" : "Mira alrededor: " + Mathf.RoundToInt(progresoMirada * 100f) + "%";
 
         MostrarObjetivo(
-            "Tutorial del loro",
-            "Mision 1: muévete y mira alrededor.",
+            "Misión 1: muévete y mira alrededor.",
             textoMovimiento + " | " + textoMirada + " | Total: " + Mathf.RoundToInt(progresoTotal * 100f) + "%"
         );
 
@@ -189,11 +245,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
     private void PrepararPasoSaltar()
     {
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Mision 2: salta una vez.",
-            "Pulsa Espacio para saltar."
-        );
+        MostrarObjetivo("Misión 2: salta una vez.", "Pulsa Espacio para saltar." + TextoOmitir());
     }
 
     private void ActualizarPasoSaltar()
@@ -212,19 +264,14 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
         if (salto)
         {
-            CompletarPaso(PasoTutorial.RecogerItem, "¡Perfecto! Ahora vamos a recoger un recurso.");
+            CompletarPaso(PasoTutorial.RecogerItem, "¡Perfecto! Ahora recoge un recurso.");
         }
     }
 
     private void PrepararPasoRecogerItem()
     {
         totalItemsInicial = ContarItemsInventario();
-
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Mision 3: recoge un objeto.",
-            "Acércate a un recurso y pulsa E cuando salga el mensaje de recoger."
-        );
+        MostrarObjetivo("Misión 3: recoge un objeto.", "Acércate a un recurso y pulsa E cuando salga el mensaje." + TextoOmitir());
     }
 
     private void ActualizarPasoRecogerItem()
@@ -232,8 +279,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         int totalActual = ContarItemsInventario();
 
         MostrarObjetivo(
-            "Tutorial del loro",
-            "Mision 3: recoge un objeto.",
+            "Misión 3: recoge un objeto.",
             "Objetos en inventario: " + totalActual + " | Recoge cualquier recurso para continuar."
         );
 
@@ -246,12 +292,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private void PrepararPasoGuardarPartida()
     {
         partidaGuardadaEnTutorial = false;
-
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Mision 4: guarda la partida con el loro.",
-            "Vuelve al loro, pulsa E y dale a Guardar partida."
-        );
+        MostrarObjetivo("Misión 4: guarda la partida con el loro.", "Vuelve al loro, pulsa E y dale a Guardar partida." + TextoOmitir());
     }
 
     private void ActualizarPasoGuardarPartida()
@@ -275,8 +316,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private IEnumerator CompletarPasoRoutine(PasoTutorial siguientePaso, string mensaje)
     {
         cambiandoPaso = true;
-
-        MostrarObjetivo("Objetivo completado", mensaje, "Siguiente mision en un momento...");
+        MostrarObjetivo("Objetivo completado", mensaje);
 
         if (esperaEntreMisiones > 0f)
         {
@@ -290,6 +330,8 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private void TerminarTutorial()
     {
         tutorialActivo = false;
+        TutorialActivoGlobal = false;
+        BloquearMenuPausa = false;
         cambiandoPaso = false;
 
         if (GestorPartida.Instance != null)
@@ -297,36 +339,51 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
             GestorPartida.Instance.MarcarTutorialCompletado(true);
         }
 
-        MostrarObjetivo(
-            "Tutorial completado",
-            "¡Graaak! Ya sabes lo básico para empezar.",
-            "Puedes volver a hablar conmigo para guardar, cargar o repetir el tutorial."
-        );
-
-        StartCoroutine(OcultarPanelTutorialDespuesDeUnMomento());
+        MostrarObjetivo("Tutorial completado", "¡Graaak! Ya sabes lo básico para empezar. Puedes volver a hablar conmigo para guardar o repetir el tutorial.");
+        StartCoroutine(OcultarPanelDespuesDeUnMomento());
     }
 
-    private IEnumerator OcultarPanelTutorialDespuesDeUnMomento()
+    private IEnumerator OcultarPanelDespuesDeUnMomento()
     {
         yield return new WaitForSecondsRealtime(3f);
 
-        if (loroDialogoUI != null && !LoroDialogoUI.HayAlgunaUIAbierta)
+        if (!tutorialActivo && panelTutorial != null)
         {
-            loroDialogoUI.OcultarPanelTutorial();
+            panelTutorial.SetActive(false);
         }
     }
 
-    private void MostrarObjetivo(string titulo, string dialogo, string mensaje)
+    private void MostrarObjetivo(string objetivo, string progreso)
     {
-        if (loroDialogoUI == null)
+        if (panelTutorial != null && !panelTutorial.activeSelf)
         {
-            BuscarReferenciasSiFaltan();
+            panelTutorial.SetActive(true);
         }
 
-        if (loroDialogoUI != null)
+        if (textoObjetivo != null)
         {
-            loroDialogoUI.MostrarPanelTutorial(titulo, dialogo, mensaje);
+            textoObjetivo.text = objetivo;
         }
+
+        if (textoProgreso != null)
+        {
+            textoProgreso.text = progreso;
+        }
+    }
+
+    private string TextoOmitir()
+    {
+        if (usarTeclaOParaOmitir)
+        {
+            return " Pulsa O para omitir.";
+        }
+
+        if (botonOmitirTutorial != null)
+        {
+            return " Puedes omitir desde el botón.";
+        }
+
+        return "";
     }
 
     private int ContarItemsInventario()
@@ -358,13 +415,17 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         return total;
     }
 
+    private void ConfigurarBotones()
+    {
+        if (botonOmitirTutorial != null)
+        {
+            botonOmitirTutorial.onClick.RemoveListener(OmitirTutorial);
+            botonOmitirTutorial.onClick.AddListener(OmitirTutorial);
+        }
+    }
+
     private void BuscarReferenciasSiFaltan()
     {
-        if (loroDialogoUI == null)
-        {
-            loroDialogoUI = FindFirstObjectByType<LoroDialogoUI>();
-        }
-
         if (inventarioJugador == null)
         {
             inventarioJugador = FindFirstObjectByType<PlayerInventory>();
