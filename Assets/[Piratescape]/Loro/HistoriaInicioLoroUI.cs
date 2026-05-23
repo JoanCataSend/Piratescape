@@ -9,17 +9,16 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 {
     public static bool HayAlgunaUIAbierta { get; private set; }
 
-    [Header("Panel de historia")]
+    [Header("Panel")]
     [SerializeField] private GameObject panelHistoria;
-    [SerializeField] private TMP_Text textoTitulo;
     [SerializeField] private TMP_Text textoDialogo;
     [SerializeField] private TMP_Text textoAyuda;
 
-    [Header("Botones")]
+    [Header("Botones opcionales")]
     [SerializeField] private Button botonSiguiente;
     [SerializeField] private Button botonOmitirIntro;
 
-    [Header("Texto")]
+    [Header("Historia")]
     [TextArea(2, 6)]
     [SerializeField] private string[] frasesHistoria = new string[]
     {
@@ -30,9 +29,8 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         "Primero aprende lo básico. Muévete, mira alrededor y hazme caso si quieres sobrevivir. ¡Graaak!"
     };
 
-    [Header("Efecto escritura")]
+    [Header("Escritura")]
     [SerializeField] private float segundosPorCaracter = 0.025f;
-    [SerializeField] private string tituloHistoria = "El loro de la isla";
 
     private int indiceFrase;
     private bool escribiendo;
@@ -97,11 +95,6 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             panelHistoria.SetActive(true);
         }
 
-        if (textoTitulo != null)
-        {
-            textoTitulo.text = tituloHistoria;
-        }
-
         MostrarFraseActual();
     }
 
@@ -155,11 +148,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         }
 
         rutinaEscritura = StartCoroutine(EscribirTexto(frase));
-
-        if (textoAyuda != null)
-        {
-            textoAyuda.text = "Espacio / Enter: continuar | Omitir intro: saltar al tutorial";
-        }
+        ActualizarAyuda();
     }
 
     private IEnumerator EscribirTexto(string frase)
@@ -238,6 +227,23 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         {
             botonOmitirIntro.onClick.RemoveListener(OmitirIntro);
             botonOmitirIntro.onClick.AddListener(OmitirIntro);
+        }
+    }
+
+    private void ActualizarAyuda()
+    {
+        if (textoAyuda == null)
+        {
+            return;
+        }
+
+        if (botonOmitirIntro != null)
+        {
+            textoAyuda.text = "Espacio / Enter: continuar | Botón omitir: saltar intro";
+        }
+        else
+        {
+            textoAyuda.text = "Espacio / Enter: continuar";
         }
     }
 

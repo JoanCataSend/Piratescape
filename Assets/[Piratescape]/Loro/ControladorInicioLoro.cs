@@ -3,14 +3,12 @@ using UnityEngine;
 
 public sealed class ControladorInicioLoro : MonoBehaviour
 {
-    [Header("Flujo inicial")]
+    [Header("Inicio")]
     [SerializeField] private bool iniciarAlEmpezar = true;
-    [SerializeField] private bool respetarTutorialCompletado = false;
     [SerializeField] private float retrasoInicio = 0.25f;
 
     [Header("Referencias")]
     [SerializeField] private Transform jugador;
-    [SerializeField] private CharacterController characterControllerJugador;
     [SerializeField] private Transform puntoAparicionFrenteLoro;
     [SerializeField] private Transform loro;
     [SerializeField] private HistoriaInicioLoroUI historiaInicioUI;
@@ -19,6 +17,8 @@ public sealed class ControladorInicioLoro : MonoBehaviour
     [Header("Aparicion del jugador")]
     [SerializeField] private bool colocarJugadorFrenteAlLoro = true;
     [SerializeField] private bool mirarAlLoroAlAparecer = true;
+
+    private CharacterController characterControllerJugador;
 
     private IEnumerator Start()
     {
@@ -30,12 +30,6 @@ public sealed class ControladorInicioLoro : MonoBehaviour
         yield return new WaitForSecondsRealtime(retrasoInicio);
 
         BuscarReferenciasSiFaltan();
-
-        if (respetarTutorialCompletado && GestorPartida.Instance != null && GestorPartida.Instance.TutorialCompletado)
-        {
-            yield break;
-        }
-
         ColocarJugadorSiHaceFalta();
 
         if (historiaInicioUI != null)

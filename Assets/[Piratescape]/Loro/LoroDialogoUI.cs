@@ -8,15 +8,13 @@ public sealed class LoroDialogoUI : MonoBehaviour
     public static bool HayAlgunaUIAbierta { get; private set; }
     public static int FrameCierre { get; private set; } = -1;
 
-    [Header("Panel menu loro")]
+    [Header("Panel")]
     [SerializeField] private GameObject panelMenuLoro;
-    [SerializeField] private TMP_Text textoTitulo;
     [SerializeField] private TMP_Text textoDialogo;
     [SerializeField] private TMP_Text textoMensaje;
 
     [Header("Botones")]
     [SerializeField] private Button botonGuardar;
-    [SerializeField] private Button botonCargar;
     [SerializeField] private Button botonRepetirTutorial;
     [SerializeField] private Button botonCerrar;
 
@@ -96,8 +94,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
             panelMenuLoro.SetActive(true);
         }
 
-        EstablecerTitulo("Loro de la base");
-        EstablecerDialogo("¡Graaak! ¿Qué necesitas? Puedo guardar tu partida, cargarla o repetir el tutorial.");
+        EstablecerDialogo(CrearTextoMenu());
         EstablecerMensaje("");
     }
 
@@ -121,18 +118,6 @@ public sealed class LoroDialogoUI : MonoBehaviour
         {
             tutorialMisiones.NotificarPartidaGuardada();
         }
-    }
-
-    public void CargarPartida()
-    {
-        if (GestorPartida.Instance == null)
-        {
-            EstablecerMensaje("No se ha encontrado el gestor de partida.");
-            return;
-        }
-
-        bool cargada = GestorPartida.Instance.CargarPartida();
-        EstablecerMensaje(cargada ? "Partida cargada correctamente." : "No hay ninguna partida guardada.");
     }
 
     public void RepetirTutorial()
@@ -186,12 +171,6 @@ public sealed class LoroDialogoUI : MonoBehaviour
             botonGuardar.onClick.AddListener(GuardarPartida);
         }
 
-        if (botonCargar != null)
-        {
-            botonCargar.onClick.RemoveListener(CargarPartida);
-            botonCargar.onClick.AddListener(CargarPartida);
-        }
-
         if (botonRepetirTutorial != null)
         {
             botonRepetirTutorial.onClick.RemoveListener(RepetirTutorial);
@@ -203,6 +182,29 @@ public sealed class LoroDialogoUI : MonoBehaviour
             botonCerrar.onClick.RemoveListener(Cerrar);
             botonCerrar.onClick.AddListener(Cerrar);
         }
+    }
+
+    private string CrearTextoMenu()
+    {
+        bool tieneGuardar = botonGuardar != null;
+        bool tieneTutorial = botonRepetirTutorial != null;
+
+        if (tieneGuardar && tieneTutorial)
+        {
+            return "¡Graaak! ¿Qué necesitas? Puedo guardar tu partida o repetir el tutorial.";
+        }
+
+        if (tieneGuardar)
+        {
+            return "¡Graaak! ¿Qué necesitas? Puedo guardar tu partida.";
+        }
+
+        if (tieneTutorial)
+        {
+            return "¡Graaak! ¿Qué necesitas? Puedo repetir el tutorial.";
+        }
+
+        return "¡Graaak! Ahora mismo no tengo ninguna acción configurada.";
     }
 
     private void GuardarEstadoJuego()
@@ -229,14 +231,6 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
         Cursor.lockState = cursorLockAnterior;
         Cursor.visible = cursorVisibleAnterior;
-    }
-
-    private void EstablecerTitulo(string texto)
-    {
-        if (textoTitulo != null)
-        {
-            textoTitulo.text = texto;
-        }
     }
 
     private void EstablecerDialogo(string texto)

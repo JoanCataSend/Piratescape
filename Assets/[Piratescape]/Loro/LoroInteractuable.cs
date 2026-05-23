@@ -49,8 +49,7 @@ public sealed class LoroInteractuable : MonoBehaviour, Interactuable
             loroDialogoUI = FindFirstObjectByType<LoroDialogoUI>();
         }
 
-        bool hayUIBloqueante = HayUIBloqueanteAbierta();
-        bool nuevoActivo = interactuable && !hayUIBloqueante && Vector3.Distance(transform.position, jugador.Position) <= rango;
+        bool nuevoActivo = interactuable && !HayUIBloqueanteAbierta() && Vector3.Distance(transform.position, jugador.Position) <= rango;
 
         if (nuevoActivo != activo)
         {
@@ -91,11 +90,10 @@ public sealed class LoroInteractuable : MonoBehaviour, Interactuable
 
     private bool HayUIBloqueanteAbierta()
     {
-        bool cofreAbierto = CofreInventarioUI.HayAlgunaUIAbierta;
-        bool loroMenuAbierto = LoroDialogoUI.HayAlgunaUIAbierta;
-        bool historiaAbierta = HistoriaInicioLoroUI.HayAlgunaUIAbierta;
-
-        return cofreAbierto || loroMenuAbierto || historiaAbierta;
+        return CofreInventarioUI.HayAlgunaUIAbierta
+            || LoroDialogoUI.HayAlgunaUIAbierta
+            || HistoriaInicioLoroUI.HayAlgunaUIAbierta
+            || TutorialMisionesLoro.BloquearInteraccionLoro;
     }
 
     private void ActualizarPrompt()

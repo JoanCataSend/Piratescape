@@ -9,6 +9,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     public static TutorialMisionesLoro Instance { get; private set; }
     public static bool TutorialActivoGlobal { get; private set; }
     public static bool BloquearMenuPausa { get; private set; }
+    public static bool BloquearInteraccionLoro => Instance != null && Instance.tutorialActivo && Instance.pasoActual != PasoTutorial.GuardarPartida;
 
     private enum PasoTutorial
     {
@@ -19,11 +20,12 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         Terminado
     }
 
-    [Header("Panel de tutorial")]
+    [Header("Panel")]
     [SerializeField] private GameObject panelTutorial;
-    [SerializeField] private TMP_Text textoTitulo;
     [SerializeField] private TMP_Text textoObjetivo;
     [SerializeField] private TMP_Text textoProgreso;
+
+    [Header("Boton opcional")]
     [SerializeField] private Button botonOmitirTutorial;
 
     [Header("Referencias")]
@@ -36,7 +38,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
     [Header("Comportamiento")]
     [SerializeField] private float esperaEntreMisiones = 1f;
-    [SerializeField] private bool permitirOmitirConTeclaO = true;
+    [SerializeField] private bool usarTeclaOParaOmitir = false;
     [SerializeField] private bool bloquearMenuPausaDuranteTutorial = false;
 
     private PasoTutorial pasoActual = PasoTutorial.Terminado;
@@ -81,7 +83,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
             return;
         }
 
-        if (permitirOmitirConTeclaO && Keyboard.current != null && Keyboard.current.oKey.wasPressedThisFrame)
+        if (usarTeclaOParaOmitir && Keyboard.current != null && Keyboard.current.oKey.wasPressedThisFrame)
         {
             OmitirTutorial();
             return;
@@ -203,12 +205,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         }
 
         movimientoRatonAcumulado = 0f;
-
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Misión 1: muévete y mira alrededor.",
-            "Usa WASD para caminar y mueve el ratón para mirar. Pulsa O para omitir."
-        );
+        MostrarObjetivo("Misión 1: muévete y mira alrededor.", "Usa WASD para caminar y mueve el ratón para mirar." + TextoOmitir());
     }
 
     private void ActualizarPasoMoverYMirar()
@@ -236,9 +233,8 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         string textoMirada = miro ? "Mirada completada" : "Mira alrededor: " + Mathf.RoundToInt(progresoMirada * 100f) + "%";
 
         MostrarObjetivo(
-            "Tutorial del loro",
             "Misión 1: muévete y mira alrededor.",
-            textoMovimiento + " | " + textoMirada + " | Total: " + Mathf.RoundToInt(progresoTotal * 100f) + "% | O: omitir"
+            textoMovimiento + " | " + textoMirada + " | Total: " + Mathf.RoundToInt(progresoTotal * 100f) + "%"
         );
 
         if (seMovio && miro)
@@ -249,11 +245,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
     private void PrepararPasoSaltar()
     {
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Misión 2: salta una vez.",
-            "Pulsa Espacio para saltar. Pulsa O para omitir."
-        );
+        MostrarObjetivo("Misión 2: salta una vez.", "Pulsa Espacio para saltar." + TextoOmitir());
     }
 
     private void ActualizarPasoSaltar()
@@ -279,12 +271,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private void PrepararPasoRecogerItem()
     {
         totalItemsInicial = ContarItemsInventario();
-
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Misión 3: recoge un objeto.",
-            "Acércate a un recurso y pulsa E cuando salga el mensaje. Pulsa O para omitir."
-        );
+        MostrarObjetivo("Misión 3: recoge un objeto.", "Acércate a un recurso y pulsa E cuando salga el mensaje." + TextoOmitir());
     }
 
     private void ActualizarPasoRecogerItem()
@@ -292,9 +279,8 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         int totalActual = ContarItemsInventario();
 
         MostrarObjetivo(
-            "Tutorial del loro",
             "Misión 3: recoge un objeto.",
-            "Objetos en inventario: " + totalActual + " | Recoge cualquier recurso para continuar. | O: omitir"
+            "Objetos en inventario: " + totalActual + " | Recoge cualquier recurso para continuar."
         );
 
         if (totalActual > totalItemsInicial)
@@ -306,12 +292,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private void PrepararPasoGuardarPartida()
     {
         partidaGuardadaEnTutorial = false;
-
-        MostrarObjetivo(
-            "Tutorial del loro",
-            "Misión 4: guarda la partida con el loro.",
-            "Vuelve al loro, pulsa E y dale a Guardar partida. Pulsa O para omitir."
-        );
+        MostrarObjetivo("Misión 4: guarda la partida con el loro.", "Vuelve al loro, pulsa E y dale a Guardar partida." + TextoOmitir());
     }
 
     private void ActualizarPasoGuardarPartida()
@@ -335,7 +316,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private IEnumerator CompletarPasoRoutine(PasoTutorial siguientePaso, string mensaje)
     {
         cambiandoPaso = true;
-        MostrarObjetivo("Objetivo completado", mensaje, "Siguiente misión en un momento... | O: omitir");
+        MostrarObjetivo("Objetivo completado", mensaje);
 
         if (esperaEntreMisiones > 0f)
         {
@@ -358,12 +339,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
             GestorPartida.Instance.MarcarTutorialCompletado(true);
         }
 
-        MostrarObjetivo(
-            "Tutorial completado",
-            "¡Graaak! Ya sabes lo básico para empezar.",
-            "Puedes volver a hablar conmigo para guardar, cargar o repetir el tutorial."
-        );
-
+        MostrarObjetivo("Tutorial completado", "¡Graaak! Ya sabes lo básico para empezar. Puedes volver a hablar conmigo para guardar o repetir el tutorial.");
         StartCoroutine(OcultarPanelDespuesDeUnMomento());
     }
 
@@ -377,16 +353,11 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         }
     }
 
-    private void MostrarObjetivo(string titulo, string objetivo, string progreso)
+    private void MostrarObjetivo(string objetivo, string progreso)
     {
         if (panelTutorial != null && !panelTutorial.activeSelf)
         {
             panelTutorial.SetActive(true);
-        }
-
-        if (textoTitulo != null)
-        {
-            textoTitulo.text = titulo;
         }
 
         if (textoObjetivo != null)
@@ -398,6 +369,21 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         {
             textoProgreso.text = progreso;
         }
+    }
+
+    private string TextoOmitir()
+    {
+        if (usarTeclaOParaOmitir)
+        {
+            return " Pulsa O para omitir.";
+        }
+
+        if (botonOmitirTutorial != null)
+        {
+            return " Puedes omitir desde el botón.";
+        }
+
+        return "";
     }
 
     private int ContarItemsInventario()
