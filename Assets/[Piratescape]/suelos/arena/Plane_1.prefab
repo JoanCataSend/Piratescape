@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Plane_1
       objectReference: {fileID: 0}
+    - target: {fileID: 72702049075056908, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 399989456040620356, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
       propertyPath: m_LocalCenter.x
       value: -4.80108
@@ -11714,7 +11718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
       propertyPath: m_SelectedVertices.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
       propertyPath: m_Textures0.Array.data[100].x
