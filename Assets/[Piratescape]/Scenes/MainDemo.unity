@@ -13109,7 +13109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectId: item_001
-  objectName: Gema
+  objectName: Gema Rosa
   interactionMessage: 'Pulsa E para recoger gema '
   rango: 2.5
   interactuable: 1
@@ -137903,7 +137903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemReceiverSource: {fileID: 1588489907}
-  playerAnimator: {fileID: 0}
+  playerAnimator: {fileID: 1233310489}
   pickupTriggerName: PickUp
   pickupDelayBeforeCollect: 0.45
 --- !u!114 &1588489895
@@ -137950,9 +137950,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventorySize: 5
   selectedSlotIndex: 0
-  dropPoint: {fileID: 0}
+  dropPoint: {fileID: 1962266338}
   dropDistance: 1.5
-  playerAnimator: {fileID: 0}
+  playerAnimator: {fileID: 1233310489}
   dropTriggerName: Drop
   dropDelayBeforeSpawn: 0.35
 --- !u!114 &1588489903
@@ -159131,11 +159131,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectId: item_001
-  objectName: Gema
+  objectName: Gema Morada
   interactionMessage: 'Pulsa E para recoger gema '
   rango: 2.5
   interactuable: 1
-  itemData: {fileID: 11400000, guid: 91aba4bb6e2f8464493729d94d4b1383, type: 2}
+  itemData: {fileID: 11400000, guid: 5158ab4a168b5a34ea196966b3e48f9f, type: 2}
   amount: 1
 --- !u!1 &1800388444
 GameObject:
@@ -173724,11 +173724,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectId: item_001
-  objectName: Gema
+  objectName: Gema Amarilla
   interactionMessage: 'Pulsa E para recoger gema '
   rango: 2.5
   interactuable: 1
-  itemData: {fileID: 11400000, guid: 91aba4bb6e2f8464493729d94d4b1383, type: 2}
+  itemData: {fileID: 11400000, guid: f3e62f6dffac23047b79f997208f84d0, type: 2}
   amount: 1
 --- !u!4 &1958085519 stripped
 Transform:
