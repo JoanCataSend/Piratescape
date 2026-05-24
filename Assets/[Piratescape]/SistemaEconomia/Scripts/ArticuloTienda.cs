@@ -816,7 +816,7 @@ public sealed class ArticuloTienda : MonoBehaviour
             yield return null;
 
             AnimatorStateInfo estado = animator.GetCurrentAnimatorStateInfo(0);
-            yield return new WaitForSeconds(estado.length + 0.4f);
+            yield return new WaitForSeconds(estado.length + 0.6f);
         }
 
         vendedorFantasma.AbrirTienda();
