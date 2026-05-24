@@ -18403,7 +18403,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5097370190579632962, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       insertIndex: 0
       addedObject: {fileID: 1871079143}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1722040466}
   m_SourcePrefab: {fileID: 100100000, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
 --- !u!1001 &131407977
 PrefabInstance:
@@ -110638,7 +110641,7 @@ MonoBehaviour:
   sunLight: {fileID: 1504668338}
   moonLight: {fileID: 2135065400}
   ghostSpawn: {fileID: 1881819183}
-  morningSkybox: {fileID: 2100000, guid: 5c80d49013691df48ac94280337e88ce, type: 2}
+  morningSkybox: {fileID: 2100000, guid: 5464c15ff9c6ca04cb5790c1773e76fa, type: 2}
   daySkybox: {fileID: 2100000, guid: 56113b3b655ab7349bab4d7d405c258a, type: 2}
   sunsetSkybox: {fileID: 2100000, guid: 528363c5c1cf6a7458140c6851c77b68, type: 2}
   nightSkybox: {fileID: 2100000, guid: 52fcefd712182d743a781fde12426775, type: 2}
@@ -137745,6 +137748,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 1233310489}
   pickupTriggerName: PickUp
   pickupDelayBeforeCollect: 0.45
+  movimientoPlayer: {fileID: 1588489905}
 --- !u!114 &1588489895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153627,6 +153631,23 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
+--- !u!1 &1722040465 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
+  m_PrefabInstance: {fileID: 127218791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1722040466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722040465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5122c334dc1100e42a275fe707a19ea3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1726588683
 GameObject:
   m_ObjectHideFlags: 0

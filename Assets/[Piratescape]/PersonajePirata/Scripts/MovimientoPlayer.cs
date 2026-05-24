@@ -31,6 +31,7 @@ public class movimientoplayer : MonoBehaviour
 
     [Header("Estado especial")]
     [SerializeField] private bool isFainted = false;
+    [SerializeField] private bool isPickingUp = false;
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -99,6 +100,16 @@ public class movimientoplayer : MonoBehaviour
             playerVelocity.y = -2f;
         }
 
+        if (isPickingUp)
+        {
+            moveInput = Vector2.zero;
+            jumpPressed = false;
+
+            AplicarGravedad();
+            ActualizarAnimaciones();
+            return;
+        }
+
         MoverJugador();
         Saltar();
         AplicarGravedad();
@@ -136,7 +147,7 @@ public class movimientoplayer : MonoBehaviour
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        if (isFainted)
+        if (isFainted || isPickingUp)
         {
             moveInput = Vector2.zero;
             return;
@@ -152,7 +163,7 @@ public class movimientoplayer : MonoBehaviour
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
-        if (isFainted)
+        if (isFainted || isPickingUp)
         {
             return;
         }
@@ -223,10 +234,10 @@ public class movimientoplayer : MonoBehaviour
             return;
         }
 
-        bool isWalking = moveInput.magnitude > 0.1f && !isFainted;
+        bool isWalking = moveInput.magnitude > 0.1f && !isFainted && !isPickingUp;
 
         bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
-        bool isRunning = isWalking && isTryingToSprint && canSprint && !isTired && !isFainted;
+        bool isRunning = isWalking && isTryingToSprint && canSprint && !isTired && !isFainted && !isPickingUp;
 
         animator.SetBool("isWalking", isWalking);
         animator.SetBool("isRunning", isRunning);
@@ -234,12 +245,43 @@ public class movimientoplayer : MonoBehaviour
         animator.SetBool("isFainted", isFainted);
     }
 
+    public void PlayPickUpAnimation()
+    {
+        if (isFainted || isPickingUp)
+        {
+            return;
+        }
+
+        isPickingUp = true;
+        moveInput = Vector2.zero;
+        jumpPressed = false;
+
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+            animator.SetTrigger("PickUp");
+        }
+    }
+
+    public void EndPickUpAnimation()
+    {
+        isPickingUp = false;
+        moveInput = Vector2.zero;
+        jumpPressed = false;
+    }
+
+    public bool IsPickingUp()
+    {
+        return isPickingUp;
+    }
+
     public bool IsActuallySprinting()
     {
         bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
         bool isMoving = moveInput.magnitude > 0.1f;
 
-        return isTryingToSprint && isMoving && canSprint && !isTired && !isFainted;
+        return isTryingToSprint && isMoving && canSprint && !isTired && !isFainted && !isPickingUp;
     }
 
     public void SetEnergySpeedMultiplier(float multiplier)
@@ -277,6 +319,7 @@ public class movimientoplayer : MonoBehaviour
         }
 
         isFainted = true;
+        isPickingUp = false;
         moveInput = Vector2.zero;
         jumpPressed = false;
         playerVelocity = Vector3.zero;
@@ -293,6 +336,7 @@ public class movimientoplayer : MonoBehaviour
     public void RecoverFromFaint()
     {
         isFainted = false;
+        isPickingUp = false;
         jumpPressed = false;
         playerVelocity = Vector3.zero;
 

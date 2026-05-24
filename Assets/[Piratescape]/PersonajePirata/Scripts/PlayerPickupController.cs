@@ -11,6 +11,9 @@ public sealed class PlayerPickupController : MonoBehaviour
     [SerializeField] private string pickupTriggerName = "PickUp";
     [SerializeField] private float pickupDelayBeforeCollect = 0.45f;
 
+    [Header("Movimiento")]
+    [SerializeField] private movimientoplayer movimientoPlayer;
+
     private IItemReceiver itemReceiver;
     private JugadorActivador jugadorActivador;
     private ObjetoRecogibleInteractuable objetoActual;
@@ -58,6 +61,11 @@ public sealed class PlayerPickupController : MonoBehaviour
         if (playerAnimator == null)
         {
             playerAnimator = GetComponentInChildren<Animator>();
+        }
+
+        if (movimientoPlayer == null)
+        {
+            movimientoPlayer = GetComponent<movimientoplayer>();
         }
     }
 
@@ -145,7 +153,11 @@ public sealed class PlayerPickupController : MonoBehaviour
             objetoRecogible.OcultarPrompt();
         }
 
-        if (playerAnimator != null && !string.IsNullOrWhiteSpace(pickupTriggerName))
+        if (movimientoPlayer != null)
+        {
+            movimientoPlayer.PlayPickUpAnimation();
+        }
+        else if (playerAnimator != null && !string.IsNullOrWhiteSpace(pickupTriggerName))
         {
             playerAnimator.SetTrigger(pickupTriggerName);
         }
@@ -175,6 +187,11 @@ public sealed class PlayerPickupController : MonoBehaviour
             {
                 objetoActual = null;
             }
+        }
+
+        if (movimientoPlayer != null)
+        {
+            yield return new WaitWhile(() => movimientoPlayer.IsPickingUp());
         }
 
         isPickingUp = false;
