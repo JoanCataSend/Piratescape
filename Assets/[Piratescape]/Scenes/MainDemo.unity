@@ -55337,6 +55337,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CFXR4 Rain Falling
       objectReference: {fileID: 0}
+    - target: {fileID: 6077168872989578693, guid: f514474ff8e94554d8477de1f2f601b0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6077168872989578695, guid: f514474ff8e94554d8477de1f2f601b0, type: 3}
       propertyPath: density
       value: 71495.336
@@ -152560,7 +152564,7 @@ MonoBehaviour:
   timeSystem: {fileID: 1975866679}
   rainFX: {fileID: 241524585}
   rainChancePerDay: 0.05
-  alwaysRain: 1
+  alwaysRain: 0
 --- !u!4 &1673731871
 Transform:
   m_ObjectHideFlags: 0
