@@ -314,6 +314,16 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             return;
         }
 
+        if (!SlotTieneItem(index))
+        {
+            return;
+        }
+
+        if (selectedSlotIndex == index)
+        {
+            return;
+        }
+
         selectedSlotIndex = index;
         NotifyInventoryChanged();
     }
@@ -325,13 +335,19 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             return;
         }
 
-        selectedSlotIndex++;
+        int nuevoIndice = BuscarSiguienteSlotConItem(selectedSlotIndex, 1);
 
-        if (selectedSlotIndex >= slots.Count)
+        if (nuevoIndice == -1)
         {
-            selectedSlotIndex = 0;
+            return;
         }
 
+        if (nuevoIndice == selectedSlotIndex)
+        {
+            return;
+        }
+
+        selectedSlotIndex = nuevoIndice;
         NotifyInventoryChanged();
     }
 
@@ -342,13 +358,19 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             return;
         }
 
-        selectedSlotIndex--;
+        int nuevoIndice = BuscarSiguienteSlotConItem(selectedSlotIndex, -1);
 
-        if (selectedSlotIndex < 0)
+        if (nuevoIndice == -1)
         {
-            selectedSlotIndex = slots.Count - 1;
+            return;
         }
 
+        if (nuevoIndice == selectedSlotIndex)
+        {
+            return;
+        }
+
+        selectedSlotIndex = nuevoIndice;
         NotifyInventoryChanged();
     }
 
@@ -516,6 +538,86 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         return usedSomething;
     }
 
+    private bool SlotTieneItem(int index)
+    {
+        InventorySlot slot = GetSlot(index);
+        return slot != null && !slot.IsEmpty();
+    }
+
+    private int BuscarPrimerSlotConItem()
+    {
+        if (slots == null)
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (SlotTieneItem(i))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private int BuscarSiguienteSlotConItem(int indiceActual, int direccion)
+    {
+        if (slots == null || slots.Count == 0)
+        {
+            return -1;
+        }
+
+        for (int i = 1; i <= slots.Count; i++)
+        {
+            int nuevoIndice = indiceActual + direccion * i;
+
+            if (nuevoIndice >= slots.Count)
+            {
+                nuevoIndice = nuevoIndice % slots.Count;
+            }
+
+            while (nuevoIndice < 0)
+            {
+                nuevoIndice += slots.Count;
+            }
+
+            if (SlotTieneItem(nuevoIndice))
+            {
+                return nuevoIndice;
+            }
+        }
+
+        return -1;
+    }
+
+    private void AsegurarSeleccionValida()
+    {
+        if (slots == null || slots.Count == 0)
+        {
+            selectedSlotIndex = 0;
+            return;
+        }
+
+        if (selectedSlotIndex < 0 || selectedSlotIndex >= slots.Count)
+        {
+            selectedSlotIndex = 0;
+        }
+
+        if (SlotTieneItem(selectedSlotIndex))
+        {
+            return;
+        }
+
+        int primerSlotConItem = BuscarPrimerSlotConItem();
+
+        if (primerSlotConItem != -1)
+        {
+            selectedSlotIndex = primerSlotConItem;
+        }
+    }
+
     public List<InventorySlot> GetSlots()
     {
         return slots;
@@ -533,6 +635,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
     public void NotifyInventoryChanged()
     {
+        AsegurarSeleccionValida();
         OnInventoryChanged?.Invoke();
     }
 

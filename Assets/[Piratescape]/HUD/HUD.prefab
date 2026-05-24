@@ -356,8 +356,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7068542844327236698}
+  - component: {fileID: 779869376594979177}
+  - component: {fileID: 8274393034799823828}
   m_Layer: 5
-  m_Name: InventoryBar
+  m_Name: FondoBarraInventario
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -375,13 +377,51 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6511840111809729153}
+  m_Father: {fileID: 7432929943687663384}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 51.75}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: -126}
+  m_SizeDelta: {x: 800, y: 360}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!222 &779869376594979177
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962728241748086999}
+  m_CullTransparentMesh: 1
+--- !u!114 &8274393034799823828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962728241748086999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 5b3198548bd4b2b41961cc93f5aee7c1, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2036037073128479749
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,8 +1032,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7432929943687663384}
-  - component: {fileID: 5289734561510073587}
-  - component: {fileID: 7602547189810907268}
   - component: {fileID: 1330925882844517641}
   m_Layer: 5
   m_Name: Barra_Inventario
@@ -1014,56 +1052,19 @@ RectTransform:
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7068542844327236698}
   - {fileID: 8156609597851893624}
   - {fileID: 1759448661350315981}
   - {fileID: 8322692418977876260}
   - {fileID: 5253035931351991596}
   - {fileID: 2595917833196178933}
-  m_Father: {fileID: 6511840111809729153}
+  m_Father: {fileID: 7578254743395844232}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 51.75}
+  m_AnchoredPosition: {x: 0, y: 45}
   m_SizeDelta: {x: 750, y: 115}
   m_Pivot: {x: 0.5, y: 0}
---- !u!222 &5289734561510073587
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3809786563592118649}
-  m_CullTransparentMesh: 1
---- !u!114 &7602547189810907268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3809786563592118649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 73f945c45b4d9ae4eb273a2a82d69dec, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &1330925882844517641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,43 +1084,7 @@ MonoBehaviour:
   - {fileID: 3451774835210700414}
   - {fileID: 1477609613775325814}
   - {fileID: 8674359250171724463}
---- !u!1 &4261174402192150133
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6511840111809729153}
-  m_Layer: 5
-  m_Name: Barra
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6511840111809729153
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4261174402192150133}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7432929943687663384}
-  - {fileID: 7068542844327236698}
-  m_Father: {fileID: 7578254743395844232}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -495}
-  m_SizeDelta: {x: 675, y: 103.5}
-  m_Pivot: {x: 0.5, y: 0.5}
+  buscarSlotsAutomaticamente: 1
 --- !u!1 &4616804288881197754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1366,8 +1331,6 @@ MonoBehaviour:
   dayNightIcon: {fileID: 1285765135989642801}
   daySprite: {fileID: 21300000, guid: b8bab366ceed30e4b9c6c00f86828750, type: 3}
   nightSprite: {fileID: 21300000, guid: f933bf760cb11d44b8a26de87f7c87e3, type: 3}
-  dayStartHour: 6
-  nightStartHour: 18
 --- !u!1 &5938428352224612496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1398,8 +1361,8 @@ RectTransform:
   m_Children:
   - {fileID: 8463170223248487033}
   - {fileID: 3208930811287764875}
-  - {fileID: 6511840111809729153}
   - {fileID: 199105203399289574}
+  - {fileID: 7432929943687663384}
   - {fileID: 4118985508603908058}
   - {fileID: 4610646858065722601}
   m_Father: {fileID: 0}
@@ -1496,10 +1459,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   construccionBarco: {fileID: 0}
-  itemConstruccion: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
   raizIndicador: {fileID: 2764888866142639374}
-  iconoIndicador: {fileID: 1885796140122707797}
-  textoIndicador: {fileID: 7369710602450629562}
+  filaMadera: {fileID: 0}
+  iconoMadera: {fileID: 0}
+  textoMadera: {fileID: 0}
+  itemMadera: {fileID: 0}
+  filaClavos: {fileID: 0}
+  iconoClavos: {fileID: 0}
+  textoClavos: {fileID: 0}
+  itemClavos: {fileID: 0}
   raizMensajeCompletado: {fileID: 2875159412691452631}
   textoMensajeCompletado: {fileID: 417296088455542779}
   duracionMensajeCompletado: 2.5

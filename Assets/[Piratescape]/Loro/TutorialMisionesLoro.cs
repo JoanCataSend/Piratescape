@@ -9,14 +9,15 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     public static TutorialMisionesLoro Instance { get; private set; }
     public static bool TutorialActivoGlobal { get; private set; }
     public static bool BloquearMenuPausa { get; private set; }
-    public static bool BloquearInteraccionLoro => Instance != null && Instance.tutorialActivo && Instance.pasoActual != PasoTutorial.GuardarPartida;
+    public static bool BloquearInteraccionLoro => Instance != null && Instance.tutorialActivo;
 
     private enum PasoTutorial
     {
         MoverYMirar,
         Saltar,
         RecogerItem,
-        GuardarPartida,
+        SeleccionarInventario,
+        ConsumirItem,
         Terminado
     }
 
@@ -36,6 +37,9 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     [SerializeField] private float distanciaNecesaria = 3f;
     [SerializeField] private float movimientoRatonNecesario = 80f;
 
+    [Header("Mision 5 - Consumir")]
+    [SerializeField] private string textoConsumibles = "coco, plátano, café o botiquín";
+
     [Header("Comportamiento")]
     [SerializeField] private float esperaEntreMisiones = 1f;
     [SerializeField] private bool usarTeclaOParaOmitir = false;
@@ -47,7 +51,8 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private Vector3 posicionInicialPaso;
     private float movimientoRatonAcumulado;
     private int totalItemsInicial;
-    private bool partidaGuardadaEnTutorial;
+    private int totalConsumiblesReferencia;
+    private bool intentoConsumirItem;
 
     public bool TutorialActivo => tutorialActivo;
 
@@ -108,8 +113,12 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
                 ActualizarPasoRecogerItem();
                 break;
 
-            case PasoTutorial.GuardarPartida:
-                ActualizarPasoGuardarPartida();
+            case PasoTutorial.SeleccionarInventario:
+                ActualizarPasoSeleccionarInventario();
+                break;
+
+            case PasoTutorial.ConsumirItem:
+                ActualizarPasoConsumirItem();
                 break;
         }
     }
@@ -122,7 +131,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         TutorialActivoGlobal = true;
         BloquearMenuPausa = bloquearMenuPausaDuranteTutorial;
         cambiandoPaso = false;
-        partidaGuardadaEnTutorial = false;
+        intentoConsumirItem = false;
 
         if (panelTutorial != null)
         {
@@ -161,12 +170,6 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
     public void NotificarPartidaGuardada()
     {
-        if (!tutorialActivo)
-        {
-            return;
-        }
-
-        partidaGuardadaEnTutorial = true;
     }
 
     private void CambiarAPaso(PasoTutorial nuevoPaso)
@@ -187,8 +190,12 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
                 PrepararPasoRecogerItem();
                 break;
 
-            case PasoTutorial.GuardarPartida:
-                PrepararPasoGuardarPartida();
+            case PasoTutorial.SeleccionarInventario:
+                PrepararPasoSeleccionarInventario();
+                break;
+
+            case PasoTutorial.ConsumirItem:
+                PrepararPasoConsumirItem();
                 break;
 
             case PasoTutorial.Terminado:
@@ -285,21 +292,97 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
         if (totalActual > totalItemsInicial)
         {
-            CompletarPaso(PasoTutorial.GuardarPartida, "¡Recurso conseguido! Ahora aprende a guardar la partida.");
+            CompletarPaso(PasoTutorial.SeleccionarInventario, "¡Recurso conseguido! Ahora aprende a usar la barra del inventario.");
         }
     }
 
-    private void PrepararPasoGuardarPartida()
+    private void PrepararPasoSeleccionarInventario()
     {
-        partidaGuardadaEnTutorial = false;
-        MostrarObjetivo("Misión 4: guarda la partida con el loro.", "Vuelve al loro, pulsa E y dale a Guardar partida." + TextoOmitir());
+        MostrarObjetivo("Misión 4: selecciona un objeto.", "Usa la rueda del ratón o las teclas 1-5 para seleccionar un objeto del inventario." + TextoOmitir());
     }
 
-    private void ActualizarPasoGuardarPartida()
+    private void ActualizarPasoSeleccionarInventario()
     {
-        if (partidaGuardadaEnTutorial)
+        if (inventarioJugador == null)
         {
-            CompletarPaso(PasoTutorial.Terminado, "¡Partida guardada! Tutorial terminado.");
+            BuscarReferenciasSiFaltan();
+            return;
+        }
+
+        if (!HayItemSeleccionado())
+        {
+            MostrarObjetivo(
+                "Misión 4: selecciona un objeto.",
+                "Primero necesitas tener un objeto en el inventario."
+            );
+
+            return;
+        }
+
+        MostrarObjetivo(
+            "Misión 4: selecciona un objeto.",
+            "Usa la rueda del ratón o pulsa una tecla del 1 al 5."
+        );
+
+        if (InputSeleccionInventarioPulsadoEstaFrame())
+        {
+            CompletarPaso(PasoTutorial.ConsumirItem, "¡Bien! Ya sabes seleccionar objetos.");
+        }
+    }
+
+    private void PrepararPasoConsumirItem()
+    {
+        intentoConsumirItem = false;
+        totalConsumiblesReferencia = ContarConsumiblesInventario();
+
+        MostrarObjetivo(
+            "Misión 5: consume un objeto.",
+            "Selecciona un consumible y haz click izquierdo para usarlo."
+        );
+    }
+
+    private void ActualizarPasoConsumirItem()
+    {
+        int totalConsumiblesActual = ContarConsumiblesInventario();
+
+        if (totalConsumiblesActual > totalConsumiblesReferencia)
+        {
+            totalConsumiblesReferencia = totalConsumiblesActual;
+        }
+
+        if (totalConsumiblesActual <= 0)
+        {
+            MostrarObjetivo(
+                "Misión 5: consigue un consumible.",
+                "Busca un consumible como " + textoConsumibles + " y recógelo."
+            );
+
+            return;
+        }
+
+        if (!SlotSeleccionadoTieneConsumible())
+        {
+            MostrarObjetivo(
+                "Misión 5: selecciona un consumible.",
+                "Usa la rueda o las teclas 1-5 hasta seleccionar un consumible. Después haz click izquierdo."
+            );
+        }
+        else
+        {
+            MostrarObjetivo(
+                "Misión 5: consume un objeto.",
+                "Haz click izquierdo para consumir el objeto seleccionado."
+            );
+        }
+
+        if (InputConsumirPulsadoEstaFrame())
+        {
+            intentoConsumirItem = true;
+        }
+
+        if (intentoConsumirItem && totalConsumiblesActual < totalConsumiblesReferencia)
+        {
+            CompletarPaso(PasoTutorial.Terminado, "¡Perfecto! Ya sabes recoger, seleccionar y consumir objetos.");
         }
     }
 
@@ -339,7 +422,7 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
             GestorPartida.Instance.MarcarTutorialCompletado(true);
         }
 
-        MostrarObjetivo("Tutorial completado", "¡Graaak! Ya sabes lo básico para empezar. Puedes volver a hablar conmigo para guardar o repetir el tutorial.");
+        MostrarObjetivo("Tutorial completado", "¡Graaak! Ya sabes lo básico: moverte, recoger objetos, seleccionarlos y consumirlos.");
         StartCoroutine(OcultarPanelDespuesDeUnMomento());
     }
 
@@ -386,6 +469,88 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         return "";
     }
 
+    private bool InputSeleccionInventarioPulsadoEstaFrame()
+    {
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) return true;
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) return true;
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) return true;
+            if (Keyboard.current.digit4Key.wasPressedThisFrame) return true;
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) return true;
+        }
+
+        if (Mouse.current != null)
+        {
+            if (Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0f)
+            {
+                return true;
+            }
+        }
+
+        if (Gamepad.current != null)
+        {
+            if (Gamepad.current.leftShoulder.wasPressedThisFrame) return true;
+            if (Gamepad.current.rightShoulder.wasPressedThisFrame) return true;
+        }
+
+        return false;
+    }
+
+    private bool InputConsumirPulsadoEstaFrame()
+    {
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            return true;
+        }
+
+        if (Gamepad.current != null && Gamepad.current.buttonNorth.wasPressedThisFrame)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HayItemSeleccionado()
+    {
+        InventorySlot slot = ObtenerSlotSeleccionado();
+
+        if (slot == null)
+        {
+            return false;
+        }
+
+        return !slot.IsEmpty();
+    }
+
+    private bool SlotSeleccionadoTieneConsumible()
+    {
+        InventorySlot slot = ObtenerSlotSeleccionado();
+
+        if (slot == null || slot.IsEmpty())
+        {
+            return false;
+        }
+
+        return slot.itemData is ConsumibleItemData;
+    }
+
+    private InventorySlot ObtenerSlotSeleccionado()
+    {
+        if (inventarioJugador == null)
+        {
+            BuscarReferenciasSiFaltan();
+        }
+
+        if (inventarioJugador == null)
+        {
+            return null;
+        }
+
+        return inventarioJugador.GetSlot(inventarioJugador.SelectedSlotIndex);
+    }
+
     private int ContarItemsInventario()
     {
         if (inventarioJugador == null)
@@ -410,6 +575,38 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
             }
 
             total += slot.amount;
+        }
+
+        return total;
+    }
+
+    private int ContarConsumiblesInventario()
+    {
+        if (inventarioJugador == null)
+        {
+            BuscarReferenciasSiFaltan();
+        }
+
+        if (inventarioJugador == null)
+        {
+            return 0;
+        }
+
+        int total = 0;
+
+        for (int i = 0; i < inventarioJugador.GetSlots().Count; i++)
+        {
+            InventorySlot slot = inventarioJugador.GetSlot(i);
+
+            if (slot == null || slot.IsEmpty())
+            {
+                continue;
+            }
+
+            if (slot.itemData is ConsumibleItemData)
+            {
+                total += slot.amount;
+            }
         }
 
         return total;
