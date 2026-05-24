@@ -27530,6 +27530,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 233509391}
+  - component: {fileID: 233509392}
   m_Layer: 0
   m_Name: GemasManager
   m_TagString: Untagged
@@ -27552,6 +27553,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &233509392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233509389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce23bb01c967a3d439dd173e02fa53a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gemas:
+  - {fileID: 64472591}
+  - {fileID: 1799520745}
+  - {fileID: 1956325363}
+  puntosSpawn:
+  - {fileID: 1202379608}
+  - {fileID: 833927210}
+  - {fileID: 946300665}
+  - {fileID: 381277572}
+  - {fileID: 1137092038}
 --- !u!1 &233615118
 GameObject:
   m_ObjectHideFlags: 0
@@ -40346,6 +40369,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f49e26479b5270a4f9dd31a7ce266a1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeSystem: {fileID: 0}
+  starsFX: {fileID: 0}
+  startHour: 23
+  endHour: 5
 --- !u!4 &343130150
 Transform:
   m_ObjectHideFlags: 0
@@ -152614,6 +152641,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e20c69217211b48a72dc012c3056e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeSystem: {fileID: 0}
+  rainFX: {fileID: 0}
+  rainChancePerDay: 0.08
+  alwaysRain: 0
 --- !u!4 &1673731871
 Transform:
   m_ObjectHideFlags: 0
