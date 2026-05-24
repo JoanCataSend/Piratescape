@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 232a7b0dfb186994b99fa09252c89741, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 232a7b0dfb186994b99fa09252c89741, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 232a7b0dfb186994b99fa09252c89741, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 232a7b0dfb186994b99fa09252c89741, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.2733072
       objectReference: {fileID: 0}
@@ -88,6 +100,3 @@ MonoBehaviour:
   interactuable: 1
   itemData: {fileID: 11400000, guid: 91aba4bb6e2f8464493729d94d4b1383, type: 2}
   amount: 1
-  vidaAGanar: 0
-  interactionIndicator: {fileID: 0}
-  visualRoot: {fileID: 0}

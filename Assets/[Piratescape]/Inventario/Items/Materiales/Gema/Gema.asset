@@ -14,4 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: gema
   displayName: Gema
+  description: "Gema m\xE1gica"
   icon: {fileID: 0}
+  worldPrefab: {fileID: 4808363811187869085, guid: 2b829e44f4b0a29469070ca35ad76e43, type: 3}
+  handPrefab: {fileID: 4808363811187869085, guid: 2b829e44f4b0a29469070ca35ad76e43, type: 3}
+  handLocalPosition: {x: 0, y: 0, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 0.5, y: 0.5, z: 0.5}
