@@ -104874,13 +104874,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1233310489}
     - target: {fileID: 6212136324022547838, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      propertyPath: jumpHeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212136324022547838, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: playerSpeed
-      value: 10
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6212136324022547838, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 1812617209}
+    - target: {fileID: 6212136324022547838, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      propertyPath: sprintMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6212136324022547838, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: energySpeedMultiplier
       value: 1
