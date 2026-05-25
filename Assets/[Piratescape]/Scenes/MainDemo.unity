@@ -73385,7 +73385,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &794363904
 RectTransform:
   m_ObjectHideFlags: 0
@@ -111572,8 +111572,8 @@ MonoBehaviour:
   ghostSpawn: {fileID: 1881819183}
   morningSkybox: {fileID: 2100000, guid: 756034337fb7ad84d81e93aeb9f466d0, type: 2}
   daySkybox: {fileID: 2100000, guid: 756034337fb7ad84d81e93aeb9f466d0, type: 2}
-  sunsetSkybox: {fileID: 2100000, guid: c9a5f5c5f8b37ea43aac389a4fef81a4, type: 2}
-  nightSkybox: {fileID: 2100000, guid: 7bc3b0e8a25b29b4e9d40bc1abbeae24, type: 2}
+  sunsetSkybox: {fileID: 2100000, guid: 3b4e3ecfab9a66e4bba7180bdd611520, type: 2}
+  nightSkybox: {fileID: 2100000, guid: 183770dcd2f821947a884f4011c99858, type: 2}
   morningReflectionIntensity: 0.45
   dayReflectionIntensity: 1
   sunsetReflectionIntensity: 0.35
