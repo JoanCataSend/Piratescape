@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CieloDia
+  m_Name: CieloTarde
   m_Shader: {fileID: 104, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BackTex:
-        m_Texture: {fileID: 2800000, guid: 69c49f4065af59943a4307ee4993b666, type: 3}
+        m_Texture: {fileID: 2800000, guid: 397253eb091b41f4f98959468e3bcb71, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -49,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DownTex:
-        m_Texture: {fileID: 2800000, guid: bfad19c53b90c9f43bec7d7a7297e7f0, type: 3}
+        m_Texture: {fileID: 2800000, guid: e3c6e95f5c2d21240a6a8d821cb5c244, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -57,11 +57,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FrontTex:
-        m_Texture: {fileID: 2800000, guid: 91bc0480e8301764fb2062ca857dd2b7, type: 3}
+        m_Texture: {fileID: 2800000, guid: f1b24a37901d2be49a8ceb991f31977a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LeftTex:
-        m_Texture: {fileID: 2800000, guid: aa5e4615e588be945949ae5c3f8dc463, type: 3}
+        m_Texture: {fileID: 2800000, guid: 095d5245ba1c9244d9c6ae1d69af2d82, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -81,7 +81,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RightTex:
-        m_Texture: {fileID: 2800000, guid: a6865b3b1e5743f4e9ed87ac35b27b83, type: 3}
+        m_Texture: {fileID: 2800000, guid: 894816b91937869468fc78f07ff94b2b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -89,7 +89,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _UpTex:
-        m_Texture: {fileID: 2800000, guid: fe60831b1bb547946a141a47557db7b3, type: 3}
+        m_Texture: {fileID: 2800000, guid: 077e441cdddbc19479df70f96f1c9716, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -144,7 +144,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Tint: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _Tint: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3780281118750701797
