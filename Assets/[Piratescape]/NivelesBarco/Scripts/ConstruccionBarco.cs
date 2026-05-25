@@ -39,6 +39,8 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private Camera camaraMejoraBarco;
     [SerializeField] private GameObject fxMejoraBarco;
     [SerializeField] private Transform puntoFXMejoraBarco;
+    [SerializeField] private GameObject fxFuegosArtificialesNivel5;
+    [SerializeField] private Transform puntoFuegosArtificialesNivel5;
     [SerializeField] private float duracionSecuenciaMejora = 7f;
 
     [Header("UI mejora barco")]
@@ -49,6 +51,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [Header("UI a ocultar durante mejora")]
     [SerializeField] private GameObject[] objetosUIAOcultar;
     private bool[] estadosPreviosUI;
+
 
     public static bool HaySecuenciaMejoraBarcoEnCurso { get; private set; }
     private bool EstanTodosLosNivelesCompletados
@@ -72,6 +75,11 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     public bool IntentarEntregarUnaUnidad()
     {
+        if (HaySecuenciaMejoraBarcoEnCurso)
+        {
+            return false;
+        }
+
         NivelConstruccionBarco nivelActual = ObtenerNivelActual();
 
         if (nivelActual == null || inventarioJugador == null)
@@ -364,6 +372,22 @@ public sealed class ConstruccionBarco : MonoBehaviour
             GameObject fx = Instantiate(fxMejoraBarco, posicionFX, rotacionFX);
             fx.SetActive(true);
             Debug.Log("FX mejora barco instanciado en: " + posicionFX);
+        }
+
+        if (nivelCompletado == 4 && fxFuegosArtificialesNivel5 != null)
+        {
+            Vector3 posicionFuegos = puntoFuegosArtificialesNivel5 != null
+                ? puntoFuegosArtificialesNivel5.position
+                : transform.position;
+
+            Quaternion rotacionFuegos = puntoFuegosArtificialesNivel5 != null
+                ? puntoFuegosArtificialesNivel5.rotation
+                : Quaternion.identity;
+
+            GameObject fuegos = Instantiate(fxFuegosArtificialesNivel5, posicionFuegos, rotacionFuegos);
+            fuegos.SetActive(true);
+
+            Debug.Log("FX fuegos artificiales nivel 5 instanciado en: " + posicionFuegos);
         }
 
         if (panelMejoraBarco != null)
