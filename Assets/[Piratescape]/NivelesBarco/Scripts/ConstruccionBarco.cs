@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class ConstruccionBarco : MonoBehaviour
 {
@@ -33,7 +34,28 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     public NivelConstruccionBarco NivelActual => ObtenerNivelActual();
 
+    [Header("Secuencia mejora barco")]
+    [SerializeField] private Camera camaraJugador;
+    [SerializeField] private Camera camaraMejoraBarco;
+    [SerializeField] private GameObject fxMejoraBarco;
+    [SerializeField] private Transform puntoFXMejoraBarco;
+    [SerializeField] private GameObject fxFuegosArtificialesNivel5;
+    [SerializeField] private Transform puntoFuegosArtificialesNivel5;
+    [SerializeField] private float duracionSecuenciaMejora = 7f;
+
+    [Header("UI mejora barco")]
+    [SerializeField] private GameObject panelMejoraBarco;
+    [SerializeField] private Image imagenMensajeNivel;
+    [SerializeField] private Sprite[] spritesMensajeNivel;
+
+    [Header("UI a ocultar durante mejora")]
+    [SerializeField] private GameObject[] objetosUIAOcultar;
+    private bool[] estadosPreviosUI;
+
+
+    public static bool HaySecuenciaMejoraBarcoEnCurso { get; private set; }
     private bool EstanTodosLosNivelesCompletados
+
     {
         get
         {
@@ -53,6 +75,11 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     public bool IntentarEntregarUnaUnidad()
     {
+        if (HaySecuenciaMejoraBarcoEnCurso)
+        {
+            return false;
+        }
+
         NivelConstruccionBarco nivelActual = ObtenerNivelActual();
 
         if (nivelActual == null || inventarioJugador == null)
@@ -192,9 +219,13 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
         ultimoMensajeCompletado = nivelActual.MensajeCompletado;
 
+        int nivelCompletado = indiceNivelActual;
+
         indiceNivelActual++;
 
         AplicarEstadoVisualActual();
+
+        StartCoroutine(SecuenciaMejoraBarco(nivelCompletado));
 
         OnConstruccionCompletada?.Invoke();
         OnConstruccionActualizada?.Invoke();
@@ -217,10 +248,6 @@ public sealed class ConstruccionBarco : MonoBehaviour
             }
         }
 
-        if (marcadorMiniMapaBarco != null)
-        {
-            marcadorMiniMapaBarco.SetActive(false);
-        }
     }
 
     private void AplicarEstadoVisualTrasCompletarNivel()
@@ -295,12 +322,117 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
         if (marcadorMiniMapaBarco != null)
         {
-            marcadorMiniMapaBarco.SetActive(indiceNivelActual > 0);
+            marcadorMiniMapaBarco.SetActive(false);
         }
 
         if (zonaConstruccionVisual != null)
         {
             zonaConstruccionVisual.SetActive(indiceNivelActual == 0);
         }
+    }
+
+    private System.Collections.IEnumerator SecuenciaMejoraBarco(int nivelCompletado)
+    {
+        HaySecuenciaMejoraBarcoEnCurso = true;
+
+        if (objetosUIAOcultar != null)
+        {
+            estadosPreviosUI = new bool[objetosUIAOcultar.Length];
+
+            for (int i = 0; i < objetosUIAOcultar.Length; i++)
+            {
+                if (objetosUIAOcultar[i] != null)
+                {
+                    estadosPreviosUI[i] = objetosUIAOcultar[i].activeSelf;
+                    objetosUIAOcultar[i].SetActive(false);
+                }
+            }
+        }
+
+        if (camaraJugador != null)
+        {
+            camaraJugador.gameObject.SetActive(false);
+        }
+
+        if (camaraMejoraBarco != null)
+        {
+            camaraMejoraBarco.gameObject.SetActive(true);
+        }
+
+        if (fxMejoraBarco != null)
+        {
+            Vector3 posicionFX = puntoFXMejoraBarco != null
+                ? puntoFXMejoraBarco.position
+                : transform.position;
+
+            Quaternion rotacionFX = puntoFXMejoraBarco != null
+                ? puntoFXMejoraBarco.rotation
+                : Quaternion.identity;
+
+            GameObject fx = Instantiate(fxMejoraBarco, posicionFX, rotacionFX);
+            fx.SetActive(true);
+            Debug.Log("FX mejora barco instanciado en: " + posicionFX);
+        }
+
+        if (nivelCompletado == 4 && fxFuegosArtificialesNivel5 != null)
+        {
+            Vector3 posicionFuegos = puntoFuegosArtificialesNivel5 != null
+                ? puntoFuegosArtificialesNivel5.position
+                : transform.position;
+
+            Quaternion rotacionFuegos = puntoFuegosArtificialesNivel5 != null
+                ? puntoFuegosArtificialesNivel5.rotation
+                : Quaternion.identity;
+
+            GameObject fuegos = Instantiate(fxFuegosArtificialesNivel5, posicionFuegos, rotacionFuegos);
+            fuegos.SetActive(true);
+
+            Debug.Log("FX fuegos artificiales nivel 5 instanciado en: " + posicionFuegos);
+        }
+
+        if (panelMejoraBarco != null)
+        {
+            panelMejoraBarco.SetActive(true);
+        }
+
+        if (imagenMensajeNivel != null && spritesMensajeNivel != null)
+        {
+            if (nivelCompletado >= 0 && nivelCompletado < spritesMensajeNivel.Length)
+            {
+                imagenMensajeNivel.sprite = spritesMensajeNivel[nivelCompletado];
+            }
+        }
+
+        yield return new WaitForSeconds(duracionSecuenciaMejora);
+
+        if (panelMejoraBarco != null)
+        {
+            panelMejoraBarco.SetActive(false);
+        }
+
+        if (camaraMejoraBarco != null)
+        {
+            camaraMejoraBarco.gameObject.SetActive(false);
+        }
+
+        if (objetosUIAOcultar != null && estadosPreviosUI != null)
+        {
+            for (int i = 0; i < objetosUIAOcultar.Length; i++)
+            {
+                if (objetosUIAOcultar[i] != null && i < estadosPreviosUI.Length)
+                {
+                    objetosUIAOcultar[i].SetActive(estadosPreviosUI[i]);
+                }
+            }
+        }
+
+
+        if (camaraJugador != null)
+        {
+            camaraJugador.gameObject.SetActive(true);
+        }
+        HaySecuenciaMejoraBarcoEnCurso = false;
+        OnConstruccionActualizada?.Invoke();
+        
     }
 }

@@ -175,7 +175,8 @@ public sealed class MenuPausaUI : MonoBehaviour
         return CofreInventarioUI.HayAlgunaUIAbierta
             || LoroDialogoUI.HayAlgunaUIAbierta
             || HistoriaInicioLoroUI.HayAlgunaUIAbierta
-            || TutorialMisionesLoro.BloquearMenuPausa;
+            || TutorialMisionesLoro.BloquearMenuPausa
+            || ConstruccionBarco.HaySecuenciaMejoraBarcoEnCurso;
     }
 
     private bool JugadorEstaMuerto()

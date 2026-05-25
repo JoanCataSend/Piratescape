@@ -19,6 +19,9 @@ public sealed class NivelConstruccionBarco
     public GameObject ModeloBarco => modeloBarco;
     public RequisitoConstruccion[] Requisitos => requisitos;
 
+
+
+
     public bool EstaCompletado
     {
         get
