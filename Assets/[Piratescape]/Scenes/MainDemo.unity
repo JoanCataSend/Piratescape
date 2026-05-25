@@ -111570,57 +111570,44 @@ MonoBehaviour:
   sunLight: {fileID: 1504668338}
   moonLight: {fileID: 2135065400}
   ghostSpawn: {fileID: 1881819183}
-  morningSkybox: {fileID: 2100000, guid: 756034337fb7ad84d81e93aeb9f466d0, type: 2}
   daySkybox: {fileID: 2100000, guid: 756034337fb7ad84d81e93aeb9f466d0, type: 2}
   sunsetSkybox: {fileID: 2100000, guid: 3b4e3ecfab9a66e4bba7180bdd611520, type: 2}
   nightSkybox: {fileID: 2100000, guid: 183770dcd2f821947a884f4011c99858, type: 2}
-  morningReflectionIntensity: 0.45
+  blendSkyboxMaterial: {fileID: 2100000, guid: 9400ba6094a19cc4fba45ea991134f1a, type: 2}
+  duracionTransicionSkybox: 5
+  skyboxExposure: 1
+  dayHour: 8
+  sunsetHour: 18
+  nightHour: 19
   dayReflectionIntensity: 1
   sunsetReflectionIntensity: 0.35
   nightReflectionIntensity: 0.03
-  sunriseAmbientColor: {r: 0.3, g: 0.28, b: 0.35, a: 1}
-  morningAmbientColor: {r: 0.55, g: 0.52, b: 0.45, a: 1}
   dayAmbientColor: {r: 0.46101815, g: 0.46377113, b: 0.5283019, a: 1}
   sunsetAmbientColor: {r: 0.35, g: 0.28, b: 0.32, a: 1}
-  duskAmbientColor: {r: 0.18, g: 0.2, b: 0.28, a: 1}
   nightAmbientColor: {r: 0.08, g: 0.1, b: 0.16, a: 1}
-  sunriseSunColor: {r: 1, g: 0.72, b: 0.45, a: 1}
-  morningSunColor: {r: 1, g: 0.88, b: 0.7, a: 1}
   daySunColor: {r: 1, g: 0.96, b: 0.84, a: 1}
   sunsetSunColor: {r: 1, g: 0.62, b: 0.35, a: 1}
   duskSunColor: {r: 0.75, g: 0.45, b: 0.35, a: 1}
   moonColor: {r: 0.45, g: 0.55, b: 0.9, a: 1}
-  sunriseSunIntensity: 0.4
-  morningSunIntensity: 0.8
   daySunIntensity: 1.2
   sunsetSunIntensity: 0.5
-  duskSunIntensity: 0.2
   nightSunIntensity: 0
-  dawnMoonIntensity: 0.2
   dayMoonIntensity: 0
+  sunsetMoonIntensity: 0.03
   nightMoonIntensity: 0.25
   usarNiebla: 1
   fogMode: 3
-  sunriseFogColor: {r: 0.95, g: 0.72, b: 0.6, a: 1}
-  morningFogColor: {r: 0.85, g: 0.8, b: 0.72, a: 1}
   dayFogColor: {r: 0.78, g: 0.86, b: 0.9, a: 1}
   sunsetFogColor: {r: 0.95, g: 0.55, b: 0.42, a: 1}
-  duskFogColor: {r: 0.08, g: 0.12, b: 0.22, a: 1}
   nightFogColor: {r: 0.04, g: 0.1, b: 0.2, a: 1}
-  sunriseFogDensity: 0.008
-  morningFogDensity: 0.006
   dayFogDensity: 0.003
   sunsetFogDensity: 0.006
-  duskFogDensity: 0.012
   nightFogDensity: 0.015
   sunYaw: 170
   moonYaw: 170
-  sunriseHour: 6
-  dayHour: 8
-  afternoonHour: 14
-  sunsetHour: 18
-  duskHour: 20
-  nightHour: 22
+  skyboxActualNombre: 
+  skyboxDestinoNombre: 
+  blendActual: 0
 --- !u!4 &1254907601
 Transform:
   m_ObjectHideFlags: 0
@@ -176033,7 +176020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDay: 1
-  startHour: 8
+  startHour: 16
   startMinute: 0
   realSecondsPerGameMinute: 1
   startPaused: 0
