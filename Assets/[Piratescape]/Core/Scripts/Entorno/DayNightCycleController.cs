@@ -133,8 +133,7 @@ public class DayNightCycleController : MonoBehaviour
             return;
         }
 
-        runtimeSkybox = new Material(nightSkybox);
-        RenderSettings.skybox = runtimeSkybox;
+        RenderSettings.skybox = nightSkybox;
         DynamicGI.UpdateEnvironment();
     }
 
@@ -179,12 +178,6 @@ public class DayNightCycleController : MonoBehaviour
             return;
         }
 
-        if (runtimeSkybox == null)
-        {
-            runtimeSkybox = new Material(nightSkybox);
-            RenderSettings.skybox = runtimeSkybox;
-        }
-
         Material skyboxDesde = nightSkybox;
         Material skyboxHasta = nightSkybox;
         float t = 0f;
@@ -226,8 +219,69 @@ public class DayNightCycleController : MonoBehaviour
             t = Suavizar(duskHour, nightHour, hour);
         }
 
-        runtimeSkybox.Lerp(skyboxDesde, skyboxHasta, t);
+        AplicarSkyboxConTransicionSegura(skyboxDesde, skyboxHasta, t);
+    }
+
+    private void AplicarSkyboxConTransicionSegura(Material skyboxDesde, Material skyboxHasta, float t)
+    {
+        if (skyboxDesde == null || skyboxHasta == null)
+        {
+            RenderSettings.skybox = null;
+            DynamicGI.UpdateEnvironment();
+            return;
+        }
+
+        bool mismoShader = skyboxDesde.shader == skyboxHasta.shader;
+        bool esSkyboxConTexturas = EsSkyboxConTexturas(skyboxDesde) || EsSkyboxConTexturas(skyboxHasta);
+
+        if (mismoShader && !esSkyboxConTexturas)
+        {
+            AplicarSkyboxConLerp(skyboxDesde, skyboxHasta, t);
+        }
+        else
+        {
+            AplicarSkyboxSinLerp(skyboxDesde, skyboxHasta, t);
+        }
+
         DynamicGI.UpdateEnvironment();
+    }
+
+    private bool EsSkyboxConTexturas(Material material)
+    {
+        if (material == null || material.shader == null)
+        {
+            return false;
+        }
+
+        string shaderName = material.shader.name;
+
+        return shaderName.Contains("Skybox/6 Sided") ||
+               shaderName.Contains("Skybox/Panoramic") ||
+               shaderName.Contains("Skybox/Cubemap");
+    }
+
+    private void AplicarSkyboxConLerp(Material skyboxDesde, Material skyboxHasta, float t)
+    {
+        if (runtimeSkybox == null || runtimeSkybox.shader != skyboxDesde.shader)
+        {
+            runtimeSkybox = new Material(skyboxDesde);
+            RenderSettings.skybox = runtimeSkybox;
+        }
+
+        runtimeSkybox.Lerp(skyboxDesde, skyboxHasta, t);
+        RenderSettings.skybox = runtimeSkybox;
+    }
+
+    private void AplicarSkyboxSinLerp(Material skyboxDesde, Material skyboxHasta, float t)
+    {
+        Material skyboxAUsar = t < 0.5f ? skyboxDesde : skyboxHasta;
+
+        if (RenderSettings.skybox != skyboxAUsar)
+        {
+            RenderSettings.skybox = skyboxAUsar;
+        }
+
+        runtimeSkybox = null;
     }
 
     private void ActualizarAmbiente(float hour)
