@@ -15,6 +15,11 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
 
+    [Header("Animacion visual al HUD")]
+    [SerializeField] private Sprite iconoHUD;
+    [SerializeField] private PickupFlyToHUD pickupFlyToHUD;
+    [SerializeField] private HUDTargetsEconomia hudTargetsEconomia;
+
     private bool mostrandoPrompt;
 
     public float Rango
@@ -50,8 +55,8 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
     public void Interactuar()
     {
-        // La interacci�n real la gestiona PlayerPickupController.
-        // Este m�todo se deja por compatibilidad con la interfaz Interactuable.
+        // La interacción real la gestiona PlayerPickupController.
+        // Este método se deja por compatibilidad con la interfaz Interactuable.
     }
 
     public bool EstaEnRango(Vector3 posicionJugador)
@@ -103,6 +108,8 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
 
         SetIndicatorVisible(false);
 
+        LanzarAnimacionEconomiaSiCorresponde();
+
         RecursoGenerado recursoGenerado = GetComponent<RecursoGenerado>();
 
         if (recursoGenerado != null)
@@ -114,10 +121,42 @@ public sealed class ObjetoRecogibleInteractuable : MonoBehaviour, Interactuable,
         gameObject.SetActive(false);
     }
 
-   
+    private void LanzarAnimacionEconomiaSiCorresponde()
+    {
+        MonedaItemData monedaItemData = itemData as MonedaItemData;
+
+        if (monedaItemData == null)
+        {
+            return;
+        }
+
+        if (pickupFlyToHUD == null)
+        {
+            pickupFlyToHUD = FindFirstObjectByType<PickupFlyToHUD>();
+        }
+
+        if (hudTargetsEconomia == null)
+        {
+            hudTargetsEconomia = FindFirstObjectByType<HUDTargetsEconomia>();
+        }
+
+        if (pickupFlyToHUD == null || hudTargetsEconomia == null || iconoHUD == null)
+        {
+            return;
+        }
+
+        RectTransform destinoHUD = hudTargetsEconomia.GetTarget(monedaItemData.TipoMoneda);
+
+        if (destinoHUD == null)
+        {
+            return;
+        }
+
+        pickupFlyToHUD.Play(iconoHUD, transform.position, destinoHUD);
+    }
 
     private void SetIndicatorVisible(bool visible)
     {
-        // Aqu� puedes activar/desactivar un icono 3D, outline, part�cula, etc.
+        // Aquí puedes activar/desactivar un icono 3D, outline, partícula, etc.
     }
 }
