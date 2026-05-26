@@ -113154,34 +113154,34 @@ MonoBehaviour:
   nightSkybox: {fileID: 2100000, guid: 183770dcd2f821947a884f4011c99858, type: 2}
   blendSkyboxMaterial: {fileID: 2100000, guid: 9400ba6094a19cc4fba45ea991134f1a, type: 2}
   duracionTransicionSkybox: 5
-  skyboxExposure: 1
+  skyboxExposure: 0.75
   dayHour: 8
-  sunsetHour: 18
-  nightHour: 19
-  dayReflectionIntensity: 1
-  sunsetReflectionIntensity: 0.35
-  nightReflectionIntensity: 0.03
-  dayAmbientColor: {r: 0.46101815, g: 0.46377113, b: 0.5283019, a: 1}
-  sunsetAmbientColor: {r: 0.35, g: 0.28, b: 0.32, a: 1}
-  nightAmbientColor: {r: 0.08, g: 0.1, b: 0.16, a: 1}
-  daySunColor: {r: 1, g: 0.96, b: 0.84, a: 1}
-  sunsetSunColor: {r: 1, g: 0.62, b: 0.35, a: 1}
-  duskSunColor: {r: 0.75, g: 0.45, b: 0.35, a: 1}
-  moonColor: {r: 0.45, g: 0.55, b: 0.9, a: 1}
-  daySunIntensity: 1.2
-  sunsetSunIntensity: 0.5
+  sunsetHour: 19
+  nightHour: 22
+  dayReflectionIntensity: 0.55
+  sunsetReflectionIntensity: 0.25
+  nightReflectionIntensity: 0.02
+  dayAmbientColor: {r: 0.55, g: 0.58, b: 0.6, a: 1}
+  sunsetAmbientColor: {r: 0.45, g: 0.36, b: 0.3, a: 1}
+  nightAmbientColor: {r: 0.025, g: 0.03, b: 0.06, a: 1}
+  daySunColor: {r: 1, g: 0.95, b: 0.84, a: 1}
+  sunsetSunColor: {r: 1, g: 0.62, b: 0.38, a: 1}
+  duskSunColor: {r: 0.5, g: 0.28, b: 0.2, a: 1}
+  moonColor: {r: 0.45, g: 0.55, b: 1, a: 1}
+  daySunIntensity: 0.9
+  sunsetSunIntensity: 0.45
   nightSunIntensity: 0
   dayMoonIntensity: 0
-  sunsetMoonIntensity: 0.03
-  nightMoonIntensity: 0.25
+  sunsetMoonIntensity: 0.02
+  nightMoonIntensity: 0.08
   usarNiebla: 1
   fogMode: 3
-  dayFogColor: {r: 0.78, g: 0.86, b: 0.9, a: 1}
-  sunsetFogColor: {r: 0.95, g: 0.55, b: 0.42, a: 1}
-  nightFogColor: {r: 0.04, g: 0.1, b: 0.2, a: 1}
-  dayFogDensity: 0.003
-  sunsetFogDensity: 0.006
-  nightFogDensity: 0.015
+  dayFogColor: {r: 0.7, g: 0.82, b: 0.9, a: 1}
+  sunsetFogColor: {r: 0.85, g: 0.42, b: 0.28, a: 1}
+  nightFogColor: {r: 0.025, g: 0.035, b: 0.2, a: 1}
+  dayFogDensity: 0.0025
+  sunsetFogDensity: 0.005
+  nightFogDensity: 0.01
   sunYaw: 170
   moonYaw: 170
   skyboxActualNombre: 
