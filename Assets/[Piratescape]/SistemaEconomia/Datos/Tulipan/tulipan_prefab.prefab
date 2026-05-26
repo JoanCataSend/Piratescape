@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d272b7a0c014ff1429df6a5db81ac96d, type: 3}
       propertyPath: m_Name
-      value: tulipan
+      value: tulipan_prefab
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -84,3 +84,6 @@ MonoBehaviour:
   interactuable: 1
   itemData: {fileID: 11400000, guid: 05b36ce119046df498e1daaf742cc704, type: 2}
   amount: 1
+  iconoHUD: {fileID: 21300000, guid: 84aff67ecf1687a4ca7e7fadb56e5c2a, type: 3}
+  pickupFlyToHUD: {fileID: 0}
+  hudTargetsEconomia: {fileID: 0}
