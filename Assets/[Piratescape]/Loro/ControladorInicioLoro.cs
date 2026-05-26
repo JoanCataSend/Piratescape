@@ -30,6 +30,12 @@ public sealed class ControladorInicioLoro : MonoBehaviour
         yield return new WaitForSecondsRealtime(retrasoInicio);
 
         BuscarReferenciasSiFaltan();
+
+        if (DebeOmitirInicioPorPartidaYaAvanzada())
+        {
+            yield break;
+        }
+
         ColocarJugadorSiHaceFalta();
 
         if (historiaInicioUI != null)
@@ -40,6 +46,21 @@ public sealed class ControladorInicioLoro : MonoBehaviour
         {
             EmpezarTutorial();
         }
+    }
+
+    private bool DebeOmitirInicioPorPartidaYaAvanzada()
+    {
+        if (GestorPartida.PartidaCargadaEnEsteInicio)
+        {
+            return true;
+        }
+
+        if (GestorPartida.Instance != null && GestorPartida.Instance.TutorialCompletado)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public void EmpezarTutorial()

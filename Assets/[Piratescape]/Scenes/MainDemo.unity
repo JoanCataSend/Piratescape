@@ -28727,6 +28727,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e9482a9f655994348af9b029425065d6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 557932942}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e9482a9f655994348af9b029425065d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 557932944}
   m_SourcePrefab: {fileID: 100100000, guid: e9482a9f655994348af9b029425065d6, type: 3}
 --- !u!1001 &258014374
 PrefabInstance:
@@ -55782,6 +55785,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 7, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &557932944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557932941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36bfa8060dbfe9f4ea3e789d9db9cb0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombreObjeto: loro
+  rango: 2.5
+  interactuable: 1
+  indicadorInteraccion: {fileID: 0}
+  loroDialogoUI: {fileID: 0}
 --- !u!1 &558835012 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8929546712959514120, guid: d8c62adb2d4407e4c95edc846a284f7b, type: 3}
@@ -101734,6 +101754,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
+      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -104709,14 +104737,6 @@ PrefabInstance:
     - target: {fileID: 8696847069942999147, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
