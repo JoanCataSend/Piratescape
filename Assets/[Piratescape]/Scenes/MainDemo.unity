@@ -43527,7 +43527,7 @@ PrefabInstance:
     - target: {fileID: 1330925882844517641, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: playerInventory
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1588489902}
     - target: {fileID: 1542967530030209405, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: daySprite
       value: 
@@ -43539,7 +43539,7 @@ PrefabInstance:
     - target: {fileID: 1542967530030209405, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: gameTimeSystem
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1975866679}
     - target: {fileID: 1759448661350315981, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -132.59
@@ -43812,10 +43812,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6849678098251614560, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6860661973518578671, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -43910,15 +43906,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7578254743395844232, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7578254743395844232, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7578254743395844232, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7578254743395844232, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -43926,7 +43922,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7578254743395844232, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000061035156
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7578254743395844232, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -45970,7 +45966,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   construccionBarco: {fileID: 596742181}
-  construccionBarcoUI: {fileID: 1970471615}
+  construccionBarcoUI: {fileID: 792044729}
   accionPrompt: para contruir barco
 --- !u!65 &424735345
 BoxCollider:
@@ -56007,7 +56003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelPausa: {fileID: 432323194}
-  hud: {fileID: 0}
+  hud: {fileID: 1729212095}
   componentesADesactivarAlPausar:
   - {fileID: 1588489905}
   - {fileID: 1588489896}
@@ -56884,7 +56880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sistemaTiempo: {fileID: 1975866679}
-  visualizador: {fileID: 0}
+  visualizador: {fileID: 1846573672}
   movimientoPlayer: {fileID: 1588489905}
   saludMaxima: 100
   saludActual: 100
@@ -59232,7 +59228,7 @@ MonoBehaviour:
   inventarioJugador: {fileID: 1588489902}
   saludJugador: {fileID: 1588489904}
   energiaJugador: {fileID: 1588489903}
-  sistemaEconomia: {fileID: 0}
+  sistemaEconomia: {fileID: 1368695427}
   segundosRealesPorMinutoJuegoNormal: 1
   maderaItem: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
   platanoItem: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
@@ -59354,8 +59350,7 @@ MonoBehaviour:
   ocultarBaseAlCompletarTodosLosNiveles: 1
   energiaGastadaPorMaterial: 5
   vidaGastadaPorMaterialSinEnergia: 2
-<<<<<<< Updated upstream
-  camaraJugador: {fileID: 1812617213}
+  camaraJugador: {fileID: 0}
   camaraMejoraBarco: {fileID: 760426592}
   fxMejoraBarco: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
   puntoFXMejoraBarco: {fileID: 458447455}
@@ -59379,20 +59374,7 @@ MonoBehaviour:
   - {fileID: 1564287906}
   - {fileID: 379598900}
   - {fileID: 641067216}
-  - {fileID: 432323194}
-=======
-  camaraJugador: {fileID: 0}
-  camaraMejoraBarco: {fileID: 0}
-  fxMejoraBarco: {fileID: 0}
-  puntoFXMejoraBarco: {fileID: 0}
-  fxFuegosArtificialesNivel5: {fileID: 0}
-  puntoFuegosArtificialesNivel5: {fileID: 0}
-  duracionSecuenciaMejora: 7
-  panelMejoraBarco: {fileID: 0}
-  imagenMensajeNivel: {fileID: 0}
-  spritesMensajeNivel: []
-  objetosUIAOcultar: []
->>>>>>> Stashed changes
+  - {fileID: 1767793733}
 --- !u!1 &597952094
 GameObject:
   m_ObjectHideFlags: 0
@@ -74064,6 +74046,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5721417102470724968, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
   m_PrefabInstance: {fileID: 1337793394}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &792044729 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5100976613957470724, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
+  m_PrefabInstance: {fileID: 396762422}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1601c7d39e49304aa79b3f8afbc642b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &792044730 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8463170223248487033, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
@@ -112367,7 +112360,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1213781076}
-  m_LocalRotation: {x: -0, y: -0, z: -6.5867933e-38, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -112377,7 +112370,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.00018310547, y: -100.000244}
+  m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1215932879
@@ -138588,8 +138581,8 @@ RectTransform:
   - {fileID: 539944895}
   - {fileID: 379598901}
   - {fileID: 641067217}
-  - {fileID: 1213781077}
   - {fileID: 1767793734}
+  - {fileID: 1213781077}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -140846,7 +140839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7011040e40e36d446b29ed66d38bd5c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualizador: {fileID: 0}
+  visualizador: {fileID: 1846573672}
   movimientoPlayer: {fileID: 1588489905}
   playerHealth: {fileID: 0}
   maxEnergy: 100
@@ -140909,7 +140902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d516946dbeb40a4582ed78ca43206ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sistemaEconomia: {fileID: 0}
+  sistemaEconomia: {fileID: 1368695427}
 --- !u!114 &1588489909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155442,8 +155435,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeSystem: {fileID: 1975866679}
   rainFX: {fileID: 1164341488}
-  rainChancePerDay: 0.5
-  alwaysRain: 0
+  rainChancePerDay: 0.08
+  alwaysRain: 1
 --- !u!4 &1673731871
 Transform:
   m_ObjectHideFlags: 0
@@ -157060,7 +157053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69b1c4aca6966ac44bda7505341f43d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sistemaEconomia: {fileID: 0}
+  sistemaEconomia: {fileID: 1368695427}
   textoConchas: {fileID: 1914522379}
   textoTulipanes: {fileID: 1447939723}
   textoPinyas: {fileID: 449460038}
@@ -170464,6 +170457,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0737fac9f95f6a540aca5edaf5c70fce, type: 3}
+--- !u!114 &1846573672 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1214821115416892860, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
+  m_PrefabInstance: {fileID: 396762422}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732257d0c3a83bd4f94673e996c8072a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &1846606692
 Mesh:
   m_ObjectHideFlags: 0
@@ -177501,17 +177505,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 37}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1970471615 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5100976613957470724, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
-  m_PrefabInstance: {fileID: 396762422}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1601c7d39e49304aa79b3f8afbc642b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1970671238 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5721417102470724968, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
@@ -191308,9 +191301,6 @@ SceneRoots:
   - {fileID: 1419290557}
   - {fileID: 878904930}
   - {fileID: 256488489}
-<<<<<<< Updated upstream
-  - {fileID: 725912894}
-=======
   - {fileID: 994258605}
   - {fileID: 2121715810}
->>>>>>> Stashed changes
+  - {fileID: 725912894}
