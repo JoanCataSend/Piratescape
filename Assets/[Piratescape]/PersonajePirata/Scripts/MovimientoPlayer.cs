@@ -89,6 +89,7 @@ public class movimientoplayer : MonoBehaviour
     {
         if (isFainted)
         {
+            moveInput = Vector2.zero;
             ActualizarAnimaciones();
             return;
         }
@@ -109,6 +110,8 @@ public class movimientoplayer : MonoBehaviour
             ActualizarAnimaciones();
             return;
         }
+
+        LeerMovimientoActual();
 
         MoverJugador();
         Saltar();
@@ -143,6 +146,14 @@ public class movimientoplayer : MonoBehaviour
         sprintAction.AddBinding("<Keyboard>/leftShift");
         sprintAction.AddBinding("<Gamepad>/leftStickPress");
         sprintAction.AddBinding("<Gamepad>/rightTrigger");
+    }
+
+    private void LeerMovimientoActual()
+    {
+        if (moveAction != null && moveAction.enabled)
+        {
+            moveInput = moveAction.ReadValue<Vector2>();
+        }
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -197,7 +208,7 @@ public class movimientoplayer : MonoBehaviour
 
         Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
-        bool isTryingToSprint = sprintAction.ReadValue<float>() > 0.5f;
+        bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
         bool isSprinting = isTryingToSprint && canSprint && !isTired;
 
         float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
@@ -267,8 +278,11 @@ public class movimientoplayer : MonoBehaviour
     public void EndPickUpAnimation()
     {
         isPickingUp = false;
-        moveInput = Vector2.zero;
         jumpPressed = false;
+
+        LeerMovimientoActual();
+
+        ActualizarAnimaciones();
     }
 
     public bool IsPickingUp()
@@ -339,6 +353,8 @@ public class movimientoplayer : MonoBehaviour
         isPickingUp = false;
         jumpPressed = false;
         playerVelocity = Vector3.zero;
+
+        LeerMovimientoActual();
 
         if (animator != null)
         {

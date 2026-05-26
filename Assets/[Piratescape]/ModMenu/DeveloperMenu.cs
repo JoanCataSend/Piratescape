@@ -24,6 +24,10 @@ public sealed class DeveloperMenu : MonoBehaviour
     [SerializeField] private ItemData cocoItem;
     [SerializeField] private ItemData cafeItem;
     [SerializeField] private ItemData piedraItem;
+    [SerializeField] private ItemData clavoItem;
+    [SerializeField] private ItemData gemaRojaItem;
+    [SerializeField] private ItemData gemaAmarillaItem;
+    [SerializeField] private ItemData gemaMoradaItem;
 
     [Header("Opciones iniciales")]
     [SerializeField] private bool mostrarFPSAlIniciar = false;
@@ -222,7 +226,8 @@ public sealed class DeveloperMenu : MonoBehaviour
         );
 
         CrearFilaBotones(contenido.transform,
-            ("Pasar a Día 06:00", PasarADia),
+            ("Pasar a Día 08:00", PasarADia),
+            ("Pasar a Atardecer 18:00", PasarAAtardecer),
             ("Pasar a Noche 22:00", PasarANoche)
         );
     }
@@ -276,7 +281,14 @@ public sealed class DeveloperMenu : MonoBehaviour
 
         CrearFilaBotones(contenido.transform,
             ("+5 Cafés", () => AnadirItem(cafeItem, 5)),
-            ("+10 Piedras", () => AnadirItem(piedraItem, 10))
+            ("+10 Piedras", () => AnadirItem(piedraItem, 10)),
+            ("+9 Clavos", () => AnadirItem(clavoItem, 9))
+        );
+
+        CrearFilaBotones(contenido.transform,
+            ("+1 Gema Roja", () => AnadirItem(gemaRojaItem, 1)),
+            ("+1 Gema Amarilla", () => AnadirItem(gemaAmarillaItem, 1)),
+            ("+1 Gema Morada", () => AnadirItem(gemaMoradaItem, 1))
         );
 
         CrearFilaBotones(contenido.transform,
@@ -537,8 +549,20 @@ public sealed class DeveloperMenu : MonoBehaviour
             return;
         }
 
-        sistemaTiempo.SetTime(6, 0);
-        Debug.Log("DeveloperMenu: hora cambiada a día 06:00.");
+        sistemaTiempo.SetTime(8, 0);
+        Debug.Log("DeveloperMenu: hora cambiada a día 08:00.");
+    }
+
+    private void PasarAAtardecer()
+    {
+        if (sistemaTiempo == null)
+        {
+            Debug.LogWarning("DeveloperMenu: falta referencia a GameTimeSystem.");
+            return;
+        }
+
+        sistemaTiempo.SetTime(18, 0);
+        Debug.Log("DeveloperMenu: hora cambiada a atardecer 18:00.");
     }
 
     private void PasarANoche()
@@ -617,6 +641,7 @@ public sealed class DeveloperMenu : MonoBehaviour
         energiaJugador.SetEnergy(10f);
         Debug.Log("DeveloperMenu: energía baja.");
     }
+
     private void ToggleGodMode()
     {
         if (saludJugador == null)
@@ -715,6 +740,7 @@ public sealed class DeveloperMenu : MonoBehaviour
         AnadirItem(cocoItem, 5);
         AnadirItem(cafeItem, 5);
         AnadirItem(piedraItem, 10);
+        AnadirItem(clavoItem, 9);
 
         Debug.Log("DeveloperMenu: inventario de prueba llenado.");
     }
