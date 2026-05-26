@@ -5,8 +5,18 @@ public sealed class GestorPartida : MonoBehaviour
 {
     public static GestorPartida Instance { get; private set; }
 
+    private enum ModoInicioPartida
+    {
+        Ninguno,
+        CargarPartida,
+        NuevaPartida
+    }
+
     private const string NombreArchivo = "partida_pirata.json";
     private const string ClaveTutorialCompletado = "tutorial_loro_completado";
+    private static ModoInicioPartida modoInicioPendiente = ModoInicioPartida.Ninguno;
+
+    public static bool PartidaCargadaEnEsteInicio { get; private set; }
 
     [Header("Bases de datos")]
     [SerializeField] private ItemDatabase itemDatabase;
@@ -26,7 +36,30 @@ public sealed class GestorPartida : MonoBehaviour
         get => PlayerPrefs.GetInt(ClaveTutorialCompletado, 0) == 1;
     }
 
-    private string RutaArchivo => Path.Combine(Application.persistentDataPath, NombreArchivo);
+    private static string RutaArchivoEstatica => Path.Combine(Application.persistentDataPath, NombreArchivo);
+    private string RutaArchivo => RutaArchivoEstatica;
+
+    public static void SolicitarCargarAlEntrar()
+    {
+        PartidaCargadaEnEsteInicio = false;
+        modoInicioPendiente = ModoInicioPartida.CargarPartida;
+    }
+
+    public static void SolicitarNuevaPartidaAlEntrar()
+    {
+        PartidaCargadaEnEsteInicio = false;
+        modoInicioPendiente = ModoInicioPartida.NuevaPartida;
+    }
+
+    public static bool ExistePartidaGuardadaEnDisco()
+    {
+        return File.Exists(RutaArchivoEstatica);
+    }
+
+    public static string ObtenerRutaArchivoGuardado()
+    {
+        return RutaArchivoEstatica;
+    }
 
     private void Awake()
     {
@@ -40,9 +73,14 @@ public sealed class GestorPartida : MonoBehaviour
         BuscarReferenciasSiFaltan();
     }
 
+    private void Start()
+    {
+        ProcesarModoInicioPendiente();
+    }
+
     public bool ExistePartidaGuardada()
     {
-        return File.Exists(RutaArchivo);
+        return ExistePartidaGuardadaEnDisco();
     }
 
     public void GuardarPartida()
@@ -97,6 +135,37 @@ public sealed class GestorPartida : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+
+    private void ProcesarModoInicioPendiente()
+    {
+        if (modoInicioPendiente == ModoInicioPartida.Ninguno)
+        {
+            return;
+        }
+
+        ModoInicioPartida modo = modoInicioPendiente;
+        modoInicioPendiente = ModoInicioPartida.Ninguno;
+
+        if (modo == ModoInicioPartida.NuevaPartida)
+        {
+            PartidaCargadaEnEsteInicio = false;
+            BorrarPartida();
+            Debug.Log("Nueva partida iniciada desde cero. Guardado anterior borrado si existia.");
+            return;
+        }
+
+        if (modo == ModoInicioPartida.CargarPartida)
+        {
+            bool cargada = CargarPartida();
+            PartidaCargadaEnEsteInicio = cargada;
+
+            if (!cargada)
+            {
+                Debug.LogWarning("No se ha podido cargar la partida. Se mantiene la escena como partida nueva.");
+            }
+        }
+    }
+
     private DatosPartida CrearDatosPartida()
     {
         DatosPartida datos = new DatosPartida();
@@ -145,10 +214,7 @@ public sealed class GestorPartida : MonoBehaviour
 
     private void AplicarDatosPartida(DatosPartida datos)
     {
-        if (datos.tutorialCompletado)
-        {
-            MarcarTutorialCompletado(true);
-        }
+        MarcarTutorialCompletado(datos.tutorialCompletado);
 
         AplicarJugador(datos.jugador);
         AplicarTiempo(datos.tiempo);
