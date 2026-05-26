@@ -9,6 +9,10 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private Light moonLight;
     [SerializeField] private GhostSpawn ghostSpawn;
 
+    [Header("Actores nocturnos")]
+    [SerializeField] private NightMonkeySpawn[] monosNocturnos;
+    [SerializeField] private NightTreeClimberMonkeySequence secuenciaMonosEscaladores;
+
     [Header("Skyboxes 6 Sided")]
     [SerializeField] private Material daySkybox;
     [SerializeField] private Material sunsetSkybox;
@@ -100,16 +104,13 @@ public class DayNightCycleController : MonoBehaviour
             float hour = timeSystem.CurrentHour + (timeSystem.CurrentMinute / 60f);
             eraDeNoche = EsHoraDeNoche(hour);
 
-            if (ghostSpawn != null)
+            if (eraDeNoche)
             {
-                if (eraDeNoche)
-                {
-                    ghostSpawn.EmpezarNoche();
-                }
-                else
-                {
-                    ghostSpawn.EmpezarDia();
-                }
+                EmpezarNocheActores();
+            }
+            else
+            {
+                EmpezarDiaActores();
             }
         }
 
@@ -167,17 +168,14 @@ public class DayNightCycleController : MonoBehaviour
 
         bool esDeNoche = EsHoraDeNoche(hour);
 
-        if (ghostSpawn != null)
+        if (esDeNoche && !eraDeNoche)
         {
-            if (esDeNoche && !eraDeNoche)
-            {
-                ghostSpawn.EmpezarNoche();
-            }
+            EmpezarNocheActores();
+        }
 
-            if (!esDeNoche && eraDeNoche)
-            {
-                ghostSpawn.EmpezarDia();
-            }
+        if (!esDeNoche && eraDeNoche)
+        {
+            EmpezarDiaActores();
         }
 
         eraDeNoche = esDeNoche;
@@ -187,6 +185,54 @@ public class DayNightCycleController : MonoBehaviour
         ActualizarSol(hour);
         ActualizarLuna(hour);
         ActualizarNiebla(hour);
+    }
+
+    private void EmpezarNocheActores()
+    {
+        if (ghostSpawn != null)
+        {
+            ghostSpawn.EmpezarNoche();
+        }
+
+        if (monosNocturnos != null)
+        {
+            for (int i = 0; i < monosNocturnos.Length; i++)
+            {
+                if (monosNocturnos[i] != null)
+                {
+                    monosNocturnos[i].EmpezarNoche();
+                }
+            }
+        }
+
+        if (secuenciaMonosEscaladores != null)
+        {
+            secuenciaMonosEscaladores.EmpezarNoche();
+        }
+    }
+
+    private void EmpezarDiaActores()
+    {
+        if (ghostSpawn != null)
+        {
+            ghostSpawn.EmpezarDia();
+        }
+
+        if (monosNocturnos != null)
+        {
+            for (int i = 0; i < monosNocturnos.Length; i++)
+            {
+                if (monosNocturnos[i] != null)
+                {
+                    monosNocturnos[i].EmpezarDia();
+                }
+            }
+        }
+
+        if (secuenciaMonosEscaladores != null)
+        {
+            secuenciaMonosEscaladores.EmpezarDia();
+        }
     }
 
     private void ActualizarSkybox(float hour)
