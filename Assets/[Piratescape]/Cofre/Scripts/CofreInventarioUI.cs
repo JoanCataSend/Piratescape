@@ -10,6 +10,7 @@ public sealed class CofreInventarioUI : MonoBehaviour
 
     [Header("Panel")]
     [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject contenidoVisual;
     [SerializeField] private TMP_Text textoMensaje;
 
     [Header("Inventario del jugador")]
@@ -31,6 +32,8 @@ public sealed class CofreInventarioUI : MonoBehaviour
     private float timeScaleAnterior = 1f;
     private bool timeScaleGuardado;
 
+    private int frameApertura = -1;
+
     public bool EstaAbierto
     {
         get
@@ -48,6 +51,11 @@ public sealed class CofreInventarioUI : MonoBehaviour
 
         PrepararReferenciasAutomaticas();
         ConfigurarSlots();
+
+        if (contenidoVisual != null)
+        {
+            contenidoVisual.SetActive(true);
+        }
 
         if (panel != null)
         {
@@ -77,6 +85,11 @@ public sealed class CofreInventarioUI : MonoBehaviour
     private void Update()
     {
         if (!EstaAbierto)
+        {
+            return;
+        }
+
+        if (Time.frameCount == frameApertura)
         {
             return;
         }
@@ -160,7 +173,14 @@ public sealed class CofreInventarioUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+        frameApertura = Time.frameCount;
+
         panel.SetActive(true);
+
+        if (contenidoVisual != null)
+        {
+            contenidoVisual.SetActive(true);
+        }
 
         MostrarMensaje("Click: mover 1 objeto. Shift + click: mover todo el stack. E/ESC: cerrar.");
         RefrescarUI();
