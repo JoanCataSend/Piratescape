@@ -52,10 +52,14 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private GameObject[] objetosUIAOcultar;
     private bool[] estadosPreviosUI;
 
+    [Header("Cinemática final")]
+    [SerializeField] private VictoryCutsceneController victoryCutsceneController;
+    [SerializeField] private bool iniciarCinematicaFinalAlCompletarNivel5 = true;
+    [SerializeField] private float retrasoCinematicaFinal = 2f;
 
     public static bool HaySecuenciaMejoraBarcoEnCurso { get; private set; }
-    private bool EstanTodosLosNivelesCompletados
 
+    private bool EstanTodosLosNivelesCompletados
     {
         get
         {
@@ -247,7 +251,6 @@ public sealed class ConstruccionBarco : MonoBehaviour
                 nivel.DesactivarModelo();
             }
         }
-
     }
 
     private void AplicarEstadoVisualTrasCompletarNivel()
@@ -426,13 +429,17 @@ public sealed class ConstruccionBarco : MonoBehaviour
             }
         }
 
-
         if (camaraJugador != null)
         {
             camaraJugador.gameObject.SetActive(true);
         }
+
         HaySecuenciaMejoraBarcoEnCurso = false;
         OnConstruccionActualizada?.Invoke();
-        
+
+        if (iniciarCinematicaFinalAlCompletarNivel5 && nivelCompletado == 4 && victoryCutsceneController != null)
+        {
+            victoryCutsceneController.StartVictoryCutsceneAfterDelay(retrasoCinematicaFinal);
+        }
     }
 }
