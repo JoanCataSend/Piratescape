@@ -30,6 +30,7 @@ public class VictoryCutsceneController : MonoBehaviour
 
     [Header("Gaviotas")]
     [SerializeField] private GameObject gaviotas;
+    [SerializeField] private CinematicSeagullsMovement movimientoGaviotas;
 
     [Header("Componentes a desactivar del jugador")]
     [SerializeField] private MonoBehaviour[] componentesJugadorADesactivar;
@@ -76,6 +77,11 @@ public class VictoryCutsceneController : MonoBehaviour
         if (gaviotas != null)
         {
             gaviotas.SetActive(false);
+        }
+
+        if (movimientoGaviotas != null)
+        {
+            movimientoGaviotas.DetenerMovimiento();
         }
 
         if (pantallaVictoria != null)
@@ -188,6 +194,11 @@ public class VictoryCutsceneController : MonoBehaviour
         {
             gaviotas.SetActive(false);
         }
+
+        if (movimientoGaviotas != null)
+        {
+            movimientoGaviotas.DetenerMovimiento();
+        }
     }
 
     private void PrepararEscenaCinematica()
@@ -295,11 +306,7 @@ public class VictoryCutsceneController : MonoBehaviour
                 camaraCambiada = true;
 
                 ActivarCamaraDirecta(camaraIslaAMar);
-
-                if (gaviotas != null)
-                {
-                    gaviotas.SetActive(true);
-                }
+                ActivarGaviotas();
             }
 
             float t = Mathf.Clamp01(tiempo / duracionMovimientoBarco);
@@ -313,6 +320,19 @@ public class VictoryCutsceneController : MonoBehaviour
 
         barcoFinal.position = posicionFinal;
         barcoFinal.rotation = rotacionFinal;
+    }
+
+    private void ActivarGaviotas()
+    {
+        if (gaviotas != null)
+        {
+            gaviotas.SetActive(true);
+        }
+
+        if (movimientoGaviotas != null && barcoFinal != null)
+        {
+            movimientoGaviotas.IniciarMovimiento(barcoFinal);
+        }
     }
 
     private IEnumerator Fade(float desde, float hasta, float duracion)
@@ -349,6 +369,11 @@ public class VictoryCutsceneController : MonoBehaviour
 
     private void MostrarPantallaVictoria()
     {
+        if (movimientoGaviotas != null)
+        {
+            movimientoGaviotas.DetenerMovimiento();
+        }
+
         if (camaraMarAIsla != null)
         {
             camaraMarAIsla.SetActive(false);
