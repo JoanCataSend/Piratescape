@@ -8,8 +8,7 @@ public sealed class InteraccionConstruccionBarco : MonoBehaviour
     [SerializeField] private ConstruccionBarcoUI construccionBarcoUI;
 
     [Header("Configuracion")]
-    [SerializeField] private string accionPrompt = "para ingresar materiales";
-
+    [SerializeField] private string accionPrompt = "para construir";
     private bool jugadorDentro;
     private InputDeviceType ultimoDispositivoUsado = InputDeviceType.KeyboardMouse;
 
