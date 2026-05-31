@@ -15,6 +15,15 @@ public class PlayerFaintSystem : MonoBehaviour
     [SerializeField] private GameObject playerVisualRoot;
     [SerializeField] private NightThreatSystem nightThreatSystem;
 
+    [Header("Aviso antes del desmayo")]
+    [SerializeField] private int avisoHour = 2;
+    [SerializeField] private int avisoMinute = 30;
+    [SerializeField]
+    private string mensajeAvisoDesmayo =
+        "Me estoy agotando... debería volver pronto al refugio.";
+
+    private int ultimoDiaAvisoDesmayo = -1;
+
     [Header("Camara Cinemachine")]
     [SerializeField] private CinemachineCamera freeLookCamera;
     [SerializeField] private Transform faintCameraTarget;
@@ -71,9 +80,45 @@ public class PlayerFaintSystem : MonoBehaviour
             return;
         }
 
+        ComprobarAvisoAntesDesmayo();
+
         if (EsHoraDeDesmayo())
         {
             StartCoroutine(FaintRoutine());
+        }
+    }
+
+    private void ComprobarAvisoAntesDesmayo()
+    {
+        if (timeSystem == null)
+        {
+            return;
+        }
+
+        // Ya salió hoy
+        if (ultimoDiaAvisoDesmayo == timeSystem.CurrentDay)
+        {
+            return;
+        }
+
+        bool esHoraAviso =
+            timeSystem.CurrentHour == avisoHour &&
+            timeSystem.CurrentMinute == avisoMinute;
+
+        if (!esHoraAviso)
+        {
+            return;
+        }
+
+        ultimoDiaAvisoDesmayo = timeSystem.CurrentDay;
+
+        if (NightMessageUI.Instance != null)
+        {
+            NightMessageUI.Instance.ShowMessage(mensajeAvisoDesmayo);
+        }
+        else
+        {
+            Debug.Log("Aviso desmayo: " + mensajeAvisoDesmayo);
         }
     }
 
@@ -96,25 +141,17 @@ public class PlayerFaintSystem : MonoBehaviour
         bool movimientoOriginalHabilitado = movimientoPlayer != null && movimientoPlayer.enabled;
         bool controllerOriginalHabilitado = playerController != null && playerController.enabled;
 
-        // Nueva parte:
-        // En vez de tumbar al jugador rotándolo a mano,
-        // lanzamos la misma animación de desmayo/muerte del Animator.
         if (movimientoPlayer != null)
         {
             movimientoPlayer.PlayFaintAnimation();
         }
         else
         {
-            // Si por algún motivo falta la referencia al movimiento,
-            // usamos el sistema antiguo como respaldo.
             yield return StartCoroutine(FallDownRoutine());
         }
 
-        // Tiempo para que se vea la animación de desmayo antes del fade.
         yield return new WaitForSeconds(fallDuration);
 
-        // A partir de aquí ya empieza la secuencia antigua:
-        // fade, ocultar jugador, activar monos, mover a tienda, etc.
         if (movimientoPlayer != null)
         {
             movimientoPlayer.enabled = false;
