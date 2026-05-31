@@ -45,7 +45,6 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private Color sunsetAmbientColor = new Color(0.48f, 0.38f, 0.40f);
     [SerializeField] private Color nightAmbientColor = new Color(0.18f, 0.24f, 0.36f);
 
-
     [Header("Color del sol")]
     [SerializeField] private Color daySunColor = new Color(0.94f, 0.97f, 1.00f);
     [SerializeField] private Color sunsetSunColor = new Color(0.95f, 0.55f, 0.45f);
@@ -69,12 +68,12 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private FogMode fogMode = FogMode.ExponentialSquared;
 
     [Header("Colores de niebla")]
-    [SerializeField] private Color dayFogColor = new Color(0.66f, 0.82f, 0.95f);
+    [SerializeField] private Color dayFogColor = new Color(0.96f, 0.84f, 0.80f);
     [SerializeField] private Color sunsetFogColor = new Color(0.78f, 0.50f, 0.48f);
     [SerializeField] private Color nightFogColor = new Color(0.10f, 0.16f, 0.30f);
 
     [Header("Densidad de niebla")]
-    [SerializeField] private float dayFogDensity = 0.0012f;
+    [SerializeField] private float dayFogDensity = 0.008f;
     [SerializeField] private float sunsetFogDensity = 0.0030f;
     [SerializeField] private float nightFogDensity = 0.0048f;
 
@@ -101,11 +100,31 @@ public class DayNightCycleController : MonoBehaviour
     private bool transicionSkyboxActiva;
     private bool eraDeNoche;
 
+    private void Reset()
+    {
+        usarNiebla = true;
+        fogMode = FogMode.ExponentialSquared;
+    }
+
+    private void OnValidate()
+    {
+        usarNiebla = true;
+        fogMode = FogMode.ExponentialSquared;
+
+        dayFogDensity = Mathf.Max(0f, dayFogDensity);
+        sunsetFogDensity = Mathf.Max(0f, sunsetFogDensity);
+        nightFogDensity = Mathf.Max(0f, nightFogDensity);
+    }
+
     private void Awake()
     {
+        ForzarNieblaActiva();
         RenderSettings.ambientMode = AmbientMode.Flat;
-        RenderSettings.fog = usarNiebla;
-        RenderSettings.fogMode = fogMode;
+    }
+
+    private void OnEnable()
+    {
+        ForzarNieblaActiva();
     }
 
     private void Start()
@@ -133,6 +152,13 @@ public class DayNightCycleController : MonoBehaviour
     private void Update()
     {
         ActualizarCiclo();
+    }
+
+    private void ForzarNieblaActiva()
+    {
+        usarNiebla = true;
+        RenderSettings.fog = true;
+        RenderSettings.fogMode = fogMode;
     }
 
     private void CrearSkyboxInicial()
@@ -589,13 +615,9 @@ public class DayNightCycleController : MonoBehaviour
 
     private void ActualizarNiebla()
     {
-        RenderSettings.fog = usarNiebla;
+        usarNiebla = true;
 
-        if (!usarNiebla)
-        {
-            return;
-        }
-
+        RenderSettings.fog = true;
         RenderSettings.fogMode = fogMode;
         RenderSettings.fogColor = ObtenerColorNieblaVisual();
         RenderSettings.fogDensity = ObtenerDensidadNieblaVisual();
