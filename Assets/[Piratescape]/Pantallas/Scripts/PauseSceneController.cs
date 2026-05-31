@@ -26,6 +26,14 @@ public class PauseSceneController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+        UnityEngine.EventSystems.EventSystem eventSystemActual =
+            UnityEngine.EventSystems.EventSystem.current;
+
+        if (eventSystemActual != null)
+        {
+            Destroy(eventSystemActual.gameObject);
+        }
+
         SceneManager.LoadScene("MenuPrincipal");
     }
 

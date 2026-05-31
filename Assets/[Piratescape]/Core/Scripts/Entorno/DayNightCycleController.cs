@@ -19,6 +19,10 @@ public class DayNightCycleController : MonoBehaviour
     [Header("Actores nocturnos")]
     [SerializeField] private NightMonkeySpawn[] monosNocturnos;
     [SerializeField] private NightTreeClimberMonkeySequence secuenciaMonosEscaladores;
+    [Header("Mensaje al caer la noche")]
+    [SerializeField]
+    private string mensajeInicioNoche =
+    "La noche está cayendo... será peligroso permanecer fuera.";
 
     [Header("Skyboxes 6 Sided")]
     [SerializeField] private Material daySkybox;
@@ -33,7 +37,7 @@ public class DayNightCycleController : MonoBehaviour
     [Header("Horas")]
     [SerializeField] private float dayHour = 8f;
     [SerializeField] private float sunsetHour = 17.5f;
-    [SerializeField] private float nightHour = 22f;
+    [SerializeField] private float nightHour = 18f;
 
     [Header("Reflejos del skybox")]
     [SerializeField] private float dayReflectionIntensity = 0.75f;
@@ -213,6 +217,8 @@ public class DayNightCycleController : MonoBehaviour
         if (esDeNoche && !eraDeNoche)
         {
             EmpezarNocheActores();
+            MostrarMensajeInicioNoche();
+
         }
 
         if (!esDeNoche && eraDeNoche)
@@ -764,5 +770,16 @@ public class DayNightCycleController : MonoBehaviour
         }
 
         return 200f;
+    }
+    private void MostrarMensajeInicioNoche()
+    {
+        if (NightMessageUI.Instance != null)
+        {
+            NightMessageUI.Instance.ShowMessage(mensajeInicioNoche);
+        }
+        else
+        {
+            Debug.Log("Mensaje inicio noche: " + mensajeInicioNoche);
+        }
     }
 }

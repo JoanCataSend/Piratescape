@@ -115420,6 +115420,7 @@ MonoBehaviour:
   - {fileID: 1275684874}
   - {fileID: 21399661}
   secuenciaMonosEscaladores: {fileID: 899094494}
+  mensajeInicioNoche: "La noche est\xE1 cayendo... ser\xE1 peligroso permanecer fuera."
   daySkybox: {fileID: 2100000, guid: 756034337fb7ad84d81e93aeb9f466d0, type: 2}
   sunsetSkybox: {fileID: 2100000, guid: 3b4e3ecfab9a66e4bba7180bdd611520, type: 2}
   nightSkybox: {fileID: 2100000, guid: 183770dcd2f821947a884f4011c99858, type: 2}
@@ -183587,6 +183588,9 @@ MonoBehaviour:
   faintCarrySequence: {fileID: 526186493}
   playerVisualRoot: {fileID: 0}
   nightThreatSystem: {fileID: 1497435470}
+  avisoHour: 2
+  avisoMinute: 30
+  mensajeAvisoDesmayo: "Me estoy agotando... deber\xEDa volver pronto al refugio."
   freeLookCamera: {fileID: 587593482}
   faintCameraTarget: {fileID: 662970635}
   tentWakePoint: {fileID: 522674971}
