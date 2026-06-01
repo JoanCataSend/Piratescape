@@ -501,7 +501,7 @@ public sealed class DeveloperMenu : MonoBehaviour
         textoBoton.fontSize = 13f;
         textoBoton.alignment = TextAlignmentOptions.Center;
         textoBoton.color = Color.white;
-        textoBoton.enableWordWrapping = true;
+        textoBoton.textWrappingMode = TextWrappingModes.Normal;
 
         LayoutElement layout = botonObject.AddComponent<LayoutElement>();
         layout.minWidth = 90f;

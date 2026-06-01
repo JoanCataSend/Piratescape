@@ -19,7 +19,6 @@ public sealed class PanelTienda : MonoBehaviour
     [Header("Puntos para objetos de base")]
     [SerializeField] private PuntoAparicionObjetoBase[] puntosObjetosBase;
 
-    private bool articulosCreados;
     [SerializeField] private ArticuloTiendaData articuloPlatano;
     [SerializeField] private ArticuloTiendaData articuloCoco;
     [SerializeField] private ArticuloTiendaData articuloCuerda;
@@ -97,12 +96,10 @@ public sealed class PanelTienda : MonoBehaviour
         mostrarPlatano = !mostrarPlatano;
         mostrarCuerda = !mostrarCuerda;
 
-        articulosCreados = true;
     }
 
     public void ReconstruirArticulos()
     {
-        articulosCreados = false;
         CrearArticulos();
     }
 

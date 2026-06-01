@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class ShelterSleep : MonoBehaviour, Interactuable
 {
     [Header("Datos del refugio")]
-    [SerializeField] private string objectName = "tienda";
+    //[SerializeField] private string objectName = "tienda";
     [SerializeField] private float rango = 2.5f;
     [SerializeField] private bool interactuable = true;
     [SerializeField] private NightThreatSystem nightThreatSystem;

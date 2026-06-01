@@ -68,8 +68,7 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private float nightMoonIntensity = 0.78f;
 
     [Header("Niebla")]
-    [SerializeField] private bool usarNiebla = true;
-    [SerializeField] private FogMode fogMode = FogMode.ExponentialSquared;
+   [SerializeField] private FogMode fogMode = FogMode.ExponentialSquared;
 
     [Header("Colores de niebla")]
     [SerializeField] private Color dayFogColor = new Color(0.96f, 0.84f, 0.80f);
@@ -106,13 +105,11 @@ public class DayNightCycleController : MonoBehaviour
 
     private void Reset()
     {
-        usarNiebla = true;
         fogMode = FogMode.ExponentialSquared;
     }
 
     private void OnValidate()
     {
-        usarNiebla = true;
         fogMode = FogMode.ExponentialSquared;
 
         dayFogDensity = Mathf.Max(0f, dayFogDensity);
@@ -160,7 +157,6 @@ public class DayNightCycleController : MonoBehaviour
 
     private void ForzarNieblaActiva()
     {
-        usarNiebla = true;
         RenderSettings.fog = true;
         RenderSettings.fogMode = fogMode;
     }
@@ -621,7 +617,6 @@ public class DayNightCycleController : MonoBehaviour
 
     private void ActualizarNiebla()
     {
-        usarNiebla = true;
 
         RenderSettings.fog = true;
         RenderSettings.fogMode = fogMode;

@@ -18,7 +18,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private NivelConstruccionBarco[] nivelesConstruccion;
 
     [Header("Configuracion")]
-    [SerializeField] private bool ocultarBaseAlCompletarTodosLosNiveles = true;
+    //[SerializeField] private bool ocultarBaseAlCompletarTodosLosNiveles = true;
 
     [Header("Coste al construir")]
     [SerializeField] private float energiaGastadaPorMaterial = 5f;
