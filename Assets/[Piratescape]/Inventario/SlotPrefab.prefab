@@ -269,7 +269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.48746336, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -343,3 +343,14 @@ MonoBehaviour:
   mostrarFondoCuandoEstaVacio: 1
   alphaFondoNormal: 0.35
   alphaFondoSeleccionado: 1
+  animarAlBajarCantidad: 1
+  elementoAAnimar: {fileID: 0}
+  iconoAAnimar: {fileID: 0}
+  escalaReboteSlot: 1.02
+  escalaReboteIcono: 1.55
+  duracionEntrada: 0.16
+  duracionMantenerGrande: 0.22
+  duracionSalida: 0.2
+  gradosGiroIcono: 8
+  colorFlashTexto: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  colorFlashIcono: {r: 1, g: 1, b: 1, a: 1}
