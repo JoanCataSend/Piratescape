@@ -27,20 +27,24 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     private void OnEnable()
     {
+#if !(UNITY_WEBGL && !UNITY_EDITOR)
         if (accionPausa != null)
         {
             accionPausa.action.performed += AlPulsarPausa;
             accionPausa.action.Enable();
         }
+#endif
     }
 
     private void OnDisable()
     {
+#if !(UNITY_WEBGL && !UNITY_EDITOR)
         if (accionPausa != null)
         {
             accionPausa.action.performed -= AlPulsarPausa;
             accionPausa.action.Disable();
         }
+#endif
     }
 
     private void Start()
@@ -48,7 +52,22 @@ public sealed class MenuPausaUI : MonoBehaviour
         estaEnPausa = false;
     }
 
+    private void Update()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
+        {
+            IntentarAlternarPausa();
+        }
+#endif
+    }
+
     private void AlPulsarPausa(InputAction.CallbackContext contexto)
+    {
+        IntentarAlternarPausa();
+    }
+
+    private void IntentarAlternarPausa()
     {
         if (HayOtraUIAbierta())
         {
@@ -84,22 +103,18 @@ public sealed class MenuPausaUI : MonoBehaviour
 
         estaEnPausa = true;
 
-        // Ocultar HUD
         if (hud != null)
         {
             hud.SetActive(false);
         }
 
-        // Desactivar controles jugador
         CambiarEstadoComponentesJugador(false);
 
-        // Pausar tiempo
         Time.timeScale = 0f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Abrir escena de pausa
         SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
     }
 
@@ -112,13 +127,11 @@ public sealed class MenuPausaUI : MonoBehaviour
 
         estaEnPausa = false;
 
-        // Mostrar HUD
         if (hud != null && !JugadorEstaMuerto())
         {
             hud.SetActive(true);
         }
 
-        // Reactivar controles
         CambiarEstadoComponentesJugador(true);
 
         Time.timeScale = 1f;
@@ -126,7 +139,6 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Cerrar escena pausa
         SceneManager.UnloadSceneAsync("PauseScene");
     }
 
