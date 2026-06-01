@@ -46,6 +46,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private string idleStateName = "Idle";
     [SerializeField] private float teleportDelayAfterFadeStarts = 0.6f;
 
+    [Header("Cinemática monos al dormir")]
+    [SerializeField] private MonkeyStealCutsceneController monkeyStealCutsceneController;
+    [SerializeField] private bool reproducirCinematicaMonosSinEspantamonos = true;
+    [SerializeField] private float duracionCinematicaMonos = 8f;
+
     [Header("Mensajes")]
     [SerializeField] private string sleepPromptMessage = "dormir";
     [SerializeField] private string blockedPromptMessage = "No puedes dormir hasta las 18:00";
@@ -212,6 +217,13 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield return new WaitForSeconds(teleportDelayAfterFadeStarts);
         }
 
+        if (fadeOutCoroutine != null)
+        {
+            yield return fadeOutCoroutine;
+        }
+
+        yield return ReproducirCinematicaMonosSiCorresponde();
+
         if (nightThreatSystem != null)
         {
             nightThreatSystem.ResolveNightEvent();
@@ -242,11 +254,6 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             }
         }
 
-        if (fadeOutCoroutine != null)
-        {
-            yield return fadeOutCoroutine;
-        }
-
         if (playerController != null)
         {
             playerController.enabled = controllerOriginalHabilitado;
@@ -272,6 +279,50 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         }
     }
 
+    private IEnumerator ReproducirCinematicaMonosSiCorresponde()
+    {
+        if (!DebeReproducirCinematicaMonos())
+        {
+            yield break;
+        }
+
+        monkeyStealCutsceneController.PrepararCinematica();
+
+        if (fadeUI != null)
+        {
+            yield return fadeUI.FadeInRoutine();
+        }
+
+        yield return monkeyStealCutsceneController.ReproducirMovimientoMonos();
+
+        if (fadeUI != null)
+        {
+            yield return fadeUI.FadeOutRoutine();
+        }
+
+        monkeyStealCutsceneController.FinalizarCinematica();
+    }
+
+    private bool DebeReproducirCinematicaMonos()
+    {
+        if (!reproducirCinematicaMonosSinEspantamonos)
+        {
+            return false;
+        }
+
+        if (monkeyStealCutsceneController == null)
+        {
+            return false;
+        }
+
+        if (nightThreatSystem == null)
+        {
+            return false;
+        }
+
+        return !nightThreatSystem.HayProteccionEspantamonosActiva();
+    }
+
     private void AplicarRecuperacionEnergia()
     {
         if (playerEnergy == null || timeSystem == null)
@@ -292,19 +343,16 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     {
         int horaActual = timeSystem.CurrentHour;
 
-        // De 00:00 a 07:59 -> recupera hasta el 25%
         if (horaActual < wakeHour)
         {
             return lateRecoveryPercent;
         }
 
-        // De 22:00 a 23:59 -> recupera hasta el 50%
         if (horaActual >= halfRecoveryFromHour)
         {
             return halfRecoveryPercent;
         }
 
-        // De 18:00 a 21:59 -> recupera hasta el 100%
         return 1f;
     }
 
@@ -455,6 +503,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         if (nightThreatSystem == null)
         {
             nightThreatSystem = FindFirstObjectByType<NightThreatSystem>();
+        }
+
+        if (monkeyStealCutsceneController == null)
+        {
+            monkeyStealCutsceneController = FindFirstObjectByType<MonkeyStealCutsceneController>();
         }
 
         if (playerTransform == null)

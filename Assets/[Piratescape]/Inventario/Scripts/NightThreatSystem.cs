@@ -155,6 +155,11 @@ public class NightThreatSystem : MonoBehaviour
         MostrarMensaje("Te has desmayado, los monos te han robado todo");
     }
 
+    public bool HayProteccionEspantamonosActiva()
+    {
+        return HayEspantamonosActivo();
+    }
+
     private List<int> ObtenerIndicesSlotsOcupados()
     {
         List<int> occupiedSlots = new List<int>();

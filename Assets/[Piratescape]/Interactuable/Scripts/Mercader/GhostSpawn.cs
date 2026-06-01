@@ -5,6 +5,9 @@ public class GhostSpawn : MonoBehaviour
     [Header("Puntos de aparición")]
     [SerializeField] private Transform[] puntosAparicion;
 
+    [Header("Primer spawn")]
+    [SerializeField] private Transform primerPuntoAparicion;
+
     [Header("Visual / FX")]
     [SerializeField] private GhostVisualEffect ghostVisualEffect;
 
@@ -16,6 +19,7 @@ public class GhostSpawn : MonoBehaviour
     private int ultimoPunto = -1;
     private Vector3 posicionBase;
     private bool estaDeNoche;
+    private bool primeraAparicionRealizada;
 
     private void Awake()
     {
@@ -63,6 +67,16 @@ public class GhostSpawn : MonoBehaviour
 
     private void AparecerEnPuntoNocturno()
     {
+        if (!primeraAparicionRealizada && primerPuntoAparicion != null)
+        {
+            primeraAparicionRealizada = true;
+
+            transform.position = primerPuntoAparicion.position;
+            posicionBase = transform.position;
+
+            return;
+        }
+
         if (puntosAparicion == null || puntosAparicion.Length == 0)
         {
             Debug.LogWarning("No hay puntos asignados al fantasma");
