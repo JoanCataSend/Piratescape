@@ -149,6 +149,6 @@ public static class InventarioGuardadoUtil
         }
 
         slot.itemData = item;
-        slot.amount = Mathf.Clamp(dato.cantidad, 1, InventorySlot.MaxStack);
+        slot.amount = Mathf.Clamp(dato.cantidad, 1, InventorySlot.DefaultMaxStack);
     }
 }

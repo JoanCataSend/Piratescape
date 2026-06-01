@@ -108,7 +108,7 @@ public sealed class InventarioCofre : MonoBehaviour
                 continue;
             }
 
-            int cantidadParaEsteSlot = Mathf.Min(cantidadPendiente, InventorySlot.MaxStack);
+            int cantidadParaEsteSlot = Mathf.Min(cantidadPendiente, InventorySlot.DefaultMaxStack);
             slot.itemData = itemData;
             slot.amount = cantidadParaEsteSlot;
             cantidadPendiente -= cantidadParaEsteSlot;

@@ -53,7 +53,8 @@ public class InventorySlotUI : MonoBehaviour
 
         if (amountText != null)
         {
-            amountText.text = amount + "/" + InventorySlot.MaxStack;
+            int maxStack = EsGema(itemData) ? 1 : InventorySlot.DefaultMaxStack;
+            amountText.text = amount + "/" + maxStack;
         }
 
         ActualizarFondo(false);
@@ -89,5 +90,12 @@ public class InventorySlotUI : MonoBehaviour
 
         colorFondoOriginal = backgroundImage.color;
         colorFondoCacheado = true;
+    }
+    private bool EsGema(ItemData item)
+    {
+        if (item == null)
+            return false;
+
+        return item.name.ToLower().Contains("gema");
     }
 }
