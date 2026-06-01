@@ -188,13 +188,13 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
                 continue;
             }
 
-            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.DefaultMaxStack)
             {
-                freeSpaceTotal += InventorySlot.MaxStack - slots[i].amount;
+                freeSpaceTotal += InventorySlot.DefaultMaxStack - slots[i].amount;
             }
             else if (slots[i].IsEmpty())
             {
-                freeSpaceTotal += InventorySlot.MaxStack;
+                freeSpaceTotal += InventorySlot.DefaultMaxStack;
             }
         }
 
@@ -230,9 +230,9 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
                 continue;
             }
 
-            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.MaxStack)
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.DefaultMaxStack)
             {
-                int freeSpace = InventorySlot.MaxStack - slots[i].amount;
+                int freeSpace = InventorySlot.DefaultMaxStack - slots[i].amount;
                 int amountToAdd = Mathf.Min(remainingAmount, freeSpace);
 
                 slots[i].amount += amountToAdd;
@@ -255,7 +255,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
             if (slots[i].IsEmpty())
             {
-                int amountToAdd = Mathf.Min(remainingAmount, InventorySlot.MaxStack);
+                int amountToAdd = Mathf.Min(remainingAmount, InventorySlot.DefaultMaxStack);
 
                 slots[i].itemData = itemData;
                 slots[i].amount = amountToAdd;
@@ -687,6 +687,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         {
             return 0;
         }
+
 
         RemoveItem(itemData, cantidadARemover);
         return cantidadARemover;

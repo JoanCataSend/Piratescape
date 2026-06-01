@@ -3,7 +3,7 @@ using System;
 [Serializable]
 public class InventorySlot
 {
-    public const int MaxStack = 25; // Máximo de objetos por slot
+    public const int DefaultMaxStack = 25;
 
     public ItemData itemData;
     public int amount;
@@ -13,24 +13,46 @@ public class InventorySlot
         return itemData == null || amount <= 0;
     }
 
+    public int GetMaxStack()
+    {
+        if (itemData != null && EsGema(itemData))
+        {
+            return 1;
+        }
+
+        return DefaultMaxStack;
+    }
+
     public bool IsFull()
     {
-        return amount >= MaxStack;
+        return amount >= GetMaxStack();
     }
 
     public bool CanStack(ItemData otherItem)
     {
-        return !IsEmpty() && itemData == otherItem && amount < MaxStack;
+        return !IsEmpty()
+            && itemData == otherItem
+            && amount < GetMaxStack();
     }
 
     public int FreeSpace()
     {
-        return MaxStack - amount;
+        return GetMaxStack() - amount;
     }
 
     public void Clear()
     {
         itemData = null;
         amount = 0;
+    }
+
+    private bool EsGema(ItemData item)
+    {
+        if (item == null)
+            return false;
+
+        string nombre = item.name.ToLower();
+
+        return nombre.Contains("gema");
     }
 }
