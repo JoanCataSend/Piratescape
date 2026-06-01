@@ -5,6 +5,9 @@ public class GhostSpawn : MonoBehaviour
     [Header("Puntos de aparición")]
     [SerializeField] private Transform[] puntosAparicion;
 
+    [Header("Visual / FX")]
+    [SerializeField] private GhostVisualEffect ghostVisualEffect;
+
     [Header("Movimiento en forma de 8")]
     [SerializeField] private float amplitudX = 0.8f;
     [SerializeField] private float amplitudZ = 0.4f;
@@ -14,17 +17,40 @@ public class GhostSpawn : MonoBehaviour
     private Vector3 posicionBase;
     private bool estaDeNoche;
 
+    private void Awake()
+    {
+        if (ghostVisualEffect == null)
+        {
+            ghostVisualEffect = GetComponent<GhostVisualEffect>();
+        }
+    }
+
     public void EmpezarNoche()
     {
-        AparecerEnPuntoNocturno();
         gameObject.SetActive(true);
+
+        AparecerEnPuntoNocturno();
+
         estaDeNoche = true;
+
+        if (ghostVisualEffect != null)
+        {
+            ghostVisualEffect.PlaySpawn();
+        }
     }
 
     public void EmpezarDia()
     {
         estaDeNoche = false;
-        gameObject.SetActive(false);
+
+        if (ghostVisualEffect != null)
+        {
+            ghostVisualEffect.PlayDespawn();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -55,8 +81,6 @@ public class GhostSpawn : MonoBehaviour
 
         transform.position = puntosAparicion[nuevoPunto].position;
         posicionBase = transform.position;
-
-        Debug.Log("Fantasma apareció en: " + puntosAparicion[nuevoPunto].name);
     }
 
     private void MoverEnFormaDeOcho()
@@ -65,7 +89,6 @@ public class GhostSpawn : MonoBehaviour
 
         float x = Mathf.Sin(tiempo) * amplitudX;
         float z = Mathf.Sin(tiempo * 2f) * amplitudZ;
-
         float y = Mathf.Sin(Time.time * 2f) * 0.25f;
 
         Vector3 nuevaPosicion = posicionBase + new Vector3(x, y, z);
