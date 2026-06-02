@@ -8,6 +8,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     {
         public Transform mono;
         public Transform puntoInicial;
+        public Animator animator;
     }
 
     [Header("Monos")]
@@ -30,6 +31,17 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     [SerializeField] private float velocidadSalirCorriendo = 5f;
     [SerializeField] private float velocidadRotacion = 10f;
     [SerializeField] private float distanciaLlegada = 0.08f;
+
+    [Header("Animaciones")]
+    [SerializeField] private string estadoWalk = "Walk";
+    [SerializeField] private string estadoRun = "Run";
+
+    [Header("Suelo")]
+    [SerializeField] private bool ajustarAlturaAlSuelo = true;
+    [SerializeField] private LayerMask capaSuelo = ~0;
+    [SerializeField] private float alturaRaycast = 5f;
+    [SerializeField] private float distanciaRaycast = 20f;
+    [SerializeField] private float alturaSobreSuelo = 0.02f;
 
     private void Awake()
     {
@@ -74,12 +86,19 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     public IEnumerator ReproducirMovimientoMonos()
     {
+        ReproducirAnimacionTodos(estadoWalk);
+
         yield return MoverMonosA(puntoEntradaTienda, velocidadIrTienda);
-        yield return MoverMonosA(puntoInteriorTienda, velocidadIrTienda);
+
+        OcultarMonos();
 
         yield return new WaitForSeconds(esperaDentroTienda);
 
-        yield return MoverMonosA(puntoEntradaTienda, velocidadIrTienda);
+        ColocarMonosEnEntradaTienda();
+        MostrarMonos();
+
+        ReproducirAnimacionTodos(estadoRun);
+
         yield return MoverMonosAPuntosIniciales(velocidadSalirCorriendo);
 
         yield return new WaitForSeconds(esperaFinal);
@@ -125,9 +144,144 @@ public class MonkeyStealCutsceneController : MonoBehaviour
                 continue;
             }
 
-            monoRobo.mono.position = monoRobo.puntoInicial.position;
+            Vector3 posicionInicial = AjustarPosicionAlSuelo(
+                monoRobo.puntoInicial.position,
+                monoRobo.mono
+            );
+
+            monoRobo.mono.position = posicionInicial;
             monoRobo.mono.rotation = monoRobo.puntoInicial.rotation;
             monoRobo.mono.gameObject.SetActive(true);
+
+            if (monoRobo.animator == null)
+            {
+                monoRobo.animator = monoRobo.mono.GetComponent<Animator>();
+
+                if (monoRobo.animator == null)
+                {
+                    monoRobo.animator = monoRobo.mono.GetComponentInChildren<Animator>();
+                }
+            }
+
+            if (monoRobo.animator != null)
+            {
+                monoRobo.animator.enabled = true;
+                monoRobo.animator.applyRootMotion = false;
+                monoRobo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                monoRobo.animator.Rebind();
+                monoRobo.animator.Update(0f);
+            }
+        }
+    }
+
+    private void ReproducirAnimacionTodos(string nombreEstado)
+    {
+        if (monos == null || string.IsNullOrWhiteSpace(nombreEstado))
+        {
+            return;
+        }
+
+        for (int i = 0; i < monos.Length; i++)
+        {
+            if (monos[i] == null)
+            {
+                continue;
+            }
+
+            if (monos[i].animator == null && monos[i].mono != null)
+            {
+                monos[i].animator = monos[i].mono.GetComponent<Animator>();
+
+                if (monos[i].animator == null)
+                {
+                    monos[i].animator = monos[i].mono.GetComponentInChildren<Animator>();
+                }
+            }
+
+            if (monos[i].animator == null)
+            {
+                Debug.LogWarning("Mono sin Animator asignado en MonkeyStealCutsceneController", this);
+                continue;
+            }
+
+            monos[i].animator.enabled = true;
+            monos[i].animator.applyRootMotion = false;
+            monos[i].animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+
+            monos[i].animator.Play(nombreEstado, 0, 0f);
+            monos[i].animator.Update(0f);
+        }
+    }
+
+    private void OcultarMonos()
+    {
+        if (monos == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < monos.Length; i++)
+        {
+            if (monos[i] != null && monos[i].mono != null)
+            {
+                monos[i].mono.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void MostrarMonos()
+    {
+        if (monos == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < monos.Length; i++)
+        {
+            if (monos[i] != null && monos[i].mono != null)
+            {
+                monos[i].mono.gameObject.SetActive(true);
+
+                if (monos[i].animator == null)
+                {
+                    monos[i].animator = monos[i].mono.GetComponent<Animator>();
+
+                    if (monos[i].animator == null)
+                    {
+                        monos[i].animator = monos[i].mono.GetComponentInChildren<Animator>();
+                    }
+                }
+
+                if (monos[i].animator != null)
+                {
+                    monos[i].animator.enabled = true;
+                    monos[i].animator.applyRootMotion = false;
+                    monos[i].animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                    monos[i].animator.Update(0f);
+                }
+            }
+        }
+    }
+
+    private void ColocarMonosEnEntradaTienda()
+    {
+        if (monos == null || puntoEntradaTienda == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < monos.Length; i++)
+        {
+            if (monos[i] == null || monos[i].mono == null)
+            {
+                continue;
+            }
+
+            Vector3 posicion = puntoEntradaTienda.position + ObtenerOffsetMono(i);
+            posicion = AjustarPosicionAlSuelo(posicion, monos[i].mono);
+
+            monos[i].mono.position = posicion;
+            monos[i].mono.rotation = puntoEntradaTienda.rotation;
         }
     }
 
@@ -203,18 +357,31 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     private bool MoverMonoHacia(Transform mono, Vector3 destino, float velocidad)
     {
         Vector3 posicionActual = mono.position;
-        Vector3 direccion = destino - posicionActual;
+
+        Vector3 destinoPlano = new Vector3(
+            destino.x,
+            posicionActual.y,
+            destino.z
+        );
+
+        Vector3 direccion = destinoPlano - posicionActual;
         direccion.y = 0f;
 
         if (direccion.magnitude <= distanciaLlegada)
         {
-            mono.position = new Vector3(destino.x, mono.position.y, destino.z);
+            Vector3 posicionFinal = new Vector3(destino.x, posicionActual.y, destino.z);
+            posicionFinal = AjustarPosicionAlSuelo(posicionFinal, mono);
+
+            mono.position = posicionFinal;
             return true;
         }
 
         Vector3 direccionNormalizada = direccion.normalized;
 
-        mono.position += direccionNormalizada * velocidad * Time.deltaTime;
+        Vector3 nuevaPosicion = posicionActual + direccionNormalizada * velocidad * Time.deltaTime;
+        nuevaPosicion = AjustarPosicionAlSuelo(nuevaPosicion, mono);
+
+        mono.position = nuevaPosicion;
 
         if (direccionNormalizada.sqrMagnitude > 0.001f)
         {
@@ -228,6 +395,58 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         }
 
         return false;
+    }
+
+    private Vector3 AjustarPosicionAlSuelo(Vector3 posicion, Transform mono)
+    {
+        if (!ajustarAlturaAlSuelo)
+        {
+            return posicion;
+        }
+
+        Vector3 origen = posicion + Vector3.up * alturaRaycast;
+
+        RaycastHit[] impactos = Physics.RaycastAll(
+            origen,
+            Vector3.down,
+            distanciaRaycast,
+            capaSuelo,
+            QueryTriggerInteraction.Ignore
+        );
+
+        if (impactos == null || impactos.Length == 0)
+        {
+            return posicion;
+        }
+
+        RaycastHit mejorImpacto = new RaycastHit();
+        bool hayImpactoValido = false;
+        float menorDistancia = float.MaxValue;
+
+        for (int i = 0; i < impactos.Length; i++)
+        {
+            RaycastHit impacto = impactos[i];
+
+            if (mono != null && impacto.transform.IsChildOf(mono))
+            {
+                continue;
+            }
+
+            if (impacto.distance < menorDistancia)
+            {
+                menorDistancia = impacto.distance;
+                mejorImpacto = impacto;
+                hayImpactoValido = true;
+            }
+        }
+
+        if (!hayImpactoValido)
+        {
+            return posicion;
+        }
+
+        posicion.y = mejorImpacto.point.y + alturaSobreSuelo;
+        return posicion;
     }
 
     private Vector3 ObtenerOffsetMono(int indice)
