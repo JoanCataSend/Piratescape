@@ -62,7 +62,9 @@ public class InteractionUI : MonoBehaviour
             Time.deltaTime * velocidadAnimacion
         );
 
-        if (!visible && prompt.activeSelf && Vector3.Distance(promptTransform.localScale, targetScale) < 0.001f)
+        if (!visible &&
+            prompt.activeSelf &&
+            Vector3.Distance(promptTransform.localScale, targetScale) < 0.001f)
         {
             prompt.SetActive(false);
         }
@@ -95,7 +97,8 @@ public class InteractionUI : MonoBehaviour
         }
 
         StopTemporaryRoutineIfNeeded();
-        temporaryMessageRoutine = StartCoroutine(ShowTemporaryRoutine(owner, message, duration));
+        temporaryMessageRoutine =
+            StartCoroutine(ShowTemporaryRoutine(owner, message, duration));
     }
 
     public void Hide(Object owner)
@@ -125,7 +128,8 @@ public class InteractionUI : MonoBehaviour
 
         if (promptTransform != null)
         {
-            promptTransform.localScale = escalaBase * escalaOculta;
+            promptTransform.localScale =
+                escalaBase * escalaOculta;
         }
 
         targetScale = escalaBase * escalaOculta;
@@ -141,7 +145,10 @@ public class InteractionUI : MonoBehaviour
         return currentOwner == owner;
     }
 
-    private IEnumerator ShowTemporaryRoutine(Object owner, string message, float duration)
+    private IEnumerator ShowTemporaryRoutine(
+        Object owner,
+        string message,
+        float duration)
     {
         currentOwner = owner;
 
@@ -176,12 +183,16 @@ public class InteractionUI : MonoBehaviour
         {
             if (usarAnimacion)
             {
-                promptTransform.localScale = escalaBase * escalaOculta;
-                targetScale = escalaBase * escalaVisible;
+                promptTransform.localScale =
+                    escalaBase * escalaOculta;
+
+                targetScale =
+                    escalaBase * escalaVisible;
             }
             else
             {
-                promptTransform.localScale = escalaBase * escalaVisible;
+                promptTransform.localScale =
+                    escalaBase * escalaVisible;
             }
         }
     }
@@ -189,7 +200,9 @@ public class InteractionUI : MonoBehaviour
     private void OcultarBurbuja()
     {
         visible = false;
-        targetScale = escalaBase * escalaOculta;
+
+        targetScale =
+            escalaBase * escalaOculta;
 
         if (!usarAnimacion && prompt != null)
         {
@@ -215,22 +228,55 @@ public class InteractionUI : MonoBehaviour
             return "";
         }
 
-        string mensaje = mensajeOriginal;
+        string mensaje = mensajeOriginal.ToLower().Trim();
 
-        mensaje = mensaje.Replace("Pulsa ", "");
-        mensaje = mensaje.Replace(" para recoger ", " ");
-
-        // Si viene "E Concha", quitamos la tecla.
-        if (mensaje.StartsWith("E "))
+        // Construir barco
+        if (mensaje.Contains("construir") &&
+            mensaje.Contains("barco"))
         {
-            mensaje = mensaje.Substring(2);
+            return "Construir [E]";
         }
 
-        if (mensaje.StartsWith("▢ "))
+        // Dormir
+        if (mensaje.Contains("dormir"))
         {
-            mensaje = mensaje.Substring(2);
+            return "Dormir [E]";
         }
 
-        return mensaje;
+        // Guardar objeto
+        if (mensaje.Contains("guardar"))
+        {
+            return "Guardar [E]";
+        }
+
+        // Recoger objetos
+        if (mensaje.Contains("recoger"))
+        {
+            string objeto = mensajeOriginal;
+
+            objeto = objeto.Replace("Pulsa E para recoger ", "");
+            objeto = objeto.Replace("pulsa E para recoger ", "");
+            objeto = objeto.Replace("E para recoger ", "");
+            objeto = objeto.Replace("para recoger ", "");
+            objeto = objeto.Trim();
+
+            return objeto + " [E]";
+        }
+
+        // Comprar / tienda
+        if (mensaje.Contains("tienda") ||
+            mensaje.Contains("comprar"))
+        {
+            return "Comprar [E]";
+        }
+
+        // Hablar
+        if (mensaje.Contains("hablar"))
+        {
+            return "Hablar [E]";
+        }
+
+        // Fallback simple
+        return mensajeOriginal + " [E]";
     }
 }
