@@ -22,6 +22,11 @@ public class VictoryCutsceneController : MonoBehaviour
     [SerializeField] private CinematicBarsUI cinematicBars;
     [SerializeField] private GameObject pantallaVictoria;
 
+    [Header("Estadísticas victoria")]
+    [SerializeField] private VictoryStatsTypewriterUI victoryStatsTypewriterUI;
+    [SerializeField] private bool mostrarEstadisticasDuranteCinematica = true;
+    [SerializeField] private float tiempoEsperaMostrarEstadisticas = 6f;
+
     [Header("Postprocesado cinemática")]
     [SerializeField] private GameObject postProcesadoCinematica;
 
@@ -56,15 +61,27 @@ public class VictoryCutsceneController : MonoBehaviour
     [SerializeField] private bool ocultarBarcoAlInicio = true;
 
     private bool cinematicaEnCurso;
+    private bool pantallaVictoriaMostrada;
     private bool[] estadosPreviosUI;
 
     private void Awake()
     {
+        CachearReferencias();
         PrepararEstadoInicial();
+    }
+
+    private void CachearReferencias()
+    {
+        if (victoryStatsTypewriterUI == null && pantallaVictoria != null)
+        {
+            victoryStatsTypewriterUI = pantallaVictoria.GetComponentInChildren<VictoryStatsTypewriterUI>(true);
+        }
     }
 
     private void PrepararEstadoInicial()
     {
+        pantallaVictoriaMostrada = false;
+
         if (ocultarBarcoAlInicio && barcoFinal != null)
         {
             barcoFinal.gameObject.SetActive(false);
@@ -126,6 +143,7 @@ public class VictoryCutsceneController : MonoBehaviour
     private IEnumerator VictoryCutsceneRoutine(float delay)
     {
         cinematicaEnCurso = true;
+        pantallaVictoriaMostrada = false;
 
         if (delay > 0f)
         {
@@ -148,6 +166,11 @@ public class VictoryCutsceneController : MonoBehaviour
 
         yield return Fade(1f, 0f, duracionFadeInicial);
 
+        if (mostrarEstadisticasDuranteCinematica)
+        {
+            StartCoroutine(MostrarPantallaVictoriaConRetardo());
+        }
+
         yield return MoverBarcoConCambioDeCamara();
 
         ReproducirDestelloFinal();
@@ -162,6 +185,16 @@ public class VictoryCutsceneController : MonoBehaviour
         MostrarPantallaVictoria();
 
         cinematicaEnCurso = false;
+    }
+
+    private IEnumerator MostrarPantallaVictoriaConRetardo()
+    {
+        if (tiempoEsperaMostrarEstadisticas > 0f)
+        {
+            yield return new WaitForSeconds(tiempoEsperaMostrarEstadisticas);
+        }
+
+        MostrarPantallaVictoriaUI();
     }
 
     private void OcultarUIDelJuego()
@@ -479,6 +512,28 @@ public class VictoryCutsceneController : MonoBehaviour
         if (camaraIslaAMar != null)
         {
             camaraIslaAMar.SetActive(false);
+        }
+
+        MostrarPantallaVictoriaUI();
+    }
+
+    private void MostrarPantallaVictoriaUI()
+    {
+        if (pantallaVictoriaMostrada)
+        {
+            return;
+        }
+
+        pantallaVictoriaMostrada = true;
+
+        if (victoryStatsTypewriterUI == null && pantallaVictoria != null)
+        {
+            victoryStatsTypewriterUI = pantallaVictoria.GetComponentInChildren<VictoryStatsTypewriterUI>(true);
+        }
+
+        if (victoryStatsTypewriterUI != null)
+        {
+            victoryStatsTypewriterUI.ConfigurarEstadisticasFalsas();
         }
 
         if (pantallaVictoria != null)
