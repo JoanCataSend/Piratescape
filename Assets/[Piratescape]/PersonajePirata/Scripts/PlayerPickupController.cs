@@ -181,6 +181,8 @@ public sealed class PlayerPickupController : MonoBehaviour
 
         if (added)
         {
+            ItemFirstTimeDialogueSystem.Instance?.MostrarFrasePrimeraVez(collectible.ItemData);
+
             collectible.OnCollected();
 
             if (objetoActual == objetoRecogible)
