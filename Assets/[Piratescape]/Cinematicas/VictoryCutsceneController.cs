@@ -25,6 +25,12 @@ public class VictoryCutsceneController : MonoBehaviour
     [Header("Postprocesado cinemática")]
     [SerializeField] private GameObject postProcesadoCinematica;
 
+    [Header("Destello final")]
+    [SerializeField] private GameObject finalStarSparklePrefab;
+    [SerializeField] private Transform finalStarSparklePoint;
+    [SerializeField] private bool ocultarBarcoAlFinal = true;
+    [SerializeField] private float esperaDespuesDestello = 1.2f;
+
     [Header("UI a ocultar durante cinemática")]
     [SerializeField] private GameObject[] objetosUIAOcultarDuranteCinematica;
 
@@ -143,6 +149,13 @@ public class VictoryCutsceneController : MonoBehaviour
         yield return Fade(1f, 0f, duracionFadeInicial);
 
         yield return MoverBarcoConCambioDeCamara();
+
+        ReproducirDestelloFinal();
+
+        if (esperaDespuesDestello > 0f)
+        {
+            yield return new WaitForSeconds(esperaDespuesDestello);
+        }
 
         yield return Fade(0f, 1f, duracionFadeFinal);
 
@@ -320,6 +333,90 @@ public class VictoryCutsceneController : MonoBehaviour
 
         barcoFinal.position = posicionFinal;
         barcoFinal.rotation = rotacionFinal;
+    }
+
+    private void ReproducirDestelloFinal()
+    {
+        Vector3 posicionDestello;
+
+        if (finalStarSparklePoint != null)
+        {
+            posicionDestello = finalStarSparklePoint.position;
+        }
+        else if (boatEndPoint != null)
+        {
+            posicionDestello = boatEndPoint.position;
+        }
+        else if (barcoFinal != null)
+        {
+            posicionDestello = barcoFinal.position;
+        }
+        else
+        {
+            Debug.LogWarning("VictoryCutsceneController: no hay punto para crear el destello final.");
+            return;
+        }
+
+        if (finalStarSparklePrefab != null)
+        {
+            GameObject destello = Instantiate(
+                finalStarSparklePrefab,
+                posicionDestello,
+                Quaternion.identity
+            );
+
+            destello.SetActive(true);
+
+            OrientarDestelloACamaraActiva(destello);
+
+            Debug.Log("Destello final creado en: " + posicionDestello);
+        }
+        else
+        {
+            Debug.LogWarning("VictoryCutsceneController: falta asignar Final Star Sparkle Prefab.");
+        }
+
+        if (ocultarBarcoAlFinal && barcoFinal != null)
+        {
+            barcoFinal.gameObject.SetActive(false);
+        }
+
+        if (movimientoGaviotas != null)
+        {
+            movimientoGaviotas.DetenerMovimiento();
+        }
+    }
+
+    private void OrientarDestelloACamaraActiva(GameObject destello)
+    {
+        if (destello == null)
+        {
+            return;
+        }
+
+        Camera camara = ObtenerCamaraActiva();
+
+        if (camara == null)
+        {
+            return;
+        }
+
+        destello.transform.forward = camara.transform.forward;
+    }
+
+    private Camera ObtenerCamaraActiva()
+    {
+        Camera[] camaras = FindObjectsByType<Camera>(FindObjectsSortMode.None);
+
+        for (int i = 0; i < camaras.Length; i++)
+        {
+            if (camaras[i] != null && camaras[i].gameObject.activeInHierarchy && camaras[i].enabled)
+            {
+                return camaras[i];
+            }
+        }
+
+        return Camera.main;
     }
 
     private void ActivarGaviotas()

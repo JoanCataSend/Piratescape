@@ -40879,8 +40879,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 306190389}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.019677341, y: 0.27389348, z: 0.014266494, w: 0.9614529}
-  m_LocalPosition: {x: -61.532623, y: 3.0841067, z: 7.4981194}
+  m_LocalRotation: {x: -0.021039082, y: 0.26000383, z: 0.01429369, w: 0.9652726}
+  m_LocalPosition: {x: -61.47794, y: 3.0888553, z: 7.600593}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -73197,6 +73197,7 @@ Transform:
   - {fileID: 2116277047}
   - {fileID: 631426830}
   - {fileID: 1173884648}
+  - {fileID: 824800121}
   - {fileID: 1779960919}
   - {fileID: 721035500}
   m_Father: {fileID: 0}
@@ -73225,6 +73226,10 @@ MonoBehaviour:
   cinematicBars: {fileID: 376489054}
   pantallaVictoria: {fileID: 0}
   postProcesadoCinematica: {fileID: 1991750101}
+  finalStarSparklePrefab: {fileID: 7723409775656401518, guid: d3bf6ba918ae8a943ad0d1a4df1580ce, type: 3}
+  finalStarSparklePoint: {fileID: 824800121}
+  ocultarBarcoAlFinal: 1
+  esperaDespuesDestello: 1
   objetosUIAOcultarDuranteCinematica:
   - {fileID: 78945907}
   - {fileID: 767257328}
@@ -73256,7 +73261,7 @@ MonoBehaviour:
   esperaAntesDeEmpezar: 2
   duracionFadeInicial: 1
   tiempoHastaCambioCamara: 3
-  duracionMovimientoBarco: 40
+  duracionMovimientoBarco: 5
   duracionFadeFinal: 1.5
   curvaMovimiento:
     serializedVersion: 2
@@ -76696,6 +76701,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0042965715, y: 0.028063387, z: 0.16463774}
   m_Center: {x: 0.0000008801147, y: -0.026632668, z: 0.06678339}
+--- !u!1 &824800120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 824800121}
+  m_Layer: 0
+  m_Name: estrella
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &824800121
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824800120}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.0019711668, y: -0.04409554, z: -0.0011881207, w: 0.99902475}
+  m_LocalPosition: {x: -58.73, y: 4.87, z: 376.58}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 730001131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &826039415 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1977714041718683262, guid: 2c6ef3c3a72dce2438d5d7f01f83ff8b, type: 3}
@@ -199746,19 +199782,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6079724691430340437, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6851195258107080175, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -29.51
+      value: -60.5
       objectReference: {fileID: 0}
     - target: {fileID: 6851195258107080175, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.11
+      value: 2.9
       objectReference: {fileID: 0}
     - target: {fileID: 6851195258107080175, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 33.33
+      value: 383.5
       objectReference: {fileID: 0}
     - target: {fileID: 6851195258107080175, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
       propertyPath: m_LocalRotation.w
