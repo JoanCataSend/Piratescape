@@ -74,6 +74,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
       insertIndex: -1
       addedObject: {fileID: -4774458290796676096}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7640816516659705255}
   m_SourcePrefab: {fileID: 100100000, guid: 29a8af687f1df884281b083be3e3926e, type: 3}
 --- !u!1 &1494005551563264966 stripped
 GameObject:
@@ -99,6 +102,9 @@ MonoBehaviour:
   interactuable: 1
   itemData: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
   amount: 1
+  iconoHUD: {fileID: 0}
+  pickupFlyToHUD: {fileID: 0}
+  hudTargetsEconomia: {fileID: 0}
 --- !u!65 &-4774458290796676096
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -120,3 +126,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7640816516659705255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494005551563264966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0e5c44e62037544cb2cb0fed4d8a048, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  circleRenderer: {fileID: 0}
+  crearOutlineAutomatico: 1
+  materialOutline: {fileID: 2100000, guid: d57aaade84cbd1f4487689476cefacd6, type: 2}
+  objetosOutline: []
+  distanciaParaMostrar: 2.2
+  escalaBase: 1
+  intensidadPulso: 0.06
+  velocidadPulso: 3.5
+  alphaMaximo: 0.5
+  velocidadAparicion: 8
+  ocultarSiEstaEnLaMano: 1
