@@ -168,6 +168,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     private IEnumerator IntroFantasmaRoutine()
     {
         introEnCurso = true;
+
         OcultarPrompt();
         OcultarUIIntro();
 
@@ -206,7 +207,10 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             camaraDialogoFantasma.SetActive(true);
         }
 
-        Time.timeScale = 0f;
+        // IMPORTANTE:
+        // No pausamos el juego durante la intro.
+        // Así la lluvia, partículas, glow del fantasma, agua y demás efectos siguen funcionando.
+        Time.timeScale = 1f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -345,6 +349,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         shopUI.SetActive(true);
         OcultarPrompt();
 
+        // La tienda sí pausa el juego.
         Time.timeScale = 0f;
 
         Cursor.lockState = CursorLockMode.None;

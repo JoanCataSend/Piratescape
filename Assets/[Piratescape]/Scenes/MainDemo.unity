@@ -181560,8 +181560,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812617208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15264115, y: 0.000000010422214, z: -0.0000000016097218, w: 0.98828167}
-  m_LocalPosition: {x: -44.1, y: 1.8575884, z: 1.9074337}
+  m_LocalRotation: {x: 0.1481822, y: 0.69728595, z: -0.16000953, w: 0.6828113}
+  m_LocalPosition: {x: -49.790833, y: 5.514789, z: -6.112156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -181684,7 +181684,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 59
+  field of view: 60.000004
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -184430,8 +184430,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909811373}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.02109891, y: 0.9280219, z: -0.06983359, w: 0.36531287}
-  m_LocalPosition: {x: -2.7321625, y: -0.41066933, z: -19.60646}
+  m_LocalRotation: {x: 0.1481822, y: 0.69728595, z: -0.16000953, w: 0.6828113}
+  m_LocalPosition: {x: -7.458313, y: 4.0703945, z: -21.120186}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -205267,12 +205267,20 @@ PrefabInstance:
       objectReference: {fileID: 1909811373}
     - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: componentesJugadorADesactivar.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: objetosUIAOcultarDuranteIntro.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+      propertyPath: 'componentesJugadorADesactivar.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1588489905}
+    - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+      propertyPath: 'componentesJugadorADesactivar.Array.data[1]'
+      value: 
+      objectReference: {fileID: 559680995}
     - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: 'objetosUIAOcultarDuranteIntro.Array.data[0]'
       value: 
