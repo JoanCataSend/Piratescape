@@ -6,20 +6,24 @@ public class RecogibleCircleHighlight : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private SpriteRenderer circleRenderer;
 
+    [Header("Outline blanco")]
+    [SerializeField] private GameObject[] objetosOutline;
+
     [Header("Deteccion")]
     [SerializeField] private float distanciaParaMostrar = 2.2f;
 
-    [Header("Animacion")]
-    [SerializeField] private float escalaBase = 0.6f;
+    [Header("Animacion circulo")]
+    [SerializeField] private float escalaBase = 1f;
     [SerializeField] private float intensidadPulso = 0.06f;
     [SerializeField] private float velocidadPulso = 3.5f;
 
-    [Header("Visual")]
+    [Header("Visual circulo")]
     [SerializeField, Range(0f, 1f)] private float alphaMaximo = 0.5f;
     [SerializeField] private float velocidadAparicion = 8f;
 
     private Vector3 escalaInicial;
     private float alphaActual;
+    private bool outlineActivo;
 
     private void Awake()
     {
@@ -28,6 +32,8 @@ public class RecogibleCircleHighlight : MonoBehaviour
             circleRenderer.enabled = false;
             escalaInicial = circleRenderer.transform.localScale;
         }
+
+        ActivarOutline(false);
     }
 
     private void Start()
@@ -45,7 +51,7 @@ public class RecogibleCircleHighlight : MonoBehaviour
 
     private void Update()
     {
-        if (player == null || circleRenderer == null)
+        if (player == null)
         {
             return;
         }
@@ -54,10 +60,16 @@ public class RecogibleCircleHighlight : MonoBehaviour
         bool debeMostrarse = distancia <= distanciaParaMostrar;
 
         ActualizarCirculo(debeMostrarse);
+        ActivarOutline(debeMostrarse);
     }
 
     private void ActualizarCirculo(bool mostrar)
     {
+        if (circleRenderer == null)
+        {
+            return;
+        }
+
         if (!circleRenderer.enabled && mostrar)
         {
             circleRenderer.enabled = true;
@@ -78,6 +90,24 @@ public class RecogibleCircleHighlight : MonoBehaviour
         if (!mostrar && alphaActual <= 0.02f)
         {
             circleRenderer.enabled = false;
+        }
+    }
+
+    private void ActivarOutline(bool activar)
+    {
+        if (outlineActivo == activar)
+        {
+            return;
+        }
+
+        outlineActivo = activar;
+
+        for (int i = 0; i < objetosOutline.Length; i++)
+        {
+            if (objetosOutline[i] != null)
+            {
+                objetosOutline[i].SetActive(activar);
+            }
         }
     }
 }

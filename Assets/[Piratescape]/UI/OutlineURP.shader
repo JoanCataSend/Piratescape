@@ -3,7 +3,7 @@ Shader "Custom/OutlineURP"
     Properties
     {
         _OutlineColor("Outline Color", Color) = (1,1,1,1)
-        _OutlineWidth("Outline Width", Range(0.0, 0.05)) = 0.003
+        _OutlineWidth("Outline Width", Range(0.0, 0.05)) = 0.006
     }
 
     SubShader
@@ -21,9 +21,8 @@ Shader "Custom/OutlineURP"
             Tags { "LightMode"="UniversalForward" }
 
             Cull Front
-            ZWrite On
+            ZWrite Off
             ZTest LEqual
-            Blend SrcAlpha OneMinusSrcAlpha
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -34,7 +33,7 @@ Shader "Custom/OutlineURP"
             struct Attributes
             {
                 float4 positionOS : POSITION;
-                float3 normalOS   : NORMAL;
+                float3 normalOS : NORMAL;
             };
 
             struct Varyings
@@ -64,6 +63,7 @@ Shader "Custom/OutlineURP"
             {
                 return _OutlineColor;
             }
+
             ENDHLSL
         }
     }
