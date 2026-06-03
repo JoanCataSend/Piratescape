@@ -20,6 +20,7 @@ public class GhostSpawn : MonoBehaviour
     private Vector3 posicionBase;
     private bool estaDeNoche;
     private bool primeraAparicionRealizada;
+    private bool movimientoBloqueado;
 
     private void Awake()
     {
@@ -36,6 +37,7 @@ public class GhostSpawn : MonoBehaviour
         AparecerEnPuntoNocturno();
 
         estaDeNoche = true;
+        movimientoBloqueado = false;
 
         if (ghostVisualEffect != null)
         {
@@ -46,6 +48,7 @@ public class GhostSpawn : MonoBehaviour
     public void EmpezarDia()
     {
         estaDeNoche = false;
+        movimientoBloqueado = false;
 
         if (ghostVisualEffect != null)
         {
@@ -59,10 +62,69 @@ public class GhostSpawn : MonoBehaviour
 
     private void Update()
     {
-        if (!estaDeNoche)
+        if (!estaDeNoche || movimientoBloqueado)
+        {
             return;
+        }
 
         MoverEnFormaDeOcho();
+    }
+
+    public void BloquearMovimiento(bool bloquear)
+    {
+        movimientoBloqueado = bloquear;
+
+        if (bloquear)
+        {
+            posicionBase = transform.position;
+        }
+    }
+
+    public void MirarHacia(Vector3 posicionObjetivo)
+    {
+        Vector3 direccion = posicionObjetivo - transform.position;
+        direccion.y = 0f;
+
+        if (direccion.sqrMagnitude <= 0.001f)
+        {
+            return;
+        }
+
+        Quaternion rotacionObjetivo = Quaternion.LookRotation(direccion.normalized);
+        transform.rotation = rotacionObjetivo;
+    }
+
+    public void ColocarFrenteAlJugador(Vector3 posicionJugador, Transform transformJugador, float distancia)
+    {
+        Vector3 direccionFrenteJugador;
+
+        if (transformJugador != null)
+        {
+            direccionFrenteJugador = transformJugador.forward;
+            direccionFrenteJugador.y = 0f;
+        }
+        else
+        {
+            direccionFrenteJugador = posicionJugador - transform.position;
+            direccionFrenteJugador.y = 0f;
+        }
+
+        if (direccionFrenteJugador.sqrMagnitude <= 0.001f)
+        {
+            direccionFrenteJugador = -transform.forward;
+            direccionFrenteJugador.y = 0f;
+        }
+
+        direccionFrenteJugador.Normalize();
+
+        Vector3 nuevaPosicion = posicionJugador + direccionFrenteJugador * distancia;
+
+        nuevaPosicion.y = transform.position.y;
+
+        transform.position = nuevaPosicion;
+        posicionBase = nuevaPosicion;
+
+        MirarHacia(posicionJugador);
     }
 
     private void AparecerEnPuntoNocturno()

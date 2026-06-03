@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,14 +17,38 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     [Header("UI Tienda")]
     [SerializeField] private GameObject shopUI;
 
+    [Header("Intro primera vez")]
+    [SerializeField] private bool usarIntroPrimeraVez = true;
+
+    [Tooltip("Si está activado, la intro del fantasma saldrá siempre al pulsar E, aunque ya se haya visto antes.")]
+    [SerializeField] private bool forzarIntroSiempre = false;
+
+    [SerializeField] private bool abrirTiendaAlTerminarIntro = true;
+    [SerializeField] private GhostIntroDialogueUI introDialogueUI;
+    [SerializeField] private GhostSpawn ghostSpawn;
+    [SerializeField] private GameObject camaraDialogoFantasma;
+    [SerializeField] private GameObject camaraJugador;
+    [SerializeField] private MonoBehaviour[] componentesJugadorADesactivar;
+
+    [Header("Colocación intro")]
+    [SerializeField] private bool colocarFantasmaFrenteAlJugador = true;
+    [SerializeField] private float distanciaFantasmaAlJugador = 2f;
+
+    [Header("UI a ocultar durante intro")]
+    [SerializeField] private GameObject[] objetosUIAOcultarDuranteIntro;
+
+    [SerializeField] private string clavePlayerPrefsIntro = "GhostIntroVista";
+
     [Header("Mensaje")]
     [SerializeField] private string mensaje = "Pulsa E para comerciar";
 
     private bool activo;
+    private bool introEnCurso;
     private IActivador jugador;
     private int ultimoFrameInteraccion = -1;
+    private bool[] estadosPreviosUIIntro;
 
-    public bool Activo => activo && interactuable;
+    public bool Activo => activo && interactuable && !introEnCurso;
 
     private void Awake()
     {
@@ -34,10 +59,16 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     {
         BuscarReferenciasSiFaltan();
         activo = false;
+        introEnCurso = false;
 
         if (shopUI != null)
         {
             shopUI.SetActive(false);
+        }
+
+        if (camaraDialogoFantasma != null)
+        {
+            camaraDialogoFantasma.SetActive(false);
         }
     }
 
@@ -45,13 +76,14 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     {
         OcultarPrompt();
         CerrarTienda(false);
+        FinalizarIntroSinAbrirTienda();
     }
 
     private void Update()
     {
         BuscarReferenciasSiFaltan();
 
-        if (jugador == null)
+        if (jugador == null || introEnCurso)
         {
             return;
         }
@@ -96,6 +128,12 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             return;
         }
 
+        if (DebeMostrarIntro())
+        {
+            StartCoroutine(IntroFantasmaRoutine());
+            return;
+        }
+
         if (shopUI == null)
         {
             Debug.LogError("GhostMerchant: falta asignar ShopPanel en el campo Shop UI.", this);
@@ -110,6 +148,191 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         {
             AbrirTienda();
         }
+    }
+
+    private bool DebeMostrarIntro()
+    {
+        if (!usarIntroPrimeraVez || introDialogueUI == null)
+        {
+            return false;
+        }
+
+        if (forzarIntroSiempre)
+        {
+            return true;
+        }
+
+        return PlayerPrefs.GetInt(clavePlayerPrefsIntro, 0) == 0;
+    }
+
+    private IEnumerator IntroFantasmaRoutine()
+    {
+        introEnCurso = true;
+        OcultarPrompt();
+        OcultarUIIntro();
+
+        if (ghostSpawn != null)
+        {
+            ghostSpawn.BloquearMovimiento(true);
+
+            if (jugador != null)
+            {
+                Transform transformJugador = ObtenerTransformJugador();
+
+                if (colocarFantasmaFrenteAlJugador)
+                {
+                    ghostSpawn.ColocarFrenteAlJugador(
+                        jugador.Position,
+                        transformJugador,
+                        distanciaFantasmaAlJugador
+                    );
+                }
+                else
+                {
+                    ghostSpawn.MirarHacia(jugador.Position);
+                }
+            }
+        }
+
+        CambiarEstadoComponentesJugador(false);
+
+        if (camaraJugador != null)
+        {
+            camaraJugador.SetActive(false);
+        }
+
+        if (camaraDialogoFantasma != null)
+        {
+            camaraDialogoFantasma.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        bool dialogoTerminado = false;
+
+        introDialogueUI.IniciarDialogo(() =>
+        {
+            dialogoTerminado = true;
+        });
+
+        while (!dialogoTerminado)
+        {
+            yield return null;
+        }
+
+        PlayerPrefs.SetInt(clavePlayerPrefsIntro, 1);
+        PlayerPrefs.Save();
+
+        FinalizarIntroVisual();
+
+        if (abrirTiendaAlTerminarIntro)
+        {
+            RestaurarUIIntro();
+            AbrirTienda();
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            introEnCurso = false;
+
+            RestaurarUIIntro();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            if (Activo)
+            {
+                MostrarPrompt();
+            }
+        }
+    }
+
+    private Transform ObtenerTransformJugador()
+    {
+        if (jugador is MonoBehaviour monoBehaviourJugador)
+        {
+            return monoBehaviourJugador.transform;
+        }
+
+        return null;
+    }
+
+    private void FinalizarIntroVisual()
+    {
+        if (camaraDialogoFantasma != null)
+        {
+            camaraDialogoFantasma.SetActive(false);
+        }
+
+        if (camaraJugador != null)
+        {
+            camaraJugador.SetActive(true);
+        }
+
+        if (ghostSpawn != null)
+        {
+            ghostSpawn.BloquearMovimiento(false);
+        }
+
+        CambiarEstadoComponentesJugador(true);
+
+        introEnCurso = false;
+    }
+
+    private void FinalizarIntroSinAbrirTienda()
+    {
+        if (!introEnCurso)
+        {
+            return;
+        }
+
+        FinalizarIntroVisual();
+        RestaurarUIIntro();
+
+        Time.timeScale = 1f;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void OcultarUIIntro()
+    {
+        if (objetosUIAOcultarDuranteIntro == null)
+        {
+            return;
+        }
+
+        estadosPreviosUIIntro = new bool[objetosUIAOcultarDuranteIntro.Length];
+
+        for (int i = 0; i < objetosUIAOcultarDuranteIntro.Length; i++)
+        {
+            if (objetosUIAOcultarDuranteIntro[i] != null)
+            {
+                estadosPreviosUIIntro[i] = objetosUIAOcultarDuranteIntro[i].activeSelf;
+                objetosUIAOcultarDuranteIntro[i].SetActive(false);
+            }
+        }
+    }
+
+    private void RestaurarUIIntro()
+    {
+        if (objetosUIAOcultarDuranteIntro == null || estadosPreviosUIIntro == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < objetosUIAOcultarDuranteIntro.Length; i++)
+        {
+            if (objetosUIAOcultarDuranteIntro[i] != null)
+            {
+                objetosUIAOcultarDuranteIntro[i].SetActive(estadosPreviosUIIntro[i]);
+            }
+        }
+
+        estadosPreviosUIIntro = null;
     }
 
     public void AbrirTienda()
@@ -174,6 +397,16 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             jugador = FindFirstObjectByType<JugadorActivador>();
         }
 
+        if (ghostSpawn == null)
+        {
+            ghostSpawn = GetComponent<GhostSpawn>();
+        }
+
+        if (introDialogueUI == null)
+        {
+            introDialogueUI = FindFirstObjectByType<GhostIntroDialogueUI>(FindObjectsInactive.Include);
+        }
+
         if (shopUI == null)
         {
             GameObject encontrado = BuscarGameObjectPorNombreIncluyendoInactivos("ShopPanel");
@@ -207,6 +440,22 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         return null;
     }
 
+    private void CambiarEstadoComponentesJugador(bool valor)
+    {
+        if (componentesJugadorADesactivar == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < componentesJugadorADesactivar.Length; i++)
+        {
+            if (componentesJugadorADesactivar[i] != null)
+            {
+                componentesJugadorADesactivar[i].enabled = valor;
+            }
+        }
+    }
+
     private void MostrarPrompt()
     {
         if (InteractionUI.Instance != null)
@@ -226,5 +475,14 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     public void CerrarTiendaDesdeUI()
     {
         CerrarTienda(true);
+    }
+
+    [ContextMenu("Resetear intro fantasma")]
+    private void ResetearIntroFantasma()
+    {
+        PlayerPrefs.DeleteKey(clavePlayerPrefsIntro);
+        PlayerPrefs.Save();
+
+        Debug.Log("GhostMerchant: intro del fantasma reseteada.");
     }
 }
