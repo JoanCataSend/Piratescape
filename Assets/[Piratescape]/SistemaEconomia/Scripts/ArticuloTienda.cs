@@ -196,6 +196,16 @@ public sealed class ArticuloTienda : MonoBehaviour
                 return;
             }
 
+            if (objetoBase != null && objetoBase.TipoObjetoBase == TipoObjetoBase.Cofre)
+            {
+                if (vendedorFantasma != null)
+                {
+                    vendedorFantasma.StartCoroutine(ComprarObjetoBaseConAnimacion(objetoBase));
+                }
+
+                return;
+            }
+
             compraCorrecta = ComprarObjetoBase();
         }
 
@@ -613,7 +623,7 @@ public sealed class ArticuloTienda : MonoBehaviour
                 return false;
             }
 
-            if (objetoBase.TipoObjetoBase == TipoObjetoBase.Normal && sistemaObjetosBase == null)
+            if (objetoBase.TipoObjetoBase != TipoObjetoBase.Espantamonos && sistemaObjetosBase == null)
             {
                 Debug.LogError("Falta SistemaObjetosBase en " + articuloData.Nombre, this);
                 return false;
@@ -817,6 +827,55 @@ public sealed class ArticuloTienda : MonoBehaviour
 
             AnimatorStateInfo estado = animator.GetCurrentAnimatorStateInfo(0);
             yield return new WaitForSeconds(estado.length + 0.6f);
+        }
+
+        vendedorFantasma.AbrirTienda();
+    }
+
+    private IEnumerator ComprarObjetoBaseConAnimacion(ObjetoBaseData objetoBase)
+    {
+        if (sistemaObjetosBase == null)
+        {
+            MostrarError("Falta SistemaObjetosBase");
+            yield break;
+        }
+
+        vendedorFantasma.CerrarTienda(false);
+
+        bool colocado = sistemaObjetosBase.ColocarObjeto(objetoBase, puntoAparicion);
+
+        if (!colocado)
+        {
+            MostrarError(objetoBase.MensajeYaColocado);
+            vendedorFantasma.AbrirTienda();
+            yield break;
+        }
+
+        Cobrar();
+        RefrescarUI();
+
+        GameObject ultimoObjeto = sistemaObjetosBase.UltimoObjetoColocado;
+
+        if (ultimoObjeto != null)
+        {
+            Animator animator = ultimoObjeto.GetComponentInChildren<Animator>();
+
+            if (animator != null)
+            {
+                yield return null;
+
+                AnimatorStateInfo estado = animator.GetCurrentAnimatorStateInfo(0);
+
+                yield return new WaitForSeconds(estado.length + 0.6f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(3f);
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(3f);
         }
 
         vendedorFantasma.AbrirTienda();

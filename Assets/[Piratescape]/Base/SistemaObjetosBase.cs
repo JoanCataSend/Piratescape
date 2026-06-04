@@ -13,6 +13,9 @@ public sealed class SistemaObjetosBase : MonoBehaviour
 
     public event Action OnObjetosBaseActualizados;
 
+    public GameObject UltimoObjetoColocado { get; private set; }
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -99,6 +102,8 @@ public sealed class SistemaObjetosBase : MonoBehaviour
             puntoFinal.position,
             puntoFinal.rotation
         );
+
+        UltimoObjetoColocado = objetoCreado;
 
         objetosColocados.Add(new ObjetoBaseColocado(objetoBase, objetoCreado));
 
