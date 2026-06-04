@@ -46,6 +46,7 @@ public class InventorySlotUI : MonoBehaviour
     private Color colorIconoOriginal = Color.white;
 
     private Coroutine rutinaAnimacion;
+    private bool tieneItemActual;
 
     private void Awake()
     {
@@ -95,6 +96,8 @@ public class InventorySlotUI : MonoBehaviour
                                  itemAnterior != null &&
                                  cantidadAnterior > 0;
 
+        tieneItemActual = false;
+
         if (amountText != null)
         {
             amountText.text = "";
@@ -128,6 +131,8 @@ public class InventorySlotUI : MonoBehaviour
                                  tieneDatoAnterior &&
                                  itemAnterior == itemData &&
                                  amount < cantidadAnterior;
+
+        tieneItemActual = true;
 
         if (iconImage != null)
         {
@@ -326,10 +331,17 @@ public class InventorySlotUI : MonoBehaviour
 
         CachearColorFondo();
 
-        backgroundImage.enabled = mostrarFondoCuandoEstaVacio || selected;
+        bool debeMostrarFondo = tieneItemActual && selected;
+
+        backgroundImage.enabled = debeMostrarFondo;
+
+        if (!debeMostrarFondo)
+        {
+            return;
+        }
 
         Color color = colorFondoOriginal;
-        color.a = selected ? alphaFondoSeleccionado : alphaFondoNormal;
+        color.a = alphaFondoSeleccionado;
         backgroundImage.color = color;
     }
 
@@ -343,6 +355,7 @@ public class InventorySlotUI : MonoBehaviour
         colorFondoOriginal = backgroundImage.color;
         colorFondoCacheado = true;
     }
+
     private bool EsGema(ItemData item)
     {
         if (item == null)
