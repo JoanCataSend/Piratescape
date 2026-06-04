@@ -27,6 +27,12 @@ public class VictoryCutsceneController : MonoBehaviour
     [SerializeField] private bool mostrarEstadisticasDuranteCinematica = true;
     [SerializeField] private float tiempoEsperaMostrarEstadisticas = 6f;
 
+    [Header("Música victoria")]
+    [SerializeField] private AudioSource musicaVictoriaSource;
+    [SerializeField] private AudioClip musicaVictoria;
+    [SerializeField] [Range(0f, 1f)] private float volumenMusicaVictoria = 0.2f;
+    [SerializeField] private bool musicaVictoriaEnLoop = true;
+
     [Header("Postprocesado cinemática")]
     [SerializeField] private GameObject postProcesadoCinematica;
 
@@ -76,6 +82,20 @@ public class VictoryCutsceneController : MonoBehaviour
         {
             victoryStatsTypewriterUI = pantallaVictoria.GetComponentInChildren<VictoryStatsTypewriterUI>(true);
         }
+
+        if (musicaVictoriaSource == null)
+        {
+            musicaVictoriaSource = GetComponent<AudioSource>();
+        }
+
+        if (musicaVictoriaSource == null)
+        {
+            musicaVictoriaSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        musicaVictoriaSource.playOnAwake = false;
+        musicaVictoriaSource.loop = musicaVictoriaEnLoop;
+        musicaVictoriaSource.volume = volumenMusicaVictoria;
     }
 
     private void PrepararEstadoInicial()
@@ -123,6 +143,8 @@ public class VictoryCutsceneController : MonoBehaviour
             fadeCanvasGroup.blocksRaycasts = false;
             fadeCanvasGroup.interactable = false;
         }
+
+        DetenerMusicaVictoria();
     }
 
     public void StartVictoryCutsceneAfterDelay(float delay)
@@ -149,6 +171,8 @@ public class VictoryCutsceneController : MonoBehaviour
         {
             yield return new WaitForSeconds(delay);
         }
+
+        ReproducirMusicaVictoria();
 
         OcultarUIDelJuego();
         PrepararUIInicial();
@@ -185,6 +209,31 @@ public class VictoryCutsceneController : MonoBehaviour
         MostrarPantallaVictoria();
 
         cinematicaEnCurso = false;
+    }
+
+    private void ReproducirMusicaVictoria()
+    {
+        if (musicaVictoriaSource == null || musicaVictoria == null)
+        {
+            return;
+        }
+
+        musicaVictoriaSource.clip = musicaVictoria;
+        musicaVictoriaSource.loop = musicaVictoriaEnLoop;
+        musicaVictoriaSource.volume = volumenMusicaVictoria;
+
+        if (!musicaVictoriaSource.isPlaying)
+        {
+            musicaVictoriaSource.Play();
+        }
+    }
+
+    private void DetenerMusicaVictoria()
+    {
+        if (musicaVictoriaSource != null && musicaVictoriaSource.isPlaying)
+        {
+            musicaVictoriaSource.Stop();
+        }
     }
 
     private IEnumerator MostrarPantallaVictoriaConRetardo()
