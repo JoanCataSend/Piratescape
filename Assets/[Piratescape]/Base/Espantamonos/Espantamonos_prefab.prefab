@@ -380,9 +380,6 @@ PrefabInstance:
       addedObject: {fileID: 4698173462514212275}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7166610850171301773}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8248011663004706757}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
       insertIndex: -1
@@ -414,23 +411,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.6031612, y: 1.2484547, z: 0.3636709}
   m_Center: {x: 0, y: 0.5796018, z: 0}
---- !u!111 &7166610850171301773
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4644222791338693404}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: 8d5515d619d95284e934916f49127841, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 8d5515d619d95284e934916f49127841, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!95 &8248011663004706757
 Animator:
   serializedVersion: 7

@@ -217,9 +217,6 @@ PrefabInstance:
       addedObject: {fileID: -5515277485333145699}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8185839054618946036}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3102535207916829088}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
       insertIndex: -1
@@ -288,23 +285,6 @@ MonoBehaviour:
   indicadorInteraccion: {fileID: 0}
   inventarioCofre: {fileID: 1292808172429570408}
   cofreInventarioUI: {fileID: 0}
---- !u!111 &8185839054618946036
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 784592557680331802}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: 3d4652c6beebe0e4ab2674fa1fe5829b, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 3d4652c6beebe0e4ab2674fa1fe5829b, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!95 &3102535207916829088
 Animator:
   serializedVersion: 7
