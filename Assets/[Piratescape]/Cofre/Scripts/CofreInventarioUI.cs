@@ -13,6 +13,10 @@ public sealed class CofreInventarioUI : MonoBehaviour
     [SerializeField] private GameObject contenidoVisual;
     [SerializeField] private TMP_Text textoMensaje;
 
+    [Header("HUD")]
+    [Tooltip("Aquí arrastra la hotbar normal de abajo para ocultarla mientras el cofre está abierto.")]
+    [SerializeField] private GameObject hudInventarioNormal;
+
     [Header("Inventario del jugador")]
     [SerializeField] private PlayerInventory inventarioJugador;
     [SerializeField] private Transform contenedorSlotsJugador;
@@ -80,6 +84,7 @@ public sealed class CofreInventarioUI : MonoBehaviour
 
         HayAlgunaUIAbierta = false;
         RestaurarPausaSiHaceFalta();
+        MostrarHUDInventarioNormal(true);
     }
 
     private void Update()
@@ -176,6 +181,7 @@ public sealed class CofreInventarioUI : MonoBehaviour
         frameApertura = Time.frameCount;
 
         panel.SetActive(true);
+        MostrarHUDInventarioNormal(false);
 
         if (contenidoVisual != null)
         {
@@ -195,6 +201,8 @@ public sealed class CofreInventarioUI : MonoBehaviour
         {
             panel.SetActive(false);
         }
+
+        MostrarHUDInventarioNormal(true);
 
         if (HayAlgunaUIAbierta)
         {
@@ -339,10 +347,11 @@ public sealed class CofreInventarioUI : MonoBehaviour
             }
 
             InventorySlot slotJugador = inventarioJugador.GetSlot(i);
-            bool tieneItem = slotJugador != null && !slotJugador.IsEmpty();
 
             slotsJugador[i].Refrescar(slotJugador);
-            slotsJugador[i].MarcarSeleccionado(tieneItem && i == inventarioJugador.SelectedSlotIndex);
+
+            // Dentro del cofre NO queremos borde de seleccionado abajo.
+            slotsJugador[i].MarcarSeleccionado(false);
         }
     }
 
@@ -477,6 +486,14 @@ public sealed class CofreInventarioUI : MonoBehaviour
         if (textoMensaje != null)
         {
             textoMensaje.text = mensaje;
+        }
+    }
+
+    private void MostrarHUDInventarioNormal(bool visible)
+    {
+        if (hudInventarioNormal != null)
+        {
+            hudInventarioNormal.SetActive(visible);
         }
     }
 
