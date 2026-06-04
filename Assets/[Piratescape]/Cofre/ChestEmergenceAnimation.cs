@@ -32,8 +32,15 @@ public class ChestEmergenceAnimation : MonoBehaviour
 
         finalLocalPosition = chest.localPosition;
 
-        // El cofre empieza enterrado
+        // El cofre/puerta empieza enterrado o abajo
         chest.localPosition = finalLocalPosition + Vector3.up * buriedOffsetY;
+
+        // Nos aseguramos de que las partículas NO empiecen al iniciar la escena
+        if (sandBurstParticles != null)
+            sandBurstParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        if (sandFallParticles != null)
+            sandFallParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     private void Start()
@@ -54,19 +61,20 @@ public class ChestEmergenceAnimation : MonoBehaviour
 
     private IEnumerator EmergenceRoutine()
     {
-        // Espera antes de empezar la animación
+        // De momento mantenemos el delay porque lo tienes para pruebas.
+        // Las partículas NO empiezan aquí.
         yield return new WaitForSeconds(delayBeforeStart);
-
-        if (sandBurstParticles != null)
-            sandBurstParticles.Play();
-
-        yield return new WaitForSeconds(0.08f);
-
-        if (sandFallParticles != null)
-            sandFallParticles.Play();
 
         Vector3 startLocalPosition = finalLocalPosition + Vector3.up * buriedOffsetY;
         float elapsed = 0f;
+
+        // JUSTO AQUÍ empieza a salir el objeto.
+        // Por eso las partículas empiezan aquí también.
+        if (sandBurstParticles != null)
+            sandBurstParticles.Play();
+
+        if (sandFallParticles != null)
+            sandFallParticles.Play();
 
         while (elapsed < riseDuration)
         {
@@ -81,11 +89,13 @@ public class ChestEmergenceAnimation : MonoBehaviour
 
         chest.localPosition = finalLocalPosition;
 
+        // Cuando el objeto ya está fuera, las partículas dejan de emitir.
+        // No las borra de golpe, deja que las que ya existen terminen de caer.
+        if (sandBurstParticles != null)
+            sandBurstParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
         if (sandFallParticles != null)
-        {
-            yield return new WaitForSeconds(0.25f);
-            sandFallParticles.Stop();
-        }
+            sandFallParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 
     public void ResetChest()
