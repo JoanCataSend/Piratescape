@@ -24,8 +24,17 @@ public class GhostIntroDialogueUI : MonoBehaviour
         "Solo aparezco por la noche, a partir de las 22:00.",
         "Cada noche cambiaré de lugar, así que tendrás que buscarme.",
         "Si me encuentras, podré comerciar contigo.",
-        "Quizá juntos podamos descubrir qué ocurrió aquí..."
+        "¿Quieres comerciar conmigo?"
     };
+
+    [Header("Frase si dice que no")]
+    [TextArea(2, 5)]
+    [SerializeField] private string fraseDespedidaNo = "Vale... chao, baby.";
+
+    [Header("Texto botones")]
+    [SerializeField] private string textoBotonSiguiente = "Siguiente";
+    [SerializeField] private string textoBotonSi = "Sí";
+    [SerializeField] private string textoBotonNo = "No";
 
     [Header("Typewriter")]
     [SerializeField] private float tiempoEntreLetras = 0.035f;
@@ -44,9 +53,12 @@ public class GhostIntroDialogueUI : MonoBehaviour
     private Coroutine rutinaActual;
     private bool fraseCompleta;
     private bool dialogoActivo;
+    private bool esperandoDecisionFinal;
+    private bool mostrandoDespedidaNo;
     private int indiceFrase;
     private string fraseActual;
-    private System.Action alTerminarDialogo;
+
+    private System.Action<bool> alTerminarDialogo;
 
     private void Awake()
     {
@@ -108,12 +120,12 @@ public class GhostIntroDialogueUI : MonoBehaviour
 
         if (botonOmitir != null)
         {
-            botonOmitir.onClick.RemoveListener(OmitirDialogo);
-            botonOmitir.onClick.AddListener(OmitirDialogo);
+            botonOmitir.onClick.RemoveListener(PulsarBotonNo);
+            botonOmitir.onClick.AddListener(PulsarBotonNo);
         }
     }
 
-    public void IniciarDialogo(System.Action callbackFinal)
+    public void IniciarDialogo(System.Action<bool> callbackFinal)
     {
         alTerminarDialogo = callbackFinal;
 
@@ -125,6 +137,8 @@ public class GhostIntroDialogueUI : MonoBehaviour
         indiceFrase = 0;
         fraseCompleta = false;
         dialogoActivo = true;
+        esperandoDecisionFinal = false;
+        mostrandoDespedidaNo = false;
 
         if (textoNombre != null)
         {
@@ -141,15 +155,7 @@ public class GhostIntroDialogueUI : MonoBehaviour
             panelRoot.SetActive(true);
         }
 
-        if (botonSiguiente != null)
-        {
-            botonSiguiente.gameObject.SetActive(true);
-        }
-
-        if (botonOmitir != null)
-        {
-            botonOmitir.gameObject.SetActive(true);
-        }
+        ConfigurarBotonesModoNormal();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -170,11 +176,23 @@ public class GhostIntroDialogueUI : MonoBehaviour
             return;
         }
 
+        if (mostrandoDespedidaNo)
+        {
+            TerminarDialogo(false);
+            return;
+        }
+
+        if (esperandoDecisionFinal)
+        {
+            TerminarDialogo(true);
+            return;
+        }
+
         indiceFrase++;
 
         if (indiceFrase >= frases.Length)
         {
-            TerminarDialogo();
+            TerminarDialogo(true);
             return;
         }
 
@@ -186,23 +204,33 @@ public class GhostIntroDialogueUI : MonoBehaviour
         rutinaActual = StartCoroutine(EscribirFraseActual());
     }
 
-    public void OmitirDialogo()
+    private void PulsarBotonNo()
     {
         if (!dialogoActivo)
         {
             return;
         }
 
-        TerminarDialogo();
+        if (esperandoDecisionFinal)
+        {
+            MostrarDespedidaNo();
+            return;
+        }
+
+        MostrarDespedidaNo();
     }
 
     private IEnumerator EscribirFraseActual()
     {
         fraseCompleta = false;
+        esperandoDecisionFinal = false;
+        mostrandoDespedidaNo = false;
+
+        ConfigurarBotonesModoNormal();
 
         if (textoDialogo == null || frases == null || frases.Length == 0)
         {
-            TerminarDialogo();
+            TerminarDialogo(false);
             yield break;
         }
 
@@ -229,6 +257,76 @@ public class GhostIntroDialogueUI : MonoBehaviour
         }
 
         fraseCompleta = true;
+
+        if (EsUltimaFrase())
+        {
+            ActivarPreguntaFinal();
+        }
+    }
+
+    private void MostrarDespedidaNo()
+    {
+        if (rutinaActual != null)
+        {
+            StopCoroutine(rutinaActual);
+        }
+
+        esperandoDecisionFinal = false;
+        mostrandoDespedidaNo = true;
+
+        CambiarTextoBoton(botonSiguiente, textoBotonSiguiente);
+
+        if (botonSiguiente != null)
+        {
+            botonSiguiente.gameObject.SetActive(true);
+        }
+
+        if (botonOmitir != null)
+        {
+            botonOmitir.gameObject.SetActive(false);
+        }
+
+        rutinaActual = StartCoroutine(EscribirDespedidaNo());
+    }
+
+    private IEnumerator EscribirDespedidaNo()
+    {
+        fraseCompleta = false;
+        fraseActual = fraseDespedidaNo;
+
+        if (textoDialogo != null)
+        {
+            textoDialogo.text = "";
+        }
+
+        for (int i = 0; i < fraseActual.Length; i++)
+        {
+            if (fraseCompleta)
+            {
+                if (textoDialogo != null)
+                {
+                    textoDialogo.text = fraseActual;
+                }
+
+                yield break;
+            }
+
+            char caracter = fraseActual[i];
+
+            if (textoDialogo != null)
+            {
+                textoDialogo.text += caracter;
+            }
+
+            if (DebeSonar(caracter))
+            {
+                ReproducirSonidoLetra();
+            }
+
+            yield return new WaitForSecondsRealtime(tiempoEntreLetras);
+        }
+
+        fraseCompleta = true;
     }
 
     private void CompletarFraseActual()
@@ -245,9 +343,59 @@ public class GhostIntroDialogueUI : MonoBehaviour
         {
             textoDialogo.text = fraseActual;
         }
+
+        if (mostrandoDespedidaNo)
+        {
+            return;
+        }
+
+        if (EsUltimaFrase())
+        {
+            ActivarPreguntaFinal();
+        }
     }
 
-    private void TerminarDialogo()
+    private bool EsUltimaFrase()
+    {
+        return frases != null && indiceFrase >= frases.Length - 1;
+    }
+
+    private void ActivarPreguntaFinal()
+    {
+        esperandoDecisionFinal = true;
+        mostrandoDespedidaNo = false;
+
+        CambiarTextoBoton(botonSiguiente, textoBotonSi);
+        CambiarTextoBoton(botonOmitir, textoBotonNo);
+
+        if (botonSiguiente != null)
+        {
+            botonSiguiente.gameObject.SetActive(true);
+        }
+
+        if (botonOmitir != null)
+        {
+            botonOmitir.gameObject.SetActive(true);
+        }
+    }
+
+    private void ConfigurarBotonesModoNormal()
+    {
+        CambiarTextoBoton(botonSiguiente, textoBotonSiguiente);
+        CambiarTextoBoton(botonOmitir, textoBotonNo);
+
+        if (botonSiguiente != null)
+        {
+            botonSiguiente.gameObject.SetActive(true);
+        }
+
+        if (botonOmitir != null)
+        {
+            botonOmitir.gameObject.SetActive(false);
+        }
+    }
+
+    private void TerminarDialogo(bool quiereComerciar)
     {
         if (rutinaActual != null)
         {
@@ -257,6 +405,8 @@ public class GhostIntroDialogueUI : MonoBehaviour
 
         dialogoActivo = false;
         fraseCompleta = false;
+        esperandoDecisionFinal = false;
+        mostrandoDespedidaNo = false;
 
         if (panelRoot != null)
         {
@@ -273,10 +423,33 @@ public class GhostIntroDialogueUI : MonoBehaviour
             botonOmitir.gameObject.SetActive(false);
         }
 
-        System.Action callback = alTerminarDialogo;
+        System.Action<bool> callback = alTerminarDialogo;
         alTerminarDialogo = null;
 
-        callback?.Invoke();
+        callback?.Invoke(quiereComerciar);
+    }
+
+    private void CambiarTextoBoton(Button boton, string nuevoTexto)
+    {
+        if (boton == null)
+        {
+            return;
+        }
+
+        TMP_Text textoTMP = boton.GetComponentInChildren<TMP_Text>();
+
+        if (textoTMP != null)
+        {
+            textoTMP.text = nuevoTexto;
+            return;
+        }
+
+        Text textoNormal = boton.GetComponentInChildren<Text>();
+
+        if (textoNormal != null)
+        {
+            textoNormal.text = nuevoTexto;
+        }
     }
 
     private bool DebeSonar(char caracter)

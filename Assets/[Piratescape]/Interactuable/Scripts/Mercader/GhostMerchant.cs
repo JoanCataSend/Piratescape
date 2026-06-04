@@ -37,6 +37,9 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     [Header("UI a ocultar durante intro")]
     [SerializeField] private GameObject[] objetosUIAOcultarDuranteIntro;
 
+    [Header("Protección al abrir tienda")]
+    [SerializeField] private float tiempoBloqueoCierreAlAbrirTienda = 0.35f;
+
     [SerializeField] private string clavePlayerPrefsIntro = "GhostIntroVista";
 
     [Header("Mensaje")]
@@ -47,6 +50,9 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     private IActivador jugador;
     private int ultimoFrameInteraccion = -1;
     private bool[] estadosPreviosUIIntro;
+
+    private float bloquearCierreTiendaHasta;
+    private int bloquearInteraccionHastaFrame;
 
     public bool Activo => activo && interactuable && !introEnCurso;
 
@@ -75,7 +81,12 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     private void OnDisable()
     {
         OcultarPrompt();
-        CerrarTienda(false);
+
+        if (!EstaTiendaEnBloqueoDeCierre())
+        {
+            CerrarTienda(false);
+        }
+
         FinalizarIntroSinAbrirTienda();
     }
 
@@ -97,7 +108,11 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             if (!activo)
             {
                 OcultarPrompt();
-                CerrarTienda(false);
+
+                if (!EstaTiendaEnBloqueoDeCierre())
+                {
+                    CerrarTienda(false);
+                }
             }
             else if (shopUI == null || !shopUI.activeSelf)
             {
@@ -114,6 +129,11 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     public void Interactuar()
     {
         if (Time.frameCount == ultimoFrameInteraccion)
+        {
+            return;
+        }
+
+        if (Time.frameCount <= bloquearInteraccionHastaFrame)
         {
             return;
         }
@@ -207,18 +227,17 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             camaraDialogoFantasma.SetActive(true);
         }
 
-        // IMPORTANTE:
-        // No pausamos el juego durante la intro.
-        // Así la lluvia, partículas, glow del fantasma, agua y demás efectos siguen funcionando.
         Time.timeScale = 1f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
         bool dialogoTerminado = false;
+        bool quiereComerciar = false;
 
-        introDialogueUI.IniciarDialogo(() =>
+        introDialogueUI.IniciarDialogo(resultadoComercio =>
         {
+            quiereComerciar = resultadoComercio;
             dialogoTerminado = true;
         });
 
@@ -231,18 +250,21 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         PlayerPrefs.Save();
 
         FinalizarIntroVisual();
+        RestaurarUIIntro();
 
-        if (abrirTiendaAlTerminarIntro)
+        if (quiereComerciar && abrirTiendaAlTerminarIntro)
         {
-            RestaurarUIIntro();
+            yield return null;
+
+            bloquearInteraccionHastaFrame = Time.frameCount + 10;
+            bloquearCierreTiendaHasta = Time.unscaledTime + tiempoBloqueoCierreAlAbrirTienda;
+
             AbrirTienda();
         }
         else
         {
             Time.timeScale = 1f;
             introEnCurso = false;
-
-            RestaurarUIIntro();
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -346,10 +368,12 @@ public class GhostMerchant : MonoBehaviour, Interactuable
             return;
         }
 
+        bloquearInteraccionHastaFrame = Time.frameCount + 10;
+        bloquearCierreTiendaHasta = Time.unscaledTime + tiempoBloqueoCierreAlAbrirTienda;
+
         shopUI.SetActive(true);
         OcultarPrompt();
 
-        // La tienda sí pausa el juego.
         Time.timeScale = 0f;
 
         Cursor.lockState = CursorLockMode.None;
@@ -360,6 +384,11 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
     public void CerrarTienda(bool mostrarPrompt)
     {
+        if (EstaTiendaEnBloqueoDeCierre())
+        {
+            return;
+        }
+
         if (shopUI != null)
         {
             shopUI.SetActive(false);
@@ -374,6 +403,11 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    private bool EstaTiendaEnBloqueoDeCierre()
+    {
+        return Time.unscaledTime < bloquearCierreTiendaHasta;
     }
 
     private bool EstaEnRango()
