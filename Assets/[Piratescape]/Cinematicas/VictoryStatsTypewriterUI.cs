@@ -18,6 +18,7 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
     [SerializeField] private GameObject panelRoot;
     [SerializeField] private TMP_Text textoTitulo;
     [SerializeField] private TMP_Text textoEstadisticas;
+    [SerializeField] private TMP_Text textoTituloCreditos;
     [SerializeField] private TMP_Text textoCreditos;
     [SerializeField] private Button botonSiguiente;
     [SerializeField] private Button botonVolverMenu;
@@ -35,23 +36,30 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
     };
 
     [Header("Contenido créditos")]
+    [SerializeField] private string tituloCreditos = "CRÉDITOS";
+
     [TextArea(6, 14)]
     [SerializeField] private string textoCreditosCompleto =
-        "CRÉDITOS\n\n" +
-        "Creado por:\n" +
-        "Julia Valén\n" +
-        "Nombre 2\n" +
-        "Nombre 3\n\n" +
-        "Arte y diseño:\n" +
-        "Nombre 1\n" +
-        "Nombre 2\n\n" +
-        "Programación:\n" +
-        "Nombre 1\n" +
-        "Nombre 2\n\n" +
-        "Agradecimientos:\n" +
+        "<size=38><b>Creado por:</b></size>\n" +
+        "Alan Guevara Martínez\n" +
+        "Matilde Calleja García\n" +
+        "Julia Valén De Oliveira\n" +
+        "Joan Català Sendra\n" +
+        "Sergi Puig Biosca\n\n" +
+
+        "<size=38><b>Arte y diseño:</b></size>\n" +
+        "sdasd asdasd\n" +
+        "ad asdada\n\n" +
+
+        "<size=38><b>Programación:</b></size>\n" +
+        "sad asda dad\n" +
+        "as dasd asdasd\n\n" +
+
+        "<size=38><b>Agradecimientos:</b></size>\n" +
         "Profesorado\n" +
         "Compañeros\n" +
         "Familia y amigos\n\n" +
+
         "Gracias por jugar.";
 
     [Header("Escena menú")]
@@ -67,6 +75,8 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
     [SerializeField] private float tamanoEstadisticas = 36f;
 
     [Header("Estilo créditos")]
+    [SerializeField] private Color colorTituloCreditos = new Color(1f, 0.82f, 0.25f, 1f);
+    [SerializeField] private float tamanoTituloCreditos = 72f;
     [SerializeField] private Color colorCreditos = Color.white;
     [SerializeField] private float tamanoCreditos = 30f;
 
@@ -82,6 +92,7 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
     [SerializeField] private float duracionScrollCreditos = 12f;
     [SerializeField] private float pausaAntesBotonVolverMenu = 0.8f;
     [SerializeField] private bool desvanecerCreditosAlFinal = true;
+
     [Range(0f, 1f)]
     [SerializeField] private float inicioDesvanecidoCreditos = 0.75f;
 
@@ -102,6 +113,7 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
     private bool creditosMostrados;
     private RectTransform rectCreditos;
     private CanvasGroup canvasGroupCreditos;
+    private CanvasGroup canvasGroupTituloCreditos;
 
     private void Awake()
     {
@@ -152,6 +164,18 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             {
                 canvasGroupCreditos = textoCreditos.gameObject.AddComponent<CanvasGroup>();
             }
+
+            textoCreditos.richText = true;
+        }
+
+        if (textoTituloCreditos != null)
+        {
+            canvasGroupTituloCreditos = textoTituloCreditos.GetComponent<CanvasGroup>();
+
+            if (canvasGroupTituloCreditos == null)
+            {
+                canvasGroupTituloCreditos = textoTituloCreditos.gameObject.AddComponent<CanvasGroup>();
+            }
         }
     }
 
@@ -186,11 +210,19 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             textoEstadisticas.alignment = TextAlignmentOptions.Center;
         }
 
+        if (textoTituloCreditos != null)
+        {
+            textoTituloCreditos.color = colorTituloCreditos;
+            textoTituloCreditos.fontSize = tamanoTituloCreditos;
+            textoTituloCreditos.alignment = TextAlignmentOptions.Center;
+        }
+
         if (textoCreditos != null)
         {
             textoCreditos.color = colorCreditos;
             textoCreditos.fontSize = tamanoCreditos;
             textoCreditos.alignment = TextAlignmentOptions.Center;
+            textoCreditos.richText = true;
         }
     }
 
@@ -209,10 +241,22 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             textoEstadisticas.gameObject.SetActive(true);
         }
 
+        if (textoTituloCreditos != null)
+        {
+            textoTituloCreditos.text = "";
+            textoTituloCreditos.gameObject.SetActive(false);
+            textoTituloCreditos.transform.localScale = Vector3.one;
+        }
+
         if (textoCreditos != null)
         {
             textoCreditos.text = "";
             textoCreditos.gameObject.SetActive(false);
+        }
+
+        if (canvasGroupTituloCreditos != null)
+        {
+            canvasGroupTituloCreditos.alpha = 1f;
         }
 
         if (canvasGroupCreditos != null)
@@ -393,10 +437,23 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             textoEstadisticas.gameObject.SetActive(false);
         }
 
+        if (textoTituloCreditos != null)
+        {
+            textoTituloCreditos.text = tituloCreditos;
+            textoTituloCreditos.gameObject.SetActive(true);
+            textoTituloCreditos.transform.localScale = Vector3.one * escalaInicialTitulo;
+            StartCoroutine(AnimarEscalaTexto(textoTituloCreditos.transform));
+        }
+
         if (textoCreditos != null)
         {
             textoCreditos.text = textoCreditosCompleto;
             textoCreditos.gameObject.SetActive(true);
+        }
+
+        if (canvasGroupTituloCreditos != null)
+        {
+            canvasGroupTituloCreditos.alpha = 1f;
         }
 
         if (canvasGroupCreditos != null)
@@ -445,16 +502,33 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             posicion.y = Mathf.Lerp(posicionInicialCreditosY, posicionFinalCreditosY, tSuave);
             rectCreditos.anchoredPosition = posicion;
 
-            if (desvanecerCreditosAlFinal && canvasGroupCreditos != null)
+            if (desvanecerCreditosAlFinal)
             {
                 if (t >= inicioDesvanecidoCreditos)
                 {
                     float tFade = Mathf.InverseLerp(inicioDesvanecidoCreditos, 1f, t);
-                    canvasGroupCreditos.alpha = Mathf.Lerp(1f, 0f, tFade);
+
+                    if (canvasGroupCreditos != null)
+                    {
+                        canvasGroupCreditos.alpha = Mathf.Lerp(1f, 0f, tFade);
+                    }
+
+                    if (canvasGroupTituloCreditos != null)
+                    {
+                        canvasGroupTituloCreditos.alpha = Mathf.Lerp(1f, 0f, tFade);
+                    }
                 }
                 else
                 {
-                    canvasGroupCreditos.alpha = 1f;
+                    if (canvasGroupCreditos != null)
+                    {
+                        canvasGroupCreditos.alpha = 1f;
+                    }
+
+                    if (canvasGroupTituloCreditos != null)
+                    {
+                        canvasGroupTituloCreditos.alpha = 1f;
+                    }
                 }
             }
 
@@ -465,9 +539,17 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
         posicionFinal.y = posicionFinalCreditosY;
         rectCreditos.anchoredPosition = posicionFinal;
 
-        if (desvanecerCreditosAlFinal && canvasGroupCreditos != null)
+        if (desvanecerCreditosAlFinal)
         {
-            canvasGroupCreditos.alpha = 0f;
+            if (canvasGroupCreditos != null)
+            {
+                canvasGroupCreditos.alpha = 0f;
+            }
+
+            if (canvasGroupTituloCreditos != null)
+            {
+                canvasGroupTituloCreditos.alpha = 0f;
+            }
         }
     }
 
@@ -505,10 +587,18 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             yield break;
         }
 
-        Transform tituloTransform = textoTitulo.transform;
+        yield return AnimarEscalaTexto(textoTitulo.transform);
+    }
+
+    private IEnumerator AnimarEscalaTexto(Transform textoTransform)
+    {
+        if (textoTransform == null)
+        {
+            yield break;
+        }
 
         float tiempo = 0f;
-        tituloTransform.localScale = Vector3.one * escalaInicialTitulo;
+        textoTransform.localScale = Vector3.one * escalaInicialTitulo;
 
         while (tiempo < duracionAnimacionEscalaTitulo)
         {
@@ -518,12 +608,12 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
             float tSuave = Mathf.SmoothStep(0f, 1f, t);
 
             float escala = Mathf.Lerp(escalaInicialTitulo, escalaFinalTitulo, tSuave);
-            tituloTransform.localScale = Vector3.one * escala;
+            textoTransform.localScale = Vector3.one * escala;
 
             yield return null;
         }
 
-        tituloTransform.localScale = Vector3.one * escalaFinalTitulo;
+        textoTransform.localScale = Vector3.one * escalaFinalTitulo;
     }
 
     private bool DebeReproducirSonido(char caracter)
