@@ -32,6 +32,15 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
     [Header("Escritura")]
     [SerializeField] private float segundosPorCaracter = 0.025f;
 
+    [Header("Sonido estilo diálogo")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sonidoLetra;
+    [SerializeField] private float volumenSonido = 0.35f;
+    [SerializeField] private float frecuenciaBase = 900f;
+    [SerializeField] private float duracionBeep = 0.035f;
+    [SerializeField] private bool sonarEnEspacios = false;
+    [SerializeField] private int sonarCadaCaracteres = 2;
+
     private int indiceFrase;
     private bool escribiendo;
     private Coroutine rutinaEscritura;
@@ -47,6 +56,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             panelHistoria.SetActive(false);
         }
 
+        CachearAudioDialogo();
         ConfigurarBotones();
         HayAlgunaUIAbierta = false;
     }
@@ -171,11 +181,112 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
                 textoDialogo.maxVisibleCharacters = i;
             }
 
+            if (i > 0 && frase != null && i <= frase.Length)
+            {
+                char caracterActual = frase[i - 1];
+
+                if (DebeSonarCaracter(caracterActual, i))
+                {
+                    ReproducirSonidoLetra();
+                }
+            }
+
             yield return new WaitForSecondsRealtime(segundosPorCaracter);
         }
 
         escribiendo = false;
         rutinaEscritura = null;
+    }
+
+    private bool DebeSonarCaracter(char caracter, int indiceCaracter)
+    {
+        if (!sonarEnEspacios && char.IsWhiteSpace(caracter))
+        {
+            return false;
+        }
+
+        if (sonarCadaCaracteres <= 0)
+        {
+            sonarCadaCaracteres = 1;
+        }
+
+        return indiceCaracter % sonarCadaCaracteres == 0;
+    }
+
+    private void ReproducirSonidoLetra()
+    {
+        if (audioSource == null || sonidoLetra == null)
+        {
+            return;
+        }
+
+        audioSource.pitch = 1f;
+        audioSource.PlayOneShot(sonidoLetra, volumenSonido);
+    }
+
+    private void CachearAudioDialogo()
+    {
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.spatialBlend = 0f;
+
+        if (sonidoLetra == null)
+        {
+            sonidoLetra = CrearBeepDialogo();
+        }
+    }
+
+    private AudioClip CrearBeepDialogo()
+    {
+        int sampleRate = 44100;
+        int sampleCount = Mathf.CeilToInt(sampleRate * duracionBeep);
+
+        AudioClip clip = AudioClip.Create(
+            "Loro_Beep_AutoGenerado",
+            sampleCount,
+            1,
+            sampleRate,
+            false
+        );
+
+        float[] samples = new float[sampleCount];
+
+        float frecuencia = frecuenciaBase;
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float t = (float)i / sampleRate;
+            float normalized = (float)i / sampleCount;
+
+            float envelope = 1f;
+
+            if (normalized < 0.15f)
+            {
+                envelope = normalized / 0.15f;
+            }
+            else if (normalized > 0.75f)
+            {
+                envelope = Mathf.Lerp(1f, 0f, (normalized - 0.75f) / 0.25f);
+            }
+
+            float ondaPrincipal = Mathf.Sin(2f * Mathf.PI * frecuencia * t);
+            float ondaAguda = Mathf.Sin(2f * Mathf.PI * frecuencia * 1.8f * t) * 0.35f;
+
+            samples[i] = (ondaPrincipal + ondaAguda) * 0.35f * envelope;
+        }
+
+        clip.SetData(samples, 0);
+        return clip;
     }
 
     private void CompletarEscrituraInstantanea()
@@ -237,14 +348,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             return;
         }
 
-        if (botonOmitirIntro != null)
-        {
-            textoAyuda.text = "Espacio / Enter: continuar";
-        }
-        else
-        {
-            textoAyuda.text = "Espacio / Enter: continuar";
-        }
+        textoAyuda.text = "Espacio / Enter: continuar";
     }
 
     private void GuardarEstadoJuego()

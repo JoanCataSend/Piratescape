@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,10 +25,25 @@ public sealed class LoroDialogoUI : MonoBehaviour
     [Header("Comportamiento")]
     [SerializeField] private bool pausarJuegoAlAbrir = true;
 
+    [Header("Escritura")]
+    [SerializeField] private float segundosPorCaracter = 0.025f;
+
+    [Header("Sonido estilo diálogo")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sonidoLetra;
+    [SerializeField] private float volumenSonido = 0.35f;
+    [SerializeField] private float frecuenciaBase = 900f;
+    [SerializeField] private float duracionBeep = 0.035f;
+    [SerializeField] private bool sonarEnEspacios = false;
+    [SerializeField] private int sonarCadaCaracteres = 2;
+
     private CursorLockMode cursorLockAnterior;
     private bool cursorVisibleAnterior;
     private float timeScaleAnterior = 1f;
     private int frameApertura = -1;
+
+    private bool escribiendo;
+    private Coroutine rutinaEscritura;
 
     public bool EstaAbierto => panelMenuLoro != null && panelMenuLoro.activeSelf;
 
@@ -43,6 +59,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
             tutorialMisiones = FindFirstObjectByType<TutorialMisionesLoro>();
         }
 
+        CachearAudioDialogo();
         ConfigurarBotones();
         HayAlgunaUIAbierta = false;
     }
@@ -54,6 +71,13 @@ public sealed class LoroDialogoUI : MonoBehaviour
             RestaurarEstadoJuego();
         }
 
+        if (rutinaEscritura != null)
+        {
+            StopCoroutine(rutinaEscritura);
+            rutinaEscritura = null;
+        }
+
+        escribiendo = false;
         HayAlgunaUIAbierta = false;
     }
 
@@ -150,6 +174,14 @@ public sealed class LoroDialogoUI : MonoBehaviour
     {
         bool estabaAbierto = EstaAbierto;
 
+        if (rutinaEscritura != null)
+        {
+            StopCoroutine(rutinaEscritura);
+            rutinaEscritura = null;
+        }
+
+        escribiendo = false;
+
         if (panelMenuLoro != null)
         {
             panelMenuLoro.SetActive(false);
@@ -235,10 +267,141 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
     private void EstablecerDialogo(string texto)
     {
+        if (rutinaEscritura != null)
+        {
+            StopCoroutine(rutinaEscritura);
+            rutinaEscritura = null;
+        }
+
+        rutinaEscritura = StartCoroutine(EscribirTexto(texto));
+    }
+
+    private IEnumerator EscribirTexto(string texto)
+    {
+        escribiendo = true;
+
         if (textoDialogo != null)
         {
             textoDialogo.text = texto;
+            textoDialogo.maxVisibleCharacters = 0;
+            textoDialogo.ForceMeshUpdate();
         }
+
+        int totalCaracteres = texto != null ? texto.Length : 0;
+
+        for (int i = 0; i <= totalCaracteres; i++)
+        {
+            if (textoDialogo != null)
+            {
+                textoDialogo.maxVisibleCharacters = i;
+            }
+
+            if (i > 0 && texto != null && i <= texto.Length)
+            {
+                char caracterActual = texto[i - 1];
+
+                if (DebeSonarCaracter(caracterActual, i))
+                {
+                    ReproducirSonidoLetra();
+                }
+            }
+
+            yield return new WaitForSecondsRealtime(segundosPorCaracter);
+        }
+
+        escribiendo = false;
+        rutinaEscritura = null;
+    }
+
+    private bool DebeSonarCaracter(char caracter, int indiceCaracter)
+    {
+        if (!sonarEnEspacios && char.IsWhiteSpace(caracter))
+        {
+            return false;
+        }
+
+        if (sonarCadaCaracteres <= 0)
+        {
+            sonarCadaCaracteres = 1;
+        }
+
+        return indiceCaracter % sonarCadaCaracteres == 0;
+    }
+
+    private void ReproducirSonidoLetra()
+    {
+        if (audioSource == null || sonidoLetra == null)
+        {
+            return;
+        }
+
+        audioSource.pitch = 1f;
+        audioSource.PlayOneShot(sonidoLetra, volumenSonido);
+    }
+
+    private void CachearAudioDialogo()
+    {
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.spatialBlend = 0f;
+
+        if (sonidoLetra == null)
+        {
+            sonidoLetra = CrearBeepDialogo();
+        }
+    }
+
+    private AudioClip CrearBeepDialogo()
+    {
+        int sampleRate = 44100;
+        int sampleCount = Mathf.CeilToInt(sampleRate * duracionBeep);
+
+        AudioClip clip = AudioClip.Create(
+            "Loro_Beep_AutoGenerado",
+            sampleCount,
+            1,
+            sampleRate,
+            false
+        );
+
+        float[] samples = new float[sampleCount];
+
+        float frecuencia = frecuenciaBase;
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float t = (float)i / sampleRate;
+            float normalized = (float)i / sampleCount;
+
+            float envelope = 1f;
+
+            if (normalized < 0.15f)
+            {
+                envelope = normalized / 0.15f;
+            }
+            else if (normalized > 0.75f)
+            {
+                envelope = Mathf.Lerp(1f, 0f, (normalized - 0.75f) / 0.25f);
+            }
+
+            float ondaPrincipal = Mathf.Sin(2f * Mathf.PI * frecuencia * t);
+            float ondaAguda = Mathf.Sin(2f * Mathf.PI * frecuencia * 1.8f * t) * 0.35f;
+
+            samples[i] = (ondaPrincipal + ondaAguda) * 0.35f * envelope;
+        }
+
+        clip.SetData(samples, 0);
+        return clip;
     }
 
     private void EstablecerMensaje(string texto)
