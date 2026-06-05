@@ -22,7 +22,15 @@ public class GemDoorEmergenceTrigger : MonoBehaviour
     [SerializeField] private float cinematicDuration = 6f;
     [SerializeField] private bool volverACamaraGameplay = true;
 
+    [Header("Temblor de cámara")]
+    [SerializeField] private bool activarTemblorCamara = true;
+    [SerializeField] private float duracionTemblor = 5f;
+    [SerializeField] private float intensidadTemblor = 0.08f;
+    [SerializeField] private float velocidadTemblor = 25f;
+
     private bool activated = false;
+
+    private Coroutine cameraShakeCoroutine;
 
     private void Awake()
     {
@@ -90,6 +98,11 @@ public class GemDoorEmergenceTrigger : MonoBehaviour
             cinematicCamera.SetActive(true);
         }
 
+        if (activarTemblorCamara && cinematicCamera != null)
+        {
+            cameraShakeCoroutine = StartCoroutine(ShakeCameraRoutine(cinematicCamera.transform));
+        }
+
         if (doorEmergenceAnimation != null)
         {
             doorEmergenceAnimation.PlayEmergence();
@@ -97,10 +110,17 @@ public class GemDoorEmergenceTrigger : MonoBehaviour
 
         yield return new WaitForSeconds(cinematicDuration);
 
+        if (cameraShakeCoroutine != null)
+        {
+            StopCoroutine(cameraShakeCoroutine);
+            cameraShakeCoroutine = null;
+        }
+
         if (volverACamaraGameplay)
         {
             if (cinematicCamera != null)
             {
+                cinematicCamera.transform.localPosition = Vector3.zero;
                 cinematicCamera.SetActive(false);
             }
 
@@ -109,5 +129,30 @@ public class GemDoorEmergenceTrigger : MonoBehaviour
                 gameplayCamera.SetActive(true);
             }
         }
+    }
+
+    private IEnumerator ShakeCameraRoutine(Transform cameraTransform)
+    {
+        Vector3 posicionOriginal = cameraTransform.localPosition;
+
+        float tiempo = 0f;
+
+        while (tiempo < duracionTemblor)
+        {
+            tiempo += Time.deltaTime;
+
+            float fuerzaActual = Mathf.Lerp(intensidadTemblor, 0f, tiempo / duracionTemblor);
+
+            float x = Mathf.PerlinNoise(Time.time * velocidadTemblor, 0f) * 2f - 1f;
+            float y = Mathf.PerlinNoise(0f, Time.time * velocidadTemblor) * 2f - 1f;
+
+            Vector3 desplazamiento = new Vector3(x, y, 0f) * fuerzaActual;
+
+            cameraTransform.localPosition = posicionOriginal + desplazamiento;
+
+            yield return null;
+        }
+
+        cameraTransform.localPosition = posicionOriginal;
     }
 }
