@@ -53659,6 +53659,16 @@ MonoBehaviour:
   botonCerrar: {fileID: 7840231}
   tutorialMisiones: {fileID: 452703424}
   pausarJuegoAlAbrir: 1
+  segundosPorCaracter: 0.1
+  audioSourceVoz: {fileID: 0}
+  animaleseLibrary: {fileID: 0}
+  segundosLetraEnLibreria: 0.15
+  segundosLetraSalida: 0.075
+  volumenVoz: 0.35
+  pitchVoz: 1
+  shortenWords: 0
+  sonarEnEspacios: 0
+  sonarCadaCaracteres: 2
 --- !u!114 &452703424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53732,6 +53742,15 @@ MonoBehaviour:
   - "Primero aprende lo b\xE1sico. Intenta moverte y hazme caso si quieres sobrevivir.
     \xA1Graaak!"
   segundosPorCaracter: 0.025
+  audioSourceVoz: {fileID: 0}
+  animaleseLibrary: {fileID: 8300000, guid: e6cb1bc471fcaf148bf4ad071ce695d0, type: 3}
+  segundosLetraEnLibreria: 0.15
+  segundosLetraSalida: 0.075
+  volumenVoz: 0.35
+  pitchVoz: 2
+  shortenWords: 0
+  sonarEnEspacios: 0
+  sonarCadaCaracteres: 2
 --- !u!1 &453627342
 GameObject:
   m_ObjectHideFlags: 0

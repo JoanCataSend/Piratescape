@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -32,14 +33,26 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
     [Header("Escritura")]
     [SerializeField] private float segundosPorCaracter = 0.025f;
 
-    [Header("Sonido estilo diálogo")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip sonidoLetra;
-    [SerializeField] private float volumenSonido = 0.35f;
-    [SerializeField] private float frecuenciaBase = 900f;
-    [SerializeField] private float duracionBeep = 0.035f;
+    [Header("Animalese")]
+    [SerializeField] private AudioSource audioSourceVoz;
+    [SerializeField] private AudioClip animaleseLibrary;
+
+    [Tooltip("Duración de cada letra dentro del WAV original. En el pack suele ser 0.15.")]
+    [SerializeField] private float segundosLetraEnLibreria = 0.15f;
+
+    [Tooltip("Duración del trozo que se usa de cada letra. En el pack suele ser 0.075.")]
+    [SerializeField] private float segundosLetraSalida = 0.075f;
+
+    [SerializeField] private float volumenVoz = 0.35f;
+
+    [Tooltip("Menor que 1 = voz más grave/lenta. Mayor que 1 = voz más aguda/rápida.")]
+    [SerializeField] private float pitchVoz = 1f;
+
+    [Tooltip("Si está activo, las palabras largas se acortan para sonar más tipo Animal Crossing.")]
+    [SerializeField] private bool shortenWords = false;
+
     [SerializeField] private bool sonarEnEspacios = false;
-    [SerializeField] private int sonarCadaCaracteres = 2;
+    [SerializeField] private int sonarCadaCaracteres = 1;
 
     private int indiceFrase;
     private bool escribiendo;
@@ -49,6 +62,8 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
     private bool cursorVisibleAnterior;
     private float timeScaleAnterior = 1f;
 
+    private readonly Dictionary<char, AudioClip> clipsPorLetra = new Dictionary<char, AudioClip>();
+
     private void Awake()
     {
         if (panelHistoria != null)
@@ -56,8 +71,10 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             panelHistoria.SetActive(false);
         }
 
-        CachearAudioDialogo();
+        PrepararAudioVoz();
+        PrepararClipsAnimalese();
         ConfigurarBotones();
+
         HayAlgunaUIAbierta = false;
     }
 
@@ -161,18 +178,20 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         ActualizarAyuda();
     }
 
-    private IEnumerator EscribirTexto(string frase)
+    private IEnumerator EscribirTexto(string fraseOriginal)
     {
         escribiendo = true;
 
+        string frase = shortenWords ? AcortarPalabras(fraseOriginal) : fraseOriginal;
+
         if (textoDialogo != null)
         {
-            textoDialogo.text = frase;
+            textoDialogo.text = fraseOriginal;
             textoDialogo.maxVisibleCharacters = 0;
             textoDialogo.ForceMeshUpdate();
         }
 
-        int totalCaracteres = frase != null ? frase.Length : 0;
+        int totalCaracteres = fraseOriginal != null ? fraseOriginal.Length : 0;
 
         for (int i = 0; i <= totalCaracteres; i++)
         {
@@ -181,13 +200,14 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
                 textoDialogo.maxVisibleCharacters = i;
             }
 
-            if (i > 0 && frase != null && i <= frase.Length)
+            if (i > 0 && fraseOriginal != null && i <= fraseOriginal.Length)
             {
-                char caracterActual = frase[i - 1];
+                char caracterVisible = fraseOriginal[i - 1];
 
-                if (DebeSonarCaracter(caracterActual, i))
+                if (DebeSonarCaracter(caracterVisible, i))
                 {
-                    ReproducirSonidoLetra();
+                    char caracterSonido = ObtenerCaracterParaSonido(fraseOriginal, i - 1);
+                    ReproducirSonidoLetra(caracterSonido);
                 }
             }
 
@@ -198,9 +218,96 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         rutinaEscritura = null;
     }
 
+    private char ObtenerCaracterParaSonido(string fraseOriginal, int indice)
+    {
+        if (!shortenWords)
+        {
+            return fraseOriginal[indice];
+        }
+
+        char actual = fraseOriginal[indice];
+
+        if (!char.IsLetter(actual))
+        {
+            return actual;
+        }
+
+        int inicioPalabra = indice;
+        while (inicioPalabra > 0 && char.IsLetter(fraseOriginal[inicioPalabra - 1]))
+        {
+            inicioPalabra--;
+        }
+
+        int finPalabra = indice;
+        while (finPalabra < fraseOriginal.Length - 1 && char.IsLetter(fraseOriginal[finPalabra + 1]))
+        {
+            finPalabra++;
+        }
+
+        if (indice == inicioPalabra || indice == finPalabra)
+        {
+            return actual;
+        }
+
+        return '\0';
+    }
+
+    private string AcortarPalabras(string texto)
+    {
+        if (string.IsNullOrEmpty(texto))
+        {
+            return texto;
+        }
+
+        string resultado = "";
+        int i = 0;
+
+        while (i < texto.Length)
+        {
+            if (!char.IsLetter(texto[i]))
+            {
+                resultado += texto[i];
+                i++;
+                continue;
+            }
+
+            int inicio = i;
+
+            while (i < texto.Length && char.IsLetter(texto[i]))
+            {
+                i++;
+            }
+
+            int fin = i - 1;
+            int longitud = fin - inicio + 1;
+
+            if (longitud <= 2)
+            {
+                resultado += texto.Substring(inicio, longitud);
+            }
+            else
+            {
+                resultado += texto[inicio];
+                resultado += texto[fin];
+            }
+        }
+
+        return resultado;
+    }
+
     private bool DebeSonarCaracter(char caracter, int indiceCaracter)
     {
+        if (caracter == '\0')
+        {
+            return false;
+        }
+
         if (!sonarEnEspacios && char.IsWhiteSpace(caracter))
+        {
+            return false;
+        }
+
+        if (char.IsPunctuation(caracter))
         {
             return false;
         }
@@ -213,80 +320,143 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         return indiceCaracter % sonarCadaCaracteres == 0;
     }
 
-    private void ReproducirSonidoLetra()
+    private void ReproducirSonidoLetra(char caracter)
     {
-        if (audioSource == null || sonidoLetra == null)
+        if (audioSourceVoz == null)
         {
             return;
         }
 
-        audioSource.pitch = 1f;
-        audioSource.PlayOneShot(sonidoLetra, volumenSonido);
+        char letra = NormalizarLetra(caracter);
+
+        if (!clipsPorLetra.TryGetValue(letra, out AudioClip clip))
+        {
+            return;
+        }
+
+        audioSourceVoz.pitch = Mathf.Max(0.1f, pitchVoz);
+        audioSourceVoz.PlayOneShot(clip, volumenVoz);
     }
 
-    private void CachearAudioDialogo()
+    private char NormalizarLetra(char caracter)
     {
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-        }
+        char letra = char.ToUpper(caracter);
 
-        if (audioSource == null)
+        switch (letra)
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
+            case 'Á':
+                return 'A';
 
-        audioSource.playOnAwake = false;
-        audioSource.loop = false;
-        audioSource.spatialBlend = 0f;
+            case 'É':
+                return 'E';
 
-        if (sonidoLetra == null)
-        {
-            sonidoLetra = CrearBeepDialogo();
+            case 'Í':
+                return 'I';
+
+            case 'Ó':
+                return 'O';
+
+            case 'Ú':
+            case 'Ü':
+                return 'U';
+
+            case 'Ñ':
+                return 'N';
+
+            default:
+                return letra;
         }
     }
 
-    private AudioClip CrearBeepDialogo()
+    private void PrepararAudioVoz()
     {
-        int sampleRate = 44100;
-        int sampleCount = Mathf.CeilToInt(sampleRate * duracionBeep);
-
-        AudioClip clip = AudioClip.Create(
-            "Loro_Beep_AutoGenerado",
-            sampleCount,
-            1,
-            sampleRate,
-            false
-        );
-
-        float[] samples = new float[sampleCount];
-
-        float frecuencia = frecuenciaBase;
-
-        for (int i = 0; i < sampleCount; i++)
+        if (audioSourceVoz == null)
         {
-            float t = (float)i / sampleRate;
-            float normalized = (float)i / sampleCount;
-
-            float envelope = 1f;
-
-            if (normalized < 0.15f)
-            {
-                envelope = normalized / 0.15f;
-            }
-            else if (normalized > 0.75f)
-            {
-                envelope = Mathf.Lerp(1f, 0f, (normalized - 0.75f) / 0.25f);
-            }
-
-            float ondaPrincipal = Mathf.Sin(2f * Mathf.PI * frecuencia * t);
-            float ondaAguda = Mathf.Sin(2f * Mathf.PI * frecuencia * 1.8f * t) * 0.35f;
-
-            samples[i] = (ondaPrincipal + ondaAguda) * 0.35f * envelope;
+            audioSourceVoz = GetComponent<AudioSource>();
         }
 
-        clip.SetData(samples, 0);
-        return clip;
+        if (audioSourceVoz == null)
+        {
+            audioSourceVoz = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceVoz.playOnAwake = false;
+        audioSourceVoz.loop = false;
+        audioSourceVoz.spatialBlend = 0f;
+    }
+
+    private void PrepararClipsAnimalese()
+    {
+        clipsPorLetra.Clear();
+
+        if (animaleseLibrary == null)
+        {
+            Debug.LogWarning("HistoriaInicioLoroUI: falta asignar Animalese Library.", this);
+            return;
+        }
+
+        int frecuenciaMuestreo = animaleseLibrary.frequency;
+        int canales = animaleseLibrary.channels;
+
+        int muestrasPorLetraBiblioteca = Mathf.RoundToInt(segundosLetraEnLibreria * frecuenciaMuestreo);
+        int muestrasPorLetraSalida = Mathf.RoundToInt(segundosLetraSalida * frecuenciaMuestreo);
+
+        if (muestrasPorLetraBiblioteca <= 0 || muestrasPorLetraSalida <= 0)
+        {
+            Debug.LogWarning("HistoriaInicioLoroUI: duración de letra inválida.", this);
+            return;
+        }
+
+        float[] datosOriginales = new float[animaleseLibrary.samples * canales];
+
+        try
+        {
+            animaleseLibrary.GetData(datosOriginales, 0);
+        }
+        catch
+        {
+            Debug.LogWarning("HistoriaInicioLoroUI: no se pudo leer animalese.wav. En Import Settings pon Load Type = Decompress On Load.", this);
+            return;
+        }
+
+        for (int i = 0; i < 26; i++)
+        {
+            char letra = (char)('A' + i);
+
+            int inicioMuestra = i * muestrasPorLetraBiblioteca;
+            int inicioDato = inicioMuestra * canales;
+
+            int muestrasDisponibles = animaleseLibrary.samples - inicioMuestra;
+            int muestrasClip = Mathf.Min(muestrasPorLetraSalida, muestrasDisponibles);
+
+            if (muestrasClip <= 0)
+            {
+                continue;
+            }
+
+            float[] datosLetra = new float[muestrasClip * canales];
+
+            for (int j = 0; j < datosLetra.Length; j++)
+            {
+                int indiceOriginal = inicioDato + j;
+
+                if (indiceOriginal >= 0 && indiceOriginal < datosOriginales.Length)
+                {
+                    datosLetra[j] = datosOriginales[indiceOriginal];
+                }
+            }
+
+            AudioClip clipLetra = AudioClip.Create(
+                "Animalese_" + letra,
+                muestrasClip,
+                canales,
+                frecuenciaMuestreo,
+                false
+            );
+
+            clipLetra.SetData(datosLetra, 0);
+            clipsPorLetra.Add(letra, clipLetra);
+        }
     }
 
     private void CompletarEscrituraInstantanea()
