@@ -29812,6 +29812,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 178004388}
   m_CullTransparentMesh: 1
+--- !u!224 &179439534 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8267475616422803109, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
+  m_PrefabInstance: {fileID: 396762422}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &182825133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49844,11 +49849,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1214821115416892860, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: alphaMaxPreview
-      value: 1
+      value: 0.601
       objectReference: {fileID: 0}
     - target: {fileID: 1214821115416892860, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: alphaMinPreview
-      value: 0.4
+      value: 0.019
       objectReference: {fileID: 0}
     - target: {fileID: 1214821115416892860, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: previewBarraSalud
@@ -49860,7 +49865,7 @@ PrefabInstance:
       objectReference: {fileID: 1008879131}
     - target: {fileID: 1214821115416892860, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: velocidadPulsoPreview
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1285765135989642801, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
       propertyPath: m_Sprite
@@ -94239,6 +94244,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93b738b0e1898734c9411830041900fc, type: 3}
+--- !u!224 &939875016 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 248225148330529474, guid: 4c55e7ed20d877a42bb2d0568c9c87e4, type: 3}
+  m_PrefabInstance: {fileID: 396762422}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &940676400 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5721417102470724968, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
@@ -167917,6 +167927,10 @@ MonoBehaviour:
   playerHealth: {fileID: 1588489904}
   playerEnergy: {fileID: 1588489903}
   visualizadorBarras: {fileID: 1846573672}
+  iconoSalud: {fileID: 939875016}
+  iconoEnergia: {fileID: 179439534}
+  escalaPalpito: 2
+  velocidadPalpito: 5
 --- !u!64 &1592097014
 MeshCollider:
   m_ObjectHideFlags: 0

@@ -8,6 +8,19 @@ public sealed class InventoryStatsPreview : MonoBehaviour
     [SerializeField] private PlayerEnergy playerEnergy;
     [SerializeField] private VisualizadorBarrasEstado visualizadorBarras;
 
+    [Header("Iconos con palpito")]
+    [SerializeField] private RectTransform iconoSalud;
+    [SerializeField] private RectTransform iconoEnergia;
+
+    [SerializeField] private float escalaPalpito = 1.18f;
+    [SerializeField] private float velocidadPalpito = 5f;
+
+    private Vector3 escalaOriginalSalud;
+    private Vector3 escalaOriginalEnergia;
+
+    private bool palpitarSalud;
+    private bool palpitarEnergia;
+
     private void Awake()
     {
         if (playerInventory == null)
@@ -28,6 +41,16 @@ public sealed class InventoryStatsPreview : MonoBehaviour
         if (visualizadorBarras == null)
         {
             visualizadorBarras = FindFirstObjectByType<VisualizadorBarrasEstado>();
+        }
+
+        if (iconoSalud != null)
+        {
+            escalaOriginalSalud = iconoSalud.localScale;
+        }
+
+        if (iconoEnergia != null)
+        {
+            escalaOriginalEnergia = iconoEnergia.localScale;
         }
     }
 
@@ -52,17 +75,26 @@ public sealed class InventoryStatsPreview : MonoBehaviour
         {
             visualizadorBarras.OcultarPreview();
         }
+
+        palpitarSalud = false;
+        palpitarEnergia = false;
+        ResetearIconos();
     }
 
     private void Update()
     {
         ActualizarPreview();
+        ActualizarPalpitoIconos();
     }
 
     private void ActualizarPreview()
     {
+        palpitarSalud = false;
+        palpitarEnergia = false;
+
         if (playerInventory == null || visualizadorBarras == null)
         {
+            ResetearIconos();
             return;
         }
 
@@ -71,6 +103,7 @@ public sealed class InventoryStatsPreview : MonoBehaviour
         if (slot == null || slot.IsEmpty())
         {
             visualizadorBarras.OcultarPreview();
+            ResetearIconos();
             return;
         }
 
@@ -79,6 +112,7 @@ public sealed class InventoryStatsPreview : MonoBehaviour
         if (consumible == null)
         {
             visualizadorBarras.OcultarPreview();
+            ResetearIconos();
             return;
         }
 
@@ -89,6 +123,7 @@ public sealed class InventoryStatsPreview : MonoBehaviour
             float saludPreview = playerHealth.CurrentHealth + consumible.HealthRestore;
             visualizadorBarras.MostrarPreviewSalud(saludPreview);
             tienePreview = true;
+            palpitarSalud = true;
         }
         else
         {
@@ -100,6 +135,7 @@ public sealed class InventoryStatsPreview : MonoBehaviour
             float energiaPreview = playerEnergy.CurrentEnergy + consumible.EnergyRestore;
             visualizadorBarras.MostrarPreviewEnergia(energiaPreview);
             tienePreview = true;
+            palpitarEnergia = true;
         }
         else
         {
@@ -109,6 +145,51 @@ public sealed class InventoryStatsPreview : MonoBehaviour
         if (!tienePreview)
         {
             visualizadorBarras.OcultarPreview();
+            ResetearIconos();
+        }
+    }
+
+    private void ActualizarPalpitoIconos()
+    {
+        if (iconoSalud != null)
+        {
+            if (palpitarSalud)
+            {
+                float t = (Mathf.Sin(Time.unscaledTime * velocidadPalpito) + 1f) * 0.5f;
+                float escala = Mathf.Lerp(1f, escalaPalpito, t);
+                iconoSalud.localScale = escalaOriginalSalud * escala;
+            }
+            else
+            {
+                iconoSalud.localScale = Vector3.Lerp(iconoSalud.localScale, escalaOriginalSalud, Time.unscaledDeltaTime * 12f);
+            }
+        }
+
+        if (iconoEnergia != null)
+        {
+            if (palpitarEnergia)
+            {
+                float t = (Mathf.Sin(Time.unscaledTime * velocidadPalpito) + 1f) * 0.5f;
+                float escala = Mathf.Lerp(1f, escalaPalpito, t);
+                iconoEnergia.localScale = escalaOriginalEnergia * escala;
+            }
+            else
+            {
+                iconoEnergia.localScale = Vector3.Lerp(iconoEnergia.localScale, escalaOriginalEnergia, Time.unscaledDeltaTime * 12f);
+            }
+        }
+    }
+
+    private void ResetearIconos()
+    {
+        if (iconoSalud != null)
+        {
+            iconoSalud.localScale = escalaOriginalSalud;
+        }
+
+        if (iconoEnergia != null)
+        {
+            iconoEnergia.localScale = escalaOriginalEnergia;
         }
     }
 }
