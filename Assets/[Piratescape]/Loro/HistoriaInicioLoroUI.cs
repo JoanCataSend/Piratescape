@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -19,50 +20,143 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
     [SerializeField] private Button botonSiguiente;
     [SerializeField] private Button botonOmitirIntro;
 
+    [Header("Inicio automático")]
+    [SerializeField] private bool iniciarAutomaticamente = true;
+
+    [Min(0f)]
+    [SerializeField] private float retrasoInicio = 0.1f;
+
+    [Header("Tutorial posterior de misiones")]
+    [Tooltip("Objeto que contiene el componente TutorialMisionesLoro.")]
+    [SerializeField] private TutorialMisionesLoro tutorialMisiones;
+
+    [Header("Cámaras")]
+    [SerializeField] private CinemachineCamera camaraLoro;
+    [SerializeField] private CinemachineCamera camaraPrincipal;
+
+    [SerializeField] private int prioridadLoroDuranteTutorial = 100;
+    [SerializeField] private int prioridadCamaraPrincipal = 100;
+    [SerializeField] private int prioridadCamaraInactiva = 0;
+
+    [Min(0f)]
+    [SerializeField] private float segundosBlend = 0f;
+
+    [Header("Objeto a ocultar durante el tutorial")]
+    [SerializeField] private GameObject objetoAOcultar;
+
+    [Header("Partes del HUD")]
+    [SerializeField] private GameObject panelTiempo;
+    [SerializeField] private GameObject barrasEstado;
+    [SerializeField] private GameObject barraInventario;
+    [SerializeField] private GameObject sistemaEconomia;
+
+    [Header("Otros elementos del HUD")]
+    [Tooltip("No pongas aquí el padre HUD completo.")]
+    [SerializeField] private GameObject[] otrosElementosHUD;
+
     [Header("Historia")]
     [TextArea(2, 6)]
-    [SerializeField] private string[] frasesHistoria = new string[]
+    [SerializeField] private string[] frasesHistoria =
     {
         "¡Graaak! Despierta, capitán... o lo que quede de ti.",
+
         "Te has metido en un buen lío. El pirata se cayó del barco borracho y ha terminado tirado en esta isla.",
+
         "Si quieres salir de aquí, tendrás que reunir recursos, mejorar la base y construir un barco.",
+
         "Aunque... dicen que hay tres gemas escondidas por la isla. Si las reúnes, quizá despiertes en tu barco como si todo hubiera sido un sueño.",
-        "Primero aprende lo básico. Muévete, mira alrededor y hazme caso si quieres sobrevivir. ¡Graaak!"
+
+        "Primero aprende lo básico. Muévete, mira alrededor y hazme caso si quieres sobrevivir. ¡Graaak!",
+
+        "Antes de dejarte explorar, voy a explicarte todo lo que ves en pantalla. Presta atención, capitán.",
+
+        "Este es el panel de tiempo. Aquí puedes consultar la hora actual, el momento del día y los días que han pasado en la isla.",
+
+        "Estas son tus barras de estado. Te permiten controlar la salud y la energía del personaje. Procura que ninguna se agote.",
+
+        "Esta es la barra de inventario. Aquí puedes ver los objetos que llevas encima y seleccionar el que quieras utilizar.",
+
+        "Este es el sistema de economía. Aquí puedes consultar los objetos y recursos que tienes guardados para comerciar."
     };
 
+    [Header("Índices de explicación del HUD")]
+    [SerializeField] private int indiceFraseTiempo = 6;
+    [SerializeField] private int indiceFraseBarrasEstado = 7;
+    [SerializeField] private int indiceFraseInventario = 8;
+    [SerializeField] private int indiceFraseEconomia = 9;
+
     [Header("Escritura")]
-    [SerializeField] private float segundosPorCaracter = 0.025f;
+    [SerializeField] private float segundosPorCaracter = 0.03f;
 
-    [Header("Animalese")]
-    [SerializeField] private AudioSource audioSourceVoz;
+    [Header("Animalese – Librería")]
     [SerializeField] private AudioClip animaleseLibrary;
-
-    [Tooltip("Duración de cada letra dentro del WAV original. En el pack suele ser 0.15.")]
     [SerializeField] private float segundosLetraEnLibreria = 0.15f;
 
-    [Tooltip("Duración del trozo que se usa de cada letra. En el pack suele ser 0.075.")]
+    [Range(0.04f, 0.14f)]
     [SerializeField] private float segundosLetraSalida = 0.075f;
 
-    [SerializeField] private float volumenVoz = 0.35f;
+    [Range(2f, 20f)]
+    [SerializeField] private float fadeMs = 8f;
 
-    [Tooltip("Menor que 1 = voz más grave/lenta. Mayor que 1 = voz más aguda/rápida.")]
-    [SerializeField] private float pitchVoz = 1f;
+    [Header("Animalese – Voz")]
+    [SerializeField] private AudioSource audioSourceVoz;
 
-    [Tooltip("Si está activo, las palabras largas se acortan para sonar más tipo Animal Crossing.")]
-    [SerializeField] private bool shortenWords = false;
+    [Range(0.4f, 3f)]
+    [SerializeField] private float pitchVoz = 1.4f;
 
+    [Range(0f, 0.25f)]
+    [SerializeField] private float pitchVariacion = 0.07f;
+
+    [Range(0f, 0.3f)]
+    [SerializeField] private float pitchBoostVocales = 0.12f;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenVoz = 0.45f;
+
+    [Header("Animalese – Cadencia")]
     [SerializeField] private bool sonarEnEspacios = false;
+
+    [Min(1)]
     [SerializeField] private int sonarCadaCaracteres = 1;
+
+    [SerializeField] private bool sustituirLetrasSilenciosas = true;
 
     private int indiceFrase;
     private bool escribiendo;
+    private bool historiaIniciada;
+    private bool historiaTerminando;
+
     private Coroutine rutinaEscritura;
+    private Coroutine rutinaInicio;
+
     private Action alTerminarHistoria;
+
     private CursorLockMode cursorLockAnterior;
     private bool cursorVisibleAnterior;
     private float timeScaleAnterior = 1f;
 
-    private readonly Dictionary<char, AudioClip> clipsPorLetra = new Dictionary<char, AudioClip>();
+    private bool estadoOriginalObjeto;
+    private bool estadoObjetoGuardado;
+
+    private readonly Dictionary<char, AudioClip> clipsPorLetra =
+        new Dictionary<char, AudioClip>();
+
+    private static readonly Dictionary<char, char> SustitutosSilenciosos =
+        new Dictionary<char, char>
+        {
+            { 'F', 'I' },
+            { 'S', 'I' },
+            { 'T', 'E' },
+            { 'V', 'U' },
+            { 'X', 'E' },
+            { 'Z', 'I' }
+        };
+
+    private static readonly HashSet<char> Vocales =
+        new HashSet<char>
+        {
+            'A', 'E', 'I', 'O', 'U'
+        };
 
     private void Awake()
     {
@@ -71,20 +165,81 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             panelHistoria.SetActive(false);
         }
 
-        PrepararAudioVoz();
+        if (tutorialMisiones == null)
+        {
+            tutorialMisiones = FindFirstObjectByType<TutorialMisionesLoro>();
+        }
+
+        PrepararAudioSource();
         PrepararClipsAnimalese();
         ConfigurarBotones();
+        PrepararEstadoInicialCamaras();
 
         HayAlgunaUIAbierta = false;
     }
 
-    private void OnDisable()
+    private void Start()
     {
-        if (HayAlgunaUIAbierta)
+        if (iniciarAutomaticamente)
         {
-            RestaurarEstadoJuego();
+            rutinaInicio = StartCoroutine(IniciarAutomaticamenteRoutine());
+        }
+    }
+
+    private IEnumerator IniciarAutomaticamenteRoutine()
+    {
+        // Esperamos a que GestorPartida procese si se trata
+        // de una partida nueva o de una partida cargada.
+        yield return null;
+
+        if (retrasoInicio > 0f)
+        {
+            yield return new WaitForSecondsRealtime(retrasoInicio);
         }
 
+        rutinaInicio = null;
+
+        // Si ya se completó el tutorial en esta partida,
+        // no mostramos ni la historia inicial ni las misiones.
+        if (GestorPartida.Instance != null &&
+            GestorPartida.Instance.TutorialCompletado)
+        {
+            MostrarTodoElHUD();
+            RestaurarCamaraPrincipal();
+            RestaurarObjetoOculto();
+            yield break;
+        }
+
+        // Al terminar la historia inicial se inicia automáticamente
+        // el tutorial de movimiento y misiones.
+        IniciarHistoria(IniciarTutorialMisiones);
+    }
+
+    private void OnDisable()
+    {
+        if (rutinaInicio != null)
+        {
+            StopCoroutine(rutinaInicio);
+            rutinaInicio = null;
+        }
+
+        if (rutinaEscritura != null)
+        {
+            StopCoroutine(rutinaEscritura);
+            rutinaEscritura = null;
+        }
+
+        if (historiaIniciada && !historiaTerminando)
+        {
+            RestaurarEstadoJuego();
+            RestaurarCamaraPrincipal();
+            RestaurarObjetoOculto();
+            MostrarTodoElHUD();
+        }
+
+        escribiendo = false;
+        historiaIniciada = false;
+        historiaTerminando = false;
         HayAlgunaUIAbierta = false;
     }
 
@@ -95,15 +250,21 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             return;
         }
 
+        bool avanzar = false;
+
         if (Keyboard.current != null)
         {
-            if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame)
-            {
-                Siguiente();
-            }
+            avanzar =
+                Keyboard.current.enterKey.wasPressedThisFrame ||
+                Keyboard.current.spaceKey.wasPressedThisFrame;
         }
 
-        if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+        if (Gamepad.current != null)
+        {
+            avanzar |= Gamepad.current.buttonSouth.wasPressedThisFrame;
+        }
+
+        if (avanzar)
         {
             Siguiente();
         }
@@ -111,10 +272,22 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
     public void IniciarHistoria(Action callbackTerminar)
     {
+        if (historiaIniciada)
+        {
+            return;
+        }
+
+        historiaIniciada = true;
+        historiaTerminando = false;
+
         alTerminarHistoria = callbackTerminar;
         indiceFrase = 0;
 
+        ActivarCamaraLoro();
+        OcultarObjeto();
+        OcultarTodoElHUD();
         GuardarEstadoJuego();
+
         HayAlgunaUIAbierta = true;
 
         if (panelHistoria != null)
@@ -140,7 +313,8 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         indiceFrase++;
 
-        if (indiceFrase >= frasesHistoria.Length)
+        if (frasesHistoria == null ||
+            indiceFrase >= frasesHistoria.Length)
         {
             TerminarHistoria();
             return;
@@ -159,168 +333,345 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         TerminarHistoria();
     }
 
+    private void IniciarTutorialMisiones()
+    {
+        // No lo iniciamos si ya se había completado previamente.
+        if (GestorPartida.Instance != null &&
+            GestorPartida.Instance.TutorialCompletado)
+        {
+            return;
+        }
+
+        if (tutorialMisiones == null)
+        {
+            tutorialMisiones =
+                FindFirstObjectByType<TutorialMisionesLoro>();
+        }
+
+        if (tutorialMisiones == null)
+        {
+            Debug.LogWarning(
+                "HistoriaInicioLoroUI: no se ha encontrado TutorialMisionesLoro.",
+                this
+            );
+
+            return;
+        }
+
+        tutorialMisiones.IniciarTutorialDesdeCero();
+    }
+
+    private void PrepararEstadoInicialCamaras()
+    {
+        if (camaraPrincipal != null)
+        {
+            camaraPrincipal.gameObject.SetActive(true);
+            camaraPrincipal.Priority = prioridadCamaraPrincipal;
+        }
+
+        if (camaraLoro != null)
+        {
+            camaraLoro.gameObject.SetActive(true);
+            camaraLoro.Priority = prioridadCamaraInactiva;
+        }
+    }
+
+    private void ActivarCamaraLoro()
+    {
+        ConfigurarBlendCinemachine();
+
+        if (camaraPrincipal != null)
+        {
+            camaraPrincipal.gameObject.SetActive(true);
+            camaraPrincipal.Priority = prioridadCamaraInactiva;
+        }
+        else
+        {
+            Debug.LogWarning(
+                "HistoriaInicioLoroUI: falta asignar la cámara principal.",
+                this
+            );
+        }
+
+        if (camaraLoro != null)
+        {
+            camaraLoro.gameObject.SetActive(true);
+            camaraLoro.Priority = prioridadLoroDuranteTutorial;
+        }
+        else
+        {
+            Debug.LogWarning(
+                "HistoriaInicioLoroUI: falta asignar la cámara del loro.",
+                this
+            );
+        }
+    }
+
+    private void RestaurarCamaraPrincipal()
+    {
+        ConfigurarBlendCinemachine();
+
+        if (camaraLoro != null)
+        {
+            camaraLoro.Priority = prioridadCamaraInactiva;
+        }
+
+        if (camaraPrincipal != null)
+        {
+            camaraPrincipal.gameObject.SetActive(true);
+            camaraPrincipal.Priority = prioridadCamaraPrincipal;
+        }
+        else
+        {
+            Debug.LogWarning(
+                "HistoriaInicioLoroUI: no se puede volver a la cámara principal porque no está asignada.",
+                this
+            );
+        }
+    }
+
+    private void ConfigurarBlendCinemachine()
+    {
+        CinemachineBrain brain = CinemachineBrain.GetActiveBrain(0);
+
+        if (brain == null)
+        {
+            return;
+        }
+
+        CinemachineBlendDefinition.Styles estilo =
+            segundosBlend <= 0f
+                ? CinemachineBlendDefinition.Styles.Cut
+                : CinemachineBlendDefinition.Styles.EaseInOut;
+
+        brain.DefaultBlend = new CinemachineBlendDefinition(
+            estilo,
+            segundosBlend
+        );
+    }
+
+    private void OcultarObjeto()
+    {
+        if (objetoAOcultar == null)
+        {
+            return;
+        }
+
+        estadoOriginalObjeto = objetoAOcultar.activeSelf;
+        estadoObjetoGuardado = true;
+
+        objetoAOcultar.SetActive(false);
+    }
+
+    private void RestaurarObjetoOculto()
+    {
+        if (objetoAOcultar == null || !estadoObjetoGuardado)
+        {
+            return;
+        }
+
+        objetoAOcultar.SetActive(estadoOriginalObjeto);
+        estadoObjetoGuardado = false;
+    }
+
+    private void OcultarTodoElHUD()
+    {
+        EstablecerActivo(panelTiempo, false);
+        EstablecerActivo(barrasEstado, false);
+        EstablecerActivo(barraInventario, false);
+        EstablecerActivo(sistemaEconomia, false);
+
+        if (otrosElementosHUD == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < otrosElementosHUD.Length; i++)
+        {
+            EstablecerActivo(otrosElementosHUD[i], false);
+        }
+    }
+
+    private void MostrarSoloSeccionHUD(GameObject seccionAMostrar)
+    {
+        EstablecerActivo(panelTiempo, false);
+        EstablecerActivo(barrasEstado, false);
+        EstablecerActivo(barraInventario, false);
+        EstablecerActivo(sistemaEconomia, false);
+
+        EstablecerActivo(seccionAMostrar, true);
+    }
+
+    private void MostrarTodoElHUD()
+    {
+        EstablecerActivo(panelTiempo, true);
+        EstablecerActivo(barrasEstado, true);
+        EstablecerActivo(barraInventario, true);
+        EstablecerActivo(sistemaEconomia, true);
+
+        if (otrosElementosHUD == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < otrosElementosHUD.Length; i++)
+        {
+            EstablecerActivo(otrosElementosHUD[i], true);
+        }
+    }
+
+    private void ActualizarHUDSegunFrase()
+    {
+        if (indiceFrase == indiceFraseTiempo)
+        {
+            MostrarSoloSeccionHUD(panelTiempo);
+            return;
+        }
+
+        if (indiceFrase == indiceFraseBarrasEstado)
+        {
+            MostrarSoloSeccionHUD(barrasEstado);
+            return;
+        }
+
+        if (indiceFrase == indiceFraseInventario)
+        {
+            MostrarSoloSeccionHUD(barraInventario);
+            return;
+        }
+
+        if (indiceFrase == indiceFraseEconomia)
+        {
+            MostrarSoloSeccionHUD(sistemaEconomia);
+            return;
+        }
+
+        OcultarSeccionesPrincipalesHUD();
+    }
+
+    private void OcultarSeccionesPrincipalesHUD()
+    {
+        EstablecerActivo(panelTiempo, false);
+        EstablecerActivo(barrasEstado, false);
+        EstablecerActivo(barraInventario, false);
+        EstablecerActivo(sistemaEconomia, false);
+    }
+
+    private static void EstablecerActivo(
+        GameObject objeto,
+        bool activo
+    )
+    {
+        if (objeto != null)
+        {
+            objeto.SetActive(activo);
+        }
+    }
+
     private void MostrarFraseActual()
     {
-        if (frasesHistoria == null || frasesHistoria.Length == 0)
+        if (frasesHistoria == null ||
+            frasesHistoria.Length == 0)
         {
             TerminarHistoria();
             return;
         }
 
-        string frase = frasesHistoria[Mathf.Clamp(indiceFrase, 0, frasesHistoria.Length - 1)];
+        ActualizarHUDSegunFrase();
+
+        string frase = frasesHistoria[
+            Mathf.Clamp(
+                indiceFrase,
+                0,
+                frasesHistoria.Length - 1
+            )
+        ];
 
         if (rutinaEscritura != null)
         {
             StopCoroutine(rutinaEscritura);
         }
 
-        rutinaEscritura = StartCoroutine(EscribirTexto(frase));
+        rutinaEscritura =
+            StartCoroutine(EscribirTexto(frase));
+
         ActualizarAyuda();
     }
 
-    private IEnumerator EscribirTexto(string fraseOriginal)
+    private IEnumerator EscribirTexto(string frase)
     {
         escribiendo = true;
 
-        string frase = shortenWords ? AcortarPalabras(fraseOriginal) : fraseOriginal;
-
         if (textoDialogo != null)
         {
-            textoDialogo.text = fraseOriginal;
+            textoDialogo.text = frase;
             textoDialogo.maxVisibleCharacters = 0;
             textoDialogo.ForceMeshUpdate();
         }
 
-        int totalCaracteres = fraseOriginal != null ? fraseOriginal.Length : 0;
+        int total = frase != null ? frase.Length : 0;
+        int contadorSonido = 0;
 
-        for (int i = 0; i <= totalCaracteres; i++)
+        for (int i = 0; i <= total; i++)
         {
             if (textoDialogo != null)
             {
                 textoDialogo.maxVisibleCharacters = i;
             }
 
-            if (i > 0 && fraseOriginal != null && i <= fraseOriginal.Length)
+            if (i > 0 &&
+                frase != null &&
+                i <= frase.Length)
             {
-                char caracterVisible = fraseOriginal[i - 1];
+                char caracter = frase[i - 1];
 
-                if (DebeSonarCaracter(caracterVisible, i))
+                if (DebeSonar(caracter))
                 {
-                    char caracterSonido = ObtenerCaracterParaSonido(fraseOriginal, i - 1);
-                    ReproducirSonidoLetra(caracterSonido);
+                    contadorSonido++;
+
+                    int frecuenciaSonido =
+                        Mathf.Max(1, sonarCadaCaracteres);
+
+                    if (contadorSonido % frecuenciaSonido == 0)
+                    {
+                        ReproducirLetra(caracter);
+                    }
                 }
             }
 
-            yield return new WaitForSecondsRealtime(segundosPorCaracter);
+            yield return new WaitForSecondsRealtime(
+                segundosPorCaracter
+            );
         }
 
         escribiendo = false;
         rutinaEscritura = null;
     }
 
-    private char ObtenerCaracterParaSonido(string fraseOriginal, int indice)
-    {
-        if (!shortenWords)
-        {
-            return fraseOriginal[indice];
-        }
-
-        char actual = fraseOriginal[indice];
-
-        if (!char.IsLetter(actual))
-        {
-            return actual;
-        }
-
-        int inicioPalabra = indice;
-        while (inicioPalabra > 0 && char.IsLetter(fraseOriginal[inicioPalabra - 1]))
-        {
-            inicioPalabra--;
-        }
-
-        int finPalabra = indice;
-        while (finPalabra < fraseOriginal.Length - 1 && char.IsLetter(fraseOriginal[finPalabra + 1]))
-        {
-            finPalabra++;
-        }
-
-        if (indice == inicioPalabra || indice == finPalabra)
-        {
-            return actual;
-        }
-
-        return '\0';
-    }
-
-    private string AcortarPalabras(string texto)
-    {
-        if (string.IsNullOrEmpty(texto))
-        {
-            return texto;
-        }
-
-        string resultado = "";
-        int i = 0;
-
-        while (i < texto.Length)
-        {
-            if (!char.IsLetter(texto[i]))
-            {
-                resultado += texto[i];
-                i++;
-                continue;
-            }
-
-            int inicio = i;
-
-            while (i < texto.Length && char.IsLetter(texto[i]))
-            {
-                i++;
-            }
-
-            int fin = i - 1;
-            int longitud = fin - inicio + 1;
-
-            if (longitud <= 2)
-            {
-                resultado += texto.Substring(inicio, longitud);
-            }
-            else
-            {
-                resultado += texto[inicio];
-                resultado += texto[fin];
-            }
-        }
-
-        return resultado;
-    }
-
-    private bool DebeSonarCaracter(char caracter, int indiceCaracter)
+    private bool DebeSonar(char caracter)
     {
         if (caracter == '\0')
         {
             return false;
         }
 
-        if (!sonarEnEspacios && char.IsWhiteSpace(caracter))
+        if (!sonarEnEspacios &&
+            char.IsWhiteSpace(caracter))
         {
             return false;
         }
 
-        if (char.IsPunctuation(caracter))
+        if (char.IsPunctuation(caracter) ||
+            char.IsSymbol(caracter) ||
+            char.IsDigit(caracter))
         {
             return false;
         }
 
-        if (sonarCadaCaracteres <= 0)
-        {
-            sonarCadaCaracteres = 1;
-        }
-
-        return indiceCaracter % sonarCadaCaracteres == 0;
+        return true;
     }
 
-    private void ReproducirSonidoLetra(char caracter)
+    private void ReproducirLetra(char caracter)
     {
         if (audioSourceVoz == null)
         {
@@ -329,18 +680,41 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         char letra = NormalizarLetra(caracter);
 
-        if (!clipsPorLetra.TryGetValue(letra, out AudioClip clip))
+        if (sustituirLetrasSilenciosas &&
+            SustitutosSilenciosos.TryGetValue(
+                letra,
+                out char sustituto
+            ))
+        {
+            letra = sustituto;
+        }
+
+        if (!clipsPorLetra.TryGetValue(
+                letra,
+                out AudioClip clip))
         {
             return;
         }
 
-        audioSourceVoz.pitch = Mathf.Max(0.1f, pitchVoz);
+        float pitch = pitchVoz;
+
+        if (Vocales.Contains(letra))
+        {
+            pitch += pitchBoostVocales;
+        }
+
+        pitch += UnityEngine.Random.Range(
+            -pitchVariacion,
+            pitchVariacion
+        );
+
+        audioSourceVoz.pitch = Mathf.Max(0.1f, pitch);
         audioSourceVoz.PlayOneShot(clip, volumenVoz);
     }
 
-    private char NormalizarLetra(char caracter)
+    private static char NormalizarLetra(char caracter)
     {
-        char letra = char.ToUpper(caracter);
+        char letra = char.ToUpperInvariant(caracter);
 
         switch (letra)
         {
@@ -363,12 +737,15 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             case 'Ñ':
                 return 'N';
 
+            case 'Ç':
+                return 'C';
+
             default:
                 return letra;
         }
     }
 
-    private void PrepararAudioVoz()
+    private void PrepararAudioSource()
     {
         if (audioSourceVoz == null)
         {
@@ -377,7 +754,8 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         if (audioSourceVoz == null)
         {
-            audioSourceVoz = gameObject.AddComponent<AudioSource>();
+            audioSourceVoz =
+                gameObject.AddComponent<AudioSource>();
         }
 
         audioSourceVoz.playOnAwake = false;
@@ -391,31 +769,59 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         if (animaleseLibrary == null)
         {
-            Debug.LogWarning("HistoriaInicioLoroUI: falta asignar Animalese Library.", this);
+            Debug.LogError(
+                "HistoriaInicioLoroUI: falta asignar Animalese Library.",
+                this
+            );
+
             return;
         }
 
-        int frecuenciaMuestreo = animaleseLibrary.frequency;
+        int frecuencia = animaleseLibrary.frequency;
         int canales = animaleseLibrary.channels;
 
-        int muestrasPorLetraBiblioteca = Mathf.RoundToInt(segundosLetraEnLibreria * frecuenciaMuestreo);
-        int muestrasPorLetraSalida = Mathf.RoundToInt(segundosLetraSalida * frecuenciaMuestreo);
+        int muestrasLetraLibreria = Mathf.RoundToInt(
+            segundosLetraEnLibreria * frecuencia
+        );
 
-        if (muestrasPorLetraBiblioteca <= 0 || muestrasPorLetraSalida <= 0)
+        int muestrasLetraSalida = Mathf.RoundToInt(
+            segundosLetraSalida * frecuencia
+        );
+
+        int muestrasFade = Mathf.RoundToInt(
+            fadeMs * 0.001f * frecuencia
+        );
+
+        if (muestrasLetraLibreria <= 0 ||
+            muestrasLetraSalida <= 0)
         {
-            Debug.LogWarning("HistoriaInicioLoroUI: duración de letra inválida.", this);
+            Debug.LogError(
+                "HistoriaInicioLoroUI: duración de letra inválida.",
+                this
+            );
+
             return;
         }
 
-        float[] datosOriginales = new float[animaleseLibrary.samples * canales];
+        float[] datosOriginales =
+            new float[animaleseLibrary.samples * canales];
 
         try
         {
-            animaleseLibrary.GetData(datosOriginales, 0);
+            animaleseLibrary.GetData(
+                datosOriginales,
+                0
+            );
         }
-        catch
+        catch (Exception excepcion)
         {
-            Debug.LogWarning("HistoriaInicioLoroUI: no se pudo leer animalese.wav. En Import Settings pon Load Type = Decompress On Load.", this);
+            Debug.LogError(
+                "HistoriaInicioLoroUI: no se pudo leer el WAV. " +
+                "Pon Load Type = Decompress On Load.\n" +
+                excepcion.Message,
+                this
+            );
+
             return;
         }
 
@@ -423,39 +829,107 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         {
             char letra = (char)('A' + i);
 
-            int inicioMuestra = i * muestrasPorLetraBiblioteca;
-            int inicioDato = inicioMuestra * canales;
+            int inicioMuestra =
+                i * muestrasLetraLibreria;
 
-            int muestrasDisponibles = animaleseLibrary.samples - inicioMuestra;
-            int muestrasClip = Mathf.Min(muestrasPorLetraSalida, muestrasDisponibles);
+            int muestrasDisponibles =
+                animaleseLibrary.samples - inicioMuestra;
+
+            int muestrasClip = Mathf.Min(
+                muestrasLetraSalida,
+                muestrasDisponibles
+            );
 
             if (muestrasClip <= 0)
             {
                 continue;
             }
 
-            float[] datosLetra = new float[muestrasClip * canales];
+            float[] datosLetra =
+                new float[muestrasClip * canales];
+
+            int origenBase = inicioMuestra * canales;
 
             for (int j = 0; j < datosLetra.Length; j++)
             {
-                int indiceOriginal = inicioDato + j;
+                int indiceOrigen = origenBase + j;
 
-                if (indiceOriginal >= 0 && indiceOriginal < datosOriginales.Length)
-                {
-                    datosLetra[j] = datosOriginales[indiceOriginal];
-                }
+                datosLetra[j] =
+                    indiceOrigen >= 0 &&
+                    indiceOrigen < datosOriginales.Length
+                        ? datosOriginales[indiceOrigen]
+                        : 0f;
             }
+
+            AplicarFade(
+                datosLetra,
+                canales,
+                muestrasFade
+            );
 
             AudioClip clipLetra = AudioClip.Create(
                 "Animalese_" + letra,
                 muestrasClip,
                 canales,
-                frecuenciaMuestreo,
+                frecuencia,
                 false
             );
 
             clipLetra.SetData(datosLetra, 0);
-            clipsPorLetra.Add(letra, clipLetra);
+            clipsPorLetra[letra] = clipLetra;
+        }
+
+        Debug.Log(
+            "HistoriaInicioLoroUI: cargadas " +
+            clipsPorLetra.Count +
+            " letras Animalese.",
+            this
+        );
+    }
+
+    private static void AplicarFade(
+        float[] datos,
+        int canales,
+        int muestrasFade
+    )
+    {
+        int muestrasClip = datos.Length / canales;
+
+        muestrasFade = Mathf.Min(
+            muestrasFade,
+            muestrasClip / 2
+        );
+
+        if (muestrasFade <= 0)
+        {
+            return;
+        }
+
+        for (int muestra = 0;
+             muestra < muestrasFade;
+             muestra++)
+        {
+            float factor =
+                (float)muestra / muestrasFade;
+
+            for (int canal = 0;
+                 canal < canales;
+                 canal++)
+            {
+                datos[muestra * canales + canal] *=
+                    factor;
+            }
+
+            int muestraFinal =
+                muestrasClip - 1 - muestra;
+
+            for (int canal = 0;
+                 canal < canales;
+                 canal++)
+            {
+                datos[muestraFinal * canales + canal] *=
+                    factor;
+            }
         }
     }
 
@@ -471,19 +945,22 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         if (textoDialogo != null)
         {
-            textoDialogo.maxVisibleCharacters = int.MaxValue;
+            textoDialogo.maxVisibleCharacters =
+                int.MaxValue;
         }
     }
 
     private void TerminarHistoria()
     {
-        if (rutinaEscritura != null)
+        if (historiaTerminando)
         {
-            StopCoroutine(rutinaEscritura);
-            rutinaEscritura = null;
+            return;
         }
 
-        escribiendo = false;
+        historiaTerminando = true;
+
+        CompletarEscrituraInstantanea();
+
         HayAlgunaUIAbierta = false;
 
         if (panelHistoria != null)
@@ -492,33 +969,52 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         }
 
         RestaurarEstadoJuego();
-        alTerminarHistoria?.Invoke();
+        RestaurarCamaraPrincipal();
+        RestaurarObjetoOculto();
+        MostrarTodoElHUD();
+
+        historiaIniciada = false;
+        historiaTerminando = false;
+
+        Action callback = alTerminarHistoria;
         alTerminarHistoria = null;
+
+        // Aquí comienza TutorialMisionesLoro.
+        callback?.Invoke();
     }
 
     private void ConfigurarBotones()
     {
         if (botonSiguiente != null)
         {
-            botonSiguiente.onClick.RemoveListener(Siguiente);
-            botonSiguiente.onClick.AddListener(Siguiente);
+            botonSiguiente.onClick.RemoveListener(
+                Siguiente
+            );
+
+            botonSiguiente.onClick.AddListener(
+                Siguiente
+            );
         }
 
         if (botonOmitirIntro != null)
         {
-            botonOmitirIntro.onClick.RemoveListener(OmitirIntro);
-            botonOmitirIntro.onClick.AddListener(OmitirIntro);
+            botonOmitirIntro.onClick.RemoveListener(
+                OmitirIntro
+            );
+
+            botonOmitirIntro.onClick.AddListener(
+                OmitirIntro
+            );
         }
     }
 
     private void ActualizarAyuda()
     {
-        if (textoAyuda == null)
+        if (textoAyuda != null)
         {
-            return;
+            textoAyuda.text =
+                "Espacio / Enter · continuar";
         }
-
-        textoAyuda.text = "Espacio / Enter: continuar";
     }
 
     private void GuardarEstadoJuego()

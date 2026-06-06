@@ -23533,6 +23533,38 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5569566118741114203, guid: fe4b95b8f427e4b48bbf496426d75660, type: 3}
+--- !u!1 &115422070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 115422071}
+  m_Layer: 0
+  m_Name: CinematicaLoro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &115422071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115422070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -55.33252, y: 2.9619238, z: 10.60803}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 284985186}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &116373161
 GameObject:
   m_ObjectHideFlags: 0
@@ -40172,6 +40204,81 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &284985184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 284985186}
+  - component: {fileID: 284985185}
+  m_Layer: 0
+  m_Name: CamaraLoro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &284985185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284985184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority:
+    Enabled: 0
+    m_Value: 0
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 501295649}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 60.000004
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
+--- !u!4 &284985186
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284985184}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.20016868, y: -0.20316452, z: 0.03626863, w: 0.9577794}
+  m_LocalPosition: {x: -1.3122864, y: 0.711467, z: -3.8128958}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 115422071}
+  m_LocalEulerAnglesHint: {x: 1.12, y: -154.012, z: -0.68}
 --- !u!1001 &287688883
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48179,7 +48286,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &350386043
 RectTransform:
   m_ObjectHideFlags: 0
@@ -48200,7 +48307,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -586}
   m_SizeDelta: {x: 1000, y: 310}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &350386044
@@ -53659,16 +53766,19 @@ MonoBehaviour:
   botonCerrar: {fileID: 7840231}
   tutorialMisiones: {fileID: 452703424}
   pausarJuegoAlAbrir: 1
-  segundosPorCaracter: 0.1
-  audioSourceVoz: {fileID: 0}
-  animaleseLibrary: {fileID: 0}
+  segundosPorCaracter: 0.03
+  animaleseLibrary: {fileID: 8300000, guid: e6cb1bc471fcaf148bf4ad071ce695d0, type: 3}
   segundosLetraEnLibreria: 0.15
   segundosLetraSalida: 0.075
-  volumenVoz: 0.35
-  pitchVoz: 1
-  shortenWords: 0
+  fadeMs: 8
+  audioSourceVoz: {fileID: 0}
+  pitchVoz: 1.4
+  pitchVariacion: 0.07
+  pitchBoostVocales: 0.12
+  volumenVoz: 0.45
   sonarEnEspacios: 0
-  sonarCadaCaracteres: 2
+  sonarCadaCaracteres: 1
+  sustituirLetrasSilenciosas: 1
 --- !u!114 &452703424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53731,6 +53841,21 @@ MonoBehaviour:
   textoAyuda: {fileID: 161921682}
   botonSiguiente: {fileID: 0}
   botonOmitirIntro: {fileID: 1927145580}
+  iniciarAutomaticamente: 1
+  retrasoInicio: 0.1
+  tutorialMisiones: {fileID: 452703424}
+  camaraLoro: {fileID: 284985185}
+  camaraPrincipal: {fileID: 587593482}
+  prioridadLoroDuranteTutorial: 100
+  prioridadCamaraPrincipal: 100
+  prioridadCamaraInactiva: 0
+  segundosBlend: 0
+  objetoAOcultar: {fileID: 229980141}
+  panelTiempo: {fileID: 1284625852}
+  barrasEstado: {fileID: 833648202}
+  barraInventario: {fileID: 1650330080}
+  sistemaEconomia: {fileID: 1368695426}
+  otrosElementosHUD: []
   frasesHistoria:
   - "\xA1Graaak! Despierta, capit\xE1n... o lo que quede de ti."
   - "Te has metido en un buen l\xEDo. Parece que te caiste del barco y has terminado
@@ -53741,16 +53866,34 @@ MonoBehaviour:
     idea de para qu\xE9 sirven!"
   - "Primero aprende lo b\xE1sico. Intenta moverte y hazme caso si quieres sobrevivir.
     \xA1Graaak!"
-  segundosPorCaracter: 0.025
-  audioSourceVoz: {fileID: 0}
+  - "Antes de dejarte explorar, voy a explicarte todo lo que ves en pantalla. Presta
+    atenci\xF3n, capit\xE1n."
+  - "Este es el panel de tiempo. Aqu\xED puedes consultar la hora, el momento del
+    d\xEDa y los d\xEDas que han pasado en la isla."
+  - "Estas son tus barras de estado. Aqu\xED puedes controlar la salud y la energ\xEDa
+    del personaje."
+  - "Esta es la barra de inventario. Aqu\xED puedes ver los objetos que llevas y
+    seleccionar el que quieras utilizar."
+  - "Este es el sistema de econom\xEDa. Aqu\xED puedes consultar los objetos y recursos
+    que tienes guardados para comerciar."
+  - "Ya te dejo jugar \xA1Graaaaaaaaaaak!"
+  indiceFraseTiempo: 6
+  indiceFraseBarrasEstado: 7
+  indiceFraseInventario: 8
+  indiceFraseEconomia: 9
+  segundosPorCaracter: 0.03
   animaleseLibrary: {fileID: 8300000, guid: e6cb1bc471fcaf148bf4ad071ce695d0, type: 3}
   segundosLetraEnLibreria: 0.15
   segundosLetraSalida: 0.075
-  volumenVoz: 0.35
-  pitchVoz: 2
-  shortenWords: 0
+  fadeMs: 8
+  audioSourceVoz: {fileID: 0}
+  pitchVoz: 1.4
+  pitchVariacion: 0.07
+  pitchBoostVocales: 0.12
+  volumenVoz: 0.45
   sonarEnEspacios: 0
-  sonarCadaCaracteres: 2
+  sonarCadaCaracteres: 1
+  sustituirLetrasSilenciosas: 1
 --- !u!1 &453627342
 GameObject:
   m_ObjectHideFlags: 0
@@ -148201,7 +148344,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1372234206
 RectTransform:
   m_ObjectHideFlags: 0
@@ -148221,7 +148364,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -586}
   m_SizeDelta: {x: 1000, y: 310}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1372234207
@@ -226484,6 +226627,7 @@ SceneRoots:
   - {fileID: 730001131}
   - {fileID: 340867736}
   - {fileID: 1158285776}
+  - {fileID: 115422071}
   - {fileID: 1840517373}
   - {fileID: 1051394097}
   - {fileID: 2035484455}
