@@ -19,6 +19,9 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     [Header("Drop")]
     [SerializeField] private Transform dropPoint;
     [SerializeField] private float dropDistance = 1.5f;
+    [SerializeField] private float dropHeight = 1.1f;
+    [SerializeField] private float throwForceForward = 4f;
+    [SerializeField] private float throwForceUp = 1.5f;
 
     [Header("Animación")]
     [SerializeField] private Animator playerAnimator;
@@ -56,7 +59,6 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         HandleKeyboardInput();
         HandleGamepadInput();
     }
-
 
     public void BloquearInputUnFrame()
     {
@@ -468,13 +470,21 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         Vector3 spawnPosition = GetDropPosition();
         Quaternion spawnRotation = Quaternion.identity;
 
-        GameObject droppedObject = Instantiate(item.WorldPrefab, spawnPosition, spawnRotation);
+        GameObject droppedObject = Instantiate(
+            item.WorldPrefab,
+            spawnPosition,
+            spawnRotation
+        );
 
         Rigidbody rb = droppedObject.GetComponent<Rigidbody>();
+
         if (rb != null)
         {
-            Vector3 throwDirection = transform.forward + Vector3.up * 0.2f;
-            rb.AddForce(throwDirection.normalized * 2f, ForceMode.Impulse);
+            Vector3 fuerzaLanzamiento =
+                transform.forward * throwForceForward +
+                Vector3.up * throwForceUp;
+
+            rb.AddForce(fuerzaLanzamiento, ForceMode.Impulse);
         }
 
         slot.amount--;
@@ -497,7 +507,9 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             return dropPoint.position;
         }
 
-        return transform.position + transform.forward * dropDistance + Vector3.up * 0.5f;
+        return transform.position
+            + transform.forward * dropDistance
+            + Vector3.up * dropHeight;
     }
 
     private bool ConsumeItem(ConsumibleItemData item)
@@ -687,7 +699,6 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         {
             return 0;
         }
-
 
         RemoveItem(itemData, cantidadARemover);
         return cantidadARemover;
