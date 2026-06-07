@@ -23,6 +23,12 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
     [SerializeField] private TMP_Text textoClavos;
     [SerializeField] private ItemData itemClavos;
 
+    [Header("Indicador cuerda")]
+    [SerializeField] private GameObject filaCuerda;
+    [SerializeField] private Image iconoCuerda;
+    [SerializeField] private TMP_Text textoCuerda;
+    [SerializeField] private ItemData itemCuerda;
+
     [Header("Mensaje final")]
     [SerializeField] private GameObject raizMensajeCompletado;
     [SerializeField] private TMP_Text textoMensajeCompletado;
@@ -38,6 +44,7 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
             construccionBarco = FindFirstObjectByType<ConstruccionBarco>();
         }
 
+        CrearFilaCuerdaSiHaceFalta();
         ConfigurarVisualInicial();
         ActualizarIndicador();
     }
@@ -76,21 +83,14 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
     {
         ConfigurarIcono(iconoMadera, itemMadera);
         ConfigurarIcono(iconoClavos, itemClavos);
+        ConfigurarIcono(iconoCuerda, itemCuerda);
 
         if (raizIndicador != null)
         {
             raizIndicador.SetActive(false);
         }
 
-        if (filaMadera != null)
-        {
-            filaMadera.SetActive(false);
-        }
-
-        if (filaClavos != null)
-        {
-            filaClavos.SetActive(false);
-        }
+        OcultarFilas();
 
         if (raizMensajeCompletado != null)
         {
@@ -120,6 +120,7 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
 
         ActualizarFilaMaterial(filaMadera, textoMadera, itemMadera);
         ActualizarFilaMaterial(filaClavos, textoClavos, itemClavos);
+        ActualizarFilaMaterial(filaCuerda, textoCuerda, itemCuerda);
     }
 
     private void ActualizarFilaMaterial(GameObject fila, TMP_Text texto, ItemData item)
@@ -140,7 +141,6 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
         }
 
         int cantidadEntregada = construccionBarco.ObtenerCantidadEntregada(item);
-
         texto.text = cantidadEntregada + "/" + cantidadNecesaria;
     }
 
@@ -166,6 +166,63 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
         {
             filaClavos.SetActive(false);
         }
+
+        if (filaCuerda != null)
+        {
+            filaCuerda.SetActive(false);
+        }
+    }
+
+    private void CrearFilaCuerdaSiHaceFalta()
+    {
+        if (filaCuerda != null || itemCuerda == null || filaClavos == null)
+        {
+            return;
+        }
+
+        filaCuerda = Instantiate(filaClavos, filaClavos.transform.parent);
+        filaCuerda.name = "FilaCuerda";
+        filaCuerda.transform.SetSiblingIndex(filaClavos.transform.GetSiblingIndex() + 1);
+
+        iconoCuerda = BuscarComponenteEquivalenteEnFila(iconoClavos, filaClavos, filaCuerda);
+        textoCuerda = BuscarComponenteEquivalenteEnFila(textoClavos, filaClavos, filaCuerda);
+    }
+
+    private T BuscarComponenteEquivalenteEnFila<T>(T componenteOriginal, GameObject filaOriginal, GameObject filaNueva) where T : Component
+    {
+        if (componenteOriginal == null || filaOriginal == null || filaNueva == null)
+        {
+            return filaNueva != null ? filaNueva.GetComponentInChildren<T>(true) : null;
+        }
+
+        string ruta = ObtenerRutaRelativa(filaOriginal.transform, componenteOriginal.transform);
+        Transform equivalente = string.IsNullOrEmpty(ruta) ? filaNueva.transform : filaNueva.transform.Find(ruta);
+
+        if (equivalente == null)
+        {
+            return filaNueva.GetComponentInChildren<T>(true);
+        }
+
+        return equivalente.GetComponent<T>();
+    }
+
+    private string ObtenerRutaRelativa(Transform raiz, Transform objetivo)
+    {
+        if (raiz == null || objetivo == null || objetivo == raiz)
+        {
+            return string.Empty;
+        }
+
+        string ruta = objetivo.name;
+        Transform actual = objetivo.parent;
+
+        while (actual != null && actual != raiz)
+        {
+            ruta = actual.name + "/" + ruta;
+            actual = actual.parent;
+        }
+
+        return ruta;
     }
 
     private void ManejarConstruccionActualizada()
