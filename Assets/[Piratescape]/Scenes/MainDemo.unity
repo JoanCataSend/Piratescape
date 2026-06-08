@@ -166449,6 +166449,7 @@ GameObject:
   - component: {fileID: 1562249497}
   - component: {fileID: 1562249496}
   - component: {fileID: 1562249495}
+  - component: {fileID: 1562249498}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -166545,6 +166546,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1562249493}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1562249498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562249493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32cc7d2cb4c996940b10059fff28e980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombreEscenaFinal: FinalAltrenativo
+  activarSoloUnaVez: 1
 --- !u!1 &1564287906
 GameObject:
   m_ObjectHideFlags: 0
@@ -202568,8 +202583,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812617208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14576629, y: 0.70744884, z: -0.1622135, w: 0.67227614}
-  m_LocalPosition: {x: -45.838623, y: 2.1860843, z: -7.5929394}
+  m_LocalRotation: {x: -0.015912658, y: 0.023969246, z: 0.005552592, w: -0.99957067}
+  m_LocalPosition: {x: 0.5040026, y: 0.25521696, z: 0.19838715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
