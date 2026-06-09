@@ -5,12 +5,11 @@ using UnityEngine.InputSystem;
 public class ShelterSleep : MonoBehaviour, Interactuable
 {
     [Header("Datos del refugio")]
-    //[SerializeField] private string objectName = "tienda";
     [SerializeField] private float rango = 2.5f;
     [SerializeField] private bool interactuable = true;
     [SerializeField] private NightThreatSystem nightThreatSystem;
 
-    [Header("Punto de interaccion opcional")]
+    [Header("Punto de interacción opcional")]
     [SerializeField] private Transform interactionPoint;
 
     [Header("Referencias")]
@@ -31,12 +30,12 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private int wakeHour = 8;
     [SerializeField] private int wakeMinute = 0;
 
-    [Header("Recuperacion de energia")]
+    [Header("Recuperación de energía")]
     [SerializeField] private int halfRecoveryFromHour = 22;
     [SerializeField] private float halfRecoveryPercent = 0.5f;
     [SerializeField] private float lateRecoveryPercent = 0.25f;
 
-    [Header("Animacion de dormir")]
+    [Header("Animación de dormir")]
     [SerializeField] private bool movePlayerToSleepPoint = true;
     [SerializeField] private float moveToSleepDuration = 0.15f;
     [SerializeField] private float delayBeforeFade = 0f;
@@ -49,17 +48,22 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [Header("Cinemática monos al dormir")]
     [SerializeField] private MonkeyStealCutsceneController monkeyStealCutsceneController;
     [SerializeField] private bool reproducirCinematicaMonosSinEspantamonos = true;
-    [SerializeField] private float duracionCinematicaMonos = 8f;
+
+    [Tooltip("La cámara de monos se cerrará obligatoriamente al pasar este tiempo.")]
+    [Min(0.1f)]
+    [SerializeField] private float duracionCinematicaMonos = 15f;
 
     [Header("Mensajes")]
     [SerializeField] private string sleepPromptMessage = "dormir";
-    [SerializeField] private string blockedPromptMessage = "No puedes dormir hasta las 18:00";
+    [SerializeField] private string blockedPromptMessage =
+        "No puedes dormir hasta las 18:00";
 
     private bool activo;
     private bool isSleeping;
     private IActivador jugador;
 
-    private InputDeviceType lastInputDevice = InputDeviceType.KeyboardMouse;
+    private InputDeviceType lastInputDevice =
+        InputDeviceType.KeyboardMouse;
 
     private enum InputDeviceType
     {
@@ -75,9 +79,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         set => rango = value;
     }
 
-    public bool Activo => activo && !isSleeping && interactuable;
+    public bool Activo =>
+        activo && !isSleeping && interactuable;
 
-    public Vector3 PosicionInteraccion => GetInteractionPosition();
+    public Vector3 PosicionInteraccion =>
+        GetInteractionPosition();
 
     private void Awake()
     {
@@ -88,17 +94,24 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     {
         if (jugador == null)
         {
-            jugador = FindFirstObjectByType<JugadorActivador>();
+            jugador =
+                FindFirstObjectByType<JugadorActivador>();
         }
 
         if (timeSystem == null)
         {
-            Debug.LogWarning($"{nameof(ShelterSleep)}: falta referencia a {nameof(GameTimeSystem)}.", this);
+            Debug.LogWarning(
+                $"{nameof(ShelterSleep)}: falta referencia a {nameof(GameTimeSystem)}.",
+                this
+            );
         }
 
         if (playerEnergy == null)
         {
-            Debug.LogWarning($"{nameof(ShelterSleep)}: falta referencia a {nameof(PlayerEnergy)}.", this);
+            Debug.LogWarning(
+                $"{nameof(ShelterSleep)}: falta referencia a {nameof(PlayerEnergy)}.",
+                this
+            );
         }
     }
 
@@ -111,9 +124,10 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         ActualizarUltimoDispositivoUsado();
 
-        bool nuevoEstado = interactuable &&
-                           !isSleeping &&
-                           EstaJugadorEnRango();
+        bool nuevoEstado =
+            interactuable &&
+            !isSleeping &&
+            EstaJugadorEnRango();
 
         if (nuevoEstado != activo)
         {
@@ -129,12 +143,10 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             return;
         }
 
-        if (!activo)
+        if (activo)
         {
-            return;
+            ActualizarPromptSegunHora();
         }
-
-        ActualizarPromptSegunHora();
     }
 
     public void Interactuar()
@@ -153,7 +165,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         if (timeSystem == null)
         {
-            Debug.LogWarning($"{nameof(ShelterSleep)}: falta referencia a {nameof(GameTimeSystem)}.", this);
+            Debug.LogWarning(
+                $"{nameof(ShelterSleep)}: falta referencia a {nameof(GameTimeSystem)}.",
+                this
+            );
+
             return;
         }
 
@@ -165,7 +181,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         if (!CanSleepNow())
         {
             MostrarPromptBloqueado();
-            Debug.Log($"No puedes dormir hasta las {minSleepHour:00}:00");
+
+            Debug.Log(
+                $"No puedes dormir hasta las {minSleepHour:00}:00"
+            );
+
             return;
         }
 
@@ -177,8 +197,13 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         isSleeping = true;
         OcultarPrompt();
 
-        bool movimientoOriginalHabilitado = movimientoPlayer != null && movimientoPlayer.enabled;
-        bool controllerOriginalHabilitado = playerController != null && playerController.enabled;
+        bool movimientoOriginalHabilitado =
+            movimientoPlayer != null &&
+            movimientoPlayer.enabled;
+
+        bool controllerOriginalHabilitado =
+            playerController != null &&
+            playerController.enabled;
 
         if (movimientoPlayer != null)
         {
@@ -190,36 +215,34 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             playerController.enabled = false;
         }
 
-        if (movePlayerToSleepPoint && playerTransform != null && sleepPoint != null)
+        if (movePlayerToSleepPoint &&
+            playerTransform != null &&
+            sleepPoint != null)
         {
-            yield return MovePlayerRoutine(playerTransform, sleepPoint.position, sleepPoint.rotation, moveToSleepDuration);
+            yield return MovePlayerRoutine(
+                playerTransform,
+                sleepPoint.position,
+                sleepPoint.rotation,
+                moveToSleepDuration
+            );
         }
 
-        if (playerAnimator != null && !string.IsNullOrWhiteSpace(sleepTriggerName))
+        if (playerAnimator != null &&
+            !string.IsNullOrWhiteSpace(sleepTriggerName))
         {
             playerAnimator.SetTrigger(sleepTriggerName);
         }
 
         if (delayBeforeFade > 0f)
         {
-            yield return new WaitForSeconds(delayBeforeFade);
+            yield return new WaitForSecondsRealtime(
+                delayBeforeFade
+            );
         }
-
-        Coroutine fadeOutCoroutine = null;
 
         if (fadeUI != null)
         {
-            fadeOutCoroutine = StartCoroutine(fadeUI.FadeOutRoutine());
-        }
-
-        if (teleportDelayAfterFadeStarts > 0f)
-        {
-            yield return new WaitForSeconds(teleportDelayAfterFadeStarts);
-        }
-
-        if (fadeOutCoroutine != null)
-        {
-            yield return fadeOutCoroutine;
+            yield return fadeUI.FadeOutRoutine();
         }
 
         yield return ReproducirCinematicaMonosSiCorresponde();
@@ -233,35 +256,52 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         if (timeSystem != null)
         {
-            timeSystem.SleepToNextDay(wakeHour, wakeMinute);
+            timeSystem.SleepToNextDay(
+                wakeHour,
+                wakeMinute
+            );
         }
 
-        if (playerTransform != null && wakePoint != null)
+        if (playerTransform != null &&
+            wakePoint != null)
         {
-            playerTransform.SetPositionAndRotation(wakePoint.position, wakePoint.rotation);
+            playerTransform.SetPositionAndRotation(
+                wakePoint.position,
+                wakePoint.rotation
+            );
         }
 
         if (playerAnimator != null)
         {
             if (!string.IsNullOrWhiteSpace(sleepTriggerName))
             {
-                playerAnimator.ResetTrigger(sleepTriggerName);
+                playerAnimator.ResetTrigger(
+                    sleepTriggerName
+                );
             }
 
             if (!string.IsNullOrWhiteSpace(idleStateName))
             {
-                playerAnimator.Play(idleStateName, 0, 0f);
+                playerAnimator.Play(
+                    idleStateName,
+                    0,
+                    0f
+                );
+
+                playerAnimator.Update(0f);
             }
         }
 
         if (playerController != null)
         {
-            playerController.enabled = controllerOriginalHabilitado;
+            playerController.enabled =
+                controllerOriginalHabilitado;
         }
 
         if (movimientoPlayer != null)
         {
-            movimientoPlayer.enabled = movimientoOriginalHabilitado;
+            movimientoPlayer.enabled =
+                movimientoOriginalHabilitado;
         }
 
         if (fadeUI != null)
@@ -271,7 +311,9 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         isSleeping = false;
 
-        activo = interactuable && EstaJugadorEnRango();
+        activo =
+            interactuable &&
+            EstaJugadorEnRango();
 
         if (activo)
         {
@@ -293,14 +335,30 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield return fadeUI.FadeInRoutine();
         }
 
-        yield return monkeyStealCutsceneController.ReproducirMovimientoMonos();
+        monkeyStealCutsceneController.IniciarMovimientoMonos();
+
+        /*
+         * Este es el temporizador real.
+         * No esperamos a que los monos terminen su rutina.
+         */
+        float tiempo = 0f;
+
+        while (tiempo < duracionCinematicaMonos)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        /*
+         * Al cumplirse el tiempo se detiene la rutina de monos,
+         * se apaga su cámara y vuelve la cámara del jugador.
+         */
+        monkeyStealCutsceneController.FinalizarCinematica();
 
         if (fadeUI != null)
         {
             yield return fadeUI.FadeOutRoutine();
         }
-
-        monkeyStealCutsceneController.FinalizarCinematica();
     }
 
     private bool DebeReproducirCinematicaMonos()
@@ -320,22 +378,30 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             return false;
         }
 
-        return !nightThreatSystem.HayProteccionEspantamonosActiva();
+        return !nightThreatSystem
+            .HayProteccionEspantamonosActiva();
     }
 
     private void AplicarRecuperacionEnergia()
     {
-        if (playerEnergy == null || timeSystem == null)
+        if (playerEnergy == null ||
+            timeSystem == null)
         {
             return;
         }
 
-        float porcentajeRecuperacion = ObtenerPorcentajeRecuperacionSegunHora();
-        float energiaObjetivo = playerEnergy.MaxEnergy * porcentajeRecuperacion;
+        float porcentajeRecuperacion =
+            ObtenerPorcentajeRecuperacionSegunHora();
+
+        float energiaObjetivo =
+            playerEnergy.MaxEnergy *
+            porcentajeRecuperacion;
 
         if (playerEnergy.CurrentEnergy < energiaObjetivo)
         {
-            playerEnergy.SetEnergy(energiaObjetivo);
+            playerEnergy.SetEnergy(
+                energiaObjetivo
+            );
         }
     }
 
@@ -359,7 +425,10 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     private bool CanSleepNow()
     {
         return timeSystem != null &&
-               (timeSystem.CurrentHour >= minSleepHour || timeSystem.CurrentHour < wakeHour);
+               (
+                   timeSystem.CurrentHour >= minSleepHour ||
+                   timeSystem.CurrentHour < wakeHour
+               );
     }
 
     private bool EstaJugadorEnRango()
@@ -369,27 +438,21 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             return false;
         }
 
-        Vector3 centro = GetInteractionPosition();
-        return Vector3.Distance(centro, jugador.Position) <= rango;
+        return Vector3.Distance(
+            GetInteractionPosition(),
+            jugador.Position
+        ) <= rango;
     }
 
     private Vector3 GetInteractionPosition()
     {
-        if (interactionPoint != null)
-        {
-            return interactionPoint.position;
-        }
-
-        return transform.position;
+        return interactionPoint != null
+            ? interactionPoint.position
+            : transform.position;
     }
 
     private void ActualizarPromptSegunHora()
     {
-        if (InteractionUI.Instance == null)
-        {
-            return;
-        }
-
         if (CanSleepNow())
         {
             MostrarPromptDormir();
@@ -402,12 +465,10 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     private void MostrarPromptDormir()
     {
-        if (InteractionUI.Instance == null)
-        {
-            return;
-        }
-
-        InteractionUI.Instance.Show(this, ConstruirMensajeDormir());
+        InteractionUI.Instance?.Show(
+            this,
+            ConstruirMensajeDormir()
+        );
     }
 
     private string ConstruirMensajeDormir()
@@ -421,12 +482,17 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         if (sleepPromptMessage.Contains("{0}"))
         {
-            return string.Format(sleepPromptMessage, icono);
+            return string.Format(
+                sleepPromptMessage,
+                icono
+            );
         }
 
-        string textoNormalizado = sleepPromptMessage.ToLower();
+        string textoNormalizado =
+            sleepPromptMessage.ToLower();
 
-        if (textoNormalizado.Contains("pulsa") || textoNormalizado.Contains("press"))
+        if (textoNormalizado.Contains("pulsa") ||
+            textoNormalizado.Contains("press"))
         {
             return sleepPromptMessage;
         }
@@ -441,23 +507,22 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     private void MostrarPromptBloqueado()
     {
-        if (InteractionUI.Instance == null)
-        {
-            return;
-        }
-
-        InteractionUI.Instance.Show(this, blockedPromptMessage);
+        InteractionUI.Instance?.Show(
+            this,
+            blockedPromptMessage
+        );
     }
 
     private void OcultarPrompt()
     {
-        if (InteractionUI.Instance != null)
-        {
-            InteractionUI.Instance.Hide(this);
-        }
+        InteractionUI.Instance?.Hide(this);
     }
 
-    private IEnumerator MovePlayerRoutine(Transform target, Vector3 destinationPosition, Quaternion destinationRotation, float duration)
+    private IEnumerator MovePlayerRoutine(
+        Transform target,
+        Vector3 destinationPosition,
+        Quaternion destinationRotation,
+        float duration)
     {
         if (target == null)
         {
@@ -466,7 +531,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         if (duration <= 0f)
         {
-            target.SetPositionAndRotation(destinationPosition, destinationRotation);
+            target.SetPositionAndRotation(
+                destinationPosition,
+                destinationRotation
+            );
+
             yield break;
         }
 
@@ -476,76 +545,112 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
+            elapsed += Time.unscaledDeltaTime;
 
-            target.position = Vector3.Lerp(startPosition, destinationPosition, t);
-            target.rotation = Quaternion.Slerp(startRotation, destinationRotation, t);
+            float t = Mathf.Clamp01(
+                elapsed / duration
+            );
+
+            target.position = Vector3.Lerp(
+                startPosition,
+                destinationPosition,
+                t
+            );
+
+            target.rotation = Quaternion.Slerp(
+                startRotation,
+                destinationRotation,
+                t
+            );
 
             yield return null;
         }
 
-        target.SetPositionAndRotation(destinationPosition, destinationRotation);
+        target.SetPositionAndRotation(
+            destinationPosition,
+            destinationRotation
+        );
     }
 
     private void CachearReferencias()
     {
         if (timeSystem == null)
         {
-            timeSystem = FindFirstObjectByType<GameTimeSystem>();
+            timeSystem =
+                FindFirstObjectByType<GameTimeSystem>();
         }
 
         if (fadeUI == null)
         {
-            fadeUI = FindFirstObjectByType<SleepFadeUI>();
+            fadeUI =
+                FindFirstObjectByType<SleepFadeUI>();
         }
 
         if (nightThreatSystem == null)
         {
-            nightThreatSystem = FindFirstObjectByType<NightThreatSystem>();
+            nightThreatSystem =
+                FindFirstObjectByType<NightThreatSystem>();
         }
 
         if (monkeyStealCutsceneController == null)
         {
-            monkeyStealCutsceneController = FindFirstObjectByType<MonkeyStealCutsceneController>();
+            monkeyStealCutsceneController =
+                FindFirstObjectByType<MonkeyStealCutsceneController>();
         }
 
         if (playerTransform == null)
         {
-            JugadorActivador jugadorActivador = FindFirstObjectByType<JugadorActivador>();
+            JugadorActivador jugadorActivador =
+                FindFirstObjectByType<JugadorActivador>();
 
             if (jugadorActivador != null)
             {
-                playerTransform = jugadorActivador.transform;
+                playerTransform =
+                    jugadorActivador.transform;
             }
         }
 
-        if (movimientoPlayer == null && playerTransform != null)
+        if (movimientoPlayer == null &&
+            playerTransform != null)
         {
-            movimientoPlayer = playerTransform.GetComponent<movimientoplayer>();
+            movimientoPlayer =
+                playerTransform
+                    .GetComponent<movimientoplayer>();
         }
 
-        if (playerEnergy == null && playerTransform != null)
+        if (playerEnergy == null &&
+            playerTransform != null)
         {
-            playerEnergy = playerTransform.GetComponent<PlayerEnergy>();
+            playerEnergy =
+                playerTransform
+                    .GetComponent<PlayerEnergy>();
         }
 
-        if (playerController == null && playerTransform != null)
+        if (playerController == null &&
+            playerTransform != null)
         {
-            playerController = playerTransform.GetComponent<CharacterController>();
+            playerController =
+                playerTransform
+                    .GetComponent<CharacterController>();
         }
 
-        if (playerAnimator == null && playerTransform != null)
+        if (playerAnimator == null &&
+            playerTransform != null)
         {
-            playerAnimator = playerTransform.GetComponentInChildren<Animator>();
+            playerAnimator =
+                playerTransform
+                    .GetComponentInChildren<Animator>();
         }
     }
 
     private void ActualizarUltimoDispositivoUsado()
     {
-        if (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame)
+        if (Keyboard.current != null &&
+            Keyboard.current.anyKey.wasPressedThisFrame)
         {
-            lastInputDevice = InputDeviceType.KeyboardMouse;
+            lastInputDevice =
+                InputDeviceType.KeyboardMouse;
+
             return;
         }
 
@@ -560,7 +665,9 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
             if (mouseUsado)
             {
-                lastInputDevice = InputDeviceType.KeyboardMouse;
+                lastInputDevice =
+                    InputDeviceType.KeyboardMouse;
+
                 return;
             }
         }
@@ -582,30 +689,39 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
             if (mandoUsado)
             {
-                lastInputDevice = DetectarTipoMando(Gamepad.current);
+                lastInputDevice =
+                    DetectarTipoMando(
+                        Gamepad.current
+                    );
             }
         }
     }
 
-    private InputDeviceType DetectarTipoMando(Gamepad gamepad)
+    private InputDeviceType DetectarTipoMando(
+        Gamepad gamepad)
     {
         if (gamepad == null)
         {
             return InputDeviceType.GenericGamepad;
         }
 
-        string displayName = gamepad.displayName != null ? gamepad.displayName.ToLower() : "";
-        string name = gamepad.name != null ? gamepad.name.ToLower() : "";
-        string manufacturer = gamepad.description.manufacturer != null
-            ? gamepad.description.manufacturer.ToLower()
-            : "";
-        string product = gamepad.description.product != null
-            ? gamepad.description.product.ToLower()
-            : "";
+        string displayName =
+            gamepad.displayName?.ToLower() ?? "";
 
-        string combinedInfo = displayName + " " + name + " " + manufacturer + " " + product;
+        string name =
+            gamepad.name?.ToLower() ?? "";
 
-        Debug.Log("MANDO DETECTADO SHELTER -> " + combinedInfo);
+        string manufacturer =
+            gamepad.description.manufacturer?.ToLower() ?? "";
+
+        string product =
+            gamepad.description.product?.ToLower() ?? "";
+
+        string combinedInfo =
+            displayName + " " +
+            name + " " +
+            manufacturer + " " +
+            product;
 
         if (combinedInfo.Contains("sony") ||
             combinedInfo.Contains("playstation") ||
@@ -634,12 +750,9 @@ public class ShelterSleep : MonoBehaviour, Interactuable
                 return "□";
 
             case InputDeviceType.Xbox:
-                return "X";
-
             case InputDeviceType.GenericGamepad:
                 return "X";
 
-            case InputDeviceType.KeyboardMouse:
             default:
                 return "E";
         }
@@ -649,17 +762,18 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(GetInteractionPositionEditor(), rango);
+
+        Gizmos.DrawWireSphere(
+            GetInteractionPositionEditor(),
+            rango
+        );
     }
 
     private Vector3 GetInteractionPositionEditor()
     {
-        if (interactionPoint != null)
-        {
-            return interactionPoint.position;
-        }
-
-        return transform.position;
+        return interactionPoint != null
+            ? interactionPoint.position
+            : transform.position;
     }
 #endif
 }
