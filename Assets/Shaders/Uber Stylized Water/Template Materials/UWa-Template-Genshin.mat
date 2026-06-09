@@ -142,7 +142,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SurfFoam_Map:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e6b5bf1be45c52a44b84bc4bc3e5979b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SurfFoam_Mask:
@@ -184,9 +184,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _1st_Wave_Height: 0.001
-    - _1st_Wave_Length: 3
+    - _1st_Wave_Length: 4.27
     - _1st_Wave_Sharpness: 0.3
-    - _1st_Wave_Speed: 0.35
+    - _1st_Wave_Speed: 0.62
     - _2nd_Wave_Height: 0.002
     - _2nd_Wave_Length: 5
     - _2nd_Wave_Sharpness: 0.1
@@ -380,7 +380,7 @@ Material:
     - _Underwater_Fade: 15
     - _WORLDSPACEDEPTH: 1
     - _WaterDepth: 0.4
-    - _Water_Depth: 0.3
+    - _Water_Depth: 1.19
     - _WaveHeight: 0.01
     - _WaveHeight2nd: 0.01
     - _WaveLength: 10
@@ -416,7 +416,7 @@ Material:
     - _tile: 10
     - _width: 0.238
     m_Colors:
-    - _1st_Wave_Direction: {r: 1, g: 0, b: 0, a: 0}
+    - _1st_Wave_Direction: {r: -0.29, g: 0, b: 0, a: 0}
     - _2nd_Wave_Direction: {r: -1, g: 0, b: 1, a: 0}
     - _Color_Deep: {r: 0, g: 0.3137255, b: 0.54901963, a: 0.78039217}
     - _Color_Shallow: {r: 0, g: 0.6666667, b: 1, a: 0.09803922}
@@ -463,7 +463,7 @@ Material:
     - _WaveDirection: {r: 1, g: 0, b: 0, a: 0}
     - _WaveDirection2nd: {r: 0, g: 0, b: 1, a: 0}
     - _WaveTopColor: {r: 1, g: 0.07585351, b: 0, a: 1}
-    - _Wave_Top_Color: {r: 0.078431375, g: 0.47058824, b: 0.627451, a: 1}
+    - _Wave_Top_Color: {r: 0.86415094, g: 0.86415094, b: 0.86415094, a: 1}
     - _maskMinMax: {r: 0, g: 0.78, b: 0, a: 0}
     - _shoreTexSpeed: {r: 0.1, g: 0.1, b: 0, a: 0}
     - _shoreTexTile: {r: 1, g: 1, b: 0, a: 0}

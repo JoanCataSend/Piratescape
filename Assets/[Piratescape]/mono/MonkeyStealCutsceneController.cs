@@ -18,17 +18,25 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     [SerializeField] private Transform puntoEntradaTienda;
     [SerializeField] private Transform puntoInteriorTienda;
 
+    [Header("Animación de la tienda")]
+    [SerializeField] private GameObject tiendaNormal;
+    [SerializeField] private GameObject tiendaAnimada;
+    [SerializeField] private Animator animatorTiendaAnimada;
+    [SerializeField] private string estadoAnimacionTienda = "Take 001";
+    [SerializeField] private float duracionAnimacionTienda = 3.35f;
+    [SerializeField] private float esperaTrasAnimacionTienda = 0.2f;
+
     [Header("Cámaras")]
     [SerializeField] private GameObject camaraJugador;
     [SerializeField] private GameObject camaraCinematica;
 
     [Header("Tiempos")]
-    [SerializeField] private float esperaDentroTienda = 1f;
+    [SerializeField] private float esperaDentroTienda = 1.2f;
     [SerializeField] private float esperaFinal = 0.5f;
 
     [Header("Velocidades")]
-    [SerializeField] private float velocidadIrTienda = 2f;
-    [SerializeField] private float velocidadSalirCorriendo = 5f;
+    [SerializeField] private float velocidadIrTienda = 4f;
+    [SerializeField] private float velocidadSalirCorriendo = 10f;
     [SerializeField] private float velocidadRotacion = 10f;
     [SerializeField] private float distanciaLlegada = 0.08f;
 
@@ -43,6 +51,9 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     [SerializeField] private float distanciaRaycast = 20f;
     [SerializeField] private float alturaSobreSuelo = 0.02f;
 
+    private Coroutine rutinaMovimiento;
+    private bool cinematicaActiva;
+
     private void Awake()
     {
         PrepararEstadoInicial();
@@ -50,27 +61,39 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private void PrepararEstadoInicial()
     {
+        cinematicaActiva = false;
+        rutinaMovimiento = null;
+
         if (camaraCinematica != null)
         {
             camaraCinematica.SetActive(false);
         }
 
-        if (monos == null)
+        if (camaraJugador != null)
         {
-            return;
+            camaraJugador.SetActive(true);
         }
 
-        for (int i = 0; i < monos.Length; i++)
+        if (tiendaNormal != null)
         {
-            if (monos[i] != null && monos[i].mono != null)
-            {
-                monos[i].mono.gameObject.SetActive(false);
-            }
+            tiendaNormal.SetActive(true);
         }
+
+        if (tiendaAnimada != null)
+        {
+            tiendaAnimada.SetActive(false);
+        }
+
+        BuscarAnimatorTienda();
+        OcultarMonos();
     }
 
     public void PrepararCinematica()
     {
+        DetenerRutinaMovimiento();
+
+        cinematicaActiva = true;
+
         PrepararMonos();
 
         if (camaraJugador != null)
@@ -82,30 +105,95 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         {
             camaraCinematica.SetActive(true);
         }
+        else
+        {
+            Debug.LogWarning(
+                "MonkeyStealCutsceneController: falta asignar Cámara Cinemática.",
+                this
+            );
+        }
+    }
+
+    public void IniciarMovimientoMonos()
+    {
+        DetenerRutinaMovimiento();
+
+        if (!cinematicaActiva)
+        {
+            PrepararCinematica();
+        }
+
+        rutinaMovimiento = StartCoroutine(ReproducirMovimientoMonos());
     }
 
     public IEnumerator ReproducirMovimientoMonos()
     {
         ReproducirAnimacionTodos(estadoWalk);
 
-        yield return MoverMonosA(puntoEntradaTienda, velocidadIrTienda);
+        yield return MoverMonosA(
+            puntoEntradaTienda,
+            velocidadIrTienda
+        );
+
+        if (!cinematicaActiva)
+        {
+            yield break;
+        }
 
         OcultarMonos();
 
-        yield return new WaitForSeconds(esperaDentroTienda);
+        if (esperaDentroTienda > 0f)
+        {
+            yield return new WaitForSecondsRealtime(
+                esperaDentroTienda
+            );
+        }
+
+        if (!cinematicaActiva)
+        {
+            yield break;
+        }
+
+        yield return ReproducirAnimacionTienda();
+
+        if (esperaTrasAnimacionTienda > 0f)
+        {
+            yield return new WaitForSecondsRealtime(
+                esperaTrasAnimacionTienda
+            );
+        }
+
+        if (!cinematicaActiva)
+        {
+            yield break;
+        }
 
         ColocarMonosEnEntradaTienda();
         MostrarMonos();
 
         ReproducirAnimacionTodos(estadoRun);
 
-        yield return MoverMonosAPuntosIniciales(velocidadSalirCorriendo);
+        yield return MoverMonosAPuntosIniciales(
+            velocidadSalirCorriendo
+        );
 
-        yield return new WaitForSeconds(esperaFinal);
+        if (esperaFinal > 0f)
+        {
+            yield return new WaitForSecondsRealtime(
+                esperaFinal
+            );
+        }
+
+        rutinaMovimiento = null;
     }
 
     public void FinalizarCinematica()
     {
+        cinematicaActiva = false;
+
+        DetenerRutinaMovimiento();
+        OcultarMonos();
+
         if (camaraCinematica != null)
         {
             camaraCinematica.SetActive(false);
@@ -115,16 +203,105 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         {
             camaraJugador.SetActive(true);
         }
-
-        if (monos != null)
+        else
         {
-            for (int i = 0; i < monos.Length; i++)
-            {
-                if (monos[i] != null && monos[i].mono != null)
-                {
-                    monos[i].mono.gameObject.SetActive(false);
-                }
-            }
+            Debug.LogWarning(
+                "MonkeyStealCutsceneController: falta asignar Cámara Jugador.",
+                this
+            );
+        }
+    }
+
+    private void DetenerRutinaMovimiento()
+    {
+        if (rutinaMovimiento == null)
+        {
+            return;
+        }
+
+        StopCoroutine(rutinaMovimiento);
+        rutinaMovimiento = null;
+    }
+
+    private IEnumerator ReproducirAnimacionTienda()
+    {
+        if (tiendaNormal != null)
+        {
+            tiendaNormal.SetActive(false);
+        }
+
+        if (tiendaAnimada == null)
+        {
+            Debug.LogWarning(
+                "MonkeyStealCutsceneController: falta asignar Tienda Animada.",
+                this
+            );
+
+            yield break;
+        }
+
+        tiendaAnimada.SetActive(true);
+        BuscarAnimatorTienda();
+
+        if (animatorTiendaAnimada == null)
+        {
+            Debug.LogWarning(
+                "MonkeyStealCutsceneController: no se encontró el Animator de la tienda.",
+                this
+            );
+
+            yield break;
+        }
+
+        if (string.IsNullOrWhiteSpace(estadoAnimacionTienda))
+        {
+            Debug.LogWarning(
+                "MonkeyStealCutsceneController: falta el nombre del estado de la tienda.",
+                this
+            );
+
+            yield break;
+        }
+
+        animatorTiendaAnimada.enabled = true;
+        animatorTiendaAnimada.applyRootMotion = false;
+        animatorTiendaAnimada.cullingMode =
+            AnimatorCullingMode.AlwaysAnimate;
+
+        animatorTiendaAnimada.Rebind();
+        animatorTiendaAnimada.Update(0f);
+
+        animatorTiendaAnimada.Play(
+            estadoAnimacionTienda,
+            0,
+            0f
+        );
+
+        animatorTiendaAnimada.Update(0f);
+
+        if (duracionAnimacionTienda > 0f)
+        {
+            yield return new WaitForSecondsRealtime(
+                duracionAnimacionTienda
+            );
+        }
+    }
+
+    private void BuscarAnimatorTienda()
+    {
+        if (animatorTiendaAnimada != null ||
+            tiendaAnimada == null)
+        {
+            return;
+        }
+
+        animatorTiendaAnimada =
+            tiendaAnimada.GetComponent<Animator>();
+
+        if (animatorTiendaAnimada == null)
+        {
+            animatorTiendaAnimada =
+                tiendaAnimada.GetComponentInChildren<Animator>(true);
         }
     }
 
@@ -139,77 +316,94 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         {
             MonoRobo monoRobo = monos[i];
 
-            if (monoRobo == null || monoRobo.mono == null || monoRobo.puntoInicial == null)
+            if (monoRobo == null ||
+                monoRobo.mono == null ||
+                monoRobo.puntoInicial == null)
             {
                 continue;
             }
 
-            Vector3 posicionInicial = AjustarPosicionAlSuelo(
-                monoRobo.puntoInicial.position,
-                monoRobo.mono
-            );
+            monoRobo.mono.position =
+                AjustarPosicionAlSuelo(
+                    monoRobo.puntoInicial.position,
+                    monoRobo.mono
+                );
 
-            monoRobo.mono.position = posicionInicial;
-            monoRobo.mono.rotation = monoRobo.puntoInicial.rotation;
+            monoRobo.mono.rotation =
+                monoRobo.puntoInicial.rotation;
+
             monoRobo.mono.gameObject.SetActive(true);
 
-            if (monoRobo.animator == null)
-            {
-                monoRobo.animator = monoRobo.mono.GetComponent<Animator>();
-
-                if (monoRobo.animator == null)
-                {
-                    monoRobo.animator = monoRobo.mono.GetComponentInChildren<Animator>();
-                }
-            }
+            BuscarAnimatorMono(monoRobo);
 
             if (monoRobo.animator != null)
             {
                 monoRobo.animator.enabled = true;
                 monoRobo.animator.applyRootMotion = false;
-                monoRobo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                monoRobo.animator.cullingMode =
+                    AnimatorCullingMode.AlwaysAnimate;
+
                 monoRobo.animator.Rebind();
                 monoRobo.animator.Update(0f);
             }
         }
     }
 
+    private void BuscarAnimatorMono(MonoRobo monoRobo)
+    {
+        if (monoRobo == null ||
+            monoRobo.animator != null ||
+            monoRobo.mono == null)
+        {
+            return;
+        }
+
+        monoRobo.animator =
+            monoRobo.mono.GetComponent<Animator>();
+
+        if (monoRobo.animator == null)
+        {
+            monoRobo.animator =
+                monoRobo.mono.GetComponentInChildren<Animator>(true);
+        }
+    }
+
     private void ReproducirAnimacionTodos(string nombreEstado)
     {
-        if (monos == null || string.IsNullOrWhiteSpace(nombreEstado))
+        if (monos == null ||
+            string.IsNullOrWhiteSpace(nombreEstado))
         {
             return;
         }
 
         for (int i = 0; i < monos.Length; i++)
         {
-            if (monos[i] == null)
+            MonoRobo monoRobo = monos[i];
+
+            if (monoRobo == null)
             {
                 continue;
             }
 
-            if (monos[i].animator == null && monos[i].mono != null)
-            {
-                monos[i].animator = monos[i].mono.GetComponent<Animator>();
+            BuscarAnimatorMono(monoRobo);
 
-                if (monos[i].animator == null)
-                {
-                    monos[i].animator = monos[i].mono.GetComponentInChildren<Animator>();
-                }
-            }
-
-            if (monos[i].animator == null)
+            if (monoRobo.animator == null)
             {
-                Debug.LogWarning("Mono sin Animator asignado en MonkeyStealCutsceneController", this);
                 continue;
             }
 
-            monos[i].animator.enabled = true;
-            monos[i].animator.applyRootMotion = false;
-            monos[i].animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            monoRobo.animator.enabled = true;
+            monoRobo.animator.applyRootMotion = false;
+            monoRobo.animator.cullingMode =
+                AnimatorCullingMode.AlwaysAnimate;
 
-            monos[i].animator.Play(nombreEstado, 0, 0f);
-            monos[i].animator.Update(0f);
+            monoRobo.animator.Play(
+                nombreEstado,
+                0,
+                0f
+            );
+
+            monoRobo.animator.Update(0f);
         }
     }
 
@@ -222,7 +416,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
         for (int i = 0; i < monos.Length; i++)
         {
-            if (monos[i] != null && monos[i].mono != null)
+            if (monos[i] != null &&
+                monos[i].mono != null)
             {
                 monos[i].mono.gameObject.SetActive(false);
             }
@@ -238,54 +433,66 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
         for (int i = 0; i < monos.Length; i++)
         {
-            if (monos[i] != null && monos[i].mono != null)
+            MonoRobo monoRobo = monos[i];
+
+            if (monoRobo == null ||
+                monoRobo.mono == null)
             {
-                monos[i].mono.gameObject.SetActive(true);
+                continue;
+            }
 
-                if (monos[i].animator == null)
-                {
-                    monos[i].animator = monos[i].mono.GetComponent<Animator>();
+            monoRobo.mono.gameObject.SetActive(true);
 
-                    if (monos[i].animator == null)
-                    {
-                        monos[i].animator = monos[i].mono.GetComponentInChildren<Animator>();
-                    }
-                }
+            BuscarAnimatorMono(monoRobo);
 
-                if (monos[i].animator != null)
-                {
-                    monos[i].animator.enabled = true;
-                    monos[i].animator.applyRootMotion = false;
-                    monos[i].animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-                    monos[i].animator.Update(0f);
-                }
+            if (monoRobo.animator != null)
+            {
+                monoRobo.animator.enabled = true;
+                monoRobo.animator.applyRootMotion = false;
+                monoRobo.animator.cullingMode =
+                    AnimatorCullingMode.AlwaysAnimate;
+
+                monoRobo.animator.Update(0f);
             }
         }
     }
 
     private void ColocarMonosEnEntradaTienda()
     {
-        if (monos == null || puntoEntradaTienda == null)
+        if (monos == null ||
+            puntoEntradaTienda == null)
         {
             return;
         }
 
         for (int i = 0; i < monos.Length; i++)
         {
-            if (monos[i] == null || monos[i].mono == null)
+            MonoRobo monoRobo = monos[i];
+
+            if (monoRobo == null ||
+                monoRobo.mono == null)
             {
                 continue;
             }
 
-            Vector3 posicion = puntoEntradaTienda.position + ObtenerOffsetMono(i);
-            posicion = AjustarPosicionAlSuelo(posicion, monos[i].mono);
+            Vector3 posicion =
+                puntoEntradaTienda.position +
+                ObtenerOffsetMono(i);
 
-            monos[i].mono.position = posicion;
-            monos[i].mono.rotation = puntoEntradaTienda.rotation;
+            monoRobo.mono.position =
+                AjustarPosicionAlSuelo(
+                    posicion,
+                    monoRobo.mono
+                );
+
+            monoRobo.mono.rotation =
+                puntoEntradaTienda.rotation;
         }
     }
 
-    private IEnumerator MoverMonosA(Transform destino, float velocidad)
+    private IEnumerator MoverMonosA(
+        Transform destino,
+        float velocidad)
     {
         if (destino == null || monos == null)
         {
@@ -294,7 +501,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
         bool todosLlegaron = false;
 
-        while (!todosLlegaron)
+        while (!todosLlegaron && cinematicaActiva)
         {
             todosLlegaron = true;
 
@@ -302,13 +509,17 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             {
                 MonoRobo monoRobo = monos[i];
 
-                if (monoRobo == null || monoRobo.mono == null)
+                if (monoRobo == null ||
+                    monoRobo.mono == null)
                 {
                     continue;
                 }
 
-                Vector3 destinoConOffset = destino.position + ObtenerOffsetMono(i);
-                bool llego = MoverMonoHacia(monoRobo.mono, destinoConOffset, velocidad);
+                bool llego = MoverMonoHacia(
+                    monoRobo.mono,
+                    destino.position + ObtenerOffsetMono(i),
+                    velocidad
+                );
 
                 if (!llego)
                 {
@@ -320,7 +531,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         }
     }
 
-    private IEnumerator MoverMonosAPuntosIniciales(float velocidad)
+    private IEnumerator MoverMonosAPuntosIniciales(
+        float velocidad)
     {
         if (monos == null)
         {
@@ -329,7 +541,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
         bool todosLlegaron = false;
 
-        while (!todosLlegaron)
+        while (!todosLlegaron && cinematicaActiva)
         {
             todosLlegaron = true;
 
@@ -337,12 +549,18 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             {
                 MonoRobo monoRobo = monos[i];
 
-                if (monoRobo == null || monoRobo.mono == null || monoRobo.puntoInicial == null)
+                if (monoRobo == null ||
+                    monoRobo.mono == null ||
+                    monoRobo.puntoInicial == null)
                 {
                     continue;
                 }
 
-                bool llego = MoverMonoHacia(monoRobo.mono, monoRobo.puntoInicial.position, velocidad);
+                bool llego = MoverMonoHacia(
+                    monoRobo.mono,
+                    monoRobo.puntoInicial.position,
+                    velocidad
+                );
 
                 if (!llego)
                 {
@@ -354,8 +572,16 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         }
     }
 
-    private bool MoverMonoHacia(Transform mono, Vector3 destino, float velocidad)
+    private bool MoverMonoHacia(
+        Transform mono,
+        Vector3 destino,
+        float velocidad)
     {
+        if (mono == null)
+        {
+            return true;
+        }
+
         Vector3 posicionActual = mono.position;
 
         Vector3 destinoPlano = new Vector3(
@@ -364,28 +590,49 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             destino.z
         );
 
-        Vector3 direccion = destinoPlano - posicionActual;
+        Vector3 direccion =
+            destinoPlano - posicionActual;
+
         direccion.y = 0f;
 
         if (direccion.magnitude <= distanciaLlegada)
         {
-            Vector3 posicionFinal = new Vector3(destino.x, posicionActual.y, destino.z);
-            posicionFinal = AjustarPosicionAlSuelo(posicionFinal, mono);
+            Vector3 posicionFinal = new Vector3(
+                destino.x,
+                posicionActual.y,
+                destino.z
+            );
 
-            mono.position = posicionFinal;
+            mono.position =
+                AjustarPosicionAlSuelo(
+                    posicionFinal,
+                    mono
+                );
+
             return true;
         }
 
-        Vector3 direccionNormalizada = direccion.normalized;
+        Vector3 direccionNormalizada =
+            direccion.normalized;
 
-        Vector3 nuevaPosicion = posicionActual + direccionNormalizada * velocidad * Time.deltaTime;
-        nuevaPosicion = AjustarPosicionAlSuelo(nuevaPosicion, mono);
+        Vector3 nuevaPosicion =
+            posicionActual +
+            direccionNormalizada *
+            velocidad *
+            Time.deltaTime;
 
-        mono.position = nuevaPosicion;
+        mono.position =
+            AjustarPosicionAlSuelo(
+                nuevaPosicion,
+                mono
+            );
 
         if (direccionNormalizada.sqrMagnitude > 0.001f)
         {
-            Quaternion rotacionObjetivo = Quaternion.LookRotation(direccionNormalizada);
+            Quaternion rotacionObjetivo =
+                Quaternion.LookRotation(
+                    direccionNormalizada
+                );
 
             mono.rotation = Quaternion.Slerp(
                 mono.rotation,
@@ -397,14 +644,17 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         return false;
     }
 
-    private Vector3 AjustarPosicionAlSuelo(Vector3 posicion, Transform mono)
+    private Vector3 AjustarPosicionAlSuelo(
+        Vector3 posicion,
+        Transform mono)
     {
         if (!ajustarAlturaAlSuelo)
         {
             return posicion;
         }
 
-        Vector3 origen = posicion + Vector3.up * alturaRaycast;
+        Vector3 origen =
+            posicion + Vector3.up * alturaRaycast;
 
         RaycastHit[] impactos = Physics.RaycastAll(
             origen,
@@ -419,39 +669,43 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             return posicion;
         }
 
-        RaycastHit mejorImpacto = new RaycastHit();
-        bool hayImpactoValido = false;
+        bool encontrado = false;
         float menorDistancia = float.MaxValue;
+        RaycastHit mejorImpacto = new RaycastHit();
 
         for (int i = 0; i < impactos.Length; i++)
         {
             RaycastHit impacto = impactos[i];
 
-            if (mono != null && impacto.transform.IsChildOf(mono))
+            if (mono != null &&
+                impacto.transform.IsChildOf(mono))
             {
                 continue;
             }
 
-            if (impacto.distance < menorDistancia)
+            if (impacto.distance >= menorDistancia)
             {
-                menorDistancia = impacto.distance;
-                mejorImpacto = impacto;
-                hayImpactoValido = true;
+                continue;
             }
+
+            menorDistancia = impacto.distance;
+            mejorImpacto = impacto;
+            encontrado = true;
         }
 
-        if (!hayImpactoValido)
+        if (encontrado)
         {
-            return posicion;
+            posicion.y =
+                mejorImpacto.point.y +
+                alturaSobreSuelo;
         }
 
-        posicion.y = mejorImpacto.point.y + alturaSobreSuelo;
         return posicion;
     }
 
     private Vector3 ObtenerOffsetMono(int indice)
     {
-        float separacion = 0.45f;
+        const float separacion = 0.45f;
 
         if (indice == 0)
         {
@@ -460,9 +714,18 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
         if (indice % 2 == 0)
         {
-            return Vector3.right * separacion * indice;
+            return Vector3.right *
+                   separacion *
+                   indice;
         }
 
-        return Vector3.left * separacion * indice;
+        return Vector3.left *
+               separacion *
+               indice;
+    }
+
+    private void OnDisable()
+    {
+        FinalizarCinematica();
     }
 }

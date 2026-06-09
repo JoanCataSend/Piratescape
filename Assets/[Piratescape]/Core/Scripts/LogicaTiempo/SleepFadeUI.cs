@@ -8,7 +8,15 @@ public class SleepFadeUI : MonoBehaviour
     [SerializeField] private Image fadeImage;
 
     [Header("Duración")]
+    [Min(0f)]
     [SerializeField] private float fadeDuration = 1f;
+
+    [Header("Estado inicial")]
+    [Tooltip(
+        "DESACTIVADO en MainDemo. " +
+        "ACTIVADO en EscenaCabina y FinalAlternativo."
+    )]
+    [SerializeField] private bool empezarCerrado = false;
 
     [Header("Iris Transition")]
     [SerializeField] private float openRadius = 1.5f;
@@ -21,30 +29,40 @@ public class SleepFadeUI : MonoBehaviour
     private Coroutine currentRoutine;
     private Material runtimeMaterial;
 
-    private static readonly int RadiusID = Shader.PropertyToID("_Radius");
-    private static readonly int SoftnessID = Shader.PropertyToID("_Softness");
-    private static readonly int CenterID = Shader.PropertyToID("_Center");
-    private static readonly int AspectID = Shader.PropertyToID("_Aspect");
+    private static readonly int RadiusID =
+        Shader.PropertyToID("_Radius");
+
+    private static readonly int SoftnessID =
+        Shader.PropertyToID("_Softness");
+
+    private static readonly int CenterID =
+        Shader.PropertyToID("_Center");
+
+    private static readonly int AspectID =
+        Shader.PropertyToID("_Aspect");
 
     private void Awake()
     {
-        if (fadeImage == null)
+        if (!PrepararMaterial())
         {
-            Debug.LogWarning("SleepFadeUI: falta la referencia a fadeImage.", this);
+            enabled = false;
             return;
         }
 
-        if (fadeImage.material == null)
-        {
-            Debug.LogWarning("SleepFadeUI: la Image no tiene material asignado.", this);
-            return;
-        }
-
-        runtimeMaterial = new Material(fadeImage.material);
-        fadeImage.material = runtimeMaterial;
+        // Evita que la imagen del fade bloquee botones o interacciones.
+        fadeImage.raycastTarget = false;
 
         ConfigurarMaterial();
-        SetRadiusImmediate(openRadius);
+
+        if (empezarCerrado)
+        {
+            AplicarRadioInmediato(closedRadius);
+        }
+        else
+        {
+            AplicarRadioInmediato(openRadius);
+        }
+
         IsFading = false;
     }
 
@@ -53,14 +71,54 @@ public class SleepFadeUI : MonoBehaviour
         ConfigurarMaterial();
     }
 
-    public void Sleep()
+    private bool PrepararMaterial()
     {
-        if (currentRoutine != null)
+        if (fadeImage == null)
         {
-            StopCoroutine(currentRoutine);
+            Debug.LogWarning(
+                "SleepFadeUI: falta asignar Fade Image.",
+                this
+            );
+
+            return false;
         }
 
+        if (fadeImage.material == null)
+        {
+            Debug.LogWarning(
+                "SleepFadeUI: Fade Image no tiene material asignado.",
+                this
+            );
+
+            return false;
+        }
+
+        // Cada escena y cada instancia tendrá su propio material.
+        // Así una transición no modifica el material de otra escena.
+        runtimeMaterial = new Material(fadeImage.material);
+        fadeImage.material = runtimeMaterial;
+
+        return true;
+    }
+
+    // Sistema original de dormir:
+    // cierra el iris y después vuelve a abrirlo.
+    public void Sleep()
+    {
+        DetenerFadeActual();
         currentRoutine = StartCoroutine(SleepRoutine());
+    }
+
+    public void FadeOut()
+    {
+        DetenerFadeActual();
+        currentRoutine = StartCoroutine(FadeOutRoutine());
+    }
+
+    public void FadeIn()
+    {
+        DetenerFadeActual();
+        currentRoutine = StartCoroutine(FadeInRoutine());
     }
 
     public IEnumerator FadeOutRoutine()
@@ -70,6 +128,7 @@ public class SleepFadeUI : MonoBehaviour
         yield return FadeTo(closedRadius);
 
         IsFading = false;
+        currentRoutine = null;
     }
 
     public IEnumerator FadeInRoutine()
@@ -79,13 +138,31 @@ public class SleepFadeUI : MonoBehaviour
         yield return FadeTo(openRadius);
 
         IsFading = false;
+        currentRoutine = null;
+    }
+
+    public void SetClosedImmediate()
+    {
+        DetenerFadeActual();
+        AplicarRadioInmediato(closedRadius);
+        IsFading = false;
+    }
+
+    public void SetOpenImmediate()
+    {
+        DetenerFadeActual();
+        AplicarRadioInmediato(openRadius);
+        IsFading = false;
     }
 
     private IEnumerator SleepRoutine()
     {
-        yield return FadeOutRoutine();
-        yield return FadeInRoutine();
+        IsFading = true;
 
+        yield return FadeTo(closedRadius);
+        yield return FadeTo(openRadius);
+
+        IsFading = false;
         currentRoutine = null;
     }
 
@@ -96,22 +173,43 @@ public class SleepFadeUI : MonoBehaviour
             yield break;
         }
 
+        float startRadius =
+            runtimeMaterial.GetFloat(RadiusID);
+
+        if (fadeDuration <= 0f)
+        {
+            AplicarRadioInmediato(targetRadius);
+            yield break;
+        }
+
         float elapsed = 0f;
-        float startRadius = runtimeMaterial.GetFloat(RadiusID);
 
         while (elapsed < fadeDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
 
-            float t = fadeDuration <= 0f ? 1f : elapsed / fadeDuration;
-            float newRadius = Mathf.Lerp(startRadius, targetRadius, t);
+            float t = Mathf.Clamp01(
+                elapsed / fadeDuration
+            );
 
-            SetRadiusImmediate(newRadius);
+            float smoothT = Mathf.SmoothStep(
+                0f,
+                1f,
+                t
+            );
+
+            float radius = Mathf.Lerp(
+                startRadius,
+                targetRadius,
+                smoothT
+            );
+
+            AplicarRadioInmediato(radius);
 
             yield return null;
         }
 
-        SetRadiusImmediate(targetRadius);
+        AplicarRadioInmediato(targetRadius);
     }
 
     private void ConfigurarMaterial()
@@ -125,44 +223,80 @@ public class SleepFadeUI : MonoBehaviour
 
         if (Screen.height > 0)
         {
-            aspect = Screen.width / (float)Screen.height;
+            aspect =
+                Screen.width / (float)Screen.height;
         }
 
-        runtimeMaterial.SetFloat(SoftnessID, softness);
-        runtimeMaterial.SetVector(CenterID, new Vector4(center.x, center.y, 0f, 0f));
-        runtimeMaterial.SetFloat(AspectID, aspect);
+        runtimeMaterial.SetFloat(
+            SoftnessID,
+            softness
+        );
+
+        runtimeMaterial.SetVector(
+            CenterID,
+            new Vector4(
+                center.x,
+                center.y,
+                0f,
+                0f
+            )
+        );
+
+        runtimeMaterial.SetFloat(
+            AspectID,
+            aspect
+        );
     }
 
-    private void SetRadiusImmediate(float radius)
+    private void AplicarRadioInmediato(float radius)
     {
         if (runtimeMaterial == null)
         {
             return;
         }
 
-        runtimeMaterial.SetFloat(RadiusID, radius);
+        runtimeMaterial.SetFloat(
+            RadiusID,
+            radius
+        );
+    }
+
+    private void DetenerFadeActual()
+    {
+        if (currentRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(currentRoutine);
+        currentRoutine = null;
+        IsFading = false;
+    }
+
+    private void OnDisable()
+    {
+        DetenerFadeActual();
+    }
+
+    private void OnDestroy()
+    {
+        if (runtimeMaterial != null)
+        {
+            Destroy(runtimeMaterial);
+            runtimeMaterial = null;
+        }
     }
 
     [ContextMenu("Debug/Iris Close")]
     private void DebugIrisClose()
     {
-        if (currentRoutine != null)
-        {
-            StopCoroutine(currentRoutine);
-        }
-
-        currentRoutine = StartCoroutine(FadeOutRoutine());
+        SetClosedImmediate();
     }
 
     [ContextMenu("Debug/Iris Open")]
     private void DebugIrisOpen()
     {
-        if (currentRoutine != null)
-        {
-            StopCoroutine(currentRoutine);
-        }
-
-        currentRoutine = StartCoroutine(FadeInRoutine());
+        SetOpenImmediate();
     }
 
     [ContextMenu("Debug/Iris Sleep Test")]
