@@ -155,6 +155,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: MenuPausaUI, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AbrirAjustes
+      objectReference: {fileID: 0}
+    - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1494036613258333239, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -255,6 +267,74 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4324199996928598149, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 4324199996928598149, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PedirSalirJuego
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324199996928598149, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CancelarSalirJuego
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7140295974457656727, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 7140295974457656727, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ConfirmarVolverAlMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7140295974457656727, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ConfirmarSalirJuego
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8141819500110496002, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -354,7 +434,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 999
@@ -408,6 +488,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211ea7605726e3b4286e674bb3adbb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panelPausaPrincipal: {fileID: 0}
+  panelAjustes: {fileID: 0}
+  panelConfirmarVolverMenu: {fileID: 0}
+  settingsMenuController: {fileID: 0}
 --- !u!4 &1232418729
 Transform:
   m_ObjectHideFlags: 0

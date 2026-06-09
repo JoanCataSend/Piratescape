@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CustomCursor : MonoBehaviour
 {
+    private static CustomCursor instancia;
+
     [Header("Cursor")]
     [SerializeField] private Texture2D cursorTexture;
 
@@ -10,7 +12,17 @@ public class CustomCursor : MonoBehaviour
 
     private void Awake()
     {
+        if (instancia != null && instancia != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instancia = this;
+
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
+
         AplicarCursor();
     }
 
@@ -37,7 +49,6 @@ public class CustomCursor : MonoBehaviour
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
         Cursor.SetCursor(cursorTexture, hotspot, CursorMode.ForceSoftware);
     }
 }
