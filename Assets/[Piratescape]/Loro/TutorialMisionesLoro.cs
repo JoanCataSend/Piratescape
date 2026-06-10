@@ -54,6 +54,9 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private int totalConsumiblesReferencia;
     private bool intentoConsumirItem;
 
+    private bool ocultoTemporalmentePorPausa;
+    private bool panelTutorialActivoAntesDePausa;
+
     public bool TutorialActivo => tutorialActivo;
 
     private void Awake()
@@ -84,6 +87,11 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
     private void Update()
     {
         if (!tutorialActivo)
+        {
+            return;
+        }
+
+        if (ocultoTemporalmentePorPausa)
         {
             return;
         }
@@ -438,6 +446,11 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
 
     private void MostrarObjetivo(string objetivo, string progreso)
     {
+        if (ocultoTemporalmentePorPausa)
+        {
+            return;
+        }
+
         if (panelTutorial != null && !panelTutorial.activeSelf)
         {
             panelTutorial.SetActive(true);
@@ -638,4 +651,36 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
             }
         }
     }
+
+    public void OcultarVisualmentePorPausa()
+{
+    if (ocultoTemporalmentePorPausa)
+    {
+        return;
+    }
+
+    ocultoTemporalmentePorPausa = true;
+
+    panelTutorialActivoAntesDePausa = panelTutorial != null && panelTutorial.activeSelf;
+
+    if (panelTutorial != null)
+    {
+        panelTutorial.SetActive(false);
+    }
+}
+
+public void RestaurarVisualmenteDespuesDePausa()
+{
+    if (!ocultoTemporalmentePorPausa)
+    {
+        return;
+    }
+
+    ocultoTemporalmentePorPausa = false;
+
+    if (tutorialActivo && panelTutorialActivoAntesDePausa && panelTutorial != null)
+    {
+        panelTutorial.SetActive(true);
+    }
+}
 }
