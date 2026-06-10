@@ -7,6 +7,9 @@ public sealed class TriggerEscenaFinal : MonoBehaviour
     [Tooltip("Nombre exacto de la escena donde está la cinemática final.")]
     [SerializeField] private string nombreEscenaFinal = "EscenaFinal";
 
+    [Header("Portal")]
+    [SerializeField] private PuertaMagica puertaMagica;
+
     [Header("Configuración")]
     [SerializeField] private bool activarSoloUnaVez = true;
 
@@ -35,6 +38,11 @@ public sealed class TriggerEscenaFinal : MonoBehaviour
         }
 
         escenaCargandose = true;
+
+        if (puertaMagica != null)
+        {
+            puertaMagica.DetenerPortalPorCinematica();
+        }
 
         SceneManager.LoadScene(nombreEscenaFinal);
     }
