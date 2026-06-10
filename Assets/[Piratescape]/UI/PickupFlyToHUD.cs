@@ -4,6 +4,11 @@ using UnityEngine.UI;
 
 public class PickupFlyToHUD : MonoBehaviour
 {
+    [Header("Sonido")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sonidoLlegadaHUD;
+    [SerializeField] private float volumenSonido = 1f;
+
     [Header("Referencias")]
     [SerializeField] private Canvas canvas;
     [SerializeField] private Camera mainCamera;
@@ -77,7 +82,6 @@ public class PickupFlyToHUD : MonoBehaviour
             trailTimer += Time.deltaTime;
 
             float t = Mathf.Clamp01(timer / duration);
-
             float smoothT = t * t * (3f - 2f * t);
 
             Vector2 currentPos = Vector2.Lerp(startPos, endPos, smoothT);
@@ -99,6 +103,11 @@ public class PickupFlyToHUD : MonoBehaviour
 
         icon.anchoredPosition = endPos;
         icon.localScale = Vector3.one * endScale;
+
+        if (audioSource != null && sonidoLlegadaHUD != null)
+        {
+            audioSource.PlayOneShot(sonidoLlegadaHUD, volumenSonido);
+        }
 
         yield return StartCoroutine(PopRoutine(icon));
 
