@@ -374,6 +374,19 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
             GameObject fx = Instantiate(fxMejoraBarco, posicionFX, rotacionFX);
             fx.SetActive(true);
+
+            ParticleSystem ps = fx.GetComponentInChildren<ParticleSystem>();
+
+            if (ps != null)
+            {
+                ps.Play();
+                Debug.Log("ParticleSystem reproducido");
+            }
+            else
+            {
+                Debug.LogError("No se encontró ParticleSystem en el prefab");
+            }
+
             Debug.Log("FX mejora barco instanciado en: " + posicionFX);
         }
 
