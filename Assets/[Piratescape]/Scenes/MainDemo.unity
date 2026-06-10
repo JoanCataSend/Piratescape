@@ -218,6 +218,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6081896307724654165, guid: 1dace64ff89a8f64aa3f5cbd6731b63f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 75485411}
+    - targetCorrespondingSourceObject: {fileID: 6081896307724654165, guid: 1dace64ff89a8f64aa3f5cbd6731b63f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 75485413}
+    - targetCorrespondingSourceObject: {fileID: 6081896307724654165, guid: 1dace64ff89a8f64aa3f5cbd6731b63f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 75485414}
   m_SourcePrefab: {fileID: 100100000, guid: 1dace64ff89a8f64aa3f5cbd6731b63f, type: 3}
 --- !u!1001 &3752488
 PrefabInstance:
@@ -19186,6 +19192,142 @@ MonoBehaviour:
   indicadorInteraccion: {fileID: 0}
   gema: {fileID: 367684207}
   fuerzaCaida: 1.5
+--- !u!82 &75485413
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75485405}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 2
+  MaxDistance: 10
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &75485414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75485405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 075aacbc9aa9b9f4195d00e068d9a8c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1588489899}
+  pigAI: {fileID: 75485408}
+  sonidosCerdo:
+  - {fileID: 8300000, guid: 64bb2e8e30fd11849922fbcfb5028170, type: 3}
+  - {fileID: 8300000, guid: 5bab0118004354b4282854979b0e4f4e, type: 3}
+  - {fileID: 8300000, guid: aebec03d74c63a74d8afa47ae79fb13a, type: 3}
+  - {fileID: 8300000, guid: ae267f5a067263946933c293a7779be9, type: 3}
+  distanciaEmpezar: 18
+  distanciaParar: 22
+  distanciaMinima3D: 2
+  distanciaMaxima3D: 25
+  tiempoNormalMinimo: 1
+  tiempoNormalMaximo: 2.2
+  tiempoHuidaMinimo: 0
+  tiempoHuidaMaximo: 0.15
+  oinksNormalesMinimos: 1
+  oinksNormalesMaximos: 3
+  oinksHuidaMinimos: 4
+  oinksHuidaMaximos: 8
+  pausaNormalMinima: 0.15
+  pausaNormalMaxima: 0.35
+  pausaHuidaMinima: 0.08
+  pausaHuidaMaxima: 0.25
+  volumenNormal: 0.28
+  volumenHuida: 0.35
+  variacionPitch: 0.08
+  extraPitchHuida: 0.08
 --- !u!1001 &76508793
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106263,7 +106405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 994258606}
   sonidoLlegadaHUD: {fileID: 8300000, guid: c9f72da3d75836d44bdf2c0333acd7ca, type: 3}
-  volumenSonido: 1
+  volumenSonido: 0.1
   canvas: {fileID: 1552658392}
   mainCamera: {fileID: 1812617213}
   floatingIconPrefab: {fileID: 719299224669570441, guid: 885c2cae61faa8c45a7af5d4c0ef80e5, type: 3}
