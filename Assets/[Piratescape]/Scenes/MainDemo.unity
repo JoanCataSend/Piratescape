@@ -47970,12 +47970,12 @@ MonoBehaviour:
   puntoEntradaTienda: {fileID: 1102787625}
   puntoInteriorTienda: {fileID: 1554194593}
   tiendaNormal: {fileID: 198144650}
-  renderersTiendaNormal: []
   tiendaAnimada: {fileID: 1845485320}
   animatorTiendaAnimada: {fileID: 1845485322}
   estadoAnimacionTienda: Take 001
   duracionAnimacionTienda: 3.35
   esperaTrasAnimacionTienda: 0
+  renderersTiendaNormal: []
   camaraJugador: {fileID: 587593477}
   camaraCinematica: {fileID: 349923476}
   esperaDentroTienda: 1.2
@@ -47993,6 +47993,60 @@ MonoBehaviour:
   alturaRaycast: 5
   distanciaRaycast: 20
   alturaSobreSuelo: 0.02
+  audioSourceRonquido: {fileID: 0}
+  sonidoRonquidoPirata: {fileID: 8300000, guid: e07b32e6237b3eb4c849d071f34fb4e0, type: 3}
+  sonidosRonquidoPirata:
+  - {fileID: 8300000, guid: 4efcaa24a20b3e14abe1d42d1ace0611, type: 3}
+  - {fileID: 8300000, guid: e07b32e6237b3eb4c849d071f34fb4e0, type: 3}
+  - {fileID: 8300000, guid: 9488befde2edb894994e8211739acc27, type: 3}
+  - {fileID: 8300000, guid: efaa6ea6aa378f644b2925322af06d1e, type: 3}
+  - {fileID: 8300000, guid: e4ed96fe2c3c3064798d0dbc165d5690, type: 3}
+  - {fileID: 8300000, guid: 9421f3399753c04418da32f8eb153bd7, type: 3}
+  - {fileID: 8300000, guid: dba663e9bf6d01b4cb9db71396115938, type: 3}
+  sonidosMimimiPirata:
+  - {fileID: 8300000, guid: 9d1f0f49e59f2e2498d4af19d19238fb, type: 3}
+  - {fileID: 8300000, guid: 7f727772e69e10748b9fb1866de11338, type: 3}
+  - {fileID: 8300000, guid: 760c29189771d8343b3a11cf349a5d78, type: 3}
+  - {fileID: 8300000, guid: 7cf903467bc49e140ac4b4539d80a6a6, type: 3}
+  volumenRonquido: 0.762
+  pausaEntreRonquidoYMimimi: 0
+  pausaEntreCiclosRonquidoMin: 0.15
+  pausaEntreCiclosRonquidoMax: 0.45
+  audioSourcePasosMonos: {fileID: 0}
+  sonidosPasosEntrada:
+  - {fileID: 8300000, guid: cbf4ce5c27fe4cb44a508eb34754ac55, type: 3}
+  - {fileID: 8300000, guid: b6b4de813a83ff64d96d37a36c0f20e1, type: 3}
+  - {fileID: 8300000, guid: 8bf10f8a567de544b9e1b09067ca2d0d, type: 3}
+  - {fileID: 8300000, guid: 7b51fe596cbfa8b40b5fad6db554dd06, type: 3}
+  volumenPasosEntrada: 0.738
+  intervaloPasosEntrada: 0.1
+  audioSourceRoboTienda: {fileID: 0}
+  sonidosRoboTienda:
+  - {fileID: 8300000, guid: 9d48497f361350645b8359e86902db92, type: 3}
+  - {fileID: 8300000, guid: 843c82f4f9807694d85fec935d1461eb, type: 3}
+  - {fileID: 8300000, guid: 0fc3f93b83cc08748a1f9be189a0bc44, type: 3}
+  - {fileID: 8300000, guid: b528d611726564d49887fb99d71497fc, type: 3}
+  - {fileID: 8300000, guid: dacb27ea507e4ec4a93cb14847bc52a4, type: 3}
+  volumenRoboTienda: 0.585
+  intervaloRoboMin: 0.18
+  intervaloRoboMax: 0.29
+  sonidosPasosSalidaRapidos:
+  - {fileID: 8300000, guid: cbf4ce5c27fe4cb44a508eb34754ac55, type: 3}
+  - {fileID: 8300000, guid: b6b4de813a83ff64d96d37a36c0f20e1, type: 3}
+  - {fileID: 8300000, guid: 8bf10f8a567de544b9e1b09067ca2d0d, type: 3}
+  - {fileID: 8300000, guid: 7b51fe596cbfa8b40b5fad6db554dd06, type: 3}
+  volumenPasosSalida: 0.894
+  intervaloPasosSalida: 0.18
+  audioSourceRisasMonos: {fileID: 0}
+  sonidosRisasSalida:
+  - {fileID: 8300000, guid: 7d3316ea8fd7312419ece719b84fa67d, type: 3}
+  - {fileID: 8300000, guid: 509c2905f2e88c8439db9f7d9f679f42, type: 3}
+  - {fileID: 8300000, guid: 7d463570cdff89a4ca834542e2bd12b8, type: 3}
+  volumenRisas: 0.894
+  intervaloRisasMin: 0.45
+  intervaloRisasMax: 0.9
+  pitchMinimo: 0.96
+  pitchMaximo: 1.06
 --- !u!4 &340867736
 Transform:
   m_ObjectHideFlags: 0
@@ -106783,7 +106837,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1002822645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -216358,6 +216412,10 @@ PrefabInstance:
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 4312127472686431125, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: sonidoDespertar
+      value: 
+      objectReference: {fileID: 8300000, guid: 896fd1125aa6b0b4c8e0202ab4315829, type: 3}
     - target: {fileID: 4312127472686431125, guid: ab2c0b5729007754abc37ab351068178, type: 3}
       propertyPath: movimientoPlayer
       value: 

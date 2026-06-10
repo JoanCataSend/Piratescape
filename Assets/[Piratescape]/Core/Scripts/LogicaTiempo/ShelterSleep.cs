@@ -45,6 +45,17 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private string idleStateName = "Idle";
     [SerializeField] private float teleportDelayAfterFadeStarts = 0.6f;
 
+    [Header("Sonido al despertar")]
+    [SerializeField] private AudioSource audioSourceDespertar;
+    [SerializeField] private AudioClip sonidoDespertar;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenDespertar = 0.8f;
+
+    [Tooltip("Retraso SOLO del bostezo. El fade in final empieza inmediatamente.")]
+    [Min(0f)]
+    [SerializeField] private float retrasoSonidoDespertar = 0f;
+
     [Header("Cinemática monos al dormir")]
     [SerializeField] private MonkeyStealCutsceneController monkeyStealCutsceneController;
     [SerializeField] private bool reproducirCinematicaMonosSinEspantamonos = true;
@@ -61,6 +72,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     private bool activo;
     private bool isSleeping;
     private IActivador jugador;
+
+    private Coroutine rutinaSonidoDespertar;
 
     private InputDeviceType lastInputDevice =
         InputDeviceType.KeyboardMouse;
@@ -88,6 +101,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     private void Awake()
     {
         CachearReferencias();
+        PrepararAudioDespertar();
     }
 
     private void Start()
@@ -304,6 +318,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
                 movimientoOriginalHabilitado;
         }
 
+        LanzarSonidoDespertarConRetraso();
+
         if (fadeUI != null)
         {
             yield return fadeUI.FadeInRoutine();
@@ -328,21 +344,15 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield break;
         }
 
-        // Activa la cámara de los monos y prepara la secuencia.
         monkeyStealCutsceneController.PrepararCinematica();
 
-        // Abre el iris para mostrar la cinemática.
         if (fadeUI != null)
         {
             yield return fadeUI.FadeInRoutine();
         }
 
-        // Empieza el movimiento de los monos.
         monkeyStealCutsceneController.IniciarMovimientoMonos();
 
-        /*
-         * La cinemática se mantiene visible durante el tiempo configurado.
-         */
         float tiempo = 0f;
 
         while (tiempo < duracionCinematicaMonos)
@@ -351,25 +361,11 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield return null;
         }
 
-        /*
-         * IMPORTANTE:
-         * Primero cerramos el fade mientras CamaraMonos sigue activa.
-         * Así no se ve la cámara del jugador dentro de la tienda.
-         */
         if (fadeUI != null)
         {
             yield return fadeUI.FadeOutRoutine();
         }
 
-        /*
-         * Cuando la pantalla ya está negra:
-         * - se detienen los monos;
-         * - se apaga CamaraMonos;
-         * - se reactiva FreeLook Camera.
-         *
-         * Después SleepRoutine continúa, pasa la noche,
-         * mueve al jugador al Wake Point y abre el fade.
-         */
         monkeyStealCutsceneController.FinalizarCinematica();
     }
 
@@ -584,6 +580,71 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         );
     }
 
+    private void PrepararAudioDespertar()
+    {
+        if (audioSourceDespertar == null)
+        {
+            audioSourceDespertar = GetComponent<AudioSource>();
+        }
+
+        if (audioSourceDespertar == null)
+        {
+            audioSourceDespertar = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceDespertar.playOnAwake = false;
+        audioSourceDespertar.loop = false;
+        audioSourceDespertar.spatialBlend = 0f;
+        audioSourceDespertar.dopplerLevel = 0f;
+    }
+
+    private void LanzarSonidoDespertarConRetraso()
+    {
+        if (sonidoDespertar == null)
+        {
+            return;
+        }
+
+        if (rutinaSonidoDespertar != null)
+        {
+            StopCoroutine(rutinaSonidoDespertar);
+            rutinaSonidoDespertar = null;
+        }
+
+        rutinaSonidoDespertar =
+            StartCoroutine(ReproducirSonidoDespertarConRetrasoRoutine());
+    }
+
+    private IEnumerator ReproducirSonidoDespertarConRetrasoRoutine()
+    {
+        if (retrasoSonidoDespertar > 0f)
+        {
+            yield return new WaitForSecondsRealtime(
+                retrasoSonidoDespertar
+            );
+        }
+
+        ReproducirSonidoDespertar();
+        rutinaSonidoDespertar = null;
+    }
+
+    private void ReproducirSonidoDespertar()
+    {
+        if (audioSourceDespertar == null ||
+            sonidoDespertar == null)
+        {
+            return;
+        }
+
+        audioSourceDespertar.Stop();
+        audioSourceDespertar.pitch = 1f;
+
+        audioSourceDespertar.PlayOneShot(
+            sonidoDespertar,
+            volumenDespertar
+        );
+    }
+
     private void CachearReferencias()
     {
         if (timeSystem == null)
@@ -767,6 +828,20 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
             default:
                 return "E";
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (rutinaSonidoDespertar != null)
+        {
+            StopCoroutine(rutinaSonidoDespertar);
+            rutinaSonidoDespertar = null;
+        }
+
+        if (audioSourceDespertar != null)
+        {
+            audioSourceDespertar.Stop();
         }
     }
 
