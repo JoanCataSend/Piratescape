@@ -151,6 +151,14 @@ PrefabInstance:
       propertyPath: masterVolumeSlider
       value: 
       objectReference: {fileID: 72702924}
+    - target: {fileID: 126065398628362817, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: panelAOcultarAlAbrir
+      value: 
+      objectReference: {fileID: 298421010}
+    - target: {fileID: 126065398628362817, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: panelAMostrarAlCerrar
+      value: 
+      objectReference: {fileID: 298421010}
     - target: {fileID: 226687171414160182, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -198,14 +206,14 @@ PrefabInstance:
     - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1232418728}
+      objectReference: {fileID: 1006329564}
     - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: AbrirAjustes
+      value: AbrirConfiguracion
       objectReference: {fileID: 0}
     - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PauseSceneController, Assembly-CSharp
+      value: SettingsMenuController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1494036613258333239, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

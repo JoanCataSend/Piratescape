@@ -8,6 +8,13 @@ public class SettingsMenuController : MonoBehaviour
     [Header("Panel")]
     [SerializeField] private GameObject settingsPanel;
 
+    [Header("Paneles externos opcionales")]
+    [SerializeField] private GameObject panelAOcultarAlAbrir;
+    [SerializeField] private GameObject panelAMostrarAlCerrar;
+
+    [Header("Panel controles")]
+    [SerializeField] private GameObject panelControles;
+
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
 
@@ -47,9 +54,9 @@ public class SettingsMenuController : MonoBehaviour
         AplicarValoresGuardados();
         CargarValoresEnUI();
 
-        if (settingsPanel != null)
+        if (panelControles != null)
         {
-            settingsPanel.SetActive(false);
+            panelControles.SetActive(false);
         }
     }
 
@@ -57,6 +64,16 @@ public class SettingsMenuController : MonoBehaviour
     {
         CargarValoresGuardados();
         CargarValoresEnUI();
+
+        if (panelAOcultarAlAbrir != null)
+        {
+            panelAOcultarAlAbrir.SetActive(false);
+        }
+
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
+        }
 
         if (settingsPanel != null)
         {
@@ -69,11 +86,7 @@ public class SettingsMenuController : MonoBehaviour
         CargarValoresGuardados();
         AplicarValoresGuardados();
         CargarValoresEnUI();
-
-        if (settingsPanel != null)
-        {
-            settingsPanel.SetActive(false);
-        }
+        CerrarPanel();
     }
 
     public void Aceptar()
@@ -81,19 +94,47 @@ public class SettingsMenuController : MonoBehaviour
         LeerValoresDeUI();
         AplicarValoresGuardados();
         GuardarValores();
+        CerrarPanel();
+    }
+
+    public void AbrirControles()
+    {
+        if (panelControles != null)
+        {
+            panelControles.SetActive(true);
+        }
+    }
+
+    public void CerrarControles()
+    {
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
+        }
+    }
+
+    private void CerrarPanel()
+    {
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
+        }
 
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
+        }
+
+        if (panelAMostrarAlCerrar != null)
+        {
+            panelAMostrarAlCerrar.SetActive(true);
         }
     }
 
     private void CargarValoresGuardados()
     {
         savedFullscreen = PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
-
         savedQuality = PlayerPrefs.GetInt(QualityKey, 1);
-        savedQuality = Mathf.Clamp(savedQuality, 0, 2);
 
         savedMasterVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MasterVolumeKey, 1f));
         savedMusicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, 1f));
@@ -117,7 +158,7 @@ public class SettingsMenuController : MonoBehaviour
                 "Alto"
             });
 
-            qualityDropdown.value = savedQuality;
+            qualityDropdown.value = Mathf.Clamp(savedQuality, 0, 2);
             qualityDropdown.RefreshShownValue();
         }
 
@@ -173,7 +214,6 @@ public class SettingsMenuController : MonoBehaviour
     private void AplicarValoresGuardados()
     {
         Screen.fullScreen = savedFullscreen;
-
         AplicarCalidad(savedQuality);
 
         AplicarVolumen(MasterVolumeParameter, savedMasterVolume);
@@ -183,6 +223,11 @@ public class SettingsMenuController : MonoBehaviour
 
     private void AplicarCalidad(int calidad)
     {
+        if (QualitySettings.names.Length <= 0)
+        {
+            return;
+        }
+
         int nivelUnity = 2;
 
         if (calidad == 0)
@@ -198,11 +243,8 @@ public class SettingsMenuController : MonoBehaviour
             nivelUnity = 5;
         }
 
-        if (QualitySettings.names.Length > 0)
-        {
-            nivelUnity = Mathf.Clamp(nivelUnity, 0, QualitySettings.names.Length - 1);
-            QualitySettings.SetQualityLevel(nivelUnity, true);
-        }
+        nivelUnity = Mathf.Clamp(nivelUnity, 0, QualitySettings.names.Length - 1);
+        QualitySettings.SetQualityLevel(nivelUnity, true);
     }
 
     private void GuardarValores()
