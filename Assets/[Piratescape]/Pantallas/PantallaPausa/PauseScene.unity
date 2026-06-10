@@ -459,6 +459,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &298421010 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1160082329342196832, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+  m_PrefabInstance: {fileID: 72702919}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1006329563 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5927146327686694104, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+  m_PrefabInstance: {fileID: 72702919}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1006329564 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 126065398628362817, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+  m_PrefabInstance: {fileID: 72702919}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006329563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c9b127a200bc9f42a6d9da4d04a4568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1172189492 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6031485119196398125, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+  m_PrefabInstance: {fileID: 72702919}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1232418727
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,10 +514,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211ea7605726e3b4286e674bb3adbb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelPausaPrincipal: {fileID: 0}
-  panelAjustes: {fileID: 0}
-  panelConfirmarVolverMenu: {fileID: 0}
-  settingsMenuController: {fileID: 0}
+  panelPausaPrincipal: {fileID: 298421010}
+  panelAjustes: {fileID: 1006329563}
+  panelConfirmarVolverMenu: {fileID: 1172189492}
+  settingsMenuController: {fileID: 1006329564}
 --- !u!4 &1232418729
 Transform:
   m_ObjectHideFlags: 0
