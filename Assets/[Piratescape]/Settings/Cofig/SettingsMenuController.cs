@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingsMenuController : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class SettingsMenuController : MonoBehaviour
 
     [Header("Pantalla")]
     [SerializeField] private Toggle fullscreenToggle;
+    [SerializeField] private TMP_Dropdown qualityDropdown;
 
     [Header("Audio")]
     [SerializeField] private Slider masterVolumeSlider;
@@ -19,6 +21,7 @@ public class SettingsMenuController : MonoBehaviour
     [SerializeField] private Slider sfxVolumeSlider;
 
     private const string FullscreenKey = "Settings_Fullscreen";
+    private const string QualityKey = "Settings_Quality";
     private const string MasterVolumeKey = "Settings_MasterVolume";
     private const string MusicVolumeKey = "Settings_MusicVolume";
     private const string SFXVolumeKey = "Settings_SFXVolume";
@@ -28,6 +31,7 @@ public class SettingsMenuController : MonoBehaviour
     private const string SFXVolumeParameter = "SFXVolume";
 
     private bool savedFullscreen;
+    private int savedQuality;
     private float savedMasterVolume;
     private float savedMusicVolume;
     private float savedSFXVolume;
@@ -88,13 +92,12 @@ public class SettingsMenuController : MonoBehaviour
     {
         savedFullscreen = PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
 
-        savedMasterVolume = PlayerPrefs.GetFloat(MasterVolumeKey, 1f);
-        savedMusicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
-        savedSFXVolume = PlayerPrefs.GetFloat(SFXVolumeKey, 1f);
+        savedQuality = PlayerPrefs.GetInt(QualityKey, 1);
+        savedQuality = Mathf.Clamp(savedQuality, 0, 2);
 
-        savedMasterVolume = Mathf.Clamp01(savedMasterVolume);
-        savedMusicVolume = Mathf.Clamp01(savedMusicVolume);
-        savedSFXVolume = Mathf.Clamp01(savedSFXVolume);
+        savedMasterVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MasterVolumeKey, 1f));
+        savedMusicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, 1f));
+        savedSFXVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SFXVolumeKey, 1f));
     }
 
     private void CargarValoresEnUI()
@@ -102,6 +105,20 @@ public class SettingsMenuController : MonoBehaviour
         if (fullscreenToggle != null)
         {
             fullscreenToggle.isOn = savedFullscreen;
+        }
+
+        if (qualityDropdown != null)
+        {
+            qualityDropdown.ClearOptions();
+            qualityDropdown.AddOptions(new System.Collections.Generic.List<string>
+            {
+                "Bajo",
+                "Medio",
+                "Alto"
+            });
+
+            qualityDropdown.value = savedQuality;
+            qualityDropdown.RefreshShownValue();
         }
 
         if (masterVolumeSlider != null)
@@ -127,6 +144,11 @@ public class SettingsMenuController : MonoBehaviour
             savedFullscreen = fullscreenToggle.isOn;
         }
 
+        if (qualityDropdown != null)
+        {
+            savedQuality = qualityDropdown.value;
+        }
+
         if (masterVolumeSlider != null)
         {
             savedMasterVolume = masterVolumeSlider.value;
@@ -142,6 +164,7 @@ public class SettingsMenuController : MonoBehaviour
             savedSFXVolume = sfxVolumeSlider.value;
         }
 
+        savedQuality = Mathf.Clamp(savedQuality, 0, 2);
         savedMasterVolume = Mathf.Clamp01(savedMasterVolume);
         savedMusicVolume = Mathf.Clamp01(savedMusicVolume);
         savedSFXVolume = Mathf.Clamp01(savedSFXVolume);
@@ -151,14 +174,41 @@ public class SettingsMenuController : MonoBehaviour
     {
         Screen.fullScreen = savedFullscreen;
 
+        AplicarCalidad(savedQuality);
+
         AplicarVolumen(MasterVolumeParameter, savedMasterVolume);
         AplicarVolumen(MusicVolumeParameter, savedMusicVolume);
         AplicarVolumen(SFXVolumeParameter, savedSFXVolume);
     }
 
+    private void AplicarCalidad(int calidad)
+    {
+        int nivelUnity = 2;
+
+        if (calidad == 0)
+        {
+            nivelUnity = 1;
+        }
+        else if (calidad == 1)
+        {
+            nivelUnity = 2;
+        }
+        else if (calidad == 2)
+        {
+            nivelUnity = 5;
+        }
+
+        if (QualitySettings.names.Length > 0)
+        {
+            nivelUnity = Mathf.Clamp(nivelUnity, 0, QualitySettings.names.Length - 1);
+            QualitySettings.SetQualityLevel(nivelUnity, true);
+        }
+    }
+
     private void GuardarValores()
     {
         PlayerPrefs.SetInt(FullscreenKey, savedFullscreen ? 1 : 0);
+        PlayerPrefs.SetInt(QualityKey, savedQuality);
 
         PlayerPrefs.SetFloat(MasterVolumeKey, savedMasterVolume);
         PlayerPrefs.SetFloat(MusicVolumeKey, savedMusicVolume);
