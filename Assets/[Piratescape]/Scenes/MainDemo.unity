@@ -48763,7 +48763,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -586}
+  m_AnchoredPosition: {x: -1, y: 3}
   m_SizeDelta: {x: 1000, y: 310}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &350386044
@@ -134912,7 +134912,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Texto de mensaje
+  m_text: Partida guardada correctamente
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7ca720e64c387de409b978d93e7ed90d, type: 2}
   m_sharedMaterial: {fileID: 7434084161645481776, guid: 7ca720e64c387de409b978d93e7ed90d, type: 2}
@@ -134921,8 +134921,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278879744
+  m_fontColor: {r: 0, g: 0.5245282, b: 0.041139465, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -134939,13 +134939,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -169213,12 +169213,38 @@ MonoBehaviour:
   sandLayer:
     serializedVersion: 2
     m_Bits: 256
+  grassLayer:
+    serializedVersion: 2
+    m_Bits: 8
   raycastHeight: 0.6
   raycastDistance: 2
   distanceBetweenPrints: 0.55
   minimumMoveDistance: 0.03
   yOffset: 0.025
   footprintLifeTime: 12
+  audioSourcePisadas: {fileID: 0}
+  sonidosArenaPieNormal:
+  - {fileID: 8300000, guid: cbf4ce5c27fe4cb44a508eb34754ac55, type: 3}
+  - {fileID: 8300000, guid: b6b4de813a83ff64d96d37a36c0f20e1, type: 3}
+  - {fileID: 8300000, guid: 8bf10f8a567de544b9e1b09067ca2d0d, type: 3}
+  - {fileID: 8300000, guid: 7b51fe596cbfa8b40b5fad6db554dd06, type: 3}
+  sonidosArenaPataPalo:
+  - {fileID: 8300000, guid: 9f7081a49a6ad214a93cc5c181a583f7, type: 3}
+  - {fileID: 8300000, guid: 3be96a7dde9d24341911fb2d7094cff1, type: 3}
+  - {fileID: 8300000, guid: 33afa2587fde1634fb7eca28e9a74977, type: 3}
+  - {fileID: 8300000, guid: c2e0d689a8df0254784df5c03675d4e1, type: 3}
+  sonidosHierbaPieNormal:
+  - {fileID: 8300000, guid: 6d5d5db2777edc6489596752972bc5ff, type: 3}
+  - {fileID: 8300000, guid: 7df97bebab813a443b30f673dd3051f1, type: 3}
+  sonidosHierbaPataPalo:
+  - {fileID: 8300000, guid: 9172b26d13bec8c4fada1904bec22302, type: 3}
+  - {fileID: 8300000, guid: 3ae8498b527848e4b8f02c83af812c15, type: 3}
+  - {fileID: 8300000, guid: de4b19d80432822478e8ed50c6a6eb97, type: 3}
+  - {fileID: 8300000, guid: fc9791b7d6f7d3b49b221f11fcaa1c96, type: 3}
+  - {fileID: 8300000, guid: 0ee2dff7f25176b41b9b3ff97f4b9e7f, type: 3}
+  volumenPisadas: 0.7
+  pitchMinimo: 0.95
+  pitchMaximo: 1.05
 --- !u!114 &1588489911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214810,8 +214836,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Texto de dialogo
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7ca720e64c387de409b978d93e7ed90d, type: 2}
-  m_sharedMaterial: {fileID: 7434084161645481776, guid: 7ca720e64c387de409b978d93e7ed90d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1ac78900645b4f044948bd784a1436e9, type: 2}
+  m_sharedMaterial: {fileID: 6037982150406274240, guid: 1ac78900645b4f044948bd784a1436e9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -214841,7 +214867,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
