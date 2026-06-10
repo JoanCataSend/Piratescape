@@ -242,7 +242,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         if (fadeUI != null)
         {
-            yield return fadeUI.FadeOutRoutine();
+            yield return fadeUI.FadeOutDormirRoutine();
         }
 
         yield return ReproducirCinematicaMonosSiCorresponde();
@@ -328,18 +328,20 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             yield break;
         }
 
+        // Activa la cámara de los monos y prepara la secuencia.
         monkeyStealCutsceneController.PrepararCinematica();
 
+        // Abre el iris para mostrar la cinemática.
         if (fadeUI != null)
         {
             yield return fadeUI.FadeInRoutine();
         }
 
+        // Empieza el movimiento de los monos.
         monkeyStealCutsceneController.IniciarMovimientoMonos();
 
         /*
-         * Este es el temporizador real.
-         * No esperamos a que los monos terminen su rutina.
+         * La cinemática se mantiene visible durante el tiempo configurado.
          */
         float tiempo = 0f;
 
@@ -350,15 +352,25 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         }
 
         /*
-         * Al cumplirse el tiempo se detiene la rutina de monos,
-         * se apaga su cámara y vuelve la cámara del jugador.
+         * IMPORTANTE:
+         * Primero cerramos el fade mientras CamaraMonos sigue activa.
+         * Así no se ve la cámara del jugador dentro de la tienda.
          */
-        monkeyStealCutsceneController.FinalizarCinematica();
-
         if (fadeUI != null)
         {
             yield return fadeUI.FadeOutRoutine();
         }
+
+        /*
+         * Cuando la pantalla ya está negra:
+         * - se detienen los monos;
+         * - se apaga CamaraMonos;
+         * - se reactiva FreeLook Camera.
+         *
+         * Después SleepRoutine continúa, pasa la noche,
+         * mueve al jugador al Wake Point y abre el fade.
+         */
+        monkeyStealCutsceneController.FinalizarCinematica();
     }
 
     private bool DebeReproducirCinematicaMonos()

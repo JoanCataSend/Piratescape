@@ -18,6 +18,20 @@ public class SleepFadeUI : MonoBehaviour
     )]
     [SerializeField] private bool empezarCerrado = false;
 
+    [Header("Sonido al dormir")]
+    [Tooltip("AudioSource utilizado para el sonido del fade de dormir.")]
+    [SerializeField] private AudioSource audioSourceDormir;
+
+    [Tooltip("Sonido que se reproduce cuando el personaje empieza a dormirse.")]
+    [SerializeField] private AudioClip sonidoFadeDormir;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenSonidoDormir = 0.8f;
+
+    [Tooltip("Retraso SOLO del sonido. El fade empieza inmediatamente.")]
+    [Min(0f)]
+    [SerializeField] private float retrasoSonidoDormir = 0.25f;
+
     [Header("Iris Transition")]
     [SerializeField] private float openRadius = 1.5f;
     [SerializeField] private float closedRadius = -0.15f;
@@ -27,19 +41,13 @@ public class SleepFadeUI : MonoBehaviour
     public bool IsFading { get; private set; }
 
     private Coroutine currentRoutine;
+    private Coroutine sonidoDormirRoutine;
     private Material runtimeMaterial;
 
-    private static readonly int RadiusID =
-        Shader.PropertyToID("_Radius");
-
-    private static readonly int SoftnessID =
-        Shader.PropertyToID("_Softness");
-
-    private static readonly int CenterID =
-        Shader.PropertyToID("_Center");
-
-    private static readonly int AspectID =
-        Shader.PropertyToID("_Aspect");
+    private static readonly int RadiusID = Shader.PropertyToID("_Radius");
+    private static readonly int SoftnessID = Shader.PropertyToID("_Softness");
+    private static readonly int CenterID = Shader.PropertyToID("_Center");
+    private static readonly int AspectID = Shader.PropertyToID("_Aspect");
 
     private void Awake()
     {
@@ -49,7 +57,8 @@ public class SleepFadeUI : MonoBehaviour
             return;
         }
 
-        // Evita que la imagen del fade bloquee botones o interacciones.
+        PrepararAudioDormir();
+
         fadeImage.raycastTarget = false;
 
         ConfigurarMaterial();
@@ -93,16 +102,32 @@ public class SleepFadeUI : MonoBehaviour
             return false;
         }
 
-        // Cada escena y cada instancia tendrá su propio material.
-        // Así una transición no modifica el material de otra escena.
         runtimeMaterial = new Material(fadeImage.material);
         fadeImage.material = runtimeMaterial;
 
         return true;
     }
 
-    // Sistema original de dormir:
-    // cierra el iris y después vuelve a abrirlo.
+    private void PrepararAudioDormir()
+    {
+        if (audioSourceDormir == null)
+        {
+            audioSourceDormir = GetComponent<AudioSource>();
+        }
+
+        if (audioSourceDormir == null)
+        {
+            audioSourceDormir = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceDormir.playOnAwake = false;
+        audioSourceDormir.loop = false;
+
+        // Sonido 2D de interfaz/transición.
+        audioSourceDormir.spatialBlend = 0f;
+        audioSourceDormir.dopplerLevel = 0f;
+    }
+
     public void Sleep()
     {
         DetenerFadeActual();
@@ -115,6 +140,12 @@ public class SleepFadeUI : MonoBehaviour
         currentRoutine = StartCoroutine(FadeOutRoutine());
     }
 
+    public void FadeOutDormir()
+    {
+        DetenerFadeActual();
+        currentRoutine = StartCoroutine(FadeOutDormirRoutine());
+    }
+
     public void FadeIn()
     {
         DetenerFadeActual();
@@ -124,6 +155,19 @@ public class SleepFadeUI : MonoBehaviour
     public IEnumerator FadeOutRoutine()
     {
         IsFading = true;
+
+        yield return FadeTo(closedRadius);
+
+        IsFading = false;
+        currentRoutine = null;
+    }
+
+    public IEnumerator FadeOutDormirRoutine()
+    {
+        IsFading = true;
+
+        // El fade empieza ya. El sonido se lanza aparte con retraso configurable.
+        LanzarSonidoDormirConRetraso();
 
         yield return FadeTo(closedRadius);
 
@@ -159,11 +203,54 @@ public class SleepFadeUI : MonoBehaviour
     {
         IsFading = true;
 
+        // El fade empieza ya. El sonido se lanza aparte con retraso configurable.
+        LanzarSonidoDormirConRetraso();
+
         yield return FadeTo(closedRadius);
         yield return FadeTo(openRadius);
 
         IsFading = false;
         currentRoutine = null;
+    }
+
+    private void LanzarSonidoDormirConRetraso()
+    {
+        if (sonidoDormirRoutine != null)
+        {
+            StopCoroutine(sonidoDormirRoutine);
+            sonidoDormirRoutine = null;
+        }
+
+        sonidoDormirRoutine =
+            StartCoroutine(ReproducirSonidoDormirConRetrasoRoutine());
+    }
+
+    private IEnumerator ReproducirSonidoDormirConRetrasoRoutine()
+    {
+        if (retrasoSonidoDormir > 0f)
+        {
+            yield return new WaitForSecondsRealtime(retrasoSonidoDormir);
+        }
+
+        ReproducirSonidoDormir();
+
+        sonidoDormirRoutine = null;
+    }
+
+    private void ReproducirSonidoDormir()
+    {
+        if (audioSourceDormir == null || sonidoFadeDormir == null)
+        {
+            return;
+        }
+
+        audioSourceDormir.Stop();
+        audioSourceDormir.pitch = 1f;
+
+        audioSourceDormir.PlayOneShot(
+            sonidoFadeDormir,
+            volumenSonidoDormir
+        );
     }
 
     private IEnumerator FadeTo(float targetRadius)
@@ -173,8 +260,7 @@ public class SleepFadeUI : MonoBehaviour
             yield break;
         }
 
-        float startRadius =
-            runtimeMaterial.GetFloat(RadiusID);
+        float startRadius = runtimeMaterial.GetFloat(RadiusID);
 
         if (fadeDuration <= 0f)
         {
@@ -188,9 +274,7 @@ public class SleepFadeUI : MonoBehaviour
         {
             elapsed += Time.unscaledDeltaTime;
 
-            float t = Mathf.Clamp01(
-                elapsed / fadeDuration
-            );
+            float t = Mathf.Clamp01(elapsed / fadeDuration);
 
             float smoothT = Mathf.SmoothStep(
                 0f,
@@ -223,8 +307,7 @@ public class SleepFadeUI : MonoBehaviour
 
         if (Screen.height > 0)
         {
-            aspect =
-                Screen.width / (float)Screen.height;
+            aspect = Screen.width / (float)Screen.height;
         }
 
         runtimeMaterial.SetFloat(
@@ -263,19 +346,29 @@ public class SleepFadeUI : MonoBehaviour
 
     private void DetenerFadeActual()
     {
-        if (currentRoutine == null)
+        if (currentRoutine != null)
         {
-            return;
+            StopCoroutine(currentRoutine);
+            currentRoutine = null;
         }
 
-        StopCoroutine(currentRoutine);
-        currentRoutine = null;
+        if (sonidoDormirRoutine != null)
+        {
+            StopCoroutine(sonidoDormirRoutine);
+            sonidoDormirRoutine = null;
+        }
+
         IsFading = false;
     }
 
     private void OnDisable()
     {
         DetenerFadeActual();
+
+        if (audioSourceDormir != null)
+        {
+            audioSourceDormir.Stop();
+        }
     }
 
     private void OnDestroy()
@@ -303,5 +396,11 @@ public class SleepFadeUI : MonoBehaviour
     private void DebugIrisSleepTest()
     {
         Sleep();
+    }
+
+    [ContextMenu("Debug/Fade Out Dormir")]
+    private void DebugFadeOutDormir()
+    {
+        FadeOutDormir();
     }
 }
