@@ -242,7 +242,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
         if (fadeUI != null)
         {
-            yield return fadeUI.FadeOutRoutine();
+            yield return fadeUI.FadeOutDormirRoutine();
         }
 
         yield return ReproducirCinematicaMonosSiCorresponde();

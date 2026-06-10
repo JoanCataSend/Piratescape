@@ -28,9 +28,9 @@ public class SleepFadeUI : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float volumenSonidoDormir = 0.8f;
 
-    [Tooltip("Retraso entre el inicio del sonido y el cierre del iris.")]
+    [Tooltip("Retraso SOLO del sonido. El fade empieza inmediatamente.")]
     [Min(0f)]
-    [SerializeField] private float retrasoFadeTrasSonido = 0f;
+    [SerializeField] private float retrasoSonidoDormir = 0.25f;
 
     [Header("Iris Transition")]
     [SerializeField] private float openRadius = 1.5f;
@@ -41,19 +41,13 @@ public class SleepFadeUI : MonoBehaviour
     public bool IsFading { get; private set; }
 
     private Coroutine currentRoutine;
+    private Coroutine sonidoDormirRoutine;
     private Material runtimeMaterial;
 
-    private static readonly int RadiusID =
-        Shader.PropertyToID("_Radius");
-
-    private static readonly int SoftnessID =
-        Shader.PropertyToID("_Softness");
-
-    private static readonly int CenterID =
-        Shader.PropertyToID("_Center");
-
-    private static readonly int AspectID =
-        Shader.PropertyToID("_Aspect");
+    private static readonly int RadiusID = Shader.PropertyToID("_Radius");
+    private static readonly int SoftnessID = Shader.PropertyToID("_Softness");
+    private static readonly int CenterID = Shader.PropertyToID("_Center");
+    private static readonly int AspectID = Shader.PropertyToID("_Aspect");
 
     private void Awake()
     {
@@ -65,7 +59,6 @@ public class SleepFadeUI : MonoBehaviour
 
         PrepararAudioDormir();
 
-        // Evita que la imagen bloquee botones o interacciones.
         fadeImage.raycastTarget = false;
 
         ConfigurarMaterial();
@@ -109,7 +102,6 @@ public class SleepFadeUI : MonoBehaviour
             return false;
         }
 
-        // Cada instancia utiliza su propio material.
         runtimeMaterial = new Material(fadeImage.material);
         fadeImage.material = runtimeMaterial;
 
@@ -125,33 +117,29 @@ public class SleepFadeUI : MonoBehaviour
 
         if (audioSourceDormir == null)
         {
-            audioSourceDormir =
-                gameObject.AddComponent<AudioSource>();
+            audioSourceDormir = gameObject.AddComponent<AudioSource>();
         }
 
         audioSourceDormir.playOnAwake = false;
         audioSourceDormir.loop = false;
 
-        // Es un sonido de interfaz/transición, por eso es 2D.
+        // Sonido 2D de interfaz/transición.
         audioSourceDormir.spatialBlend = 0f;
         audioSourceDormir.dopplerLevel = 0f;
     }
 
-    // Cierra y vuelve a abrir el iris con sonido de dormir.
     public void Sleep()
     {
         DetenerFadeActual();
         currentRoutine = StartCoroutine(SleepRoutine());
     }
 
-    // Fade normal sin sonido.
     public void FadeOut()
     {
         DetenerFadeActual();
         currentRoutine = StartCoroutine(FadeOutRoutine());
     }
 
-    // Fade de dormir con sonido.
     public void FadeOutDormir()
     {
         DetenerFadeActual();
@@ -178,14 +166,8 @@ public class SleepFadeUI : MonoBehaviour
     {
         IsFading = true;
 
-        ReproducirSonidoDormir();
-
-        if (retrasoFadeTrasSonido > 0f)
-        {
-            yield return new WaitForSecondsRealtime(
-                retrasoFadeTrasSonido
-            );
-        }
+        // El fade empieza ya. El sonido se lanza aparte con retraso configurable.
+        LanzarSonidoDormirConRetraso();
 
         yield return FadeTo(closedRadius);
 
@@ -221,14 +203,8 @@ public class SleepFadeUI : MonoBehaviour
     {
         IsFading = true;
 
-        ReproducirSonidoDormir();
-
-        if (retrasoFadeTrasSonido > 0f)
-        {
-            yield return new WaitForSecondsRealtime(
-                retrasoFadeTrasSonido
-            );
-        }
+        // El fade empieza ya. El sonido se lanza aparte con retraso configurable.
+        LanzarSonidoDormirConRetraso();
 
         yield return FadeTo(closedRadius);
         yield return FadeTo(openRadius);
@@ -237,10 +213,33 @@ public class SleepFadeUI : MonoBehaviour
         currentRoutine = null;
     }
 
+    private void LanzarSonidoDormirConRetraso()
+    {
+        if (sonidoDormirRoutine != null)
+        {
+            StopCoroutine(sonidoDormirRoutine);
+            sonidoDormirRoutine = null;
+        }
+
+        sonidoDormirRoutine =
+            StartCoroutine(ReproducirSonidoDormirConRetrasoRoutine());
+    }
+
+    private IEnumerator ReproducirSonidoDormirConRetrasoRoutine()
+    {
+        if (retrasoSonidoDormir > 0f)
+        {
+            yield return new WaitForSecondsRealtime(retrasoSonidoDormir);
+        }
+
+        ReproducirSonidoDormir();
+
+        sonidoDormirRoutine = null;
+    }
+
     private void ReproducirSonidoDormir()
     {
-        if (audioSourceDormir == null ||
-            sonidoFadeDormir == null)
+        if (audioSourceDormir == null || sonidoFadeDormir == null)
         {
             return;
         }
@@ -261,8 +260,7 @@ public class SleepFadeUI : MonoBehaviour
             yield break;
         }
 
-        float startRadius =
-            runtimeMaterial.GetFloat(RadiusID);
+        float startRadius = runtimeMaterial.GetFloat(RadiusID);
 
         if (fadeDuration <= 0f)
         {
@@ -276,9 +274,7 @@ public class SleepFadeUI : MonoBehaviour
         {
             elapsed += Time.unscaledDeltaTime;
 
-            float t = Mathf.Clamp01(
-                elapsed / fadeDuration
-            );
+            float t = Mathf.Clamp01(elapsed / fadeDuration);
 
             float smoothT = Mathf.SmoothStep(
                 0f,
@@ -311,8 +307,7 @@ public class SleepFadeUI : MonoBehaviour
 
         if (Screen.height > 0)
         {
-            aspect =
-                Screen.width / (float)Screen.height;
+            aspect = Screen.width / (float)Screen.height;
         }
 
         runtimeMaterial.SetFloat(
@@ -351,13 +346,18 @@ public class SleepFadeUI : MonoBehaviour
 
     private void DetenerFadeActual()
     {
-        if (currentRoutine == null)
+        if (currentRoutine != null)
         {
-            return;
+            StopCoroutine(currentRoutine);
+            currentRoutine = null;
         }
 
-        StopCoroutine(currentRoutine);
-        currentRoutine = null;
+        if (sonidoDormirRoutine != null)
+        {
+            StopCoroutine(sonidoDormirRoutine);
+            sonidoDormirRoutine = null;
+        }
+
         IsFading = false;
     }
 
