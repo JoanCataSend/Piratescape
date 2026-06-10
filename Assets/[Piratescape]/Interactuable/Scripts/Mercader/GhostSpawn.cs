@@ -16,6 +16,13 @@ public class GhostSpawn : MonoBehaviour
     [SerializeField] private float amplitudZ = 0.4f;
     [SerializeField] private float velocidad = 1.2f;
 
+    [Header("Audio del fantasma")]
+    [Tooltip("AudioSource del objeto Ambiente. Se reproduce continuamente en bucle.")]
+    [SerializeField] private AudioSource audioAmbiente;
+
+    [Tooltip("AudioSource del objeto Aparicion. Se reproduce una sola vez al aparecer.")]
+    [SerializeField] private AudioSource audioAparicion;
+
     private int ultimoPunto = -1;
     private Vector3 posicionBase;
     private bool estaDeNoche;
@@ -28,6 +35,27 @@ public class GhostSpawn : MonoBehaviour
         {
             ghostVisualEffect = GetComponent<GhostVisualEffect>();
         }
+
+        ConfigurarAudio();
+    }
+
+    private void ConfigurarAudio()
+    {
+        if (audioAmbiente != null)
+        {
+            audioAmbiente.playOnAwake = false;
+            audioAmbiente.loop = true;
+            audioAmbiente.spatialBlend = 1f;
+            audioAmbiente.dopplerLevel = 0f;
+        }
+
+        if (audioAparicion != null)
+        {
+            audioAparicion.playOnAwake = false;
+            audioAparicion.loop = false;
+            audioAparicion.spatialBlend = 1f;
+            audioAparicion.dopplerLevel = 0f;
+        }
     }
 
     public void EmpezarNoche()
@@ -38,6 +66,9 @@ public class GhostSpawn : MonoBehaviour
 
         estaDeNoche = true;
         movimientoBloqueado = false;
+
+        ReproducirAudioAparicion();
+        IniciarAudioAmbiente();
 
         if (ghostVisualEffect != null)
         {
@@ -50,6 +81,8 @@ public class GhostSpawn : MonoBehaviour
         estaDeNoche = false;
         movimientoBloqueado = false;
 
+        DetenerAudios();
+
         if (ghostVisualEffect != null)
         {
             ghostVisualEffect.PlayDespawn();
@@ -57,6 +90,56 @@ public class GhostSpawn : MonoBehaviour
         else
         {
             gameObject.SetActive(false);
+        }
+    }
+
+    private void OnDisable()
+    {
+        DetenerAudios();
+
+        estaDeNoche = false;
+        movimientoBloqueado = false;
+    }
+
+    private void ReproducirAudioAparicion()
+    {
+        if (audioAparicion == null ||
+            audioAparicion.clip == null)
+        {
+            return;
+        }
+
+        audioAparicion.Stop();
+        audioAparicion.time = 0f;
+        audioAparicion.Play();
+    }
+
+    private void IniciarAudioAmbiente()
+    {
+        if (audioAmbiente == null ||
+            audioAmbiente.clip == null)
+        {
+            return;
+        }
+
+        audioAmbiente.loop = true;
+
+        if (!audioAmbiente.isPlaying)
+        {
+            audioAmbiente.Play();
+        }
+    }
+
+    private void DetenerAudios()
+    {
+        if (audioAmbiente != null)
+        {
+            audioAmbiente.Stop();
+        }
+
+        if (audioAparicion != null)
+        {
+            audioAparicion.Stop();
         }
     }
 
@@ -82,7 +165,9 @@ public class GhostSpawn : MonoBehaviour
 
     public void MirarHacia(Vector3 posicionObjetivo)
     {
-        Vector3 direccion = posicionObjetivo - transform.position;
+        Vector3 direccion =
+            posicionObjetivo - transform.position;
+
         direccion.y = 0f;
 
         if (direccion.sqrMagnitude <= 0.001f)
@@ -90,22 +175,33 @@ public class GhostSpawn : MonoBehaviour
             return;
         }
 
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(direccion.normalized);
+        Quaternion rotacionObjetivo =
+            Quaternion.LookRotation(
+                direccion.normalized
+            );
+
         transform.rotation = rotacionObjetivo;
     }
 
-    public void ColocarFrenteAlJugador(Vector3 posicionJugador, Transform transformJugador, float distancia)
+    public void ColocarFrenteAlJugador(
+        Vector3 posicionJugador,
+        Transform transformJugador,
+        float distancia)
     {
         Vector3 direccionFrenteJugador;
 
         if (transformJugador != null)
         {
-            direccionFrenteJugador = transformJugador.forward;
+            direccionFrenteJugador =
+                transformJugador.forward;
+
             direccionFrenteJugador.y = 0f;
         }
         else
         {
-            direccionFrenteJugador = posicionJugador - transform.position;
+            direccionFrenteJugador =
+                posicionJugador - transform.position;
+
             direccionFrenteJugador.y = 0f;
         }
 
@@ -117,7 +213,9 @@ public class GhostSpawn : MonoBehaviour
 
         direccionFrenteJugador.Normalize();
 
-        Vector3 nuevaPosicion = posicionJugador + direccionFrenteJugador * distancia;
+        Vector3 nuevaPosicion =
+            posicionJugador +
+            direccionFrenteJugador * distancia;
 
         nuevaPosicion.y = transform.position.y;
 
@@ -129,19 +227,27 @@ public class GhostSpawn : MonoBehaviour
 
     private void AparecerEnPuntoNocturno()
     {
-        if (!primeraAparicionRealizada && primerPuntoAparicion != null)
+        if (!primeraAparicionRealizada &&
+            primerPuntoAparicion != null)
         {
             primeraAparicionRealizada = true;
 
-            transform.position = primerPuntoAparicion.position;
+            transform.position =
+                primerPuntoAparicion.position;
+
             posicionBase = transform.position;
 
             return;
         }
 
-        if (puntosAparicion == null || puntosAparicion.Length == 0)
+        if (puntosAparicion == null ||
+            puntosAparicion.Length == 0)
         {
-            Debug.LogWarning("No hay puntos asignados al fantasma");
+            Debug.LogWarning(
+                "No hay puntos asignados al fantasma.",
+                this
+            );
+
             return;
         }
 
@@ -149,13 +255,21 @@ public class GhostSpawn : MonoBehaviour
 
         do
         {
-            nuevoPunto = Random.Range(0, puntosAparicion.Length);
+            nuevoPunto = Random.Range(
+                0,
+                puntosAparicion.Length
+            );
         }
-        while (nuevoPunto == ultimoPunto && puntosAparicion.Length > 1);
+        while (
+            nuevoPunto == ultimoPunto &&
+            puntosAparicion.Length > 1
+        );
 
         ultimoPunto = nuevoPunto;
 
-        transform.position = puntosAparicion[nuevoPunto].position;
+        transform.position =
+            puntosAparicion[nuevoPunto].position;
+
         posicionBase = transform.position;
     }
 
@@ -163,19 +277,29 @@ public class GhostSpawn : MonoBehaviour
     {
         float tiempo = Time.time * velocidad;
 
-        float x = Mathf.Sin(tiempo) * amplitudX;
-        float z = Mathf.Sin(tiempo * 2f) * amplitudZ;
-        float y = Mathf.Sin(Time.time * 2f) * 0.25f;
+        float x =
+            Mathf.Sin(tiempo) * amplitudX;
 
-        Vector3 nuevaPosicion = posicionBase + new Vector3(x, y, z);
+        float z =
+            Mathf.Sin(tiempo * 2f) * amplitudZ;
 
-        Vector3 direccion = nuevaPosicion - transform.position;
+        float y =
+            Mathf.Sin(Time.time * 2f) * 0.25f;
+
+        Vector3 nuevaPosicion =
+            posicionBase +
+            new Vector3(x, y, z);
+
+        Vector3 direccion =
+            nuevaPosicion - transform.position;
+
         direccion.y = 0f;
         direccion = direccion.normalized;
 
         if (direccion.sqrMagnitude > 0.001f)
         {
-            Quaternion rotacionObjetivo = Quaternion.LookRotation(direccion);
+            Quaternion rotacionObjetivo =
+                Quaternion.LookRotation(direccion);
 
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,

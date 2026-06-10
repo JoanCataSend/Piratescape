@@ -20,6 +20,13 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     [Header("Animación de la tienda")]
     [SerializeField] private GameObject tiendaNormal;
+
+    [Tooltip(
+        "Partes visuales de la tienda normal. " +
+        "Puedes dejarlo vacío y se buscarán automáticamente."
+    )]
+    [SerializeField] private Renderer[] renderersTiendaNormal;
+
     [SerializeField] private GameObject tiendaAnimada;
     [SerializeField] private Animator animatorTiendaAnimada;
     [SerializeField] private string estadoAnimacionTienda = "Take 001";
@@ -74,10 +81,9 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             camaraJugador.SetActive(true);
         }
 
-        if (tiendaNormal != null)
-        {
-            tiendaNormal.SetActive(true);
-        }
+        // La tienda normal permanece activa.
+        // Solo se muestran u ocultan sus partes visuales.
+        MostrarTiendaNormal(true);
 
         if (tiendaAnimada != null)
         {
@@ -123,7 +129,9 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             PrepararCinematica();
         }
 
-        rutinaMovimiento = StartCoroutine(ReproducirMovimientoMonos());
+        rutinaMovimiento = StartCoroutine(
+            ReproducirMovimientoMonos()
+        );
     }
 
     public IEnumerator ReproducirMovimientoMonos()
@@ -225,10 +233,14 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private IEnumerator ReproducirAnimacionTienda()
     {
-        if (tiendaNormal != null)
-        {
-            tiendaNormal.SetActive(false);
-        }
+        /*
+         * No usamos tiendaNormal.SetActive(false).
+         *
+         * Si ShelterSleep está en la tienda normal o en uno de sus
+         * padres/hijos, desactivar la tienda detendría su coroutine.
+         * Solo ocultamos los Renderer.
+         */
+        MostrarTiendaNormal(false);
 
         if (tiendaAnimada == null)
         {
@@ -287,6 +299,42 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         }
     }
 
+    private void MostrarTiendaNormal(bool mostrar)
+    {
+        /*
+         * Si no has rellenado la lista manualmente,
+         * el script busca automáticamente todos los Renderer
+         * que haya dentro de la tienda normal.
+         */
+        if ((renderersTiendaNormal == null ||
+             renderersTiendaNormal.Length == 0) &&
+            tiendaNormal != null)
+        {
+            renderersTiendaNormal =
+                tiendaNormal.GetComponentsInChildren<Renderer>(
+                    true
+                );
+        }
+
+        if (renderersTiendaNormal == null)
+        {
+            return;
+        }
+
+        for (int i = 0;
+             i < renderersTiendaNormal.Length;
+             i++)
+        {
+            Renderer rendererTienda =
+                renderersTiendaNormal[i];
+
+            if (rendererTienda != null)
+            {
+                rendererTienda.enabled = mostrar;
+            }
+        }
+    }
+
     private void BuscarAnimatorTienda()
     {
         if (animatorTiendaAnimada != null ||
@@ -301,7 +349,9 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         if (animatorTiendaAnimada == null)
         {
             animatorTiendaAnimada =
-                tiendaAnimada.GetComponentInChildren<Animator>(true);
+                tiendaAnimada.GetComponentInChildren<Animator>(
+                    true
+                );
         }
     }
 
@@ -364,11 +414,15 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         if (monoRobo.animator == null)
         {
             monoRobo.animator =
-                monoRobo.mono.GetComponentInChildren<Animator>(true);
+                monoRobo.mono.GetComponentInChildren<Animator>(
+                    true
+                );
         }
     }
 
-    private void ReproducirAnimacionTodos(string nombreEstado)
+    private void ReproducirAnimacionTodos(
+        string nombreEstado
+    )
     {
         if (monos == null ||
             string.IsNullOrWhiteSpace(nombreEstado))
@@ -492,7 +546,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private IEnumerator MoverMonosA(
         Transform destino,
-        float velocidad)
+        float velocidad
+    )
     {
         if (destino == null || monos == null)
         {
@@ -517,7 +572,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
                 bool llego = MoverMonoHacia(
                     monoRobo.mono,
-                    destino.position + ObtenerOffsetMono(i),
+                    destino.position +
+                    ObtenerOffsetMono(i),
                     velocidad
                 );
 
@@ -532,7 +588,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     }
 
     private IEnumerator MoverMonosAPuntosIniciales(
-        float velocidad)
+        float velocidad
+    )
     {
         if (monos == null)
         {
@@ -575,7 +632,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     private bool MoverMonoHacia(
         Transform mono,
         Vector3 destino,
-        float velocidad)
+        float velocidad
+    )
     {
         if (mono == null)
         {
@@ -646,7 +704,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private Vector3 AjustarPosicionAlSuelo(
         Vector3 posicion,
-        Transform mono)
+        Transform mono
+    )
     {
         if (!ajustarAlturaAlSuelo)
         {
@@ -664,7 +723,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             QueryTriggerInteraction.Ignore
         );
 
-        if (impactos == null || impactos.Length == 0)
+        if (impactos == null ||
+            impactos.Length == 0)
         {
             return posicion;
         }
