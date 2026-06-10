@@ -24,6 +24,9 @@ public class movimientoplayer : MonoBehaviour
     [Header("Animación")]
     [SerializeField] private Animator animator;
 
+    [Header("Audio de salto")]
+    [SerializeField] private PlayerJumpAudio playerJumpAudio;
+
     [Header("Estado afectado por energia")]
     [SerializeField] private float energySpeedMultiplier = 1f;
     [SerializeField] private bool canSprint = true;
@@ -40,18 +43,30 @@ public class movimientoplayer : MonoBehaviour
     private Vector2 moveInput;
     private bool jumpPressed;
 
+    private bool saltoEnCurso;
+    private bool estuvoEnElAire;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
 
-        if (cameraTransform == null && Camera.main != null)
+        if (cameraTransform == null &&
+            Camera.main != null)
         {
-            cameraTransform = Camera.main.transform;
+            cameraTransform =
+                Camera.main.transform;
         }
 
         if (animator == null)
         {
-            animator = GetComponentInChildren<Animator>();
+            animator =
+                GetComponentInChildren<Animator>();
+        }
+
+        if (playerJumpAudio == null)
+        {
+            playerJumpAudio =
+                GetComponent<PlayerJumpAudio>();
         }
 
         CrearInputs();
@@ -81,7 +96,9 @@ public class movimientoplayer : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState =
+            CursorLockMode.Locked;
+
         Cursor.visible = false;
     }
 
@@ -94,9 +111,19 @@ public class movimientoplayer : MonoBehaviour
             return;
         }
 
-        groundedPlayer = controller.isGrounded;
+        bool estabaEnSuelo =
+            groundedPlayer;
 
-        if (groundedPlayer && playerVelocity.y < 0f)
+        groundedPlayer =
+            controller.isGrounded;
+
+        ComprobarAterrizaje(
+            estabaEnSuelo,
+            groundedPlayer
+        );
+
+        if (groundedPlayer &&
+            playerVelocity.y < 0f)
         {
             playerVelocity.y = -2f;
         }
@@ -121,7 +148,10 @@ public class movimientoplayer : MonoBehaviour
 
     private void CrearInputs()
     {
-        moveAction = new InputAction(name: "Move", type: InputActionType.Value);
+        moveAction = new InputAction(
+            name: "Move",
+            type: InputActionType.Value
+        );
 
         moveAction.AddCompositeBinding("2DVector")
             .With("Up", "<Keyboard>/w")
@@ -135,28 +165,57 @@ public class movimientoplayer : MonoBehaviour
             .With("Left", "<Keyboard>/leftArrow")
             .With("Right", "<Keyboard>/rightArrow");
 
-        moveAction.AddBinding("<Gamepad>/leftStick");
-        moveAction.AddBinding("<Gamepad>/dpad");
+        moveAction.AddBinding(
+            "<Gamepad>/leftStick"
+        );
 
-        jumpAction = new InputAction(name: "Jump", type: InputActionType.Button);
-        jumpAction.AddBinding("<Keyboard>/space");
-        jumpAction.AddBinding("<Gamepad>/buttonSouth");
+        moveAction.AddBinding(
+            "<Gamepad>/dpad"
+        );
 
-        sprintAction = new InputAction(name: "Sprint", type: InputActionType.Value);
-        sprintAction.AddBinding("<Keyboard>/leftShift");
-        sprintAction.AddBinding("<Gamepad>/leftStickPress");
-        sprintAction.AddBinding("<Gamepad>/rightTrigger");
+        jumpAction = new InputAction(
+            name: "Jump",
+            type: InputActionType.Button
+        );
+
+        jumpAction.AddBinding(
+            "<Keyboard>/space"
+        );
+
+        jumpAction.AddBinding(
+            "<Gamepad>/buttonSouth"
+        );
+
+        sprintAction = new InputAction(
+            name: "Sprint",
+            type: InputActionType.Value
+        );
+
+        sprintAction.AddBinding(
+            "<Keyboard>/leftShift"
+        );
+
+        sprintAction.AddBinding(
+            "<Gamepad>/leftStickPress"
+        );
+
+        sprintAction.AddBinding(
+            "<Gamepad>/rightTrigger"
+        );
     }
 
     private void LeerMovimientoActual()
     {
-        if (moveAction != null && moveAction.enabled)
+        if (moveAction != null &&
+            moveAction.enabled)
         {
-            moveInput = moveAction.ReadValue<Vector2>();
+            moveInput =
+                moveAction.ReadValue<Vector2>();
         }
     }
 
-    private void OnMovePerformed(InputAction.CallbackContext context)
+    private void OnMovePerformed(
+        InputAction.CallbackContext context)
     {
         if (isFainted || isPickingUp)
         {
@@ -164,15 +223,18 @@ public class movimientoplayer : MonoBehaviour
             return;
         }
 
-        moveInput = context.ReadValue<Vector2>();
+        moveInput =
+            context.ReadValue<Vector2>();
     }
 
-    private void OnMoveCanceled(InputAction.CallbackContext context)
+    private void OnMoveCanceled(
+        InputAction.CallbackContext context)
     {
         moveInput = Vector2.zero;
     }
 
-    private void OnJumpPerformed(InputAction.CallbackContext context)
+    private void OnJumpPerformed(
+        InputAction.CallbackContext context)
     {
         if (isFainted || isPickingUp)
         {
@@ -184,7 +246,12 @@ public class movimientoplayer : MonoBehaviour
 
     private void MoverJugador()
     {
-        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y);
+        Vector3 direction =
+            new Vector3(
+                moveInput.x,
+                0f,
+                moveInput.y
+            );
 
         if (direction.magnitude < 0.1f)
         {
@@ -193,35 +260,86 @@ public class movimientoplayer : MonoBehaviour
 
         direction.Normalize();
 
-        float cameraY = cameraTransform != null ? cameraTransform.eulerAngles.y : 0f;
+        float cameraY =
+            cameraTransform != null
+                ? cameraTransform.eulerAngles.y
+                : 0f;
 
-        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraY;
+        float targetAngle =
+            Mathf.Atan2(
+                direction.x,
+                direction.z
+            ) *
+            Mathf.Rad2Deg +
+            cameraY;
 
-        float smoothAngle = Mathf.SmoothDampAngle(
-            transform.eulerAngles.y,
-            targetAngle,
-            ref turnSmoothVelocity,
-            turnSmoothTime
+        float smoothAngle =
+            Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetAngle,
+                ref turnSmoothVelocity,
+                turnSmoothTime
+            );
+
+        transform.rotation =
+            Quaternion.Euler(
+                0f,
+                smoothAngle,
+                0f
+            );
+
+        Vector3 moveDir =
+            Quaternion.Euler(
+                0f,
+                targetAngle,
+                0f
+            ) *
+            Vector3.forward;
+
+        bool isTryingToSprint =
+            sprintAction != null &&
+            sprintAction.ReadValue<float>() > 0.5f;
+
+        bool isSprinting =
+            isTryingToSprint &&
+            canSprint &&
+            !isTired;
+
+        float currentSpeed =
+            isSprinting
+                ? playerSpeed * sprintMultiplier
+                : playerSpeed;
+
+        currentSpeed *=
+            energySpeedMultiplier;
+
+        controller.Move(
+            moveDir.normalized *
+            currentSpeed *
+            Time.deltaTime
         );
-
-        transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
-
-        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-        bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
-        bool isSprinting = isTryingToSprint && canSprint && !isTired;
-
-        float currentSpeed = isSprinting ? playerSpeed * sprintMultiplier : playerSpeed;
-        currentSpeed *= energySpeedMultiplier;
-
-        controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
     }
 
     private void Saltar()
     {
-        if (jumpPressed && groundedPlayer)
+        if (jumpPressed &&
+            groundedPlayer)
         {
-            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+            playerVelocity.y =
+                Mathf.Sqrt(
+                    jumpHeight *
+                    -2f *
+                    gravityValue
+                );
+
+            saltoEnCurso = true;
+            estuvoEnElAire = false;
+
+            if (playerJumpAudio != null)
+            {
+                playerJumpAudio
+                    .ReproducirInicioSalto();
+            }
 
             if (animator != null)
             {
@@ -232,10 +350,46 @@ public class movimientoplayer : MonoBehaviour
         jumpPressed = false;
     }
 
+    private void ComprobarAterrizaje(
+        bool estabaEnSuelo,
+        bool estaEnSueloAhora)
+    {
+        if (!saltoEnCurso)
+        {
+            return;
+        }
+
+        if (!estaEnSueloAhora)
+        {
+            estuvoEnElAire = true;
+            return;
+        }
+
+        if (estuvoEnElAire &&
+            !estabaEnSuelo &&
+            estaEnSueloAhora)
+        {
+            saltoEnCurso = false;
+            estuvoEnElAire = false;
+
+            if (playerJumpAudio != null)
+            {
+                playerJumpAudio
+                    .ReproducirAterrizaje();
+            }
+        }
+    }
+
     private void AplicarGravedad()
     {
-        playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
+        playerVelocity.y +=
+            gravityValue *
+            Time.deltaTime;
+
+        controller.Move(
+            playerVelocity *
+            Time.deltaTime
+        );
     }
 
     private void ActualizarAnimaciones()
@@ -245,15 +399,42 @@ public class movimientoplayer : MonoBehaviour
             return;
         }
 
-        bool isWalking = moveInput.magnitude > 0.1f && !isFainted && !isPickingUp;
+        bool isWalking =
+            moveInput.magnitude > 0.1f &&
+            !isFainted &&
+            !isPickingUp;
 
-        bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
-        bool isRunning = isWalking && isTryingToSprint && canSprint && !isTired && !isFainted && !isPickingUp;
+        bool isTryingToSprint =
+            sprintAction != null &&
+            sprintAction.ReadValue<float>() > 0.5f;
 
-        animator.SetBool("isWalking", isWalking);
-        animator.SetBool("isRunning", isRunning);
-        animator.SetBool("isTired", isTired);
-        animator.SetBool("isFainted", isFainted);
+        bool isRunning =
+            isWalking &&
+            isTryingToSprint &&
+            canSprint &&
+            !isTired &&
+            !isFainted &&
+            !isPickingUp;
+
+        animator.SetBool(
+            "isWalking",
+            isWalking
+        );
+
+        animator.SetBool(
+            "isRunning",
+            isRunning
+        );
+
+        animator.SetBool(
+            "isTired",
+            isTired
+        );
+
+        animator.SetBool(
+            "isFainted",
+            isFainted
+        );
     }
 
     public void PlayPickUpAnimation()
@@ -269,8 +450,16 @@ public class movimientoplayer : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isRunning", false);
+            animator.SetBool(
+                "isWalking",
+                false
+            );
+
+            animator.SetBool(
+                "isRunning",
+                false
+            );
+
             animator.SetTrigger("PickUp");
         }
     }
@@ -281,7 +470,6 @@ public class movimientoplayer : MonoBehaviour
         jumpPressed = false;
 
         LeerMovimientoActual();
-
         ActualizarAnimaciones();
     }
 
@@ -292,15 +480,31 @@ public class movimientoplayer : MonoBehaviour
 
     public bool IsActuallySprinting()
     {
-        bool isTryingToSprint = sprintAction != null && sprintAction.ReadValue<float>() > 0.5f;
-        bool isMoving = moveInput.magnitude > 0.1f;
+        bool isTryingToSprint =
+            sprintAction != null &&
+            sprintAction.ReadValue<float>() > 0.5f;
 
-        return isTryingToSprint && isMoving && canSprint && !isTired && !isFainted && !isPickingUp;
+        bool isMoving =
+            moveInput.magnitude > 0.1f;
+
+        return
+            isTryingToSprint &&
+            isMoving &&
+            canSprint &&
+            !isTired &&
+            !isFainted &&
+            !isPickingUp;
     }
 
-    public void SetEnergySpeedMultiplier(float multiplier)
+    public void SetEnergySpeedMultiplier(
+        float multiplier)
     {
-        energySpeedMultiplier = Mathf.Clamp(multiplier, 0.1f, 1f);
+        energySpeedMultiplier =
+            Mathf.Clamp(
+                multiplier,
+                0.1f,
+                1f
+            );
     }
 
     public void SetCanSprint(bool value)
@@ -338,11 +542,26 @@ public class movimientoplayer : MonoBehaviour
         jumpPressed = false;
         playerVelocity = Vector3.zero;
 
+        saltoEnCurso = false;
+        estuvoEnElAire = false;
+
         if (animator != null)
         {
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isRunning", false);
-            animator.SetBool("isFainted", true);
+            animator.SetBool(
+                "isWalking",
+                false
+            );
+
+            animator.SetBool(
+                "isRunning",
+                false
+            );
+
+            animator.SetBool(
+                "isFainted",
+                true
+            );
+
             animator.SetTrigger("faint");
         }
     }
@@ -354,11 +573,17 @@ public class movimientoplayer : MonoBehaviour
         jumpPressed = false;
         playerVelocity = Vector3.zero;
 
+        saltoEnCurso = false;
+        estuvoEnElAire = false;
+
         LeerMovimientoActual();
 
         if (animator != null)
         {
-            animator.SetBool("isFainted", false);
+            animator.SetBool(
+                "isFainted",
+                false
+            );
         }
     }
 

@@ -47837,7 +47837,7 @@ MonoBehaviour:
   camaraJugador: {fileID: 587593477}
   camaraCinematica: {fileID: 349923476}
   esperaDentroTienda: 1.2
-  esperaFinal: 0.5
+  esperaFinal: 0
   velocidadIrTienda: 4
   velocidadSalirCorriendo: 15
   velocidadRotacion: 10
@@ -122985,6 +122985,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1588489911}
+    - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1588489912}
   m_SourcePrefab: {fileID: 100100000, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
 --- !u!4 &1149186351 stripped
 Transform:
@@ -132789,6 +132792,10 @@ MonoBehaviour:
   fadeImage: {fileID: 1192930443}
   fadeDuration: 2
   empezarCerrado: 0
+  audioSourceDormir: {fileID: 0}
+  sonidoFadeDormir: {fileID: 8300000, guid: a113f38108802074fab9bf3adfa5b87e, type: 3}
+  volumenSonidoDormir: 1
+  retrasoFadeTrasSonido: 0
   openRadius: 1.5
   closedRadius: -0.15
   softness: 0.08
@@ -169242,7 +169249,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: de4b19d80432822478e8ed50c6a6eb97, type: 3}
   - {fileID: 8300000, guid: fc9791b7d6f7d3b49b221f11fcaa1c96, type: 3}
   - {fileID: 8300000, guid: 0ee2dff7f25176b41b9b3ff97f4b9e7f, type: 3}
-  volumenPisadas: 0.7
+  volumenPisadas: 0.5
   pitchMinimo: 0.95
   pitchMaximo: 1.05
 --- !u!114 &1588489911
@@ -169265,6 +169272,60 @@ MonoBehaviour:
   iconoEnergia: {fileID: 179439534}
   escalaPalpito: 2
   velocidadPalpito: 5
+--- !u!114 &1588489912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588489892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8bdb1f9b530e348aefb89ed9633912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSourceVoz: {fileID: 0}
+  audioSourceWhoosh: {fileID: 0}
+  audioSourceAterrizaje: {fileID: 0}
+  sonidosVozSalto:
+  - {fileID: 8300000, guid: ac5e1dbedc830874b9e0a940b3ce6c72, type: 3}
+  - {fileID: 8300000, guid: 61bf7cfc4c22a214c9c19ff5b4628550, type: 3}
+  - {fileID: 8300000, guid: 46b455c397d405d4f82c17020cdfe87c, type: 3}
+  volumenVoz: 1
+  sonidosWhoosh:
+  - {fileID: 8300000, guid: dc37fd261c6f2bf42bb00d2ec5186391, type: 3}
+  - {fileID: 8300000, guid: 6f425753e53b0a14ea507c7d104389d2, type: 3}
+  - {fileID: 8300000, guid: 4ea3fde1461f4704094c96eae9f625e4, type: 3}
+  - {fileID: 8300000, guid: 18c0591059696254ea7495b71a914a61, type: 3}
+  - {fileID: 8300000, guid: c281fa7efc3707243b84ea10877ed7e6, type: 3}
+  - {fileID: 8300000, guid: 61ddf2ec79ec763408a1cf35d4e2b83f, type: 3}
+  - {fileID: 8300000, guid: f26a0783ddd1ef849b1ed31cd9af02c6, type: 3}
+  - {fileID: 8300000, guid: 6ad61a9da897570479439ab9d53b56bf, type: 3}
+  - {fileID: 8300000, guid: ebd3e0c712a9ebc4ea419ae488df8d20, type: 3}
+  - {fileID: 8300000, guid: 3e52bdfd97ee9f540bbffdd5f3fed6f8, type: 3}
+  - {fileID: 8300000, guid: 08f4dd6b102c9124aae7ea165fd6c6d6, type: 3}
+  - {fileID: 8300000, guid: 0d7d201fc449d844e9a786aea26ff2aa, type: 3}
+  - {fileID: 8300000, guid: dc8ec0526dc042444a881286b80c1452, type: 3}
+  volumenWhoosh: 1
+  sonidosAterrizajeArena:
+  - {fileID: 8300000, guid: 1875b134a58318043adfb18c942339eb, type: 3}
+  - {fileID: 8300000, guid: c09cd6f200481764fa56b86310ce4132, type: 3}
+  - {fileID: 8300000, guid: 7b326750262a9274aa0604e944a561b5, type: 3}
+  sonidosAterrizajeHierba:
+  - {fileID: 8300000, guid: 1875b134a58318043adfb18c942339eb, type: 3}
+  - {fileID: 8300000, guid: c09cd6f200481764fa56b86310ce4132, type: 3}
+  - {fileID: 8300000, guid: 7b326750262a9274aa0604e944a561b5, type: 3}
+  volumenAterrizaje: 1
+  sandLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  grassLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  alturaRaycast: 0.3
+  distanciaRaycast: 1.8
+  pitchMinimo: 0.96
+  pitchMaximo: 1.04
 --- !u!64 &1592097014
 MeshCollider:
   m_ObjectHideFlags: 0
