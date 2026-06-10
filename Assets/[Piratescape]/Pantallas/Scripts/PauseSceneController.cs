@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class PauseSceneController : MonoBehaviour
 {
-    [Header("Paneles")]
+    [Header("Paneles principales")]
     [SerializeField] private GameObject panelPausaPrincipal;
     [SerializeField] private GameObject panelAjustes;
-    [SerializeField] private GameObject panelConfirmarVolverMenu;
+
+    [FormerlySerializedAs("panelConfirmarVolverMenu")]
+    [SerializeField] private GameObject panelConfirmarSalir;
+
+    [SerializeField] private GameObject panelControles;
 
     [Header("Ajustes")]
     [SerializeField] private SettingsMenuController settingsMenuController;
@@ -40,9 +45,14 @@ public class PauseSceneController : MonoBehaviour
             panelPausaPrincipal.SetActive(false);
         }
 
-        if (panelConfirmarVolverMenu != null)
+        if (panelConfirmarSalir != null)
         {
-            panelConfirmarVolverMenu.SetActive(false);
+            panelConfirmarSalir.SetActive(false);
+        }
+
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
         }
 
         if (settingsMenuController != null)
@@ -55,7 +65,21 @@ public class PauseSceneController : MonoBehaviour
         }
     }
 
-    public void CerrarAjustes()
+    public void GuardarAjustes()
+    {
+        if (settingsMenuController != null)
+        {
+            settingsMenuController.Aceptar();
+        }
+        else if (panelAjustes != null)
+        {
+            panelAjustes.SetActive(false);
+        }
+
+        MostrarPausaPrincipal();
+    }
+
+    public void CancelarAjustes()
     {
         if (settingsMenuController != null)
         {
@@ -67,6 +91,22 @@ public class PauseSceneController : MonoBehaviour
         }
 
         MostrarPausaPrincipal();
+    }
+
+    public void AbrirControles()
+    {
+        if (panelControles != null)
+        {
+            panelControles.SetActive(true);
+        }
+    }
+
+    public void CerrarControles()
+    {
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
+        }
     }
 
     public void MostrarPausaPrincipal()
@@ -81,36 +121,18 @@ public class PauseSceneController : MonoBehaviour
             panelAjustes.SetActive(false);
         }
 
-
-        if (panelConfirmarVolverMenu != null)
+        if (panelConfirmarSalir != null)
         {
-            panelConfirmarVolverMenu.SetActive(false);
+            panelConfirmarSalir.SetActive(false);
+        }
+
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
         }
     }
 
-    public void PedirVolverAlMenu()
-    {
-        if (panelPausaPrincipal != null)
-        {
-            panelPausaPrincipal.SetActive(false);
-        }
-
-        if (panelConfirmarVolverMenu != null)
-        {
-            panelConfirmarVolverMenu.SetActive(true);
-        }
-        else
-        {
-            ConfirmarVolverAlMenu();
-        }
-    }
-
-    public void CancelarVolverAlMenu()
-    {
-        MostrarPausaPrincipal();
-    }
-
-    public void ConfirmarVolverAlMenu()
+    public void VolverAlMenu()
     {
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
@@ -132,6 +154,21 @@ public class PauseSceneController : MonoBehaviour
         if (panelPausaPrincipal != null)
         {
             panelPausaPrincipal.SetActive(false);
+        }
+
+        if (panelAjustes != null)
+        {
+            panelAjustes.SetActive(false);
+        }
+
+        if (panelControles != null)
+        {
+            panelControles.SetActive(false);
+        }
+
+        if (panelConfirmarSalir != null)
+        {
+            panelConfirmarSalir.SetActive(true);
         }
         else
         {
@@ -155,5 +192,10 @@ public class PauseSceneController : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+
+    public void SalirJuego()
+    {
+        PedirSalirJuego();
     }
 }
