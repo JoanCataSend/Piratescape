@@ -7,6 +7,7 @@ public class PickupFlyToHUD : MonoBehaviour
     [Header("Sonido")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip sonidoLlegadaHUD;
+    [SerializeField] private AudioClip sonidoVueloHUD;
     [SerializeField] private float volumenSonido = 1f;
 
     [Header("Referencias")]
@@ -67,6 +68,11 @@ public class PickupFlyToHUD : MonoBehaviour
         icon.anchoredPosition = startPos;
         icon.localScale = Vector3.one * startScale;
         icon.localRotation = Quaternion.identity;
+
+        if (audioSource != null && sonidoVueloHUD != null)
+        {
+            audioSource.PlayOneShot(sonidoVueloHUD, volumenSonido);
+        }
 
         StartCoroutine(FlyRoutine(icon, iconSprite, startPos, endPos));
     }
