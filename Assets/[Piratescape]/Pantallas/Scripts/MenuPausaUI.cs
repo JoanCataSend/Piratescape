@@ -58,6 +58,7 @@ public sealed class MenuPausaUI : MonoBehaviour
     private void Start()
     {
         estaEnPausa = false;
+        AudioListener.pause = false;
     }
 
     private void Update()
@@ -124,6 +125,7 @@ public sealed class MenuPausaUI : MonoBehaviour
         CambiarEstadoComponentesJugador(false);
 
         Time.timeScale = 0f;
+        AudioListener.pause = true;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -153,6 +155,7 @@ public sealed class MenuPausaUI : MonoBehaviour
         CambiarEstadoComponentesJugador(true);
 
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -172,6 +175,7 @@ public sealed class MenuPausaUI : MonoBehaviour
         CambiarEstadoComponentesJugador(true);
 
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -182,6 +186,7 @@ public sealed class MenuPausaUI : MonoBehaviour
     public void VolverAlMenuPrincipal()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -192,6 +197,7 @@ public sealed class MenuPausaUI : MonoBehaviour
     public void SalirDelJuego()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

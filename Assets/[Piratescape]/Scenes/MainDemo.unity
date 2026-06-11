@@ -63469,6 +63469,8 @@ MonoBehaviour:
   panelControles: {fileID: 0}
   fullscreenToggle: {fileID: 571928968}
   qualityDropdown: {fileID: 0}
+  audioSourceUI: {fileID: 0}
+  sonidoToggle: {fileID: 0}
   masterVolumeSlider: {fileID: 0}
   musicVolumeSlider: {fileID: 0}
   sfxVolumeSlider: {fileID: 0}
@@ -67757,6 +67759,7 @@ GameObject:
   m_Component:
   - component: {fileID: 596742180}
   - component: {fileID: 596742181}
+  - component: {fileID: 596742182}
   m_Layer: 3
   m_Name: BarcoConstruccion
   m_TagString: Untagged
@@ -67880,6 +67883,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0cfaaa2a2802da54fa8d366b36d7d419, type: 3}
   - {fileID: 21300000, guid: e5e3185a9af85a84ea111cdf38e21c94, type: 3}
   - {fileID: 21300000, guid: 78e2ee8219b5d544dbc765ec580ae4d2, type: 3}
+  audioSourceMejora: {fileID: 596742182}
+  sonidoConstruccion: {fileID: 8300000, guid: aaa5d2780f8bf2843a46af39274e6b0e, type: 3}
+  sonidoNivelCompletado: {fileID: 8300000, guid: 1f7ef7fd16d661448b7713fd7a18a674, type: 3}
+  volumenConstruccion: 0.5
+  volumenNivelCompletado: 0.6
+  esperaAntesSonidoNivel: 0.2
   objetosUIAOcultar:
   - {fileID: 1729212095}
   - {fileID: 78945907}
@@ -67893,6 +67902,103 @@ MonoBehaviour:
   victoryCutsceneController: {fileID: 730001132}
   iniciarCinematicaFinalAlCompletarNivel5: 1
   retrasoCinematicaFinal: 2
+--- !u!82 &596742182
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596742179}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &597952094
 GameObject:
   m_ObjectHideFlags: 0
@@ -107008,6 +107114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 994258606}
   sonidoLlegadaHUD: {fileID: 8300000, guid: c9f72da3d75836d44bdf2c0333acd7ca, type: 3}
+  sonidoVueloHUD: {fileID: 8300000, guid: f92cfac54acd9f340824b00ecd4c672e, type: 3}
   volumenSonido: 0.1
   canvas: {fileID: 1552658392}
   mainCamera: {fileID: 1812617213}
@@ -118566,14 +118673,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
-      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -121553,6 +121652,14 @@ PrefabInstance:
     - target: {fileID: 8696847069942999147, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

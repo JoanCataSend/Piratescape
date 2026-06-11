@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public sealed class ConstruccionBarco : MonoBehaviour
 {
@@ -48,6 +49,14 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private Image imagenMensajeNivel;
     [SerializeField] private Sprite[] spritesMensajeNivel;
 
+    [Header("Sonido mejora barco")]
+    [SerializeField] private AudioSource audioSourceMejora;
+    [SerializeField] private AudioClip sonidoConstruccion;
+    [SerializeField] private AudioClip sonidoNivelCompletado;
+    [SerializeField] private float volumenConstruccion = 0.6f;
+    [SerializeField] private float volumenNivelCompletado = 0.7f;
+    [SerializeField] private float esperaAntesSonidoNivel = 0.2f;
+
     [Header("UI a ocultar durante mejora")]
     [SerializeField] private GameObject[] objetosUIAOcultar;
     private bool[] estadosPreviosUI;
@@ -70,6 +79,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
     private void Awake()
     {
         CachearReferencias();
+        PrepararAudioSourceMejora();
     }
 
     private void OnEnable()
@@ -338,6 +348,8 @@ public sealed class ConstruccionBarco : MonoBehaviour
     {
         HaySecuenciaMejoraBarcoEnCurso = true;
 
+        StartCoroutine(ReproducirSonidosMejoraRoutine());
+
         if (objetosUIAOcultar != null)
         {
             estadosPreviosUI = new bool[objetosUIAOcultar.Length];
@@ -453,6 +465,42 @@ public sealed class ConstruccionBarco : MonoBehaviour
         if (iniciarCinematicaFinalAlCompletarNivel5 && nivelCompletado == 4 && victoryCutsceneController != null)
         {
             victoryCutsceneController.StartVictoryCutsceneAfterDelay(retrasoCinematicaFinal);
+        }
+    }
+
+    private void PrepararAudioSourceMejora()
+    {
+        if (audioSourceMejora == null)
+        {
+            audioSourceMejora = GetComponent<AudioSource>();
+        }
+
+        if (audioSourceMejora == null)
+        {
+            audioSourceMejora = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceMejora.playOnAwake = false;
+        audioSourceMejora.loop = false;
+        audioSourceMejora.spatialBlend = 0f;
+    }
+
+    private IEnumerator ReproducirSonidosMejoraRoutine()
+    {
+        if (audioSourceMejora == null)
+        {
+            yield break;
+        }
+
+        if (sonidoConstruccion != null)
+        {
+            audioSourceMejora.PlayOneShot(sonidoConstruccion, volumenConstruccion);
+            yield return new WaitForSeconds(sonidoConstruccion.length + esperaAntesSonidoNivel);
+        }
+
+        if (sonidoNivelCompletado != null)
+        {
+            audioSourceMejora.PlayOneShot(sonidoNivelCompletado, volumenNivelCompletado);
         }
     }
 }
