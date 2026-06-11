@@ -64696,7 +64696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6077168872989578693, guid: f514474ff8e94554d8477de1f2f601b0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6077168872989578695, guid: f514474ff8e94554d8477de1f2f601b0, type: 3}
       propertyPath: density
@@ -185530,7 +185530,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeSystem: {fileID: 1975866679}
   rainFX: {fileID: 1164341488}
-  rainChancePerDay: 0.5
+  rainChancePerDay: 0.1
   alwaysRain: 0
   rainAudioSource: {fileID: 1741039750}
 --- !u!4 &1673731871
