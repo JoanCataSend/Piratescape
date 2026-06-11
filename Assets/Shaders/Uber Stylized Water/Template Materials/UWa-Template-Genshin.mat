@@ -28,6 +28,7 @@ Material:
   - _ENABLECAUSTICS
   - _ENABLENORMAL
   - _ENABLEPLANERREFLECTION
+  - _ENABLEREFRACTION
   - _ENABLESHORELINE
   - _ENABLEWAVE
   m_InvalidKeywords: []
@@ -186,11 +187,11 @@ Material:
     - _1st_Wave_Height: 0.001
     - _1st_Wave_Length: 4.27
     - _1st_Wave_Sharpness: 0.3
-    - _1st_Wave_Speed: 0.62
+    - _1st_Wave_Speed: 1
     - _2nd_Wave_Height: 0.002
     - _2nd_Wave_Length: 5
     - _2nd_Wave_Sharpness: 0.1
-    - _2nd_Wave_Speed: 0.65
+    - _2nd_Wave_Speed: 1
     - _A: 11.3
     - _AffectedByMainColor: 1
     - _AlphaClip: 0
@@ -237,7 +238,7 @@ Material:
     - _ENABLEINTERSECTION: 0
     - _ENABLENORMAL: 1
     - _ENABLEPLANERREFLECTION: 1
-    - _ENABLEREFRACTION: 0
+    - _ENABLEREFRACTION: 1
     - _ENABLESHORELINE: 1
     - _ENABLESURFACEFOAM: 0
     - _ENABLEUNDERWATERLAYER: 0
@@ -273,7 +274,7 @@ Material:
     - _InterSec_Foam_Invert: 0
     - _InterSec_Foam_Scale: 5
     - _InterSec_Foam_Smooth: 0.01
-    - _InterSec_GradientDissolve: 0
+    - _InterSec_GradientDissolve: 1
     - _InterSec_Width: 0.1
     - _IntersectionDistanceCutoff: 2.5
     - _IntersectionDistanceDepth: 0.5
@@ -319,7 +320,7 @@ Material:
     - _SL_CenterMaskFade: 0.351
     - _SL_Depth: 0.47
     - _SL_Dissolve: 1.17
-    - _SL_EnableTrail: 0
+    - _SL_EnableTrail: 1
     - _SL_ExplandNearShore: -0.635
     - _SL_GradientDissolve: 0.44
     - _SL_MaskScale: 0.91
