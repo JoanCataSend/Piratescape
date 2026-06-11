@@ -64696,7 +64696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6077168872989578693, guid: f514474ff8e94554d8477de1f2f601b0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6077168872989578695, guid: f514474ff8e94554d8477de1f2f601b0, type: 3}
       propertyPath: density
@@ -68066,10 +68066,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e5e3185a9af85a84ea111cdf38e21c94, type: 3}
   - {fileID: 21300000, guid: 78e2ee8219b5d544dbc765ec580ae4d2, type: 3}
   audioSourceMejora: {fileID: 0}
-  sonidoConstruccion: {fileID: 0}
-  sonidoNivelCompletado: {fileID: 0}
+  sonidoConstruccion: {fileID: 8300000, guid: 1eb7ea7a7afbd8742abc9e037dee795b, type: 3}
+  sonidoNivelCompletado: {fileID: 8300000, guid: 1f7ef7fd16d661448b7713fd7a18a674, type: 3}
   volumenConstruccion: 0.6
-  volumenNivelCompletado: 0.7
+  volumenNivelCompletado: 0.2
   esperaAntesSonidoNivel: 0.2
   objetosUIAOcultar:
   - {fileID: 1729212095}
@@ -185692,7 +185692,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeSystem: {fileID: 1975866679}
   rainFX: {fileID: 1164341488}
-  rainChancePerDay: 0.5
+  rainChancePerDay: 0.1
   alwaysRain: 0
   rainAudioSource: {fileID: 1741039750}
 --- !u!4 &1673731871
