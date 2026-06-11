@@ -14,7 +14,7 @@ public class RainController : MonoBehaviour
 
     [Header("Debug / Pruebas")]
     [SerializeField] private bool alwaysRain = false;
-
+    [SerializeField] private AudioSource rainAudioSource;
     private int lastCheckedDay = -1;
     private bool shouldRainToday;
     private bool rainActive;
@@ -101,7 +101,7 @@ public class RainController : MonoBehaviour
 
     private void SetRain(bool active)
     {
-        if (rainFX == null || rainActive == active)
+        if (rainActive == active)
         {
             return;
         }
@@ -112,15 +112,32 @@ public class RainController : MonoBehaviour
 
         if (active)
         {
-            rainFX.gameObject.SetActive(true);
-            rainFX.Play(true);
+            if (rainFX != null)
+            {
+                rainFX.gameObject.SetActive(true);
+                rainFX.Play(true);
+            }
+
+            if (rainAudioSource != null && !rainAudioSource.isPlaying)
+            {
+                rainAudioSource.Play();
+            }
         }
         else
         {
-            rainFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            rainFX.gameObject.SetActive(false);
+            if (rainFX != null)
+            {
+                rainFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                rainFX.gameObject.SetActive(false);
+            }
+
+            if (rainAudioSource != null)
+            {
+                rainAudioSource.Stop();
+            }
         }
-    }
+    
+}
 
     [ContextMenu("Debug/Probar lluvia")]
     private void DebugStartRain()
