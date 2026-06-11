@@ -52,6 +52,16 @@ public class EnvironmentAudioManager : MonoBehaviour
             sonidosAleatoriosSource.playOnAwake = false;
             sonidosAleatoriosSource.spatialBlend = 0f;
         }
+
+        if (timeSystem != null)
+        {
+            esNocheActual = timeSystem.IsNight;
+        }
+
+        AudioClip clipInicial = esNocheActual ? ambienteNoche : ambienteDia;
+        float volumenInicial = esNocheActual ? volumenBaseNoche : volumenBaseDia;
+
+        CambiarAmbienteBase(clipInicial, volumenInicial, true);
     }
 
     private void OnEnable()
@@ -72,16 +82,6 @@ public class EnvironmentAudioManager : MonoBehaviour
 
     private void Start()
     {
-        if (timeSystem != null)
-        {
-            esNocheActual = timeSystem.IsNight;
-        }
-
-        AudioClip clipInicial = esNocheActual ? ambienteNoche : ambienteDia;
-        float volumenInicial = esNocheActual ? volumenBaseNoche : volumenBaseDia;
-
-        CambiarAmbienteBase(clipInicial, volumenInicial, true);
-
         ReiniciarSonidosAleatorios();
     }
 
