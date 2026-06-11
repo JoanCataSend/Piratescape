@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class GhostSpawn : MonoBehaviour
 {
@@ -20,8 +21,14 @@ public class GhostSpawn : MonoBehaviour
     [Tooltip("AudioSource del objeto Ambiente. Se reproduce continuamente en bucle.")]
     [SerializeField] private AudioSource audioAmbiente;
 
+    [Tooltip("Grupo del Audio Mixer para el ambiente continuo del fantasma.")]
+    [SerializeField] private AudioMixerGroup outputAmbiente;
+
     [Tooltip("AudioSource del objeto Aparicion. Se reproduce una sola vez al aparecer.")]
     [SerializeField] private AudioSource audioAparicion;
+
+    [Tooltip("Grupo del Audio Mixer para el sonido puntual de aparición del fantasma.")]
+    [SerializeField] private AudioMixerGroup outputAparicion;
 
     private int ultimoPunto = -1;
     private Vector3 posicionBase;
@@ -47,6 +54,7 @@ public class GhostSpawn : MonoBehaviour
             audioAmbiente.loop = true;
             audioAmbiente.spatialBlend = 1f;
             audioAmbiente.dopplerLevel = 0f;
+            audioAmbiente.outputAudioMixerGroup = outputAmbiente;
         }
 
         if (audioAparicion != null)
@@ -55,6 +63,7 @@ public class GhostSpawn : MonoBehaviour
             audioAparicion.loop = false;
             audioAparicion.spatialBlend = 1f;
             audioAparicion.dopplerLevel = 0f;
+            audioAparicion.outputAudioMixerGroup = outputAparicion;
         }
     }
 

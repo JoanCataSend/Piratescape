@@ -5,15 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
-/// <summary>
-/// Menú de diálogo del loro con síntesis Animalese.
-///
-/// CONFIGURACIÓN MÍNIMA EN EL INSPECTOR:
-///   1. Asignar "Animalese Library" (el .wav de 3,9 s con las 26 letras A-Z).
-///   2. En Import Settings del .wav: Load Type = Decompress On Load, Preload Audio Data = ON.
-///   3. Ajustar Pitch Voz según personaje (loro → 1.3–1.6).
-/// </summary>
+using UnityEngine.Audio;
 public sealed class LoroDialogoUI : MonoBehaviour
 {
     // ─────────────────────────────────────────────────────────────
@@ -49,6 +41,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
     [SerializeField] private AudioSource audioSourceAcciones;
     [SerializeField] private AudioClip[] sonidosAccion;
     [SerializeField] private float volumenAccion = 0.6f;
+    [SerializeField] private AudioMixerGroup outputAcciones;
 
     // ─────────────────────────────────────────────────────────────
     // Inspector – Escritura
@@ -75,6 +68,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
     [Header("Animalese – Voz")]
     [SerializeField] private AudioSource audioSourceVoz;
+    [SerializeField] private AudioMixerGroup outputVoz;
 
     [Tooltip("Pitch base del personaje. Loro ↔ 1.3–1.6 | Neutro = 1.0 | Grave = 0.65–0.85.")]
     [SerializeField] [Range(0.4f, 3.0f)] private float pitchVoz = 1.4f;
@@ -347,6 +341,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
         audioSourceVoz.playOnAwake  = false;
         audioSourceVoz.loop         = false;
         audioSourceVoz.spatialBlend = 0f;
+        audioSourceVoz.outputAudioMixerGroup = outputVoz;
 
         if (audioSourceAcciones == null)
         {
@@ -356,6 +351,7 @@ public sealed class LoroDialogoUI : MonoBehaviour
         audioSourceAcciones.playOnAwake = false;
         audioSourceAcciones.loop = false;
         audioSourceAcciones.spatialBlend = 0f;
+        audioSourceAcciones.outputAudioMixerGroup = outputAcciones;
     }
 
     private void PrepararClipsAnimalese()

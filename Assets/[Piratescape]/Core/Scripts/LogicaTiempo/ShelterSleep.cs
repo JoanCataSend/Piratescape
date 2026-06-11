@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public class ShelterSleep : MonoBehaviour, Interactuable
 {
@@ -47,6 +48,10 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     [Header("Sonido al despertar")]
     [SerializeField] private AudioSource audioSourceDespertar;
+
+    [Tooltip("Grupo del Audio Mixer para el sonido de despertar del pirata.")]
+    [SerializeField] private AudioMixerGroup outputDespertar;
+
     [SerializeField] private AudioClip sonidoDespertar;
 
     [Range(0f, 1f)]
@@ -624,6 +629,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         audioSourceDespertar.loop = false;
         audioSourceDespertar.spatialBlend = 0f;
         audioSourceDespertar.dopplerLevel = 0f;
+        audioSourceDespertar.outputAudioMixerGroup = outputDespertar;
     }
 
     private void LanzarSonidoDespertarConRetraso()

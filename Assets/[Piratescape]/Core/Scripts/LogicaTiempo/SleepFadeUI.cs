@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class SleepFadeUI : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class SleepFadeUI : MonoBehaviour
     [Header("Sonido al dormir")]
     [Tooltip("AudioSource utilizado para el sonido del fade de dormir.")]
     [SerializeField] private AudioSource audioSourceDormir;
+
+    [Tooltip("Grupo del Audio Mixer para el sonido del fade de dormir.")]
+    [SerializeField] private AudioMixerGroup outputDormir;
 
     [Tooltip("Sonido que se reproduce cuando el personaje empieza a dormirse.")]
     [SerializeField] private AudioClip sonidoFadeDormir;
@@ -126,6 +130,8 @@ public class SleepFadeUI : MonoBehaviour
         // Sonido 2D de interfaz/transición.
         audioSourceDormir.spatialBlend = 0f;
         audioSourceDormir.dopplerLevel = 0f;
+
+        audioSourceDormir.outputAudioMixerGroup = outputDormir;
     }
 
     public void Sleep()

@@ -6,6 +6,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public sealed class HistoriaInicioLoroUI : MonoBehaviour
 {
@@ -100,6 +101,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
     [Header("Animalese – Voz")]
     [SerializeField] private AudioSource audioSourceVoz;
+    [SerializeField] private AudioMixerGroup outputVoz;
 
     [Range(0.4f, 3f)]
     [SerializeField] private float pitchVoz = 1.4f;
@@ -188,8 +190,6 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
     private IEnumerator IniciarAutomaticamenteRoutine()
     {
-        // Esperamos a que GestorPartida procese si se trata
-        // de una partida nueva o de una partida cargada.
         yield return null;
 
         if (retrasoInicio > 0f)
@@ -199,8 +199,6 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
         rutinaInicio = null;
 
-        // Si ya se completó el tutorial en esta partida,
-        // no mostramos ni la historia inicial ni las misiones.
         if (GestorPartida.Instance != null &&
             GestorPartida.Instance.TutorialCompletado)
         {
@@ -210,8 +208,6 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
             yield break;
         }
 
-        // Al terminar la historia inicial se inicia automáticamente
-        // el tutorial de movimiento y misiones.
         IniciarHistoria(IniciarTutorialMisiones);
     }
 
@@ -335,7 +331,6 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
 
     private void IniciarTutorialMisiones()
     {
-        // No lo iniciamos si ya se había completado previamente.
         if (GestorPartida.Instance != null &&
             GestorPartida.Instance.TutorialCompletado)
         {
@@ -761,6 +756,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         audioSourceVoz.playOnAwake = false;
         audioSourceVoz.loop = false;
         audioSourceVoz.spatialBlend = 0f;
+        audioSourceVoz.outputAudioMixerGroup = outputVoz;
     }
 
     private void PrepararClipsAnimalese()
@@ -979,7 +975,6 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         Action callback = alTerminarHistoria;
         alTerminarHistoria = null;
 
-        // Aquí comienza TutorialMisionesLoro.
         callback?.Invoke();
     }
 
