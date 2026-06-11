@@ -69,6 +69,12 @@ public class ShelterSleep : MonoBehaviour, Interactuable
     [SerializeField] private string blockedPromptMessage =
         "No puedes dormir hasta las 18:00";
 
+    [Header("Texto nuevo día")]
+    [SerializeField] private NewDayTextUI newDayTextUI;
+
+    [Min(0f)]
+    [SerializeField] private float retrasoTextoNuevoDia = 1.5f;
+
     private bool activo;
     private bool isSleeping;
     private IActivador jugador;
@@ -266,7 +272,14 @@ public class ShelterSleep : MonoBehaviour, Interactuable
             nightThreatSystem.ResolveNightEvent();
         }
 
+        if (retrasoTextoNuevoDia > 0f)
+        {
+            yield return new WaitForSecondsRealtime(retrasoTextoNuevoDia);
+        }
+
         AplicarRecuperacionEnergia();
+
+        int nuevoDia = -1;
 
         if (timeSystem != null)
         {
@@ -274,6 +287,8 @@ public class ShelterSleep : MonoBehaviour, Interactuable
                 wakeHour,
                 wakeMinute
             );
+
+            nuevoDia = timeSystem.CurrentDay;
         }
 
         if (playerTransform != null &&
@@ -323,6 +338,19 @@ public class ShelterSleep : MonoBehaviour, Interactuable
         if (fadeUI != null)
         {
             yield return fadeUI.FadeInRoutine();
+        }
+
+        Debug.Log("Voy a mostrar texto nuevo día: " + nuevoDia);
+
+        if (newDayTextUI != null && nuevoDia > 0)
+        {
+            yield return newDayTextUI.ShowDayRoutine(
+                nuevoDia
+            );
+        }
+        else
+        {
+            Debug.LogWarning("No se puede mostrar texto nuevo día. Referencia: " + newDayTextUI + " Día: " + nuevoDia);
         }
 
         isSleeping = false;
