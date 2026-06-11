@@ -2640,6 +2640,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9200085574333746748}
   - component: {fileID: 9124442458086483195}
+  - component: {fileID: 4369149924243490621}
   m_Layer: 5
   m_Name: SliderVolumenGeneral
   m_TagString: Untagged
@@ -2714,12 +2715,24 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3764321505846135900}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0.5
+  m_MaxValue: 10
+  m_WholeNumbers: 1
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4369149924243490621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3495685835807929054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bc1b245d3418ac459ead611c66aafc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3721740622884870982
 GameObject:
   m_ObjectHideFlags: 0
