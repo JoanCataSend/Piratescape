@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SandFootprintSpawner : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class SandFootprintSpawner : MonoBehaviour
     [Header("Audio")]
     [Tooltip("AudioSource utilizado para reproducir todas las pisadas.")]
     [SerializeField] private AudioSource audioSourcePisadas;
+
+    [Tooltip("Grupo del Audio Mixer para las pisadas del jugador.")]
+    [SerializeField] private AudioMixerGroup outputPisadas;
 
     [Header("Arena - pie normal")]
     [SerializeField] private AudioClip[] sonidosArenaPieNormal;
@@ -113,6 +117,8 @@ public class SandFootprintSpawner : MonoBehaviour
 
         audioSourcePisadas.minDistance = 1f;
         audioSourcePisadas.maxDistance = 15f;
+
+        audioSourcePisadas.outputAudioMixerGroup = outputPisadas;
     }
 
     private void SpawnNextFootstep()

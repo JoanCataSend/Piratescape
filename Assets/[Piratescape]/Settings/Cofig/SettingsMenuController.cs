@@ -17,6 +17,10 @@ public class SettingsMenuController : MonoBehaviour
     [Header("Pantalla")]
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private TMP_Dropdown qualityDropdown;
+    [SerializeField] private AudioSource audioSourceUI;
+    [SerializeField] private AudioClip sonidoToggle;
+
+private bool iniciado = false;
 
     [Header("Audio")]
     [SerializeField] private SliderVolumenMixer masterVolumeSlider;
@@ -46,6 +50,7 @@ public class SettingsMenuController : MonoBehaviour
 
         ConfigurarDropdownCalidad();
         ConfigurarSliderSensibilidad();
+        ConfigurarTogglePantallaCompleta();
 
         CargarValoresGuardados();
         AplicarValoresGuardados();
@@ -55,6 +60,8 @@ public class SettingsMenuController : MonoBehaviour
         {
             panelControles.SetActive(false);
         }
+
+        iniciado = true;
     }
 
     public void AbrirConfiguracion()
@@ -160,7 +167,7 @@ public class SettingsMenuController : MonoBehaviour
 
     private void CargarValoresGuardados()
     {
-        savedFullscreen = PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
+        savedFullscreen = PlayerPrefs.GetInt(FullscreenKey, 1) == 1;
         savedQuality = PlayerPrefs.GetInt(QualityKey, 1);
         savedMouseSensitivity = PlayerPrefs.GetFloat(MouseSensitivityKey, sensibilidadPorDefecto);
 
@@ -172,7 +179,7 @@ public class SettingsMenuController : MonoBehaviour
     {
         if (fullscreenToggle != null)
         {
-            fullscreenToggle.isOn = savedFullscreen;
+            fullscreenToggle.SetIsOnWithoutNotify(savedFullscreen);
         }
 
         if (qualityDropdown != null)
@@ -232,7 +239,7 @@ public class SettingsMenuController : MonoBehaviour
 
     private void AplicarValoresGuardados()
     {
-        Screen.fullScreen = savedFullscreen;
+        AplicarPantallaCompleta(savedFullscreen);
         AplicarCalidad(savedQuality);
     }
 
@@ -308,5 +315,48 @@ public class SettingsMenuController : MonoBehaviour
     public static float ObtenerSensibilidadRaton()
     {
         return PlayerPrefs.GetFloat(MouseSensitivityKey, 5f);
+    }
+
+    private void ConfigurarTogglePantallaCompleta()
+    {
+        if (fullscreenToggle == null)
+            return;
+
+        fullscreenToggle.onValueChanged.RemoveListener(CuandoCambiaPantallaCompleta);
+        fullscreenToggle.onValueChanged.AddListener(CuandoCambiaPantallaCompleta);
+    }
+
+    private void CuandoCambiaPantallaCompleta(bool estaActivado)
+    {
+        savedFullscreen = estaActivado;
+
+        AplicarPantallaCompleta(estaActivado);
+
+        if (iniciado)
+        {
+            ReproducirSonidoUI();
+        }
+    }
+
+    private void AplicarPantallaCompleta(bool pantallaCompleta)
+    {
+        if (pantallaCompleta)
+        {
+            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+            Screen.fullScreen = true;
+        }
+        else
+        {
+            Screen.fullScreenMode = FullScreenMode.Windowed;
+            Screen.fullScreen = false;
+        }
+    }
+
+    private void ReproducirSonidoUI()
+    {
+        if (audioSourceUI != null && sonidoToggle != null)
+        {
+            audioSourceUI.PlayOneShot(sonidoToggle);
+        }
     }
 }

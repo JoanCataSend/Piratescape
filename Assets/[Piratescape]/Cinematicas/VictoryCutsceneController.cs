@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class VictoryCutsceneController : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class VictoryCutsceneController : MonoBehaviour
 
     [Header("Música victoria")]
     [SerializeField] private AudioSource musicaVictoriaSource;
+    [SerializeField] private AudioMixerGroup outputMusicaVictoria;
     [SerializeField] private AudioClip musicaVictoria;
     [SerializeField] [Range(0f, 1f)] private float volumenMusicaVictoria = 0.2f;
     [SerializeField] private bool musicaVictoriaEnLoop = true;
@@ -96,6 +98,7 @@ public class VictoryCutsceneController : MonoBehaviour
         musicaVictoriaSource.playOnAwake = false;
         musicaVictoriaSource.loop = musicaVictoriaEnLoop;
         musicaVictoriaSource.volume = volumenMusicaVictoria;
+        musicaVictoriaSource.outputAudioMixerGroup = outputMusicaVictoria;
     }
 
     private void PrepararEstadoInicial()

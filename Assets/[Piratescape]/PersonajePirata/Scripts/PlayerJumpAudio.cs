@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public sealed class PlayerJumpAudio : MonoBehaviour
 {
@@ -11,6 +12,16 @@ public sealed class PlayerJumpAudio : MonoBehaviour
 
     [Tooltip("Fuente utilizada para el aterrizaje.")]
     [SerializeField] private AudioSource audioSourceAterrizaje;
+
+    [Header("Outputs Audio Mixer")]
+    [Tooltip("Output para voces del pirata: woop, esfuerzo, gruñido, etc.")]
+    [SerializeField] private AudioMixerGroup outputVoices;
+
+    [Tooltip("Output para sonidos del jugador durante el salto.")]
+    [SerializeField] private AudioMixerGroup outputPlayerSalto;
+
+    [Tooltip("Output para sonidos de aterrizaje del jugador.")]
+    [SerializeField] private AudioMixerGroup outputPlayerAterrizaje;
 
     [Header("Voz al saltar")]
     [Tooltip("Sonidos tipo woop, esfuerzo, gruñido, etc.")]
@@ -263,6 +274,10 @@ public sealed class PlayerJumpAudio : MonoBehaviour
         ConfigurarAudioSource(audioSourceVoz);
         ConfigurarAudioSource(audioSourceWhoosh);
         ConfigurarAudioSource(audioSourceAterrizaje);
+
+        audioSourceVoz.outputAudioMixerGroup = outputVoices;
+        audioSourceWhoosh.outputAudioMixerGroup = outputPlayerSalto;
+        audioSourceAterrizaje.outputAudioMixerGroup = outputPlayerAterrizaje;
     }
 
     private AudioSource CrearAudioSource()
