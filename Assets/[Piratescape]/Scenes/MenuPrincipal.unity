@@ -345,7 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 258837400}
   sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
   sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
   volumenHover: 0.7
@@ -360,6 +360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 258837398}
   - component: {fileID: 258837399}
+  - component: {fileID: 258837400}
   m_Layer: 0
   m_Name: Controlador musica
   m_TagString: Untagged
@@ -399,6 +400,103 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+--- !u!82 &258837400
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258837397}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &310158813
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,7 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 258837400}
   sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
   sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
   volumenHover: 0.7
@@ -969,7 +1067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 258837400}
   sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
   sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
   volumenHover: 0.7
@@ -1009,6 +1107,8 @@ MonoBehaviour:
   panelControles: {fileID: 0}
   fullscreenToggle: {fileID: 0}
   qualityDropdown: {fileID: 0}
+  audioSourceUI: {fileID: 0}
+  sonidoToggle: {fileID: 0}
   masterVolumeSlider: {fileID: 0}
   musicVolumeSlider: {fileID: 0}
   sfxVolumeSlider: {fileID: 0}
@@ -1154,6 +1254,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3853796762248477334, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
   m_PrefabInstance: {fileID: 675059168}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &675886531 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7247273201076226317, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
+  m_PrefabInstance: {fileID: 1189630603}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &899966349
 GameObject:
   m_ObjectHideFlags: 0
@@ -1410,6 +1521,10 @@ PrefabInstance:
       propertyPath: panelControles
       value: 
       objectReference: {fileID: 675059170}
+    - target: {fileID: 4986675309996247970, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
+      propertyPath: fullscreenToggle
+      value: 
+      objectReference: {fileID: 675886531}
     - target: {fileID: 4986675309996247970, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
       propertyPath: panelAOcultarAlAbrir
       value: 
@@ -2289,7 +2404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 258837400}
   sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
   sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
   volumenHover: 0.7
