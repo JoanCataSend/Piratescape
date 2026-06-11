@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 {
@@ -28,6 +29,14 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     [SerializeField] private string dropTriggerName = "Drop";
     [SerializeField] private float dropDelayBeforeSpawn = 0.35f;
 
+    [Header("Sonidos inventario")]
+    [SerializeField] private AudioSource audioSourceInventario;
+    [SerializeField] private AudioMixerGroup outputInventario;
+    [SerializeField] private AudioClip sonidoCambiarSlot;
+    [SerializeField] private AudioClip sonidoConsumirItem;
+    [SerializeField] private float volumenCambiarSlot = 0.45f;
+    [SerializeField] private float volumenConsumirItem = 0.6f;
+
     private List<InventorySlot> slots = new List<InventorySlot>();
     private PlayerHealth playerHealth;
     private PlayerEnergy playerEnergy;
@@ -47,6 +56,8 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
 
         InitializeSlots();
+
+        PrepararAudioInventario();
     }
 
     private void Update()
@@ -327,6 +338,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
 
         selectedSlotIndex = index;
+        ReproducirSonidoInventario(sonidoCambiarSlot, volumenCambiarSlot);
         NotifyInventoryChanged();
     }
 
@@ -350,6 +362,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
 
         selectedSlotIndex = nuevoIndice;
+        ReproducirSonidoInventario(sonidoCambiarSlot, volumenCambiarSlot);
         NotifyInventoryChanged();
     }
 
@@ -373,6 +386,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
 
         selectedSlotIndex = nuevoIndice;
+        ReproducirSonidoInventario(sonidoCambiarSlot, volumenCambiarSlot);
         NotifyInventoryChanged();
     }
 
@@ -406,6 +420,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
                 slot.Clear();
             }
 
+            ReproducirSonidoInventario(sonidoConsumirItem, volumenConsumirItem);
             Debug.Log("Consumido: " + item.DisplayName);
             NotifyInventoryChanged();
         }
@@ -702,5 +717,29 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         RemoveItem(itemData, cantidadARemover);
         return cantidadARemover;
+    }
+
+    private void PrepararAudioInventario()
+    {
+        if (audioSourceInventario == null)
+        {
+            audioSourceInventario = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceInventario.playOnAwake = false;
+        audioSourceInventario.loop = false;
+        audioSourceInventario.spatialBlend = 0f;
+        audioSourceInventario.outputAudioMixerGroup = outputInventario;
+    }
+
+    private void ReproducirSonidoInventario(AudioClip clip, float volumen)
+    {
+        if (audioSourceInventario == null || clip == null)
+        {
+            return;
+        }
+
+        audioSourceInventario.pitch = 1f;
+        audioSourceInventario.PlayOneShot(clip, volumen);
     }
 }
