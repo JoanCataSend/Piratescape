@@ -20,7 +20,7 @@ public class SettingsMenuController : MonoBehaviour
     [SerializeField] private AudioSource audioSourceUI;
     [SerializeField] private AudioClip sonidoToggle;
 
-private bool iniciado = false;
+    private bool iniciado = false;
 
     [Header("Audio")]
     [SerializeField] private SliderVolumenMixer masterVolumeSlider;
@@ -141,27 +141,37 @@ private bool iniciado = false;
     private void ConfigurarDropdownCalidad()
     {
         if (qualityDropdown == null)
+        {
             return;
+        }
+
+        qualityDropdown.onValueChanged.RemoveAllListeners();
 
         qualityDropdown.ClearOptions();
 
         qualityDropdown.AddOptions(new System.Collections.Generic.List<string>
         {
-            "Bajo",
-            "Medio",
-            "Alto"
+            "Baja",
+            "Media",
+            "Alta"
         });
+
+        qualityDropdown.SetValueWithoutNotify(1);
+        qualityDropdown.RefreshShownValue();
     }
 
     private void ConfigurarSliderSensibilidad()
     {
         if (mouseSensitivitySlider == null)
+        {
             return;
+        }
 
         mouseSensitivitySlider.minValue = 1;
         mouseSensitivitySlider.maxValue = 10;
         mouseSensitivitySlider.wholeNumbers = true;
 
+        mouseSensitivitySlider.onValueChanged.RemoveListener(CuandoCambiaSensibilidad);
         mouseSensitivitySlider.onValueChanged.AddListener(CuandoCambiaSensibilidad);
     }
 
@@ -184,7 +194,7 @@ private bool iniciado = false;
 
         if (qualityDropdown != null)
         {
-            qualityDropdown.value = savedQuality;
+            qualityDropdown.SetValueWithoutNotify(savedQuality);
             qualityDropdown.RefreshShownValue();
         }
 
@@ -245,28 +255,45 @@ private bool iniciado = false;
 
     private void AplicarCalidad(int calidad)
     {
-        if (QualitySettings.names.Length <= 0)
-        {
-            return;
-        }
+        calidad = Mathf.Clamp(calidad, 0, 2);
 
-        int nivelUnity = 2;
+        int nivelUnity = calidad;
+
+        if (QualitySettings.names.Length > 0)
+        {
+            nivelUnity = Mathf.Clamp(nivelUnity, 0, QualitySettings.names.Length - 1);
+            QualitySettings.SetQualityLevel(nivelUnity, false);
+        }
 
         if (calidad == 0)
         {
-            nivelUnity = 1;
+            // BAJA
+            QualitySettings.shadows = ShadowQuality.Disable;
+            QualitySettings.shadowDistance = 15f;
+            QualitySettings.antiAliasing = 0;
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.Disable;
+            QualitySettings.lodBias = 0.5f;
         }
         else if (calidad == 1)
         {
-            nivelUnity = 2;
+            // MEDIA
+            QualitySettings.shadows = ShadowQuality.HardOnly;
+            QualitySettings.shadowDistance = 40f;
+            QualitySettings.antiAliasing = 2;
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.Enable;
+            QualitySettings.lodBias = 1f;
         }
         else if (calidad == 2)
         {
-            nivelUnity = 5;
+            // ALTA
+            QualitySettings.shadows = ShadowQuality.All;
+            QualitySettings.shadowDistance = 80f;
+            QualitySettings.antiAliasing = 4;
+            QualitySettings.anisotropicFiltering = AnisotropicFiltering.ForceEnable;
+            QualitySettings.lodBias = 1.5f;
         }
 
-        nivelUnity = Mathf.Clamp(nivelUnity, 0, QualitySettings.names.Length - 1);
-        QualitySettings.SetQualityLevel(nivelUnity, true);
+        Debug.Log("Calidad aplicada: " + calidad + " | Nivel Unity: " + nivelUnity);
     }
 
     private void GuardarValores()
@@ -320,7 +347,9 @@ private bool iniciado = false;
     private void ConfigurarTogglePantallaCompleta()
     {
         if (fullscreenToggle == null)
+        {
             return;
+        }
 
         fullscreenToggle.onValueChanged.RemoveListener(CuandoCambiaPantallaCompleta);
         fullscreenToggle.onValueChanged.AddListener(CuandoCambiaPantallaCompleta);
