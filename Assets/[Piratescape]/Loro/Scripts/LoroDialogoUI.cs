@@ -42,6 +42,15 @@ public sealed class LoroDialogoUI : MonoBehaviour
     [SerializeField] private bool pausarJuegoAlAbrir = true;
 
     // ─────────────────────────────────────────────────────────────
+    // Sonidos 2D de guardar y tutorial
+    // ─────────────────────────────────────────────────────────────
+
+    [Header("Sonidos acciones")]
+    [SerializeField] private AudioSource audioSourceAcciones;
+    [SerializeField] private AudioClip[] sonidosAccion;
+    [SerializeField] private float volumenAccion = 0.6f;
+
+    // ─────────────────────────────────────────────────────────────
     // Inspector – Escritura
     // ─────────────────────────────────────────────────────────────
     [Header("Escritura")]
@@ -177,6 +186,8 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
     public void GuardarPartida()
     {
+        ReproducirSonidoAccion();
+
         if (GestorPartida.Instance == null)
         {
             EstablecerMensaje("No se ha encontrado el gestor de partida.");
@@ -194,6 +205,8 @@ public sealed class LoroDialogoUI : MonoBehaviour
 
     public void RepetirTutorial()
     {
+        ReproducirSonidoAccion();
+
         CerrarSinMarcarFrame();
 
         if (tutorialMisiones == null)
@@ -334,6 +347,15 @@ public sealed class LoroDialogoUI : MonoBehaviour
         audioSourceVoz.playOnAwake  = false;
         audioSourceVoz.loop         = false;
         audioSourceVoz.spatialBlend = 0f;
+
+        if (audioSourceAcciones == null)
+        {
+            audioSourceAcciones = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceAcciones.playOnAwake = false;
+        audioSourceAcciones.loop = false;
+        audioSourceAcciones.spatialBlend = 0f;
     }
 
     private void PrepararClipsAnimalese()
@@ -487,5 +509,25 @@ public sealed class LoroDialogoUI : MonoBehaviour
         if (pausarJuegoAlAbrir) Time.timeScale = timeScaleAnterior;
         Cursor.lockState = cursorLockAnterior;
         Cursor.visible   = cursorVisibleAnterior;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Método para audio
+    // ─────────────────────────────────────────────────────────────
+    private void ReproducirSonidoAccion()
+    {
+        if (audioSourceAcciones == null ||
+            sonidosAccion == null ||
+            sonidosAccion.Length == 0)
+        {
+            return;
+        }
+
+        AudioClip clip = sonidosAccion[
+            UnityEngine.Random.Range(0, sonidosAccion.Length)
+        ];
+
+        audioSourceAcciones.pitch = 1f;
+        audioSourceAcciones.PlayOneShot(clip, volumenAccion);
     }
 }
