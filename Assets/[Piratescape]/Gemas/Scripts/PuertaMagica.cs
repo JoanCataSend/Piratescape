@@ -239,24 +239,30 @@ public class PuertaMagica : MonoBehaviour, Interactuable
             Quaternion rotacionFinal = rotacionInicial * Quaternion.Euler(0f, 0f, gradosRotacionZ);
 
             float tiempo = 0f;
+            bool sonidoPortalIniciado = false;
 
             while (tiempo < duracionRotacion)
             {
                 tiempo += Time.deltaTime;
+
                 float t = Mathf.Clamp01(tiempo / duracionRotacion);
                 float valorCurva = curvaRotacion.Evaluate(t);
 
                 objetoARotarConLlave.localRotation =
                     Quaternion.Lerp(rotacionInicial, rotacionFinal, valorCurva);
 
+                if (!sonidoPortalIniciado && tiempo >= 0.1f)
+                {
+                    sonidoPortalIniciado = true;
+                    puertaAbierta = true;
+                    ReproducirSonidoPortal();
+                }
+
                 yield return null;
             }
 
             objetoARotarConLlave.localRotation = rotacionFinal;
         }
-
-        puertaAbierta = true;
-        ReproducirSonidoPortal();
 
         animacionLlaveEnCurso = false;
     }
