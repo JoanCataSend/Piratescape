@@ -57,6 +57,10 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private float volumenNivelCompletado = 0.7f;
     [SerializeField] private float esperaAntesSonidoNivel = 0.2f;
 
+    [Header("Sonido entregar material")]
+    [SerializeField] private AudioClip sonidoEntregarMaterial;
+    [SerializeField] private float volumenEntregarMaterial = 0.45f;
+
     [Header("UI a ocultar durante mejora")]
     [SerializeField] private GameObject[] objetosUIAOcultar;
     private bool[] estadosPreviosUI;
@@ -134,6 +138,8 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
         requisito.Entregar(cantidadRemovida);
         AplicarCosteConstruccion(cantidadRemovida);
+
+        ReproducirSonidoInventarioBarco();
 
         OnConstruccionActualizada?.Invoke();
         IntentarCompletarNivelActual();
@@ -502,5 +508,15 @@ public sealed class ConstruccionBarco : MonoBehaviour
         {
             audioSourceMejora.PlayOneShot(sonidoNivelCompletado, volumenNivelCompletado);
         }
+    }
+
+    private void ReproducirSonidoInventarioBarco()
+    {
+        if (audioSourceMejora == null || sonidoEntregarMaterial == null)
+        {
+            return;
+        }
+
+        audioSourceMejora.PlayOneShot(sonidoEntregarMaterial, volumenEntregarMaterial);
     }
 }
