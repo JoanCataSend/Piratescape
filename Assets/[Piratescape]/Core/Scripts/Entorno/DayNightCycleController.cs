@@ -15,6 +15,10 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private Light sunLight;
     [SerializeField] private Light moonLight;
     [SerializeField] private GhostSpawn ghostSpawn;
+    [SerializeField] private RainController rainController;
+
+    [SerializeField] private GameObject audioDia;
+    [SerializeField] private GameObject audioNoche;
 
     [Header("Actores nocturnos")]
     [SerializeField] private NightMonkeySpawn[] monosNocturnos;
@@ -121,11 +125,28 @@ public class DayNightCycleController : MonoBehaviour
     {
         ForzarNieblaActiva();
         RenderSettings.ambientMode = AmbientMode.Flat;
+
+        if (rainController == null)
+        {
+            rainController = FindFirstObjectByType<RainController>();
+        }
     }
 
     private void OnEnable()
     {
         ForzarNieblaActiva();
+
+        if (rainController != null)
+        {
+            rainController.OnRainChanged += AlCambiarLluvia;
+        }
+    }
+    private void OnDisable()
+    {
+        if (rainController != null)
+        {
+            rainController.OnRainChanged -= AlCambiarLluvia;
+        }
     }
 
     private void Start()
@@ -253,6 +274,15 @@ public class DayNightCycleController : MonoBehaviour
         {
             secuenciaMonosEscaladores.EmpezarNoche();
         }
+        if (audioNoche != null)
+        {
+            audioNoche.SetActive(true);
+        }
+
+        if (audioDia != null)
+        {
+            audioDia.SetActive(false);
+        }
     }
 
     private void EmpezarDiaActores()
@@ -277,6 +307,13 @@ public class DayNightCycleController : MonoBehaviour
         {
             secuenciaMonosEscaladores.EmpezarDia();
         }
+
+        if (audioNoche != null)
+        {
+            audioNoche.SetActive(false);
+        }
+
+        ActualizarAudioDia();
     }
 
     private void ActualizarSkybox(float hour)
@@ -776,5 +813,22 @@ public class DayNightCycleController : MonoBehaviour
         {
             Debug.Log("Mensaje inicio noche: " + mensajeInicioNoche);
         }
+    }
+    private void AlCambiarLluvia(bool estaLloviendo)
+    {
+        ActualizarAudioDia();
+    }
+
+    private void ActualizarAudioDia()
+    {
+        if (audioDia == null)
+        {
+            return;
+        }
+
+        bool activar = !eraDeNoche &&
+                        (rainController == null || !rainController.EstaLloviendo);
+
+        audioDia.SetActive(activar);
     }
 }

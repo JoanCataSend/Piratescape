@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+
 
 public class RainController : MonoBehaviour
 {
@@ -16,6 +18,10 @@ public class RainController : MonoBehaviour
     private int lastCheckedDay = -1;
     private bool shouldRainToday;
     private bool rainActive;
+    private bool lastAlwaysRain;
+    public event Action<bool> OnRainChanged;
+
+    public bool EstaLloviendo => rainActive;
 
     private void Awake()
     {
@@ -23,6 +29,8 @@ public class RainController : MonoBehaviour
         {
             timeSystem = FindFirstObjectByType<GameTimeSystem>();
         }
+
+        lastAlwaysRain = alwaysRain;
 
         UpdateRainDecision();
         UpdateRainState();
@@ -46,6 +54,14 @@ public class RainController : MonoBehaviour
         {
             timeSystem.OnDayChanged -= HandleDayChanged;
             timeSystem.OnTimeChanged -= HandleTimeChanged;
+        }
+    }
+    private void Update()
+    {
+        if (lastAlwaysRain != alwaysRain)
+        {
+            lastAlwaysRain = alwaysRain;
+            UpdateRainState();
         }
     }
 
@@ -73,9 +89,8 @@ public class RainController : MonoBehaviour
         }
 
         lastCheckedDay = timeSystem.CurrentDay;
-        shouldRainToday = Random.value <= rainChancePerDay;
-
-        Debug.Log($"Día {timeSystem.CurrentDay}: lluvia = {shouldRainToday}");
+        shouldRainToday = UnityEngine.Random.value <= rainChancePerDay;
+        Debug.Log($"Dï¿½a {timeSystem.CurrentDay}: lluvia = {shouldRainToday}");
     }
 
     private void UpdateRainState()
@@ -92,6 +107,8 @@ public class RainController : MonoBehaviour
         }
 
         rainActive = active;
+
+        OnRainChanged?.Invoke(rainActive);
 
         if (active)
         {
@@ -120,7 +137,7 @@ public class RainController : MonoBehaviour
     [ContextMenu("Debug/Sortear lluvia hoy")]
     private void DebugRollRainToday()
     {
-        shouldRainToday = Random.value <= rainChancePerDay;
+        shouldRainToday = UnityEngine.Random.value <= rainChancePerDay;
         Debug.Log($"Sorteo manual lluvia hoy: {shouldRainToday}");
         UpdateRainState();
     }
