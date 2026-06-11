@@ -30265,7 +30265,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -185693,7 +185693,7 @@ MonoBehaviour:
   timeSystem: {fileID: 1975866679}
   rainFX: {fileID: 1164341488}
   rainChancePerDay: 0.1
-  alwaysRain: 0
+  alwaysRain: 1
   rainAudioSource: {fileID: 1741039750}
 --- !u!4 &1673731871
 Transform:
@@ -195570,7 +195570,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
