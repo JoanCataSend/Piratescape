@@ -1102,8 +1102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanel: {fileID: 0}
-  panelMenuPrincipal: {fileID: 0}
-  panelPausa: {fileID: 0}
+  panelAOcultarAlAbrir: {fileID: 0}
+  panelAMostrarAlCerrar: {fileID: 0}
   panelControles: {fileID: 0}
   fullscreenToggle: {fileID: 0}
   qualityDropdown: {fileID: 0}
@@ -1158,6 +1158,34 @@ PrefabInstance:
     - target: {fileID: 3853796762248477334, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
       propertyPath: m_Name
       value: PanelControles
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 674812571}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CerrarControles
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingsMenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507014474038688950, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6688419324495034794, guid: 9d26bf618fbfa7343ae6995a247403b5, type: 3}
       propertyPath: m_Pivot.x
@@ -1559,7 +1587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7837147374086461045, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7837147374086461045, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
