@@ -127,6 +127,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 86665872}
     m_Modifications:
+    - target: {fileID: 126065398628362817, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: panelPausa
+      value: 
+      objectReference: {fileID: 298421010}
+    - target: {fileID: 126065398628362817, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: panelAOcultarAlAbrir
+      value: 
+      objectReference: {fileID: 298421010}
+    - target: {fileID: 126065398628362817, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: panelAMostrarAlCerrar
+      value: 
+      objectReference: {fileID: 298421010}
     - target: {fileID: 226687171414160182, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -142,6 +154,18 @@ PrefabInstance:
     - target: {fileID: 226687171414160182, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 519282590179490284, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 519282590179490284, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Continuar
+      objectReference: {fileID: 0}
+    - target: {fileID: 519282590179490284, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1187554379290586806, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -206,6 +230,34 @@ PrefabInstance:
     - target: {fileID: 2312302918363091430, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMin.x
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AbrirControles
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902782210647046038, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2980045873620316934, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -303,9 +355,49 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CerrarControles
+      objectReference: {fileID: 0}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3266236875479358736, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3591255099094522261, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_Name
       value: PantallaPausaPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324199996928598149, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 4324199996928598149, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PedirSalirJuego
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324199996928598149, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4523219922848184496, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -327,6 +419,34 @@ PrefabInstance:
       propertyPath: graphic
       value: 
       objectReference: {fileID: 139048232}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CancelarSalirJuego
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767419914791222728, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5033536308057773525, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -367,6 +487,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7140295974457656727, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 7140295974457656727, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: VolverAlMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7140295974457656727, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7256139263333972133, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -378,6 +510,22 @@ PrefabInstance:
     - target: {fileID: 7256139263333972133, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMin.x
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1232418728}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SalirJuego
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PauseSceneController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7925635841477960571, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8121797170567130559, guid: f2fe0429b7751e94a995b12a2734d42d, type: 3}
       propertyPath: m_AnchorMax.x

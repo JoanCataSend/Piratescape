@@ -1102,8 +1102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanel: {fileID: 0}
-  panelAOcultarAlAbrir: {fileID: 0}
-  panelAMostrarAlCerrar: {fileID: 0}
+  panelMenuPrincipal: {fileID: 0}
+  panelPausa: {fileID: 0}
   panelControles: {fileID: 0}
   fullscreenToggle: {fileID: 0}
   qualityDropdown: {fileID: 0}
@@ -1525,6 +1525,10 @@ PrefabInstance:
       propertyPath: fullscreenToggle
       value: 
       objectReference: {fileID: 675886531}
+    - target: {fileID: 4986675309996247970, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
+      propertyPath: panelMenuPrincipal
+      value: 
+      objectReference: {fileID: 2081816116}
     - target: {fileID: 4986675309996247970, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
       propertyPath: panelAOcultarAlAbrir
       value: 
