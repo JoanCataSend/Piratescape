@@ -14,6 +14,9 @@ public sealed class PlayerPickupController : MonoBehaviour
     [Header("Movimiento")]
     [SerializeField] private movimientoplayer movimientoPlayer;
 
+    [Header("Audio")]
+    [SerializeField] private RecoleccionRecursoAudio audioRecogida;
+
     private IItemReceiver itemReceiver;
     private JugadorActivador jugadorActivador;
     private ObjetoRecogibleInteractuable objetoActual;
@@ -66,6 +69,11 @@ public sealed class PlayerPickupController : MonoBehaviour
         if (movimientoPlayer == null)
         {
             movimientoPlayer = GetComponent<movimientoplayer>();
+        }
+
+        if (audioRecogida == null)
+        {
+            audioRecogida = GetComponent<RecoleccionRecursoAudio>();
         }
     }
 
@@ -182,6 +190,11 @@ public sealed class PlayerPickupController : MonoBehaviour
         if (added)
         {
             ItemFirstTimeDialogueSystem.Instance?.MostrarFrasePrimeraVez(collectible.ItemData);
+
+            if (audioRecogida != null && objetoRecogible != null)
+            {
+                audioRecogida.Reproducir(objetoRecogible.transform.position);
+            }
 
             collectible.OnCollected();
 
