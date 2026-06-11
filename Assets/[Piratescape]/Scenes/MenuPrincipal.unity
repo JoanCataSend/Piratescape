@@ -359,6 +359,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 258837398}
+  - component: {fileID: 258837399}
   m_Layer: 0
   m_Name: Controlador musica
   m_TagString: Untagged
@@ -385,6 +386,19 @@ Transform:
   - {fileID: 650034768}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &258837399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258837397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed38388894ffd547a1d0a31e6a13ed2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
 --- !u!1 &310158813
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,12 +1007,15 @@ MonoBehaviour:
   panelAOcultarAlAbrir: {fileID: 0}
   panelAMostrarAlCerrar: {fileID: 0}
   panelControles: {fileID: 0}
-  audioMixer: {fileID: 0}
   fullscreenToggle: {fileID: 0}
   qualityDropdown: {fileID: 0}
   masterVolumeSlider: {fileID: 0}
   musicVolumeSlider: {fileID: 0}
   sfxVolumeSlider: {fileID: 0}
+  voicesVolumeSlider: {fileID: 0}
+  mouseSensitivitySlider: {fileID: 0}
+  mouseSensitivityText: {fileID: 0}
+  sensibilidadPorDefecto: 5
 --- !u!4 &650034768
 Transform:
   m_ObjectHideFlags: 0
@@ -1385,6 +1402,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4309566536582253651, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
     - target: {fileID: 4986675309996247970, guid: fd96b14dc80ffe4468bfc78482d84fe4, type: 3}
       propertyPath: panelControles
       value: 
@@ -1731,7 +1752,7 @@ AudioSource:
   m_GameObject: {fileID: 1457168899}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 251478537292011832, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 97c462f20264cdc4681f523170278662, type: 3}
   m_PlayOnAwake: 1
