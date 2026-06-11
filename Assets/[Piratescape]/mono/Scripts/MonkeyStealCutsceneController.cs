@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class MonkeyStealCutsceneController : MonoBehaviour
 {
@@ -57,6 +58,9 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     [Header("Audio - Ronquido pirata")]
     [SerializeField] private AudioSource audioSourceRonquido;
 
+    [Tooltip("Grupo del Audio Mixer para ronquidos y mi-mi-mi del pirata.")]
+    [SerializeField] private AudioMixerGroup outputRonquidoPirata;
+
     [Tooltip("Opcional. Se usa como respaldo si el array de ronquidos está vacío.")]
     [SerializeField] private AudioClip sonidoRonquidoPirata;
 
@@ -83,6 +87,10 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     [Header("Audio - Pasos monos entrando")]
     [SerializeField] private AudioSource audioSourcePasosMonos;
+
+    [Tooltip("Grupo del Audio Mixer para pasos de monos en la cinemática.")]
+    [SerializeField] private AudioMixerGroup outputPasosMonos;
+
     [SerializeField] private AudioClip[] sonidosPasosEntrada;
 
     [Range(0f, 1f)]
@@ -92,6 +100,10 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     [Header("Audio - Robo dentro de la tienda")]
     [SerializeField] private AudioSource audioSourceRoboTienda;
+
+    [Tooltip("Grupo del Audio Mixer para jaleo/robo dentro de la tienda.")]
+    [SerializeField] private AudioMixerGroup outputRoboTienda;
+
     [SerializeField] private AudioClip[] sonidosRoboTienda;
 
     [Range(0f, 1f)]
@@ -110,6 +122,10 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     [Header("Audio - Risas monos")]
     [SerializeField] private AudioSource audioSourceRisasMonos;
+
+    [Tooltip("Grupo del Audio Mixer para risas/voces de los monos.")]
+    [SerializeField] private AudioMixerGroup outputRisasMonos;
+
     [SerializeField] private AudioClip[] sonidosRisasSalida;
 
     [Range(0f, 1f)]
@@ -851,31 +867,36 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         audioSourceRonquido =
             PrepararAudioSource(
                 audioSourceRonquido,
-                false
+                false,
+                outputRonquidoPirata
             );
 
         audioSourcePasosMonos =
             PrepararAudioSource(
                 audioSourcePasosMonos,
-                false
+                false,
+                outputPasosMonos
             );
 
         audioSourceRoboTienda =
             PrepararAudioSource(
                 audioSourceRoboTienda,
-                false
+                false,
+                outputRoboTienda
             );
 
         audioSourceRisasMonos =
             PrepararAudioSource(
                 audioSourceRisasMonos,
-                false
+                false,
+                outputRisasMonos
             );
     }
 
     private AudioSource PrepararAudioSource(
         AudioSource source,
-        bool loop)
+        bool loop,
+        AudioMixerGroup outputMixerGroup)
     {
         if (source == null)
         {
@@ -888,6 +909,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         // Sonido de cinemática, 2D para que siempre se oiga bien.
         source.spatialBlend = 0f;
         source.dopplerLevel = 0f;
+        source.outputAudioMixerGroup = outputMixerGroup;
 
         return source;
     }

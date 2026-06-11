@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class VictoryStatsTypewriterUI : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
     [SerializeField] private Button botonSiguiente;
     [SerializeField] private Button botonVolverMenu;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioMixerGroup outputSonidoUI;
 
     [Header("Contenido estadísticas")]
     [SerializeField] private string titulo = "VICTORIA";
@@ -153,6 +155,7 @@ public class VictoryStatsTypewriterUI : MonoBehaviour
 
         audioSource.playOnAwake = false;
         audioSource.loop = false;
+        audioSource.outputAudioMixerGroup = outputSonidoUI;
 
         if (textoCreditos != null)
         {
