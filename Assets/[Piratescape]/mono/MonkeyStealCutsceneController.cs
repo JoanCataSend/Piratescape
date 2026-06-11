@@ -20,18 +20,14 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     [Header("Animación de la tienda")]
     [SerializeField] private GameObject tiendaNormal;
-
-    [Tooltip(
-        "Partes visuales de la tienda normal. " +
-        "Puedes dejarlo vacío y se buscarán automáticamente."
-    )]
-    [SerializeField] private Renderer[] renderersTiendaNormal;
-
     [SerializeField] private GameObject tiendaAnimada;
     [SerializeField] private Animator animatorTiendaAnimada;
     [SerializeField] private string estadoAnimacionTienda = "Take 001";
     [SerializeField] private float duracionAnimacionTienda = 3.35f;
     [SerializeField] private float esperaTrasAnimacionTienda = 0.2f;
+
+    [Header("Ocultar tienda normal sin desactivarla")]
+    [SerializeField] private Renderer[] renderersTiendaNormal;
 
     [Header("Cámaras")]
     [SerializeField] private GameObject camaraJugador;
@@ -58,11 +54,93 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     [SerializeField] private float distanciaRaycast = 20f;
     [SerializeField] private float alturaSobreSuelo = 0.02f;
 
+    [Header("Audio - Ronquido pirata")]
+    [SerializeField] private AudioSource audioSourceRonquido;
+
+    [Tooltip("Opcional. Se usa como respaldo si el array de ronquidos está vacío.")]
+    [SerializeField] private AudioClip sonidoRonquidoPirata;
+
+    [Tooltip("Ronquidos posibles. El script elige uno random cada ciclo.")]
+    [SerializeField] private AudioClip[] sonidosRonquidoPirata;
+
+    [Tooltip("Sonidos tipo mi-mi-mi que suenan después de cada ronquido.")]
+    [SerializeField] private AudioClip[] sonidosMimimiPirata;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenRonquido = 0.55f;
+
+    [Tooltip("Pausa entre el ronquido y el mi-mi-mi.")]
+    [Min(0f)]
+    [SerializeField] private float pausaEntreRonquidoYMimimi = 0.05f;
+
+    [Tooltip("Pausa mínima antes de volver a empezar otro ciclo ronquido + mi-mi-mi.")]
+    [Min(0f)]
+    [SerializeField] private float pausaEntreCiclosRonquidoMin = 0.15f;
+
+    [Tooltip("Pausa máxima antes de volver a empezar otro ciclo ronquido + mi-mi-mi.")]
+    [Min(0f)]
+    [SerializeField] private float pausaEntreCiclosRonquidoMax = 0.45f;
+
+    [Header("Audio - Pasos monos entrando")]
+    [SerializeField] private AudioSource audioSourcePasosMonos;
+    [SerializeField] private AudioClip[] sonidosPasosEntrada;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenPasosEntrada = 0.55f;
+
+    [SerializeField] private float intervaloPasosEntrada = 0.42f;
+
+    [Header("Audio - Robo dentro de la tienda")]
+    [SerializeField] private AudioSource audioSourceRoboTienda;
+    [SerializeField] private AudioClip[] sonidosRoboTienda;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenRoboTienda = 0.8f;
+
+    [SerializeField] private float intervaloRoboMin = 0.18f;
+    [SerializeField] private float intervaloRoboMax = 0.45f;
+
+    [Header("Audio - Monos saliendo corriendo")]
+    [SerializeField] private AudioClip[] sonidosPasosSalidaRapidos;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenPasosSalida = 0.65f;
+
+    [SerializeField] private float intervaloPasosSalida = 0.18f;
+
+    [Header("Audio - Risas monos")]
+    [SerializeField] private AudioSource audioSourceRisasMonos;
+    [SerializeField] private AudioClip[] sonidosRisasSalida;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volumenRisas = 0.8f;
+
+    [SerializeField] private float intervaloRisasMin = 0.45f;
+    [SerializeField] private float intervaloRisasMax = 0.9f;
+
+    [Header("Audio - Variación")]
+    [SerializeField] private float pitchMinimo = 0.96f;
+    [SerializeField] private float pitchMaximo = 1.06f;
+
     private Coroutine rutinaMovimiento;
+    private Coroutine rutinaRonquido;
+    private Coroutine rutinaPasosEntrada;
+    private Coroutine rutinaRoboTienda;
+    private Coroutine rutinaPasosSalida;
+    private Coroutine rutinaRisas;
+
     private bool cinematicaActiva;
+
+    private int ultimoRonquido = -1;
+    private int ultimoMimimi = -1;
+    private int ultimoPasoEntrada = -1;
+    private int ultimoRoboTienda = -1;
+    private int ultimoPasoSalida = -1;
+    private int ultimaRisa = -1;
 
     private void Awake()
     {
+        PrepararAudioSources();
         PrepararEstadoInicial();
     }
 
@@ -70,6 +148,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     {
         cinematicaActiva = false;
         rutinaMovimiento = null;
+
+        DetenerTodosLosSonidos();
 
         if (camaraCinematica != null)
         {
@@ -81,8 +161,6 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             camaraJugador.SetActive(true);
         }
 
-        // La tienda normal permanece activa.
-        // Solo se muestran u ocultan sus partes visuales.
         MostrarTiendaNormal(true);
 
         if (tiendaAnimada != null)
@@ -129,19 +207,23 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             PrepararCinematica();
         }
 
-        rutinaMovimiento = StartCoroutine(
-            ReproducirMovimientoMonos()
-        );
+        IniciarRonquidoPirata();
+
+        rutinaMovimiento = StartCoroutine(ReproducirMovimientoMonos());
     }
 
     public IEnumerator ReproducirMovimientoMonos()
     {
         ReproducirAnimacionTodos(estadoWalk);
 
+        IniciarPasosEntrada();
+
         yield return MoverMonosA(
             puntoEntradaTienda,
             velocidadIrTienda
         );
+
+        DetenerPasosEntrada();
 
         if (!cinematicaActiva)
         {
@@ -149,6 +231,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         }
 
         OcultarMonos();
+
+        IniciarRoboTienda();
 
         if (esperaDentroTienda > 0f)
         {
@@ -171,6 +255,8 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             );
         }
 
+        DetenerRoboTienda();
+
         if (!cinematicaActiva)
         {
             yield break;
@@ -181,9 +267,15 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
         ReproducirAnimacionTodos(estadoRun);
 
+        IniciarPasosSalida();
+        IniciarRisasSalida();
+
         yield return MoverMonosAPuntosIniciales(
             velocidadSalirCorriendo
         );
+
+        DetenerPasosSalida();
+        DetenerRisasSalida();
 
         if (esperaFinal > 0f)
         {
@@ -200,6 +292,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         cinematicaActiva = false;
 
         DetenerRutinaMovimiento();
+        DetenerTodosLosSonidos();
         OcultarMonos();
 
         if (camaraCinematica != null)
@@ -233,13 +326,6 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private IEnumerator ReproducirAnimacionTienda()
     {
-        /*
-         * No usamos tiendaNormal.SetActive(false).
-         *
-         * Si ShelterSleep está en la tienda normal o en uno de sus
-         * padres/hijos, desactivar la tienda detendría su coroutine.
-         * Solo ocultamos los Renderer.
-         */
         MostrarTiendaNormal(false);
 
         if (tiendaAnimada == null)
@@ -301,19 +387,12 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private void MostrarTiendaNormal(bool mostrar)
     {
-        /*
-         * Si no has rellenado la lista manualmente,
-         * el script busca automáticamente todos los Renderer
-         * que haya dentro de la tienda normal.
-         */
         if ((renderersTiendaNormal == null ||
              renderersTiendaNormal.Length == 0) &&
             tiendaNormal != null)
         {
             renderersTiendaNormal =
-                tiendaNormal.GetComponentsInChildren<Renderer>(
-                    true
-                );
+                tiendaNormal.GetComponentsInChildren<Renderer>(true);
         }
 
         if (renderersTiendaNormal == null)
@@ -321,16 +400,11 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             return;
         }
 
-        for (int i = 0;
-             i < renderersTiendaNormal.Length;
-             i++)
+        for (int i = 0; i < renderersTiendaNormal.Length; i++)
         {
-            Renderer rendererTienda =
-                renderersTiendaNormal[i];
-
-            if (rendererTienda != null)
+            if (renderersTiendaNormal[i] != null)
             {
-                rendererTienda.enabled = mostrar;
+                renderersTiendaNormal[i].enabled = mostrar;
             }
         }
     }
@@ -349,9 +423,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         if (animatorTiendaAnimada == null)
         {
             animatorTiendaAnimada =
-                tiendaAnimada.GetComponentInChildren<Animator>(
-                    true
-                );
+                tiendaAnimada.GetComponentInChildren<Animator>(true);
         }
     }
 
@@ -414,15 +486,11 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         if (monoRobo.animator == null)
         {
             monoRobo.animator =
-                monoRobo.mono.GetComponentInChildren<Animator>(
-                    true
-                );
+                monoRobo.mono.GetComponentInChildren<Animator>(true);
         }
     }
 
-    private void ReproducirAnimacionTodos(
-        string nombreEstado
-    )
+    private void ReproducirAnimacionTodos(string nombreEstado)
     {
         if (monos == null ||
             string.IsNullOrWhiteSpace(nombreEstado))
@@ -546,8 +614,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private IEnumerator MoverMonosA(
         Transform destino,
-        float velocidad
-    )
+        float velocidad)
     {
         if (destino == null || monos == null)
         {
@@ -572,8 +639,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
                 bool llego = MoverMonoHacia(
                     monoRobo.mono,
-                    destino.position +
-                    ObtenerOffsetMono(i),
+                    destino.position + ObtenerOffsetMono(i),
                     velocidad
                 );
 
@@ -588,8 +654,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     }
 
     private IEnumerator MoverMonosAPuntosIniciales(
-        float velocidad
-    )
+        float velocidad)
     {
         if (monos == null)
         {
@@ -632,8 +697,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     private bool MoverMonoHacia(
         Transform mono,
         Vector3 destino,
-        float velocidad
-    )
+        float velocidad)
     {
         if (mono == null)
         {
@@ -704,8 +768,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
 
     private Vector3 AjustarPosicionAlSuelo(
         Vector3 posicion,
-        Transform mono
-    )
+        Transform mono)
     {
         if (!ajustarAlturaAlSuelo)
         {
@@ -723,8 +786,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
             QueryTriggerInteraction.Ignore
         );
 
-        if (impactos == null ||
-            impactos.Length == 0)
+        if (impactos == null || impactos.Length == 0)
         {
             return posicion;
         }
@@ -782,6 +844,466 @@ public class MonkeyStealCutsceneController : MonoBehaviour
         return Vector3.left *
                separacion *
                indice;
+    }
+
+    private void PrepararAudioSources()
+    {
+        audioSourceRonquido =
+            PrepararAudioSource(
+                audioSourceRonquido,
+                false
+            );
+
+        audioSourcePasosMonos =
+            PrepararAudioSource(
+                audioSourcePasosMonos,
+                false
+            );
+
+        audioSourceRoboTienda =
+            PrepararAudioSource(
+                audioSourceRoboTienda,
+                false
+            );
+
+        audioSourceRisasMonos =
+            PrepararAudioSource(
+                audioSourceRisasMonos,
+                false
+            );
+    }
+
+    private AudioSource PrepararAudioSource(
+        AudioSource source,
+        bool loop)
+    {
+        if (source == null)
+        {
+            source = gameObject.AddComponent<AudioSource>();
+        }
+
+        source.playOnAwake = false;
+        source.loop = loop;
+
+        // Sonido de cinemática, 2D para que siempre se oiga bien.
+        source.spatialBlend = 0f;
+        source.dopplerLevel = 0f;
+
+        return source;
+    }
+
+    private void IniciarRonquidoPirata()
+    {
+        DetenerRonquidoPirata();
+
+        if (audioSourceRonquido == null)
+        {
+            return;
+        }
+
+        rutinaRonquido =
+            StartCoroutine(RutinaRonquidoPirata());
+    }
+
+    private void DetenerRonquidoPirata()
+    {
+        if (rutinaRonquido != null)
+        {
+            StopCoroutine(rutinaRonquido);
+            rutinaRonquido = null;
+        }
+
+        if (audioSourceRonquido != null)
+        {
+            audioSourceRonquido.Stop();
+        }
+    }
+
+    private IEnumerator RutinaRonquidoPirata()
+    {
+        while (cinematicaActiva)
+        {
+            AudioClip clipRonquido =
+                ObtenerClipRonquidoPirata();
+
+            AudioClip clipMimimi =
+                ObtenerClipAleatorioSinRepetir(
+                    sonidosMimimiPirata,
+                    ref ultimoMimimi
+                );
+
+            if (clipRonquido == null &&
+                clipMimimi == null)
+            {
+                yield return new WaitForSecondsRealtime(0.25f);
+                continue;
+            }
+
+            if (clipRonquido != null)
+            {
+                ReproducirClip(
+                    audioSourceRonquido,
+                    clipRonquido,
+                    volumenRonquido
+                );
+
+                yield return EsperarMientrasCinematicaActiva(
+                    clipRonquido.length
+                );
+            }
+
+            if (!cinematicaActiva)
+            {
+                yield break;
+            }
+
+            if (pausaEntreRonquidoYMimimi > 0f &&
+                clipMimimi != null)
+            {
+                yield return EsperarMientrasCinematicaActiva(
+                    pausaEntreRonquidoYMimimi
+                );
+            }
+
+            if (!cinematicaActiva)
+            {
+                yield break;
+            }
+
+            if (clipMimimi != null)
+            {
+                ReproducirClip(
+                    audioSourceRonquido,
+                    clipMimimi,
+                    volumenRonquido
+                );
+
+                yield return EsperarMientrasCinematicaActiva(
+                    clipMimimi.length
+                );
+            }
+
+            if (!cinematicaActiva)
+            {
+                yield break;
+            }
+
+            float pausaMin = Mathf.Min(
+                pausaEntreCiclosRonquidoMin,
+                pausaEntreCiclosRonquidoMax
+            );
+
+            float pausaMax = Mathf.Max(
+                pausaEntreCiclosRonquidoMin,
+                pausaEntreCiclosRonquidoMax
+            );
+
+            float pausa = Random.Range(
+                pausaMin,
+                pausaMax
+            );
+
+            yield return EsperarMientrasCinematicaActiva(pausa);
+        }
+    }
+
+    private AudioClip ObtenerClipRonquidoPirata()
+    {
+        AudioClip clip =
+            ObtenerClipAleatorioSinRepetir(
+                sonidosRonquidoPirata,
+                ref ultimoRonquido
+            );
+
+        if (clip != null)
+        {
+            return clip;
+        }
+
+        return sonidoRonquidoPirata;
+    }
+
+    private IEnumerator EsperarMientrasCinematicaActiva(
+        float segundos)
+    {
+        if (segundos <= 0f)
+        {
+            yield break;
+        }
+
+        float tiempo = 0f;
+
+        while (tiempo < segundos && cinematicaActiva)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private void IniciarPasosEntrada()
+    {
+        DetenerPasosEntrada();
+
+        rutinaPasosEntrada =
+            StartCoroutine(RutinaPasosEntrada());
+    }
+
+    private void DetenerPasosEntrada()
+    {
+        if (rutinaPasosEntrada != null)
+        {
+            StopCoroutine(rutinaPasosEntrada);
+            rutinaPasosEntrada = null;
+        }
+    }
+
+    private IEnumerator RutinaPasosEntrada()
+    {
+        while (cinematicaActiva)
+        {
+            AudioClip clip =
+                ObtenerClipAleatorioSinRepetir(
+                    sonidosPasosEntrada,
+                    ref ultimoPasoEntrada
+                );
+
+            ReproducirClip(
+                audioSourcePasosMonos,
+                clip,
+                volumenPasosEntrada
+            );
+
+            yield return new WaitForSecondsRealtime(
+                intervaloPasosEntrada
+            );
+        }
+    }
+
+    private void IniciarRoboTienda()
+    {
+        DetenerRoboTienda();
+
+        rutinaRoboTienda =
+            StartCoroutine(RutinaRoboTienda());
+    }
+
+    private void DetenerRoboTienda()
+    {
+        if (rutinaRoboTienda != null)
+        {
+            StopCoroutine(rutinaRoboTienda);
+            rutinaRoboTienda = null;
+        }
+    }
+
+    private IEnumerator RutinaRoboTienda()
+    {
+        while (cinematicaActiva)
+        {
+            AudioClip clip =
+                ObtenerClipAleatorioSinRepetir(
+                    sonidosRoboTienda,
+                    ref ultimoRoboTienda
+                );
+
+            ReproducirClip(
+                audioSourceRoboTienda,
+                clip,
+                volumenRoboTienda
+            );
+
+            float espera =
+                Random.Range(
+                    Mathf.Min(intervaloRoboMin, intervaloRoboMax),
+                    Mathf.Max(intervaloRoboMin, intervaloRoboMax)
+                );
+
+            yield return new WaitForSecondsRealtime(
+                espera
+            );
+        }
+    }
+
+    private void IniciarPasosSalida()
+    {
+        DetenerPasosSalida();
+
+        rutinaPasosSalida =
+            StartCoroutine(RutinaPasosSalida());
+    }
+
+    private void DetenerPasosSalida()
+    {
+        if (rutinaPasosSalida != null)
+        {
+            StopCoroutine(rutinaPasosSalida);
+            rutinaPasosSalida = null;
+        }
+    }
+
+    private IEnumerator RutinaPasosSalida()
+    {
+        while (cinematicaActiva)
+        {
+            AudioClip clip =
+                ObtenerClipAleatorioSinRepetir(
+                    sonidosPasosSalidaRapidos,
+                    ref ultimoPasoSalida
+                );
+
+            ReproducirClip(
+                audioSourcePasosMonos,
+                clip,
+                volumenPasosSalida
+            );
+
+            yield return new WaitForSecondsRealtime(
+                intervaloPasosSalida
+            );
+        }
+    }
+
+    private void IniciarRisasSalida()
+    {
+        DetenerRisasSalida();
+
+        rutinaRisas =
+            StartCoroutine(RutinaRisasSalida());
+    }
+
+    private void DetenerRisasSalida()
+    {
+        if (rutinaRisas != null)
+        {
+            StopCoroutine(rutinaRisas);
+            rutinaRisas = null;
+        }
+    }
+
+    private IEnumerator RutinaRisasSalida()
+    {
+        while (cinematicaActiva)
+        {
+            AudioClip clip =
+                ObtenerClipAleatorioSinRepetir(
+                    sonidosRisasSalida,
+                    ref ultimaRisa
+                );
+
+            ReproducirClip(
+                audioSourceRisasMonos,
+                clip,
+                volumenRisas
+            );
+
+            float espera =
+                Random.Range(
+                    Mathf.Min(intervaloRisasMin, intervaloRisasMax),
+                    Mathf.Max(intervaloRisasMin, intervaloRisasMax)
+                );
+
+            yield return new WaitForSecondsRealtime(
+                espera
+            );
+        }
+    }
+
+    private void DetenerTodosLosSonidos()
+    {
+        DetenerRonquidoPirata();
+        DetenerPasosEntrada();
+        DetenerRoboTienda();
+        DetenerPasosSalida();
+        DetenerRisasSalida();
+
+        if (audioSourcePasosMonos != null)
+        {
+            audioSourcePasosMonos.Stop();
+        }
+
+        if (audioSourceRoboTienda != null)
+        {
+            audioSourceRoboTienda.Stop();
+        }
+
+        if (audioSourceRisasMonos != null)
+        {
+            audioSourceRisasMonos.Stop();
+        }
+    }
+
+    private void ReproducirClip(
+        AudioSource source,
+        AudioClip clip,
+        float volumen)
+    {
+        if (source == null ||
+            clip == null)
+        {
+            return;
+        }
+
+        float pitchMenor =
+            Mathf.Min(
+                pitchMinimo,
+                pitchMaximo
+            );
+
+        float pitchMayor =
+            Mathf.Max(
+                pitchMinimo,
+                pitchMaximo
+            );
+
+        source.pitch =
+            Random.Range(
+                pitchMenor,
+                pitchMayor
+            );
+
+        source.PlayOneShot(
+            clip,
+            volumen
+        );
+    }
+
+    private AudioClip ObtenerClipAleatorioSinRepetir(
+        AudioClip[] clips,
+        ref int ultimoIndice)
+    {
+        if (clips == null ||
+            clips.Length == 0)
+        {
+            return null;
+        }
+
+        if (clips.Length == 1)
+        {
+            ultimoIndice = 0;
+            return clips[0];
+        }
+
+        int nuevoIndice;
+        int intentos = 0;
+
+        do
+        {
+            nuevoIndice =
+                Random.Range(
+                    0,
+                    clips.Length
+                );
+
+            intentos++;
+        }
+        while (
+            nuevoIndice == ultimoIndice &&
+            intentos < 10
+        );
+
+        ultimoIndice = nuevoIndice;
+
+        return clips[nuevoIndice];
     }
 
     private void OnDisable()

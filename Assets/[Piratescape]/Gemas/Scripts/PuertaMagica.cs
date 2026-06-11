@@ -49,6 +49,12 @@ public class PuertaMagica : MonoBehaviour, Interactuable
     [SerializeField] private FinalAlternativoController cinematica;
     [SerializeField] private float esperaAntesDeCinematica = 0.3f;
 
+    [Header("Sonido portal")]
+    [SerializeField] private AudioSource audioSourcePortal;
+    [SerializeField] private AudioClip sonidoPortal;
+    [SerializeField] private float volumenPortal = 0.45f;
+    private bool puertaAbierta;
+
     private PlayerInventory inventario;
     private JugadorActivador jugador;
 
@@ -249,22 +255,10 @@ public class PuertaMagica : MonoBehaviour, Interactuable
             objetoARotarConLlave.localRotation = rotacionFinal;
         }
 
-        if (esperaAntesDeCinematica > 0f)
-        {
-            yield return new WaitForSeconds(esperaAntesDeCinematica);
-        }
+        puertaAbierta = true;
+        ReproducirSonidoPortal();
 
-        cinematicaLanzada = true;
         animacionLlaveEnCurso = false;
-
-        if (cinematica != null)
-        {
-            cinematica.IniciarCinematica();
-        }
-        else
-        {
-            Debug.LogWarning("No hay cinemática asignada.");
-        }
     }
 
     private string ObtenerMensajeActual()
@@ -332,4 +326,38 @@ public class PuertaMagica : MonoBehaviour, Interactuable
         materiales[indiceMaterial] = materialVerde;
         rendererParteRoja.materials = materiales;
     }
+
+    private void ReproducirSonidoPortal()
+    {
+        if (audioSourcePortal == null || sonidoPortal == null)
+        {
+            return;
+        }
+
+        audioSourcePortal.clip = sonidoPortal;
+        audioSourcePortal.volume = volumenPortal;
+        audioSourcePortal.loop = true;
+        audioSourcePortal.spatialBlend = 1f;
+        audioSourcePortal.minDistance = 4f;
+        audioSourcePortal.maxDistance = 45f;
+        audioSourcePortal.rolloffMode = AudioRolloffMode.Linear;
+
+        audioSourcePortal.Play();
+    }
+
+    private void PararSonidoPortal()
+    {
+        if (audioSourcePortal != null)
+        {
+            audioSourcePortal.Stop();
+        }
+    }
+
+    public void DetenerPortalPorCinematica()
+    {
+        puertaAbierta = false;
+        cinematicaLanzada = true;
+        PararSonidoPortal();
+    }
+
 }

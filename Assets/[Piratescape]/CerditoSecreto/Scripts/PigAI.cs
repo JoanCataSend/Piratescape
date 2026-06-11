@@ -32,6 +32,7 @@ public class PigAI : MonoBehaviour
     private Vector3 destinoActual;
 
     private bool huyendo;
+    public bool EstaHuyendo => huyendo;
     private float velocidadVertical;
 
     private void Start()

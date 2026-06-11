@@ -12,6 +12,9 @@ public sealed class MenuPausaUI : MonoBehaviour
     [Header("Estado del jugador")]
     [SerializeField] private SistemaSaludJugador sistemaSaludJugador;
 
+    [Header("Tutorial")]
+    [SerializeField] private TutorialMisionesLoro tutorialMisionesLoro;
+
     [Header("Input")]
     [SerializeField] private InputActionReference accionPausa;
 
@@ -22,6 +25,11 @@ public sealed class MenuPausaUI : MonoBehaviour
         if (sistemaSaludJugador == null)
         {
             sistemaSaludJugador = FindFirstObjectByType<SistemaSaludJugador>();
+        }
+
+        if (tutorialMisionesLoro == null)
+        {
+            tutorialMisionesLoro = FindFirstObjectByType<TutorialMisionesLoro>();
         }
     }
 
@@ -108,6 +116,11 @@ public sealed class MenuPausaUI : MonoBehaviour
             hud.SetActive(false);
         }
 
+        if (tutorialMisionesLoro != null)
+        {
+            tutorialMisionesLoro.OcultarVisualmentePorPausa();
+        }
+
         CambiarEstadoComponentesJugador(false);
 
         Time.timeScale = 0f;
@@ -132,6 +145,11 @@ public sealed class MenuPausaUI : MonoBehaviour
             hud.SetActive(true);
         }
 
+        if (tutorialMisionesLoro != null)
+        {
+            tutorialMisionesLoro.RestaurarVisualmenteDespuesDePausa();
+        }
+
         CambiarEstadoComponentesJugador(true);
 
         Time.timeScale = 1f;
@@ -145,6 +163,11 @@ public sealed class MenuPausaUI : MonoBehaviour
     public void ForzarCerrarPausa()
     {
         estaEnPausa = false;
+
+        if (tutorialMisionesLoro != null)
+        {
+            tutorialMisionesLoro.RestaurarVisualmenteDespuesDePausa();
+        }
 
         CambiarEstadoComponentesJugador(true);
 
