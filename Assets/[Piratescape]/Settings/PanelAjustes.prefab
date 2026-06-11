@@ -826,6 +826,7 @@ GameObject:
   - component: {fileID: 1264072169356996425}
   - component: {fileID: 5950426466968260677}
   - component: {fileID: 3597936888207791547}
+  - component: {fileID: 4274369319444266574}
   m_Layer: 5
   m_Name: BtnCancelar
   m_TagString: Untagged
@@ -947,6 +948,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4274369319444266574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943873718333260730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbbe467c53ec154a83b2ac12422ca4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  audioSource: {fileID: 0}
+  sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
+  sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
+  volumenHover: 0.7
+  volumenClick: 1
 --- !u!1 &1220175715952007598
 GameObject:
   m_ObjectHideFlags: 0
@@ -6620,6 +6639,7 @@ GameObject:
   - component: {fileID: 6197156435431701975}
   - component: {fileID: 8841679778657753133}
   - component: {fileID: 3260291194472932549}
+  - component: {fileID: 584312436026992147}
   m_Layer: 5
   m_Name: BtnGuardar
   m_TagString: Untagged
@@ -6741,6 +6761,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &584312436026992147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983906709763226787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbbe467c53ec154a83b2ac12422ca4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  audioSource: {fileID: 0}
+  sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
+  sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
+  volumenHover: 0.7
+  volumenClick: 1
 --- !u!1 &8636169256471313427
 GameObject:
   m_ObjectHideFlags: 0
@@ -6789,6 +6827,7 @@ GameObject:
   - component: {fileID: 8594117125153912696}
   - component: {fileID: 5248290628514664132}
   - component: {fileID: 7837147374086461045}
+  - component: {fileID: 2436766675678131909}
   m_Layer: 5
   m_Name: BtnVerControles
   m_TagString: Untagged
@@ -6898,6 +6937,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2436766675678131909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8651418312613451153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbbe467c53ec154a83b2ac12422ca4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  audioSource: {fileID: 0}
+  sonidoHover: {fileID: 8300000, guid: d9c2939b45c8aa14391c1c06a8bed72f, type: 3}
+  sonidoClick: {fileID: 8300000, guid: 2eba756c44bac344a8931b37e3d717e8, type: 3}
+  volumenHover: 0.7
+  volumenClick: 1
 --- !u!1 &8857938127193146837
 GameObject:
   m_ObjectHideFlags: 0

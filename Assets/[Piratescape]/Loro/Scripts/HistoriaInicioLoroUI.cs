@@ -1013,7 +1013,7 @@ public sealed class HistoriaInicioLoroUI : MonoBehaviour
         if (textoAyuda != null)
         {
             textoAyuda.text =
-                "Espacio / Enter · continuar";
+                "Espacio / Enter · Continuar";
         }
     }
 
