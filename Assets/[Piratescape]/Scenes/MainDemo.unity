@@ -124155,6 +124155,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1588489912}
+    - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1588489913}
   m_SourcePrefab: {fileID: 100100000, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
 --- !u!4 &1149186351 stripped
 Transform:
@@ -170587,7 +170590,7 @@ MonoBehaviour:
   pickupTriggerName: PickUp
   pickupDelayBeforeCollect: 0.45
   movimientoPlayer: {fileID: 1588489905}
-  audioRecogida: {fileID: 0}
+  audioRecogida: {fileID: 1588489913}
 --- !u!114 &1588489895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170859,6 +170862,31 @@ MonoBehaviour:
   distanciaRaycast: 1.8
   pitchMinimo: 0.96
   pitchMaximo: 1.04
+--- !u!114 &1588489913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588489892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae96086182601744e8e21354661553af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sonidosRecogida:
+  - {fileID: 8300000, guid: b0b0bb07ec05dbc4395b30b9621c30a4, type: 3}
+  - {fileID: 8300000, guid: 9b46bc8ca4ba0e047a408a367c7c4d6a, type: 3}
+  - {fileID: 8300000, guid: c2c0b09e561a5774aa7f42b562dba6c3, type: 3}
+  - {fileID: 8300000, guid: 5027bc4255323a546a5e7568f6b8da3e, type: 3}
+  - {fileID: 8300000, guid: f0b181614fe917343b93f31838a9972d, type: 3}
+  - {fileID: 8300000, guid: 5392c98cb3eeb1e40bbb111661dafadd, type: 3}
+  outputSFX: {fileID: -5630590406745796260, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  volumen: 1
+  pitchMinimo: 0.95
+  pitchMaximo: 1.05
+  distanciaMinima: 1
+  distanciaMaxima: 18
 --- !u!64 &1592097014
 MeshCollider:
   m_ObjectHideFlags: 0
