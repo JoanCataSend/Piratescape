@@ -13,15 +13,15 @@ public class PuertaMagica : MonoBehaviour, Interactuable
 
     [SerializeField]
     private string mensajeEntregaGemas =
-        "Selecciona una gema y pulsa E para entregarla";
+        "Gema [E]";
 
     [SerializeField]
     private string mensajeNecesitaLlave =
-        "Selecciona la llave y pulsa E para abrir";
+        "Llave [E]";
 
     [SerializeField]
     private string mensajeDesbloqueada =
-        "Pulsa E para abrir la puerta mágica";
+        "Abrir [E]";
 
     [Header("Gemas necesarias")]
     [SerializeField] private ItemData gemaRosa;
