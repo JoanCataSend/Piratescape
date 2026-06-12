@@ -119,7 +119,13 @@ public sealed class GrupoSpawnRecursos : MonoBehaviour
         }
 
         Vector3 posicionSpawn = puntoElegido.Posicion + Vector3.up * desplazamientoAltura;
-        GameObject instancia = Instantiate(prefabElegido, posicionSpawn, Quaternion.identity, contenedorRecursosGenerados);
+
+        GameObject instancia = Instantiate(
+            prefabElegido,
+            posicionSpawn,
+            prefabElegido.transform.rotation,
+            contenedorRecursosGenerados
+        );
 
         RecursoGenerado recursoGenerado = instancia.GetComponent<RecursoGenerado>();
 
