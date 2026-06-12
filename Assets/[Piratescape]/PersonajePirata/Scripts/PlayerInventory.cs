@@ -36,6 +36,8 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
     [SerializeField] private AudioClip sonidoConsumirItem;
     [SerializeField] private float volumenCambiarSlot = 0.45f;
     [SerializeField] private float volumenConsumirItem = 0.6f;
+    [SerializeField] private AudioClip sonidoSoltarItem;
+    [SerializeField] private float volumenSoltarItem = 0.45f;
 
     private List<InventorySlot> slots = new List<InventorySlot>();
     private PlayerHealth playerHealth;
@@ -508,6 +510,8 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         {
             slot.Clear();
         }
+
+        ReproducirSonidoInventario(sonidoSoltarItem, volumenSoltarItem);
 
         Debug.Log("Tirado al suelo: " + item.DisplayName);
         NotifyInventoryChanged();
