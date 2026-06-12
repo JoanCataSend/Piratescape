@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -18,10 +19,14 @@ public sealed class MenuPausaUI : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputActionReference accionPausa;
 
+    [Header("Escena de pausa")]
+    [SerializeField] private string nombreEscenaPausa = "PauseScene";
+
     [Header("Audio que SÍ debe sonar en pausa")]
     [SerializeField] private AudioSource[] audiosPermitidosEnPausa;
 
     private bool estaEnPausa;
+    private bool cargandoPausa;
 
     private void Awake()
     {
@@ -63,6 +68,8 @@ public sealed class MenuPausaUI : MonoBehaviour
     private void Start()
     {
         estaEnPausa = false;
+        cargandoPausa = false;
+
         Time.timeScale = 1f;
         AudioListener.pause = false;
     }
@@ -84,6 +91,11 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     private void IntentarAlternarPausa()
     {
+        if (cargandoPausa)
+        {
+            return;
+        }
+
         if (HayOtraUIAbierta())
         {
             return;
@@ -111,7 +123,7 @@ public sealed class MenuPausaUI : MonoBehaviour
 
     public void PausarJuego()
     {
-        if (estaEnPausa || JugadorEstaMuerto() || HayOtraUIAbierta())
+        if (estaEnPausa || cargandoPausa || JugadorEstaMuerto() || HayOtraUIAbierta())
         {
             return;
         }
@@ -132,15 +144,39 @@ public sealed class MenuPausaUI : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        // Pausamos el audio global.
-        // Solo seguirán sonando los AudioSource que tengan ignoreListenerPause = true.
         PrepararAudiosPermitidosEnPausa();
-        AudioListener.pause = true;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.LoadScene("PauseScene", LoadSceneMode.Additive);
+        StartCoroutine(CargarPausaYPrepararAudio());
+    }
+
+    private IEnumerator CargarPausaYPrepararAudio()
+    {
+        cargandoPausa = true;
+
+        AudioListener.pause = false;
+
+        Scene escenaPausa = SceneManager.GetSceneByName(nombreEscenaPausa);
+
+        if (!escenaPausa.isLoaded)
+        {
+            AsyncOperation carga = SceneManager.LoadSceneAsync(nombreEscenaPausa, LoadSceneMode.Additive);
+
+            while (carga != null && !carga.isDone)
+            {
+                yield return null;
+            }
+        }
+
+        PrepararAudiosDeEscenaPausa();
+
+        // Ahora pausamos el audio global.
+        // Solo sonarán los AudioSource con ignoreListenerPause = true.
+        AudioListener.pause = true;
+
+        cargandoPausa = false;
     }
 
     public void ReanudarJuego()
@@ -151,6 +187,7 @@ public sealed class MenuPausaUI : MonoBehaviour
         }
 
         estaEnPausa = false;
+        cargandoPausa = false;
 
         if (hud != null && !JugadorEstaMuerto())
         {
@@ -170,12 +207,16 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        SceneManager.UnloadSceneAsync("PauseScene");
+        if (SceneManager.GetSceneByName(nombreEscenaPausa).isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(nombreEscenaPausa);
+        }
     }
 
     public void ForzarCerrarPausa()
     {
         estaEnPausa = false;
+        cargandoPausa = false;
 
         if (tutorialMisionesLoro != null)
         {
@@ -190,7 +231,10 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.UnloadSceneAsync("PauseScene");
+        if (SceneManager.GetSceneByName(nombreEscenaPausa).isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(nombreEscenaPausa);
+        }
     }
 
     public void VolverAlMenuPrincipal()
@@ -231,6 +275,31 @@ public sealed class MenuPausaUI : MonoBehaviour
             if (audiosPermitidosEnPausa[i] != null)
             {
                 audiosPermitidosEnPausa[i].ignoreListenerPause = true;
+            }
+        }
+    }
+
+    private void PrepararAudiosDeEscenaPausa()
+    {
+        Scene escenaPausa = SceneManager.GetSceneByName(nombreEscenaPausa);
+
+        if (!escenaPausa.isLoaded)
+        {
+            return;
+        }
+
+        GameObject[] objetosRaiz = escenaPausa.GetRootGameObjects();
+
+        for (int i = 0; i < objetosRaiz.Length; i++)
+        {
+            AudioSource[] audios = objetosRaiz[i].GetComponentsInChildren<AudioSource>(true);
+
+            for (int j = 0; j < audios.Length; j++)
+            {
+                if (audios[j] != null)
+                {
+                    audios[j].ignoreListenerPause = true;
+                }
             }
         }
     }
