@@ -1289,7 +1289,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642284612845135163}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c9b127a200bc9f42a6d9da4d04a4568, type: 3}
   m_Name: 
@@ -2220,6 +2220,7 @@ MonoBehaviour:
   nombreParametroMixer: SFXVolume
   audioSourcePrueba: {fileID: 4309566536582253651}
   sonidoClick: {fileID: 8300000, guid: 91d21a955991b3f44b671ec8a4182005, type: 3}
+  grupoSalidaSonidoPrueba: {fileID: 0}
   nombreGuardado: SFXVolume
 --- !u!1 &2560503730851238835
 GameObject:
@@ -2404,6 +2405,7 @@ MonoBehaviour:
   nombreParametroMixer: VoicesVolume
   audioSourcePrueba: {fileID: 4309566536582253651}
   sonidoClick: {fileID: 8300000, guid: 91d21a955991b3f44b671ec8a4182005, type: 3}
+  grupoSalidaSonidoPrueba: {fileID: 0}
   nombreGuardado: VoicesVolume
 --- !u!1 &2879316692666720308
 GameObject:
@@ -2982,6 +2984,7 @@ MonoBehaviour:
   nombreParametroMixer: MasterVolume
   audioSourcePrueba: {fileID: 4309566536582253651}
   sonidoClick: {fileID: 8300000, guid: 91d21a955991b3f44b671ec8a4182005, type: 3}
+  grupoSalidaSonidoPrueba: {fileID: 0}
   nombreGuardado: MasterVolume
 --- !u!1 &3671584568244103812
 GameObject:
@@ -3975,6 +3978,7 @@ MonoBehaviour:
   nombreParametroMixer: MusicVolume
   audioSourcePrueba: {fileID: 4309566536582253651}
   sonidoClick: {fileID: 8300000, guid: 91d21a955991b3f44b671ec8a4182005, type: 3}
+  grupoSalidaSonidoPrueba: {fileID: 0}
   nombreGuardado: MusicVolume
 --- !u!1 &4478477424779741087
 GameObject:
@@ -5910,6 +5914,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1201534982220206636}
   - component: {fileID: 7815343991081039036}
+  - component: {fileID: 3251412736525556764}
   m_Layer: 5
   m_Name: SliderSensibilidadRaton
   m_TagString: Untagged
@@ -5990,6 +5995,26 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3251412736525556764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6614424530303176414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4248bb6e5ecd95a40bcbb84e6efe1fa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 7815343991081039036}
+  textoPorcentaje: {fileID: 2599424499810562528}
+  audioMixer: {fileID: 24100000, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  nombreParametroMixer: 
+  audioSourcePrueba: {fileID: 4309566536582253651}
+  sonidoClick: {fileID: 8300000, guid: 91d21a955991b3f44b671ec8a4182005, type: 3}
+  grupoSalidaSonidoPrueba: {fileID: 0}
+  nombreGuardado: VoicesVolume
 --- !u!1 &6727719069294475242
 GameObject:
   m_ObjectHideFlags: 0
