@@ -61,6 +61,10 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private AudioClip sonidoEntregarMaterial;
     [SerializeField] private float volumenEntregarMaterial = 0.45f;
 
+    [Header("Sonido error construccion")]
+    [SerializeField] private AudioClip sonidoErrorConstruccion;
+    [SerializeField] private float volumenErrorConstruccion = 0.35f;
+
     [Header("UI a ocultar durante mejora")]
     [SerializeField] private GameObject[] objetosUIAOcultar;
     private bool[] estadosPreviosUI;
@@ -284,6 +288,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     private void SolicitarMensajeConstruccion(string mensaje, Color color)
     {
+        ReproducirSonidoErrorConstruccion();
         OnMensajeConstruccionSolicitado?.Invoke(mensaje, color);
     }
 
@@ -518,5 +523,15 @@ public sealed class ConstruccionBarco : MonoBehaviour
         }
 
         audioSourceMejora.PlayOneShot(sonidoEntregarMaterial, volumenEntregarMaterial);
+    }
+
+    private void ReproducirSonidoErrorConstruccion()
+    {
+        if (audioSourceMejora == null || sonidoErrorConstruccion == null)
+        {
+            return;
+        }
+
+        audioSourceMejora.PlayOneShot(sonidoErrorConstruccion, volumenErrorConstruccion);
     }
 }
