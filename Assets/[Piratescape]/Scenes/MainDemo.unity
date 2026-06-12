@@ -83499,7 +83499,7 @@ MonoBehaviour:
   volumenMusicaVictoria: 0.341
   musicaVictoriaEnLoop: 1
   detenerMusicaJuegoAlEmpezar: 1
-  musicaJuegoSource: {fileID: 0}
+  musicaJuegoSource: {fileID: 700661240}
   hacerFadeMusicaJuego: 1
   duracionFadeMusicaJuego: 1
   postProcesadoCinematica: {fileID: 1991750101}
@@ -173979,19 +173979,6 @@ MonoBehaviour:
   healthPulse: 1
   healthPulseSpeed: 4
   healthPulseStrength: 0.25
-  audioSourceLatido: {fileID: 0}
-  outputLatido: {fileID: -8413363371568429757, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
-  sonidosLatido:
-  - {fileID: 8300000, guid: d4ca6bc94eb1b3548a919f2bae35ef79, type: 3}
-  - {fileID: 8300000, guid: 57acf68f4bb5fcb4ea99861338cda901, type: 3}
-  - {fileID: 8300000, guid: 4be2ff6b80637d442bb2c069bd18cac9, type: 3}
-  - {fileID: 8300000, guid: 43dc5fc353d50474fabf159bd70a3d56, type: 3}
-  - {fileID: 8300000, guid: 0113b0b761eca9f49a36dfdc9b584e4d, type: 3}
-  - {fileID: 8300000, guid: e6c984a76699b7146b0386c891c3f6eb, type: 3}
-  - {fileID: 8300000, guid: 63d1e8490cc8d3247b543d94f2148c72, type: 3}
-  - {fileID: 8300000, guid: 0a959cb655b0c684b9279f0ff00fc9c4, type: 3}
-  volumenLatido: 0.3
-  tiempoEntreLatidos: 1.2
   energyEffectStartPercent: 0
   energyMaxAlpha: 0.6
   energyPulse: 1
