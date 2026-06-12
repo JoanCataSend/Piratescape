@@ -230897,6 +230897,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1881819183}
     - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+      propertyPath: outputTienda
+      value: 
+      objectReference: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+    - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: camaraJugador
       value: 
       objectReference: {fileID: 587593477}
@@ -230905,8 +230909,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1409397561}
     - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+      propertyPath: sonidoAbrirTienda
+      value: 
+      objectReference: {fileID: 8300000, guid: c3cfb415a9ead5e4cbc22269f9b32b81, type: 3}
+    - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: forzarIntroSiempre
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
+      propertyPath: volumenAbrirTienda
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6204364754858411219, guid: 8a67238a7821ffe45842a4e8553f9bce, type: 3}
       propertyPath: usarIntroPrimeraVez

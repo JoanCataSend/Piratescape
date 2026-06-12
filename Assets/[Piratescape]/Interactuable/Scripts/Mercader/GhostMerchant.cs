@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public class GhostMerchant : MonoBehaviour, Interactuable
 {
@@ -16,6 +17,12 @@ public class GhostMerchant : MonoBehaviour, Interactuable
 
     [Header("UI Tienda")]
     [SerializeField] private GameObject shopUI;
+
+    [Header("Sonido tienda")]
+    [SerializeField] private AudioSource audioSourceTienda;
+    [SerializeField] private AudioMixerGroup outputTienda;
+    [SerializeField] private AudioClip sonidoAbrirTienda;
+    [SerializeField] private float volumenAbrirTienda = 0.6f;
 
     [Header("Intro primera vez")]
     [SerializeField] private bool usarIntroPrimeraVez = true;
@@ -59,6 +66,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
     private void Awake()
     {
         BuscarReferenciasSiFaltan();
+        PrepararAudioTienda();
     }
 
     private void OnEnable()
@@ -372,6 +380,7 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         bloquearCierreTiendaHasta = Time.unscaledTime + tiempoBloqueoCierreAlAbrirTienda;
 
         shopUI.SetActive(true);
+        ReproducirSonidoAbrirTienda();
         OcultarPrompt();
 
         Time.timeScale = 0f;
@@ -523,5 +532,29 @@ public class GhostMerchant : MonoBehaviour, Interactuable
         PlayerPrefs.Save();
 
         Debug.Log("GhostMerchant: intro del fantasma reseteada.");
+    }
+
+    private void PrepararAudioTienda()
+    {
+        if (audioSourceTienda == null)
+        {
+            audioSourceTienda = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceTienda.playOnAwake = false;
+        audioSourceTienda.loop = false;
+        audioSourceTienda.spatialBlend = 0f;
+        audioSourceTienda.outputAudioMixerGroup = outputTienda;
+    }
+
+    private void ReproducirSonidoAbrirTienda()
+    {
+        if (audioSourceTienda == null || sonidoAbrirTienda == null)
+        {
+            return;
+        }
+
+        audioSourceTienda.pitch = 1f;
+        audioSourceTienda.PlayOneShot(sonidoAbrirTienda, volumenAbrirTienda);
     }
 }
