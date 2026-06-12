@@ -138,12 +138,26 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     [SerializeField] private float pitchMinimo = 0.96f;
     [SerializeField] private float pitchMaximo = 1.06f;
 
+    [Header("Música del juego a detener")]
+    [Tooltip("Actívalo para parar la música normal del juego cuando empiece la cinemática de los monos.")]
+    [SerializeField] private bool detenerMusicaJuegoAlEmpezar = true;
+
+    [Tooltip("Arrastra aquí el AudioSource de la música normal del juego.")]
+    [SerializeField] private AudioSource musicaJuegoSource;
+
+    [Tooltip("Si está activo, la música normal baja suavemente antes de pararse.")]
+    [SerializeField] private bool hacerFadeMusicaJuego = true;
+
+    [Min(0f)]
+    [SerializeField] private float duracionFadeMusicaJuego = 1f;
+
     private Coroutine rutinaMovimiento;
     private Coroutine rutinaRonquido;
     private Coroutine rutinaPasosEntrada;
     private Coroutine rutinaRoboTienda;
     private Coroutine rutinaPasosSalida;
     private Coroutine rutinaRisas;
+    private Coroutine rutinaDetenerMusicaJuego;
 
     private bool cinematicaActiva;
 
@@ -191,6 +205,7 @@ public class MonkeyStealCutsceneController : MonoBehaviour
     public void PrepararCinematica()
     {
         DetenerRutinaMovimiento();
+        DetenerMusicaJuegoAlEmpezarCinematica();
 
         cinematicaActiva = true;
 
@@ -327,6 +342,80 @@ public class MonkeyStealCutsceneController : MonoBehaviour
                 this
             );
         }
+    }
+
+    private void DetenerMusicaJuegoAlEmpezarCinematica()
+    {
+        if (!detenerMusicaJuegoAlEmpezar)
+        {
+            return;
+        }
+
+        if (musicaJuegoSource == null)
+        {
+            return;
+        }
+
+        if (!musicaJuegoSource.isPlaying)
+        {
+            return;
+        }
+
+        if (rutinaDetenerMusicaJuego != null)
+        {
+            StopCoroutine(rutinaDetenerMusicaJuego);
+            rutinaDetenerMusicaJuego = null;
+        }
+
+        rutinaDetenerMusicaJuego =
+            StartCoroutine(DetenerMusicaJuegoRoutine());
+    }
+
+    private IEnumerator DetenerMusicaJuegoRoutine()
+    {
+        if (musicaJuegoSource == null)
+        {
+            yield break;
+        }
+
+        if (!hacerFadeMusicaJuego ||
+            duracionFadeMusicaJuego <= 0f)
+        {
+            musicaJuegoSource.Stop();
+            rutinaDetenerMusicaJuego = null;
+            yield break;
+        }
+
+        float volumenInicial = musicaJuegoSource.volume;
+        float tiempo = 0f;
+
+        while (tiempo < duracionFadeMusicaJuego &&
+               musicaJuegoSource != null)
+        {
+            tiempo += Time.unscaledDeltaTime;
+
+            float t =
+                Mathf.Clamp01(
+                    tiempo / duracionFadeMusicaJuego
+                );
+
+            musicaJuegoSource.volume =
+                Mathf.Lerp(
+                    volumenInicial,
+                    0f,
+                    t
+                );
+
+            yield return null;
+        }
+
+        if (musicaJuegoSource != null)
+        {
+            musicaJuegoSource.Stop();
+            musicaJuegoSource.volume = volumenInicial;
+        }
+
+        rutinaDetenerMusicaJuego = null;
     }
 
     private void DetenerRutinaMovimiento()
