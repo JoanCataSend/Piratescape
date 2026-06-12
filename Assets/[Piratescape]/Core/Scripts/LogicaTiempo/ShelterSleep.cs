@@ -44,7 +44,7 @@ public class ShelterSleep : MonoBehaviour, Interactuable
 
     [Header("Despertar")]
     [SerializeField] private string idleStateName = "Idle";
-    [SerializeField] private float teleportDelayAfterFadeStarts = 0.6f;
+    
 
     [Header("Sonido al despertar")]
     [SerializeField] private AudioSource audioSourceDespertar;

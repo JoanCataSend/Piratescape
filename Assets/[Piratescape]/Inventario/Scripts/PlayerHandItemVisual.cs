@@ -80,7 +80,6 @@ public sealed class PlayerHandItemVisual : MonoBehaviour
 
         if (selectedItem.HandPrefab == null)
         {
-            Debug.LogWarning("El item " + selectedItem.DisplayName + " no tiene Hand Prefab asignado.", selectedItem);
             return;
         }
 
