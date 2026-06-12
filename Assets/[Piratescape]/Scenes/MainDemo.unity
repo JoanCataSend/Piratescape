@@ -30540,7 +30540,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.15
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -30639,9 +30639,9 @@ MonoBehaviour:
   audioSource: {fileID: 168230069}
   clips:
   - {fileID: 8300000, guid: 25a69f62677e342488149d9c7111dfa2, type: 3}
-  minDelay: 30
-  maxDelay: 90
-  probability: 1
+  minDelay: 0
+  maxDelay: 25
+  probability: 0.75
   minPitch: 0.95
   maxPitch: 1.08
 --- !u!1 &171912796
@@ -122141,14 +122141,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
-      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -125152,6 +125144,14 @@ PrefabInstance:
     - target: {fileID: 8696847069942999147, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 139
+      objectReference: {fileID: 0}
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -200946,9 +200946,9 @@ MonoBehaviour:
   audioSource: {fileID: 1788408096}
   clips:
   - {fileID: 8300000, guid: 25a69f62677e342488149d9c7111dfa2, type: 3}
-  minDelay: 30
-  maxDelay: 90
-  probability: 1
+  minDelay: 5
+  maxDelay: 25
+  probability: 0.75
   minPitch: 0.95
   maxPitch: 1.08
 --- !u!82 &1788408096
@@ -200964,7 +200964,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.15
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -200973,7 +200973,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 0
   MinDistance: 10
-  MaxDistance: 200
+  MaxDistance: 60
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -211380,8 +211380,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812617208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15264115, y: 0.000000010422214, z: -0.0000000016097218, w: 0.98828167}
-  m_LocalPosition: {x: -44.1, y: 1.8575884, z: 1.9074337}
+  m_LocalRotation: {x: 0.14576629, y: 0.70744884, z: -0.1622135, w: 0.67227614}
+  m_LocalPosition: {x: -45.838623, y: 2.1860843, z: -7.5929394}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -211504,7 +211504,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 59
+  field of view: 60.000004
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
