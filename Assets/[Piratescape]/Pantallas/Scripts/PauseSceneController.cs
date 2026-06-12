@@ -146,7 +146,7 @@ public class PauseSceneController : MonoBehaviour
             Destroy(eventSystemActual.gameObject);
         }
 
-        SceneManager.LoadScene("MenuPrincipal");
+        SceneManager.LoadScene("MenuPrincipalv2");
     }
 
     public void PedirSalirJuego()

@@ -201,7 +201,7 @@ public sealed class MenuPausaUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.LoadScene("MenuPrincipal");
+        SceneManager.LoadScene("MenuPrincipalv2");
     }
 
     public void SalirDelJuego()
