@@ -170902,6 +170902,8 @@ MonoBehaviour:
   sonidosRecogidaGema:
   - {fileID: 8300000, guid: 7a5bb85e2b39b644388249aa1b6da54f, type: 3}
   - {fileID: 8300000, guid: 26031b68986dbb54ebb535b95b9bb293, type: 3}
+  sonidosRecogidaLlave:
+  - {fileID: 8300000, guid: e1bf0e0b41b98ed4c9e1ca4fb57bbe96, type: 3}
 --- !u!64 &1592097014
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -230532,12 +230534,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: volumenSalidaArena
-      value: 0.3
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: sonidoEntregarLlave
+      value: 
+      objectReference: {fileID: 8300000, guid: 21346cced68f74546b8572256b2d5aae, type: 3}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: volumenEntregarGema
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: objetoARotarConLlave
       value: 
       objectReference: {fileID: 1798856489}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: volumenEntregarLlave
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 2902835810016097637, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.2946835

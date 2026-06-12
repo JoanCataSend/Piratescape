@@ -19,14 +19,35 @@ public sealed class RecoleccionRecursoAudio : MonoBehaviour
     [Header("Audio gemas")]
     [SerializeField] private AudioClip[] sonidosRecogidaGema;
 
+    [Header("Audio llave")]
+    [SerializeField] private AudioClip[] sonidosRecogidaLlave;
+
     private int ultimoIndice = -1;
     private int ultimoIndiceGema = -1;
+    private int ultimoIndiceLlave = -1;
 
     public void Reproducir(ItemData itemData, Vector3 posicion)
     {
-        AudioClip clip = EsGema(itemData)
-            ? ObtenerClipAleatorioSinRepetir(sonidosRecogidaGema, ref ultimoIndiceGema)
-            : ObtenerClipAleatorioSinRepetir(sonidosRecogida, ref ultimoIndice);
+        AudioClip clip;
+
+        if (EsLlave(itemData))
+        {
+            clip = ObtenerClipAleatorioSinRepetir(
+                sonidosRecogidaLlave,
+                ref ultimoIndiceLlave);
+        }
+        else if (EsGema(itemData))
+        {
+            clip = ObtenerClipAleatorioSinRepetir(
+                sonidosRecogidaGema,
+                ref ultimoIndiceGema);
+        }
+        else
+        {
+            clip = ObtenerClipAleatorioSinRepetir(
+                sonidosRecogida,
+                ref ultimoIndice);
+        }
 
         if (clip == null)
         {
@@ -94,5 +115,22 @@ public sealed class RecoleccionRecursoAudio : MonoBehaviour
 
         return !string.IsNullOrWhiteSpace(itemData.DisplayName) &&
                itemData.DisplayName.ToLower().Contains("gema");
+    }
+
+    private bool EsLlave(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(itemData.ItemId) &&
+            itemData.ItemId.ToLower().Contains("llave"))
+        {
+            return true;
+        }
+
+        return !string.IsNullOrWhiteSpace(itemData.DisplayName) &&
+               itemData.DisplayName.ToLower().Contains("llave");
     }
 }

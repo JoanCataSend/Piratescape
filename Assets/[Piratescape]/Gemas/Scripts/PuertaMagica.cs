@@ -64,6 +64,9 @@ public class PuertaMagica : MonoBehaviour, Interactuable
     [SerializeField] private AudioClip sonidoEntregarGema;
     [SerializeField] private float volumenEntregarGema = 0.6f;
 
+    [SerializeField] private AudioClip sonidoEntregarLlave;
+    [SerializeField] private float volumenEntregarLlave = 0.7f;
+
     private bool puertaAbierta;
 
     private PlayerInventory inventario;
@@ -239,6 +242,8 @@ public class PuertaMagica : MonoBehaviour, Interactuable
             Debug.LogWarning("No se ha podido eliminar la llave del inventario.");
             return;
         }
+
+        ReproducirSonidoEntregarLlave();
 
         StartCoroutine(AbrirPuertaConLlaveRoutine());
     }
@@ -426,5 +431,15 @@ public class PuertaMagica : MonoBehaviour, Interactuable
         }
 
         audioSourceEfectosPuerta.PlayOneShot(sonidoEntregarGema, volumenEntregarGema);
+    }
+
+    private void ReproducirSonidoEntregarLlave()
+    {
+        if (audioSourceEfectosPuerta == null || sonidoEntregarLlave == null)
+        {
+            return;
+        }
+
+        audioSourceEfectosPuerta.PlayOneShot(sonidoEntregarLlave, volumenEntregarLlave);
     }
 }
