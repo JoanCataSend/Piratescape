@@ -54,6 +54,13 @@ public class VictoryCutsceneController : MonoBehaviour
     [Tooltip("A partir de esta hora se usa el postprocesado tarde/noche. 18 = 6 de la tarde.")]
     [SerializeField] [Range(0f, 23.99f)] private float horaInicioPostProcesadoTardeNoche = 18f;
 
+    [Header("Objeto del mapa a ocultar en cinemática final")]
+    [Tooltip("Actívalo para ocultar un objeto del mapa cuando empieza la cinemática final.")]
+    [SerializeField] private bool ocultarObjetoMapaDuranteCinematica = true;
+
+    [Tooltip("Arrastra aquí el barco normal nivel 5 de la isla, o el objeto del mapa que quieras ocultar.")]
+    [SerializeField] private GameObject objetoMapaAOcultarDuranteCinematica;
+
     [Header("Destello final")]
     [SerializeField] private GameObject finalStarSparklePrefab;
     [SerializeField] private Transform finalStarSparklePoint;
@@ -272,7 +279,7 @@ public class VictoryCutsceneController : MonoBehaviour
             yield return new WaitForSeconds(tiempoEsperaMostrarEstadisticas);
         }
 
-        MostrarPantallaVictoriaUI(false);
+        MostrarPantallaVictoriaUI();
     }
 
     private void OcultarUIDelJuego()
@@ -326,11 +333,6 @@ public class VictoryCutsceneController : MonoBehaviour
     {
         bool usarTardeNoche = DebeUsarPostProcesadoTardeNoche();
 
-        if (usarTardeNoche && postProcesadoCinematicaTardeNoche == null)
-        {
-            usarTardeNoche = false;
-        }
-
         if (postProcesadoCinematica != null)
         {
             postProcesadoCinematica.SetActive(!usarTardeNoche);
@@ -359,13 +361,13 @@ public class VictoryCutsceneController : MonoBehaviour
             return false;
         }
 
-        float horaActual = timeSystem.CurrentHour + (timeSystem.CurrentMinute / 60f);
-
-        return horaActual >= horaInicioPostProcesadoTardeNoche || timeSystem.IsNight;
+        return timeSystem.CurrentHour >= horaInicioPostProcesadoTardeNoche || timeSystem.IsNight;
     }
 
     private void PrepararEscenaCinematica()
     {
+        OcultarObjetoMapaCinematicaFinal();
+
         if (barcoFinal != null)
         {
             barcoFinal.gameObject.SetActive(true);
@@ -387,6 +389,21 @@ public class VictoryCutsceneController : MonoBehaviour
         }
 
         DesactivarTodasLasCamarasCinematicas();
+    }
+
+    private void OcultarObjetoMapaCinematicaFinal()
+    {
+        if (!ocultarObjetoMapaDuranteCinematica)
+        {
+            return;
+        }
+
+        if (objetoMapaAOcultarDuranteCinematica == null)
+        {
+            return;
+        }
+
+        objetoMapaAOcultarDuranteCinematica.SetActive(false);
     }
 
     private void DesactivarControlJugador()
@@ -631,19 +648,12 @@ public class VictoryCutsceneController : MonoBehaviour
             camaraIslaAMar.SetActive(false);
         }
 
-        MostrarPantallaVictoriaUI(true);
-        DesactivarFadeParaVerPantallaVictoria();
+        pantallaVictoriaMostrada = false;
+        MostrarPantallaVictoriaUI();
     }
 
-    private void MostrarPantallaVictoriaUI(bool forzarReiniciar)
+    private void MostrarPantallaVictoriaUI()
     {
-        if (pantallaVictoriaMostrada && !forzarReiniciar)
-        {
-            return;
-        }
-
-        bool pantallaYaActiva = pantallaVictoria != null && pantallaVictoria.activeSelf;
-
         pantallaVictoriaMostrada = true;
 
         if (victoryStatsTypewriterUI == null && pantallaVictoria != null)
@@ -651,31 +661,21 @@ public class VictoryCutsceneController : MonoBehaviour
             victoryStatsTypewriterUI = pantallaVictoria.GetComponentInChildren<VictoryStatsTypewriterUI>(true);
         }
 
-        if (victoryStatsTypewriterUI != null)
-        {
-            victoryStatsTypewriterUI.ConfigurarEstadisticasFalsas();
-        }
-
         if (pantallaVictoria != null)
         {
             pantallaVictoria.SetActive(true);
         }
 
-        if (victoryStatsTypewriterUI != null && pantallaYaActiva)
+        if (victoryStatsTypewriterUI != null)
         {
-            victoryStatsTypewriterUI.MostrarPantalla();
-        }
-    }
-
-    private void DesactivarFadeParaVerPantallaVictoria()
-    {
-        if (fadeCanvasGroup == null)
-        {
-            return;
+            victoryStatsTypewriterUI.ConfigurarEstadisticasFalsas();
         }
 
-        fadeCanvasGroup.alpha = 0f;
-        fadeCanvasGroup.blocksRaycasts = false;
-        fadeCanvasGroup.interactable = false;
+        if (fadeCanvasGroup != null)
+        {
+            fadeCanvasGroup.alpha = 0f;
+            fadeCanvasGroup.blocksRaycasts = false;
+            fadeCanvasGroup.interactable = false;
+        }
     }
 }
