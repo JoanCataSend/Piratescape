@@ -83120,6 +83120,10 @@ MonoBehaviour:
   contenedorSlotsCofre: {fileID: 77491886}
   slotsCofre: []
   pausarJuegoAlAbrir: 1
+  audioSourceCofre: {fileID: 0}
+  outputCofre: {fileID: -8413363371568429757, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  sonidoMoverItem: {fileID: 8300000, guid: 419e362a7283ffc47a28dfa55f63bae3, type: 3}
+  volumenMoverItem: 0.2
 --- !u!4 &762757901 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9017844807287473221, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}

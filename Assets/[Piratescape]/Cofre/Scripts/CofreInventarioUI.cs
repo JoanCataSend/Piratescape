@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public sealed class CofreInventarioUI : MonoBehaviour
 {
@@ -29,6 +30,12 @@ public sealed class CofreInventarioUI : MonoBehaviour
     [Header("Pausa")]
     [SerializeField] private bool pausarJuegoAlAbrir = true;
 
+    [Header("Sonido")]
+    [SerializeField] private AudioSource audioSourceCofre;
+    [SerializeField] private AudioMixerGroup outputCofre;
+    [SerializeField] private AudioClip sonidoMoverItem;
+    [SerializeField] private float volumenMoverItem = 0.45f;
+
     private InventarioCofre cofreActual;
     private CursorLockMode cursorLockAnterior;
     private bool cursorVisibleAnterior;
@@ -55,6 +62,7 @@ public sealed class CofreInventarioUI : MonoBehaviour
 
         PrepararReferenciasAutomaticas();
         ConfigurarSlots();
+        PrepararAudioCofre();
 
         if (contenidoVisual != null)
         {
@@ -284,6 +292,8 @@ public sealed class CofreInventarioUI : MonoBehaviour
             slotJugador.Clear();
         }
 
+        ReproducirSonidoMoverItem();
+
         inventarioJugador.NotifyInventoryChanged();
         MostrarMensaje("Guardado en el cofre: " + cantidadGuardada);
     }
@@ -314,6 +324,8 @@ public sealed class CofreInventarioUI : MonoBehaviour
             MostrarMensaje("No tienes espacio en el inventario.");
             return;
         }
+
+        ReproducirSonidoMoverItem();
 
         cofreActual.QuitarDelSlot(indiceSlot, cantidadQueCabe);
         MostrarMensaje("Sacado del cofre: " + cantidadQueCabe);
@@ -532,5 +544,28 @@ public sealed class CofreInventarioUI : MonoBehaviour
 
         Time.timeScale = timeScaleAnterior;
         timeScaleGuardado = false;
+    }
+
+    private void PrepararAudioCofre()
+    {
+        if (audioSourceCofre == null)
+        {
+            audioSourceCofre = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceCofre.playOnAwake = false;
+        audioSourceCofre.loop = false;
+        audioSourceCofre.spatialBlend = 0f;
+        audioSourceCofre.outputAudioMixerGroup = outputCofre;
+    }
+
+    private void ReproducirSonidoMoverItem()
+    {
+        if (audioSourceCofre == null || sonidoMoverItem == null)
+        {
+            return;
+        }
+
+        audioSourceCofre.PlayOneShot(sonidoMoverItem, volumenMoverItem);
     }
 }
