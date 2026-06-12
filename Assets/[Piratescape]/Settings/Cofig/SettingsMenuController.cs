@@ -48,6 +48,16 @@ public class SettingsMenuController : MonoBehaviour
             settingsPanel = gameObject;
         }
 
+        if (audioSourceUI == null)
+        {
+            audioSourceUI = GetComponent<AudioSource>();
+        }
+
+        if (audioSourceUI != null)
+        {
+            audioSourceUI.ignoreListenerPause = true;
+        }
+
         ConfigurarDropdownCalidad();
         ConfigurarSliderSensibilidad();
         ConfigurarTogglePantallaCompleta();
@@ -267,7 +277,6 @@ public class SettingsMenuController : MonoBehaviour
 
         if (calidad == 0)
         {
-            // BAJA
             QualitySettings.shadows = ShadowQuality.Disable;
             QualitySettings.shadowDistance = 15f;
             QualitySettings.antiAliasing = 0;
@@ -276,7 +285,6 @@ public class SettingsMenuController : MonoBehaviour
         }
         else if (calidad == 1)
         {
-            // MEDIA
             QualitySettings.shadows = ShadowQuality.HardOnly;
             QualitySettings.shadowDistance = 40f;
             QualitySettings.antiAliasing = 2;
@@ -285,7 +293,6 @@ public class SettingsMenuController : MonoBehaviour
         }
         else if (calidad == 2)
         {
-            // ALTA
             QualitySettings.shadows = ShadowQuality.All;
             QualitySettings.shadowDistance = 80f;
             QualitySettings.antiAliasing = 4;
@@ -327,7 +334,14 @@ public class SettingsMenuController : MonoBehaviour
 
     private void CuandoCambiaSensibilidad(float valor)
     {
-        ActualizarTextoSensibilidad(valor);
+        savedMouseSensitivity = Mathf.Clamp(valor, 1f, 10f);
+
+        ActualizarTextoSensibilidad(savedMouseSensitivity);
+
+        if (iniciado)
+        {
+            ReproducirSonidoUI();
+        }
     }
 
     private void ActualizarTextoSensibilidad(float valor)
@@ -383,9 +397,17 @@ public class SettingsMenuController : MonoBehaviour
 
     private void ReproducirSonidoUI()
     {
-        if (audioSourceUI != null && sonidoToggle != null)
+        if (audioSourceUI == null)
         {
-            audioSourceUI.PlayOneShot(sonidoToggle);
+            return;
         }
+
+        if (sonidoToggle == null)
+        {
+            return;
+        }
+
+        audioSourceUI.ignoreListenerPause = true;
+        audioSourceUI.PlayOneShot(sonidoToggle);
     }
 }
