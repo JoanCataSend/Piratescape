@@ -170899,6 +170899,9 @@ MonoBehaviour:
   pitchMaximo: 1.05
   distanciaMinima: 1
   distanciaMaxima: 18
+  sonidosRecogidaGema:
+  - {fileID: 8300000, guid: 7a5bb85e2b39b644388249aa1b6da54f, type: 3}
+  - {fileID: 8300000, guid: 26031b68986dbb54ebb535b95b9bb293, type: 3}
 --- !u!64 &1592097014
 MeshCollider:
   m_ObjectHideFlags: 0

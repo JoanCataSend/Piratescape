@@ -193,7 +193,7 @@ public sealed class PlayerPickupController : MonoBehaviour
 
             if (audioRecogida != null && objetoRecogible != null)
             {
-                audioRecogida.Reproducir(objetoRecogible.transform.position);
+                audioRecogida.Reproducir(collectible.ItemData, objetoRecogible.transform.position);
             }
 
             collectible.OnCollected();

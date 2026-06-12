@@ -16,21 +16,22 @@ public sealed class RecoleccionRecursoAudio : MonoBehaviour
     [SerializeField] private float distanciaMinima = 1f;
     [SerializeField] private float distanciaMaxima = 18f;
 
+    [Header("Audio gemas")]
+    [SerializeField] private AudioClip[] sonidosRecogidaGema;
+
     private int ultimoIndice = -1;
+    private int ultimoIndiceGema = -1;
 
-    public void Reproducir(Vector3 posicion)
+    public void Reproducir(ItemData itemData, Vector3 posicion)
     {
-        Debug.Log("Intentando reproducir sonido de recogida en: " + posicion, this);
-
-        AudioClip clip = ObtenerClipAleatorioSinRepetir();
+        AudioClip clip = EsGema(itemData)
+            ? ObtenerClipAleatorioSinRepetir(sonidosRecogidaGema, ref ultimoIndiceGema)
+            : ObtenerClipAleatorioSinRepetir(sonidosRecogida, ref ultimoIndice);
 
         if (clip == null)
         {
-            Debug.LogWarning("No se ha encontrado clip para reproducir.", this);
             return;
         }
-
-        Debug.Log("Clip elegido: " + clip.name, this);
 
         GameObject objetoAudio = new GameObject("SFX_RecogerRecurso");
         objetoAudio.transform.position = posicion;
@@ -42,7 +43,7 @@ public sealed class RecoleccionRecursoAudio : MonoBehaviour
         source.pitch = Random.Range(pitchMinimo, pitchMaximo);
         source.playOnAwake = false;
         source.loop = false;
-        source.spatialBlend = 0f;
+        source.spatialBlend = 1f;
         source.rolloffMode = AudioRolloffMode.Logarithmic;
         source.minDistance = distanciaMinima;
         source.maxDistance = distanciaMaxima;
@@ -53,28 +54,45 @@ public sealed class RecoleccionRecursoAudio : MonoBehaviour
         Destroy(objetoAudio, clip.length + 0.25f);
     }
 
-    private AudioClip ObtenerClipAleatorioSinRepetir()
+    private AudioClip ObtenerClipAleatorioSinRepetir(AudioClip[] clips, ref int ultimoIndice)
     {
-        if (sonidosRecogida == null || sonidosRecogida.Length == 0)
+        if (clips == null || clips.Length == 0)
         {
             return null;
         }
 
-        if (sonidosRecogida.Length == 1)
+        if (clips.Length == 1)
         {
             ultimoIndice = 0;
-            return sonidosRecogida[0];
+            return clips[0];
         }
 
         int indice;
 
         do
         {
-            indice = Random.Range(0, sonidosRecogida.Length);
+            indice = Random.Range(0, clips.Length);
         }
         while (indice == ultimoIndice);
 
         ultimoIndice = indice;
-        return sonidosRecogida[indice];
+        return clips[indice];
+    }
+
+    private bool EsGema(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(itemData.ItemId) &&
+            itemData.ItemId.ToLower().Contains("gema"))
+        {
+            return true;
+        }
+
+        return !string.IsNullOrWhiteSpace(itemData.DisplayName) &&
+               itemData.DisplayName.ToLower().Contains("gema");
     }
 }
