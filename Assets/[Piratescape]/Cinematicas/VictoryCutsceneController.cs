@@ -35,6 +35,18 @@ public class VictoryCutsceneController : MonoBehaviour
     [SerializeField] [Range(0f, 1f)] private float volumenMusicaVictoria = 0.2f;
     [SerializeField] private bool musicaVictoriaEnLoop = true;
 
+    [Header("Música del juego a detener")]
+    [Tooltip("Actívalo para parar la música normal del juego cuando empiece la cinemática final.")]
+    [SerializeField] private bool detenerMusicaJuegoAlEmpezar = true;
+
+    [Tooltip("Arrastra aquí el AudioSource de la música normal del juego, NO el de la música de victoria.")]
+    [SerializeField] private AudioSource musicaJuegoSource;
+
+    [Tooltip("Si está activo, la música normal baja suavemente antes de pararse.")]
+    [SerializeField] private bool hacerFadeMusicaJuego = true;
+
+    [SerializeField] private float duracionFadeMusicaJuego = 1f;
+
     [Header("Postprocesado cinemática")]
     [Tooltip("Postprocesado de cinemática que ya tenías. Se usa de día.")]
     [SerializeField] private GameObject postProcesadoCinematica;
@@ -208,6 +220,8 @@ public class VictoryCutsceneController : MonoBehaviour
             yield return new WaitForSeconds(delay);
         }
 
+        yield return DetenerMusicaJuegoRoutine();
+
         ReproducirMusicaVictoria();
 
         OcultarUIDelJuego();
@@ -245,6 +259,51 @@ public class VictoryCutsceneController : MonoBehaviour
         MostrarPantallaVictoria();
 
         cinematicaEnCurso = false;
+    }
+
+    private IEnumerator DetenerMusicaJuegoRoutine()
+    {
+        if (!detenerMusicaJuegoAlEmpezar)
+        {
+            yield break;
+        }
+
+        if (musicaJuegoSource == null)
+        {
+            yield break;
+        }
+
+        if (musicaJuegoSource == musicaVictoriaSource)
+        {
+            yield break;
+        }
+
+        if (!musicaJuegoSource.isPlaying)
+        {
+            yield break;
+        }
+
+        if (!hacerFadeMusicaJuego || duracionFadeMusicaJuego <= 0f)
+        {
+            musicaJuegoSource.Stop();
+            yield break;
+        }
+
+        float volumenInicial = musicaJuegoSource.volume;
+        float tiempo = 0f;
+
+        while (tiempo < duracionFadeMusicaJuego)
+        {
+            tiempo += Time.deltaTime;
+
+            float t = Mathf.Clamp01(tiempo / duracionFadeMusicaJuego);
+            musicaJuegoSource.volume = Mathf.Lerp(volumenInicial, 0f, t);
+
+            yield return null;
+        }
+
+        musicaJuegoSource.Stop();
+        musicaJuegoSource.volume = volumenInicial;
     }
 
     private void ReproducirMusicaVictoria()
@@ -678,4 +737,20 @@ public class VictoryCutsceneController : MonoBehaviour
             fadeCanvasGroup.interactable = false;
         }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (musicaVictoriaSource != null)
+        {
+            musicaVictoriaSource.loop = musicaVictoriaEnLoop;
+            musicaVictoriaSource.volume = volumenMusicaVictoria;
+
+            if (outputMusicaVictoria != null)
+            {
+                musicaVictoriaSource.outputAudioMixerGroup = outputMusicaVictoria;
+            }
+        }
+    }
+#endif
 }
