@@ -69716,37 +69716,28 @@ MonoBehaviour:
     - itemRequerido: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
       cantidadNecesaria: 10
       cantidadEntregada: 0
-    - itemRequerido: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
-      cantidadNecesaria: 4
-      cantidadEntregada: 0
     - itemRequerido: {fileID: 11400000, guid: 8fbae2a252d3b774bbb54553401a2a6e, type: 2}
-      cantidadNecesaria: 3
+      cantidadNecesaria: 4
       cantidadEntregada: 0
   - nombreNivel: Nivel 4
     mensajeCompletado: Felicidades, completaste el nivel 4 de construccion
     modeloBarco: {fileID: 1179212491}
     requisitos:
     - itemRequerido: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
-      cantidadNecesaria: 15
-      cantidadEntregada: 0
-    - itemRequerido: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
-      cantidadNecesaria: 6
+      cantidadNecesaria: 20
       cantidadEntregada: 0
     - itemRequerido: {fileID: 11400000, guid: 8fbae2a252d3b774bbb54553401a2a6e, type: 2}
-      cantidadNecesaria: 4
+      cantidadNecesaria: 10
       cantidadEntregada: 0
   - nombreNivel: Nivel 5
     mensajeCompletado: Felicidades, completaste el nivel 5 de construccion
     modeloBarco: {fileID: 1854619394}
     requisitos:
     - itemRequerido: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
-      cantidadNecesaria: 20
+      cantidadNecesaria: 25
       cantidadEntregada: 0
     - itemRequerido: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
-      cantidadNecesaria: 10
-      cantidadEntregada: 0
-    - itemRequerido: {fileID: 11400000, guid: 8fbae2a252d3b774bbb54553401a2a6e, type: 2}
-      cantidadNecesaria: 6
+      cantidadNecesaria: 15
       cantidadEntregada: 0
   energiaGastadaPorMaterial: 5
   vidaGastadaPorMaterialSinEnergia: 2
