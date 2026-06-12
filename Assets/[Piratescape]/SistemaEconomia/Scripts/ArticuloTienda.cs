@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Audio;
 
 public sealed class ArticuloTienda : MonoBehaviour
 {
@@ -42,6 +43,16 @@ public sealed class ArticuloTienda : MonoBehaviour
     [SerializeField] private bool desactivarBotonSiNoPuedeComprar = true;
     [SerializeField] private bool cerrarTiendaAlComprar = false;
 
+    [Header("Sonidos compra")]
+    [SerializeField] private AudioSource audioSourceCompra;
+    [SerializeField] private AudioMixerGroup outputCompra;
+    [SerializeField] private AudioClip[] sonidosCompraCorrecta;
+    [SerializeField] private AudioClip sonidoCompraFallida;
+    [SerializeField] private float volumenCompraCorrecta = 0.6f;
+    [SerializeField] private float volumenCompraFallida = 0.6f;
+
+    private int ultimoIndiceCompra = -1;
+
     private readonly List<TMP_Text> textosPrecio = new List<TMP_Text>();
     private readonly List<CosteTienda> costesPrecio = new List<CosteTienda>();
 
@@ -51,6 +62,7 @@ public sealed class ArticuloTienda : MonoBehaviour
     private void Awake()
     {
         BuscarReferenciasSiFaltan();
+        PrepararAudioCompra();
         SuscribirseEventos();
         PrepararUI();
         RefrescarUI();
@@ -165,6 +177,7 @@ public sealed class ArticuloTienda : MonoBehaviour
 
         if (!PuedeComprar())
         {
+            ReproducirCompraFallida();
             MostrarError("No tienes suficiente dinero");
             RefrescarUI();
             return;
@@ -215,6 +228,7 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
 
         Cobrar();
+        ReproducirCompraCorrecta();
         RefrescarUI();
 
         if (cerrarTiendaAlComprar && vendedorFantasma != null)
@@ -879,5 +893,65 @@ public sealed class ArticuloTienda : MonoBehaviour
         }
 
         vendedorFantasma.AbrirTienda();
+    }
+
+    private void PrepararAudioCompra()
+    {
+        if (audioSourceCompra == null)
+        {
+            audioSourceCompra = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceCompra.playOnAwake = false;
+        audioSourceCompra.loop = false;
+        audioSourceCompra.spatialBlend = 0f;
+        audioSourceCompra.outputAudioMixerGroup = outputCompra;
+    }
+
+    private void ReproducirCompraCorrecta()
+    {
+        AudioClip clip = ObtenerSonidoCompraCorrecta();
+
+        if (audioSourceCompra == null || clip == null)
+        {
+            return;
+        }
+
+        audioSourceCompra.PlayOneShot(clip, volumenCompraCorrecta);
+    }
+
+    private void ReproducirCompraFallida()
+    {
+        if (audioSourceCompra == null || sonidoCompraFallida == null)
+        {
+            return;
+        }
+
+        audioSourceCompra.PlayOneShot(sonidoCompraFallida, volumenCompraFallida);
+    }
+
+    private AudioClip ObtenerSonidoCompraCorrecta()
+    {
+        if (sonidosCompraCorrecta == null || sonidosCompraCorrecta.Length == 0)
+        {
+            return null;
+        }
+
+        if (sonidosCompraCorrecta.Length == 1)
+        {
+            ultimoIndiceCompra = 0;
+            return sonidosCompraCorrecta[0];
+        }
+
+        int indice;
+
+        do
+        {
+            indice = Random.Range(0, sonidosCompraCorrecta.Length);
+        }
+        while (indice == ultimoIndiceCompra);
+
+        ultimoIndiceCompra = indice;
+        return sonidosCompraCorrecta[indice];
     }
 }

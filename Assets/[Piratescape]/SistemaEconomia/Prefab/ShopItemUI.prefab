@@ -309,6 +309,15 @@ MonoBehaviour:
   iconoPinya: {fileID: 21300000, guid: 8427d132e615c7242b4b5ce246ab188a, type: 3}
   desactivarBotonSiNoPuedeComprar: 0
   cerrarTiendaAlComprar: 0
+  audioSourceCompra: {fileID: 0}
+  outputCompra: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  sonidosCompraCorrecta:
+  - {fileID: 8300000, guid: 9db416e8d8d53054c8effc6cf2f2f8cd, type: 3}
+  - {fileID: 8300000, guid: af6d180c6687f3d47b40912e06d3d71a, type: 3}
+  - {fileID: 8300000, guid: e638aeb28f4b2574381e4d0bc2225e29, type: 3}
+  sonidoCompraFallida: {fileID: 8300000, guid: 8b8af563308719c47859a8fc7e172c64, type: 3}
+  volumenCompraCorrecta: 0.2
+  volumenCompraFallida: 0.2
 --- !u!1 &3364098215112669176
 GameObject:
   m_ObjectHideFlags: 0
