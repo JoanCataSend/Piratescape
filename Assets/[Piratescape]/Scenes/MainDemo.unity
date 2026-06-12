@@ -83370,6 +83370,11 @@ MonoBehaviour:
   volumenMusicaVictoria: 0.341
   musicaVictoriaEnLoop: 1
   postProcesadoCinematica: {fileID: 1991750101}
+  timeSystem: {fileID: 1975866679}
+  usarPostProcesadoTardeNoche: 1
+  forzarPostProcesadoTardeNoche: 0
+  postProcesadoCinematicaTardeNoche: {fileID: 1538509751}
+  horaInicioPostProcesadoTardeNoche: 18
   finalStarSparklePrefab: {fileID: 7723409775656401518, guid: d3bf6ba918ae8a943ad0d1a4df1580ce, type: 3}
   finalStarSparklePoint: {fileID: 824800121}
   ocultarBarcoAlFinal: 1
@@ -88660,7 +88665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelRoot: {fileID: 849265001}
   textoTitulo: {fileID: 297870599}
-  textoEstadisticas: {fileID: 1399526265}
+  textoEstadisticas: {fileID: 1002822646}
   textoTituloCreditos: {fileID: 761228502}
   textoCreditos: {fileID: 1720968099}
   botonSiguiente: {fileID: 261113900}
@@ -211373,8 +211378,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812617208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14576629, y: 0.70744884, z: -0.1622135, w: 0.67227614}
-  m_LocalPosition: {x: -45.838623, y: 2.1860843, z: -7.5929394}
+  m_LocalRotation: {x: 0.15264115, y: 0.000000010422214, z: -0.0000000016097218, w: 0.98828167}
+  m_LocalPosition: {x: -44.1, y: 1.8575884, z: 1.9074337}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -211497,7 +211502,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60.000004
+  field of view: 59
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
