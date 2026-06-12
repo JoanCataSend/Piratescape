@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7031531742047065705}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.023074577, y: -0.9790836, z: 0.19722235, w: -0.04434204}
-  m_LocalPosition: {x: -0.22, y: 3.61, z: 5.27}
+  m_LocalRotation: {x: -0.023074558, y: -0.97908366, z: 0.19722235, w: -0.044342045}
+  m_LocalPosition: {x: -0.22000122, y: 3.7900002, z: 5.2700005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -367,13 +367,13 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4237523392900035615}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 5211320643847167906}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1274048213401095738}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4237523392900035615}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
       insertIndex: -1
@@ -384,6 +384,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3559085946919034904}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3566373255639077755}
   m_SourcePrefab: {fileID: 100100000, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}
 --- !u!1 &4644222791338693404 stripped
 GameObject:
@@ -446,6 +449,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camaraADesactivar: {fileID: 7031531742047065705}
+--- !u!114 &3566373255639077755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4644222791338693404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee7ffaee5a688a469577d24c1d3a8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  output: {fileID: -5630590406745796260, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  sonido: {fileID: 8300000, guid: 985eca63f46415c4d92b7a3ea2f53aa6, type: 3}
+  volumen: 0.8
 --- !u!4 &5420162043790772646 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8181759b7f5a70447a71f23f82e15709, type: 3}

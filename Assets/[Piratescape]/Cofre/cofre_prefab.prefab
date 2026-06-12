@@ -221,6 +221,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6136275396112119278}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 177079516151948273}
   m_SourcePrefab: {fileID: 100100000, guid: d8fc6571ee08b0f4296735fc07701b1a, type: 3}
 --- !u!4 &119554755541587616 stripped
 Transform:
@@ -320,6 +323,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camaraADesactivar: {fileID: 2547881117192033893}
+--- !u!114 &177079516151948273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784592557680331802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee7ffaee5a688a469577d24c1d3a8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  output: {fileID: -5630590406745796260, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  sonido: {fileID: 8300000, guid: 985eca63f46415c4d92b7a3ea2f53aa6, type: 3}
+  volumen: 0.8
 --- !u!1001 &4509279161181199517
 PrefabInstance:
   m_ObjectHideFlags: 0
