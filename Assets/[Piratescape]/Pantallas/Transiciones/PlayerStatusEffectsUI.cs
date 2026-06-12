@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class PlayerStatusEffectsUI : MonoBehaviour
@@ -30,12 +31,22 @@ public class PlayerStatusEffectsUI : MonoBehaviour
     [SerializeField] private float healthPulseSpeed = 4f;
     [SerializeField] private float healthPulseStrength = 0.25f;
 
+    [Header("Sonido vida baja")]
+    [SerializeField] private AudioSource audioSourceLatido;
+    [SerializeField] private AudioMixerGroup outputLatido;
+    [SerializeField] private AudioClip[] sonidosLatido;
+    [SerializeField] private float volumenLatido = 0.5f;
+    [SerializeField] private float tiempoEntreLatidos = 1.2f;
+
     [Header("Energía baja")]
     [SerializeField] private float energyEffectStartPercent = 0.3f;
     [SerializeField] private float energyMaxAlpha = 0.35f;
     [SerializeField] private bool energyPulse = true;
     [SerializeField] private float energyPulseSpeed = 2f;
     [SerializeField] private float energyPulseStrength = 0.12f;
+
+    private float tiempoSiguienteLatido;
+    private int ultimoLatido = -1;
 
     private void Awake()
     {
@@ -55,6 +66,8 @@ public class PlayerStatusEffectsUI : MonoBehaviour
         }
 
         OcultarEfectos();
+
+        PrepararAudioLatido();
     }
 
     private void Update()
@@ -126,6 +139,7 @@ public class PlayerStatusEffectsUI : MonoBehaviour
         float porcentajeSalud = sistemaSaludJugador.SaludActual / saludMaxima;
 
         float intensidad = CalcularIntensidad(porcentajeSalud, healthEffectStartPercent);
+        ActualizarSonidoLatido(intensidad);
 
         float alpha = intensidad * healthMaxAlpha;
 
@@ -197,5 +211,68 @@ public class PlayerStatusEffectsUI : MonoBehaviour
         Color color = image.color;
         color.a = Mathf.Clamp01(alpha);
         image.color = color;
+    }
+
+    private void PrepararAudioLatido()
+    {
+        if (audioSourceLatido == null)
+        {
+            audioSourceLatido = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceLatido.playOnAwake = false;
+        audioSourceLatido.loop = false;
+        audioSourceLatido.spatialBlend = 0f;
+        audioSourceLatido.outputAudioMixerGroup = outputLatido;
+    }
+
+    private void ActualizarSonidoLatido(float intensidad)
+    {
+        if (intensidad <= 0f)
+        {
+            return;
+        }
+
+        if (Time.time < tiempoSiguienteLatido)
+        {
+            return;
+        }
+
+        AudioClip clip = ObtenerLatidoAleatorio();
+
+        if (clip == null || audioSourceLatido == null)
+        {
+            return;
+        }
+
+        audioSourceLatido.PlayOneShot(clip, volumenLatido);
+
+        float espera = Mathf.Lerp(tiempoEntreLatidos, 0.55f, intensidad);
+        tiempoSiguienteLatido = Time.time + espera;
+    }
+
+    private AudioClip ObtenerLatidoAleatorio()
+    {
+        if (sonidosLatido == null || sonidosLatido.Length == 0)
+        {
+            return null;
+        }
+
+        if (sonidosLatido.Length == 1)
+        {
+            ultimoLatido = 0;
+            return sonidosLatido[0];
+        }
+
+        int indice;
+
+        do
+        {
+            indice = Random.Range(0, sonidosLatido.Length);
+        }
+        while (indice == ultimoLatido);
+
+        ultimoLatido = indice;
+        return sonidosLatido[indice];
     }
 }
