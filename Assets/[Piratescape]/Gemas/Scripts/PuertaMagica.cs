@@ -61,6 +61,9 @@ public class PuertaMagica : MonoBehaviour, Interactuable
     [SerializeField] private float volumenAbrirPuerta = 0.7f;
     [SerializeField] private float volumenSalidaArena = 0.8f;
 
+    [SerializeField] private AudioClip sonidoEntregarGema;
+    [SerializeField] private float volumenEntregarGema = 0.6f;
+
     private bool puertaAbierta;
 
     private PlayerInventory inventario;
@@ -202,6 +205,8 @@ public class PuertaMagica : MonoBehaviour, Interactuable
         }
 
         gemaEntregada = true;
+
+        ReproducirSonidoEntregarGema();
 
         Debug.Log(nombreGema + " entregada.");
 
@@ -411,5 +416,15 @@ public class PuertaMagica : MonoBehaviour, Interactuable
         }
 
         audioSourceEfectosPuerta.PlayOneShot(sonidoSalidaArena, volumenSalidaArena);
+    }
+
+    private void ReproducirSonidoEntregarGema()
+    {
+        if (audioSourceEfectosPuerta == null || sonidoEntregarGema == null)
+        {
+            return;
+        }
+
+        audioSourceEfectosPuerta.PlayOneShot(sonidoEntregarGema, volumenEntregarGema);
     }
 }
