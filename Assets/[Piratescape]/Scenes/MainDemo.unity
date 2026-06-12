@@ -18929,63 +18929,6 @@ MonoBehaviour:
   m_EditMode: 0
   m_FlipNormals: 0
   isOnGrid: 1
---- !u!1001 &63467166
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -18.31925
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.33
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.68
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7606363
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000000016624236
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.6491782
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.00000001418824
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 80.959
-      objectReference: {fileID: 0}
-    - target: {fileID: 539335533651852260, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 880394782627602782, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
-      propertyPath: m_Name
-      value: LlavePrefab
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9ece6509ef0c6c442a9104342f72225e, type: 3}
 --- !u!4 &69509295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5721417102470724968, guid: 66b79fb2502a99b41960a68e1f90f86d, type: 3}
@@ -66258,8 +66201,6 @@ MonoBehaviour:
   nombreEscenaPausa: PauseScene
   audiosPermitidosEnPausa:
   - {fileID: 700661240}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!224 &559680996
 RectTransform:
   m_ObjectHideFlags: 0
@@ -69865,37 +69806,28 @@ MonoBehaviour:
     - itemRequerido: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
       cantidadNecesaria: 10
       cantidadEntregada: 0
-    - itemRequerido: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
-      cantidadNecesaria: 4
-      cantidadEntregada: 0
     - itemRequerido: {fileID: 11400000, guid: 8fbae2a252d3b774bbb54553401a2a6e, type: 2}
-      cantidadNecesaria: 3
+      cantidadNecesaria: 4
       cantidadEntregada: 0
   - nombreNivel: Nivel 4
     mensajeCompletado: Felicidades, completaste el nivel 4 de construccion
     modeloBarco: {fileID: 1179212491}
     requisitos:
     - itemRequerido: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
-      cantidadNecesaria: 15
-      cantidadEntregada: 0
-    - itemRequerido: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
-      cantidadNecesaria: 6
+      cantidadNecesaria: 20
       cantidadEntregada: 0
     - itemRequerido: {fileID: 11400000, guid: 8fbae2a252d3b774bbb54553401a2a6e, type: 2}
-      cantidadNecesaria: 4
+      cantidadNecesaria: 10
       cantidadEntregada: 0
   - nombreNivel: Nivel 5
     mensajeCompletado: Felicidades, completaste el nivel 5 de construccion
     modeloBarco: {fileID: 1854619394}
     requisitos:
     - itemRequerido: {fileID: 11400000, guid: 4ff7ea3b7ec81294589551a84cdbcafe, type: 2}
-      cantidadNecesaria: 20
+      cantidadNecesaria: 25
       cantidadEntregada: 0
     - itemRequerido: {fileID: 11400000, guid: dc63c8db6afb56c4a97a34025faaa8b7, type: 2}
-      cantidadNecesaria: 10
-      cantidadEntregada: 0
-    - itemRequerido: {fileID: 11400000, guid: 8fbae2a252d3b774bbb54553401a2a6e, type: 2}
-      cantidadNecesaria: 6
+      cantidadNecesaria: 15
       cantidadEntregada: 0
   energiaGastadaPorMaterial: 5
   vidaGastadaPorMaterialSinEnergia: 2
@@ -171544,7 +171476,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 22}
-  m_SizeDelta: {x: 920, y: 85}
+  m_SizeDelta: {x: 750, y: 85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1517428326
 MonoBehaviour:
@@ -171575,8 +171507,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -193057,7 +192989,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -43}
-  m_SizeDelta: {x: 920, y: 35}
+  m_SizeDelta: {x: 750, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1715871336
 MonoBehaviour:
@@ -193088,8 +193020,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -221005,7 +220937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1959898202
 RectTransform:
   m_ObjectHideFlags: 0
@@ -221025,7 +220957,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -75}
-  m_SizeDelta: {x: 1000, y: 150}
+  m_SizeDelta: {x: 1000, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1959898203
 MonoBehaviour:
@@ -221040,14 +220972,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.69803923}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: e91b7e35a0af1a34586b2fa3ef571c7a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -237013,12 +236945,24 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: mensajeDesbloqueada
+      value: Abrir
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: mensajeEntregaGemas
+      value: Gemas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: sonidoEntregarLlave
       value: 
       objectReference: {fileID: 8300000, guid: 21346cced68f74546b8572256b2d5aae, type: 3}
     - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: volumenEntregarGema
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: mensajeNecesitaLlave
+      value: Llave
       objectReference: {fileID: 0}
     - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: objetoARotarConLlave
@@ -237762,4 +237706,3 @@ SceneRoots:
   - {fileID: 1051394097}
   - {fileID: 247109755}
   - {fileID: 1873780000}
-  - {fileID: 63467166}
