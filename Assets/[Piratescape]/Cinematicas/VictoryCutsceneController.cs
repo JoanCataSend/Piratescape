@@ -36,7 +36,23 @@ public class VictoryCutsceneController : MonoBehaviour
     [SerializeField] private bool musicaVictoriaEnLoop = true;
 
     [Header("Postprocesado cinemática")]
+    [Tooltip("Postprocesado de cinemática que ya tenías. Se usa de día.")]
     [SerializeField] private GameObject postProcesadoCinematica;
+
+    [Header("Postprocesado cinemática tarde / noche")]
+    [SerializeField] private GameTimeSystem timeSystem;
+
+    [Tooltip("Si está activo, desde la hora indicada se usa el postprocesado alternativo de tarde/noche.")]
+    [SerializeField] private bool usarPostProcesadoTardeNoche = true;
+
+    [Tooltip("Actívalo para probar el postprocesado tarde/noche aunque sea de día.")]
+    [SerializeField] private bool forzarPostProcesadoTardeNoche = false;
+
+    [Tooltip("Nuevo postprocesado para la cinemática cuando la luz está en tarde/noche.")]
+    [SerializeField] private GameObject postProcesadoCinematicaTardeNoche;
+
+    [Tooltip("A partir de esta hora se usa el postprocesado tarde/noche. 18 = 6 de la tarde.")]
+    [SerializeField] [Range(0f, 23.99f)] private float horaInicioPostProcesadoTardeNoche = 18f;
 
     [Header("Destello final")]
     [SerializeField] private GameObject finalStarSparklePrefab;
@@ -95,6 +111,11 @@ public class VictoryCutsceneController : MonoBehaviour
             musicaVictoriaSource = gameObject.AddComponent<AudioSource>();
         }
 
+        if (timeSystem == null)
+        {
+            timeSystem = FindFirstObjectByType<GameTimeSystem>();
+        }
+
         musicaVictoriaSource.playOnAwake = false;
         musicaVictoriaSource.loop = musicaVictoriaEnLoop;
         musicaVictoriaSource.volume = volumenMusicaVictoria;
@@ -138,6 +159,11 @@ public class VictoryCutsceneController : MonoBehaviour
         if (postProcesadoCinematica != null)
         {
             postProcesadoCinematica.SetActive(false);
+        }
+
+        if (postProcesadoCinematicaTardeNoche != null)
+        {
+            postProcesadoCinematicaTardeNoche.SetActive(false);
         }
 
         if (fadeCanvasGroup != null)
@@ -246,7 +272,7 @@ public class VictoryCutsceneController : MonoBehaviour
             yield return new WaitForSeconds(tiempoEsperaMostrarEstadisticas);
         }
 
-        MostrarPantallaVictoriaUI();
+        MostrarPantallaVictoriaUI(false);
     }
 
     private void OcultarUIDelJuego()
@@ -270,10 +296,7 @@ public class VictoryCutsceneController : MonoBehaviour
 
     private void PrepararUIInicial()
     {
-        if (postProcesadoCinematica != null)
-        {
-            postProcesadoCinematica.SetActive(true);
-        }
+        ActivarPostProcesadoCinematica();
 
         if (fadeCanvasGroup != null)
         {
@@ -297,6 +320,48 @@ public class VictoryCutsceneController : MonoBehaviour
         {
             movimientoGaviotas.DetenerMovimiento();
         }
+    }
+
+    private void ActivarPostProcesadoCinematica()
+    {
+        bool usarTardeNoche = DebeUsarPostProcesadoTardeNoche();
+
+        if (usarTardeNoche && postProcesadoCinematicaTardeNoche == null)
+        {
+            usarTardeNoche = false;
+        }
+
+        if (postProcesadoCinematica != null)
+        {
+            postProcesadoCinematica.SetActive(!usarTardeNoche);
+        }
+
+        if (postProcesadoCinematicaTardeNoche != null)
+        {
+            postProcesadoCinematicaTardeNoche.SetActive(usarTardeNoche);
+        }
+    }
+
+    private bool DebeUsarPostProcesadoTardeNoche()
+    {
+        if (!usarPostProcesadoTardeNoche)
+        {
+            return false;
+        }
+
+        if (forzarPostProcesadoTardeNoche)
+        {
+            return true;
+        }
+
+        if (timeSystem == null)
+        {
+            return false;
+        }
+
+        float horaActual = timeSystem.CurrentHour + (timeSystem.CurrentMinute / 60f);
+
+        return horaActual >= horaInicioPostProcesadoTardeNoche || timeSystem.IsNight;
     }
 
     private void PrepararEscenaCinematica()
@@ -566,15 +631,18 @@ public class VictoryCutsceneController : MonoBehaviour
             camaraIslaAMar.SetActive(false);
         }
 
-        MostrarPantallaVictoriaUI();
+        MostrarPantallaVictoriaUI(true);
+        DesactivarFadeParaVerPantallaVictoria();
     }
 
-    private void MostrarPantallaVictoriaUI()
+    private void MostrarPantallaVictoriaUI(bool forzarReiniciar)
     {
-        if (pantallaVictoriaMostrada)
+        if (pantallaVictoriaMostrada && !forzarReiniciar)
         {
             return;
         }
+
+        bool pantallaYaActiva = pantallaVictoria != null && pantallaVictoria.activeSelf;
 
         pantallaVictoriaMostrada = true;
 
@@ -592,5 +660,22 @@ public class VictoryCutsceneController : MonoBehaviour
         {
             pantallaVictoria.SetActive(true);
         }
+
+        if (victoryStatsTypewriterUI != null && pantallaYaActiva)
+        {
+            victoryStatsTypewriterUI.MostrarPantalla();
+        }
+    }
+
+    private void DesactivarFadeParaVerPantallaVictoria()
+    {
+        if (fadeCanvasGroup == null)
+        {
+            return;
+        }
+
+        fadeCanvasGroup.alpha = 0f;
+        fadeCanvasGroup.blocksRaycasts = false;
+        fadeCanvasGroup.interactable = false;
     }
 }
