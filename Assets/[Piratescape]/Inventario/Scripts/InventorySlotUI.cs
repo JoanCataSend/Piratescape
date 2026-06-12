@@ -142,7 +142,7 @@ public class InventorySlotUI : MonoBehaviour
 
         if (amountText != null)
         {
-            int maxStack = EsGema(itemData) ? 1 : InventorySlot.DefaultMaxStack;
+            int maxStack = EsItemUnico(itemData) ? 1 : InventorySlot.DefaultMaxStack;
             amountText.text = amount + "/" + maxStack;
         }
 
@@ -356,11 +356,19 @@ public class InventorySlotUI : MonoBehaviour
         colorFondoCacheado = true;
     }
 
-    private bool EsGema(ItemData item)
+    private bool EsItemUnico(ItemData item)
     {
         if (item == null)
+        {
             return false;
+        }
 
-        return item.name.ToLower().Contains("gema");
+        string nombreAsset = item.name.ToLower();
+        string nombreMostrar = item.DisplayName != null ? item.DisplayName.ToLower() : "";
+
+        return nombreAsset.Contains("gema") ||
+               nombreAsset.Contains("llave") ||
+               nombreMostrar.Contains("gema") ||
+               nombreMostrar.Contains("llave");
     }
 }

@@ -18,6 +18,9 @@ public sealed class MenuPausaUI : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputActionReference accionPausa;
 
+    [Header("Audio que SÍ debe sonar en pausa")]
+    [SerializeField] private AudioSource[] audiosPermitidosEnPausa;
+
     private bool estaEnPausa;
 
     private void Awake()
@@ -31,6 +34,8 @@ public sealed class MenuPausaUI : MonoBehaviour
         {
             tutorialMisionesLoro = FindFirstObjectByType<TutorialMisionesLoro>();
         }
+
+        PrepararAudiosPermitidosEnPausa();
     }
 
     private void OnEnable()
@@ -58,6 +63,7 @@ public sealed class MenuPausaUI : MonoBehaviour
     private void Start()
     {
         estaEnPausa = false;
+        Time.timeScale = 1f;
         AudioListener.pause = false;
     }
 
@@ -125,6 +131,10 @@ public sealed class MenuPausaUI : MonoBehaviour
         CambiarEstadoComponentesJugador(false);
 
         Time.timeScale = 0f;
+
+        // Pausamos el audio global.
+        // Solo seguirán sonando los AudioSource que tengan ignoreListenerPause = true.
+        PrepararAudiosPermitidosEnPausa();
         AudioListener.pause = true;
 
         Cursor.lockState = CursorLockMode.None;
@@ -207,6 +217,22 @@ public sealed class MenuPausaUI : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+
+    private void PrepararAudiosPermitidosEnPausa()
+    {
+        if (audiosPermitidosEnPausa == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < audiosPermitidosEnPausa.Length; i++)
+        {
+            if (audiosPermitidosEnPausa[i] != null)
+            {
+                audiosPermitidosEnPausa[i].ignoreListenerPause = true;
+            }
+        }
     }
 
     private bool HayOtraUIAbierta()

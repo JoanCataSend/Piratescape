@@ -66161,6 +66161,10 @@ MonoBehaviour:
   sistemaSaludJugador: {fileID: 0}
   tutorialMisionesLoro: {fileID: 452703424}
   accionPausa: {fileID: -798625235111026432, guid: 338d958744a5781479717ee732fbf6df, type: 3}
+  audiosPermitidosEnPausa:
+  - {fileID: 700661240}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!224 &559680996
 RectTransform:
   m_ObjectHideFlags: 0
@@ -122306,6 +122310,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
+      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -125309,14 +125321,6 @@ PrefabInstance:
     - target: {fileID: 8696847069942999147, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 139
-      objectReference: {fileID: 0}
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -211559,8 +211563,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812617208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14576629, y: 0.70744884, z: -0.1622135, w: 0.67227614}
-  m_LocalPosition: {x: -45.838623, y: 2.1860843, z: -7.5929394}
+  m_LocalRotation: {x: 0.15264115, y: 0.000000010422214, z: -0.0000000016097218, w: 0.98828167}
+  m_LocalPosition: {x: -44.1, y: 1.8575884, z: 1.9074337}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -211683,7 +211687,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60.000004
+  field of view: 59
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

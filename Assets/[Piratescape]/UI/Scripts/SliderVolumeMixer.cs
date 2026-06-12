@@ -18,6 +18,7 @@ public class SliderVolumenMixer : MonoBehaviour
     [Header("Sonido de prueba opcional")]
     [SerializeField] private AudioSource audioSourcePrueba;
     [SerializeField] private AudioClip sonidoClick;
+    [SerializeField] private AudioMixerGroup grupoSalidaSonidoPrueba;
 
     [Header("Guardado")]
     [SerializeField] private string nombreGuardado;
@@ -28,12 +29,26 @@ public class SliderVolumenMixer : MonoBehaviour
     private void Awake()
     {
         if (slider == null)
+        {
             slider = GetComponent<Slider>();
+        }
+
+        if (slider == null)
+        {
+            Debug.LogError("No hay Slider asignado en " + gameObject.name);
+            return;
+        }
+
+        if (audioSourcePrueba != null)
+        {
+            audioSourcePrueba.ignoreListenerPause = true;
+        }
 
         slider.minValue = 0;
         slider.maxValue = 10;
         slider.wholeNumbers = true;
 
+        slider.onValueChanged.RemoveListener(CuandoCambiaSlider);
         slider.onValueChanged.AddListener(CuandoCambiaSlider);
 
         CargarValorGuardado();
@@ -46,25 +61,53 @@ public class SliderVolumenMixer : MonoBehaviour
         int valorEntero = Mathf.RoundToInt(valor);
 
         if (valorEntero == ultimoValor)
+        {
             return;
+        }
 
         ultimoValor = valorEntero;
 
         AplicarVolumen(valorEntero);
         ActualizarTexto(valorEntero);
 
-        if (iniciado && audioSourcePrueba != null && sonidoClick != null)
+        if (iniciado)
         {
-            audioSourcePrueba.PlayOneShot(sonidoClick);
+            ReproducirSonidoSlider();
         }
+    }
+
+    private void ReproducirSonidoSlider()
+    {
+        if (audioSourcePrueba == null)
+        {
+            Debug.LogWarning("No hay AudioSource asignado para el sonido del slider en " + gameObject.name);
+            return;
+        }
+
+        if (sonidoClick == null)
+        {
+            Debug.LogWarning("No hay AudioClip asignado para el sonido del slider en " + gameObject.name);
+            return;
+        }
+
+        audioSourcePrueba.ignoreListenerPause = true;
+
+        if (grupoSalidaSonidoPrueba != null)
+        {
+            audioSourcePrueba.outputAudioMixerGroup = grupoSalidaSonidoPrueba;
+        }
+
+        audioSourcePrueba.PlayOneShot(sonidoClick);
     }
 
     public void CargarValorGuardado()
     {
-        int valorGuardado = PlayerPrefs.GetInt(nombreGuardado, 10);
-
         if (slider == null)
+        {
             return;
+        }
+
+        int valorGuardado = PlayerPrefs.GetInt(nombreGuardado, 10);
 
         slider.SetValueWithoutNotify(valorGuardado);
 
@@ -77,16 +120,29 @@ public class SliderVolumenMixer : MonoBehaviour
     public void GuardarValorActual()
     {
         if (slider == null)
+        {
             return;
+        }
 
         int valorActual = Mathf.RoundToInt(slider.value);
+
         PlayerPrefs.SetInt(nombreGuardado, valorActual);
+        PlayerPrefs.Save();
     }
 
     private void AplicarVolumen(int valorEntero)
     {
-        if (audioMixer == null || string.IsNullOrEmpty(nombreParametroMixer))
+        if (audioMixer == null)
+        {
+            Debug.LogWarning("Falta AudioMixer en " + gameObject.name);
             return;
+        }
+
+        if (string.IsNullOrEmpty(nombreParametroMixer))
+        {
+            Debug.LogWarning("Falta el nombre del parámetro del mixer en " + gameObject.name);
+            return;
+        }
 
         float volumenNormalizado = valorEntero / 10f;
 
@@ -101,7 +157,12 @@ public class SliderVolumenMixer : MonoBehaviour
             volumenDB = Mathf.Log10(volumenNormalizado) * 20f;
         }
 
-        audioMixer.SetFloat(nombreParametroMixer, volumenDB);
+        bool aplicado = audioMixer.SetFloat(nombreParametroMixer, volumenDB);
+
+        if (!aplicado)
+        {
+            Debug.LogWarning("No existe el parámetro del mixer: " + nombreParametroMixer);
+        }
     }
 
     private void ActualizarTexto(int valorEntero)

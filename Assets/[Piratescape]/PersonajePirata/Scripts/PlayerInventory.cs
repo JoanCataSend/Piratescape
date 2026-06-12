@@ -194,6 +194,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
             return false;
         }
 
+        int maxStack = ObtenerMaxStack(itemData);
         int freeSpaceTotal = 0;
 
         for (int i = 0; i < slots.Count; i++)
@@ -203,13 +204,13 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
                 continue;
             }
 
-            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.DefaultMaxStack)
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < maxStack)
             {
-                freeSpaceTotal += InventorySlot.DefaultMaxStack - slots[i].amount;
+                freeSpaceTotal += maxStack - slots[i].amount;
             }
             else if (slots[i].IsEmpty())
             {
-                freeSpaceTotal += InventorySlot.DefaultMaxStack;
+                freeSpaceTotal += maxStack;
             }
         }
 
@@ -237,6 +238,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
         }
 
         int remainingAmount = amount;
+        int maxStack = ObtenerMaxStack(itemData);
 
         for (int i = 0; i < slots.Count; i++)
         {
@@ -245,9 +247,9 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
                 continue;
             }
 
-            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < InventorySlot.DefaultMaxStack)
+            if (!slots[i].IsEmpty() && slots[i].itemData == itemData && slots[i].amount < maxStack)
             {
-                int freeSpace = InventorySlot.DefaultMaxStack - slots[i].amount;
+                int freeSpace = maxStack - slots[i].amount;
                 int amountToAdd = Mathf.Min(remainingAmount, freeSpace);
 
                 slots[i].amount += amountToAdd;
@@ -270,7 +272,7 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
             if (slots[i].IsEmpty())
             {
-                int amountToAdd = Mathf.Min(remainingAmount, InventorySlot.DefaultMaxStack);
+                int amountToAdd = Mathf.Min(remainingAmount, maxStack);
 
                 slots[i].itemData = itemData;
                 slots[i].amount = amountToAdd;
@@ -286,6 +288,33 @@ public sealed class PlayerInventory : MonoBehaviour, IItemReceiver
 
         NotifyInventoryChanged();
         return false;
+    }
+
+
+    private int ObtenerMaxStack(ItemData itemData)
+    {
+        if (EsItemUnico(itemData))
+        {
+            return 1;
+        }
+
+        return InventorySlot.DefaultMaxStack;
+    }
+
+    private bool EsItemUnico(ItemData itemData)
+    {
+        if (itemData == null)
+        {
+            return false;
+        }
+
+        string nombreAsset = itemData.name.ToLower();
+        string nombreMostrar = itemData.DisplayName != null ? itemData.DisplayName.ToLower() : "";
+
+        return nombreAsset.Contains("gema") ||
+               nombreAsset.Contains("llave") ||
+               nombreMostrar.Contains("gema") ||
+               nombreMostrar.Contains("llave");
     }
 
     public bool RemoveItem(ItemData itemData, int amount = 1)
