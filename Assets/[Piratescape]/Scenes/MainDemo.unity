@@ -66165,10 +66165,9 @@ MonoBehaviour:
   sistemaSaludJugador: {fileID: 0}
   tutorialMisionesLoro: {fileID: 452703424}
   accionPausa: {fileID: -798625235111026432, guid: 338d958744a5781479717ee732fbf6df, type: 3}
+  nombreEscenaPausa: PauseScene
   audiosPermitidosEnPausa:
   - {fileID: 700661240}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!224 &559680996
 RectTransform:
   m_ObjectHideFlags: 0
@@ -211567,8 +211566,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812617208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15264115, y: 0.000000010422214, z: -0.0000000016097218, w: 0.98828167}
-  m_LocalPosition: {x: -44.1, y: 1.8575884, z: 1.9074337}
+  m_LocalRotation: {x: 0.14576629, y: 0.70744884, z: -0.1622135, w: 0.67227614}
+  m_LocalPosition: {x: -45.838623, y: 2.1860843, z: -7.5929394}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -211691,7 +211690,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 59
+  field of view: 60.000004
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
