@@ -1271,35 +1271,43 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: a76ef7b43ae15834faeb880d39c68938, type: 2}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.71551
+      value: -1.8314714
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.4093533
+      value: 1.4957588
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.7042623
+      value: -3.5938964
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.71143764
+      value: -0.7114846
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0086040525
+      value: -0.0026254873
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.70264524
+      value: -0.702692
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.008498141
+      value: 0.0025937806
+      objectReference: {fileID: 0}
+    - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 359
       objectReference: {fileID: 0}
     - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -2
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: -2021178655527167927, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -1294892128559850198, guid: 10ea0442e126ef94bbd61121a72ac866, type: 3}
       propertyPath: m_Type
@@ -2078,15 +2086,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7f6bd4bc3a98a4a85bab172376b958, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 0}
-  fadeDuration: 1
-  empezarCerrado: 0
-  openRadius: 1.5
-  closedRadius: -0.15
-  softness: 0.08
-  center: {x: 0.5, y: 0.5}
-  <IsFading>k__BackingField: 0
-  runtimeMaterial: {fileID: 0}
 --- !u!114 &2064676885
 MonoBehaviour:
   m_ObjectHideFlags: 0
