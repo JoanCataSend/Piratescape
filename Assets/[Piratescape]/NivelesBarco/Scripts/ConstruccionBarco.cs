@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using System.Collections;
 
 public sealed class ConstruccionBarco : MonoBehaviour
@@ -51,11 +52,33 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
     [Header("Sonido mejora barco")]
     [SerializeField] private AudioSource audioSourceMejora;
+
+    [Tooltip("Output del Audio Mixer. Asignar GameAudioMixer / SFX / Objetos.")]
+    [SerializeField] private AudioMixerGroup outputObjetos;
+
     [SerializeField] private AudioClip sonidoConstruccion;
     [SerializeField] private AudioClip sonidoNivelCompletado;
     [SerializeField] private float volumenConstruccion = 0.6f;
     [SerializeField] private float volumenNivelCompletado = 0.7f;
     [SerializeField] private float esperaAntesSonidoNivel = 0.2f;
+
+    [Header("Sonido extra nivel 5")]
+    [Tooltip("Sonidos aleatorios que suenan después de sonidoNivelCompletado SOLO en el último nivel.")]
+    [SerializeField] private AudioClip[] sonidosNivel5CompletadoExtra;
+
+    [Range(0f, 3f)]
+    [SerializeField] private float volumenNivel5CompletadoExtra = 1f;
+
+    [Header("Sonido extra después de nivel completado")]
+    [Tooltip("Sonidos aleatorios que suenan después de sonidoNivelCompletado SOLO en niveles normales.")]
+    [SerializeField] private AudioClip[] sonidosExtraDespuesNivelCompletado;
+
+    [Range(0f, 3f)]
+    [SerializeField] private float volumenExtraDespuesNivelCompletado = 1f;
+
+    [Header("Variación sonidos extra")]
+    [SerializeField] private float pitchMinimoExtra = 0.96f;
+    [SerializeField] private float pitchMaximoExtra = 1.04f;
 
     [Header("Sonido entregar material")]
     [SerializeField] private AudioClip sonidoEntregarMaterial;
@@ -75,6 +98,9 @@ public sealed class ConstruccionBarco : MonoBehaviour
     [SerializeField] private float retrasoCinematicaFinal = 2f;
 
     public static bool HaySecuenciaMejoraBarcoEnCurso { get; private set; }
+
+    private int ultimoSonidoNivel5Extra = -1;
+    private int ultimoSonidoExtraDespuesNivel = -1;
 
     private bool EstanTodosLosNivelesCompletados
     {
@@ -255,6 +281,13 @@ public sealed class ConstruccionBarco : MonoBehaviour
         OnConstruccionActualizada?.Invoke();
     }
 
+    private bool EsUltimoNivelCompletado(int nivelCompletado)
+    {
+        return nivelesConstruccion != null &&
+               nivelesConstruccion.Length > 0 &&
+               nivelCompletado >= nivelesConstruccion.Length - 1;
+    }
+
     private void AplicarEstadoVisualInicial()
     {
         if (nivelesConstruccion != null)
@@ -355,11 +388,11 @@ public sealed class ConstruccionBarco : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator SecuenciaMejoraBarco(int nivelCompletado)
+    private IEnumerator SecuenciaMejoraBarco(int nivelCompletado)
     {
         HaySecuenciaMejoraBarcoEnCurso = true;
 
-        StartCoroutine(ReproducirSonidosMejoraRoutine());
+        StartCoroutine(ReproducirSonidosMejoraRoutine(nivelCompletado));
 
         if (objetosUIAOcultar != null)
         {
@@ -413,7 +446,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
             Debug.Log("FX mejora barco instanciado en: " + posicionFX);
         }
 
-        if (nivelCompletado == 4 && fxFuegosArtificialesNivel5 != null)
+        if (EsUltimoNivelCompletado(nivelCompletado) && fxFuegosArtificialesNivel5 != null)
         {
             Vector3 posicionFuegos = puntoFuegosArtificialesNivel5 != null
                 ? puntoFuegosArtificialesNivel5.position
@@ -473,7 +506,9 @@ public sealed class ConstruccionBarco : MonoBehaviour
         HaySecuenciaMejoraBarcoEnCurso = false;
         OnConstruccionActualizada?.Invoke();
 
-        if (iniciarCinematicaFinalAlCompletarNivel5 && nivelCompletado == 4 && victoryCutsceneController != null)
+        if (iniciarCinematicaFinalAlCompletarNivel5 &&
+            EsUltimoNivelCompletado(nivelCompletado) &&
+            victoryCutsceneController != null)
         {
             victoryCutsceneController.StartVictoryCutsceneAfterDelay(retrasoCinematicaFinal);
         }
@@ -494,9 +529,15 @@ public sealed class ConstruccionBarco : MonoBehaviour
         audioSourceMejora.playOnAwake = false;
         audioSourceMejora.loop = false;
         audioSourceMejora.spatialBlend = 0f;
+        audioSourceMejora.dopplerLevel = 0f;
+
+        if (outputObjetos != null)
+        {
+            audioSourceMejora.outputAudioMixerGroup = outputObjetos;
+        }
     }
 
-    private IEnumerator ReproducirSonidosMejoraRoutine()
+    private IEnumerator ReproducirSonidosMejoraRoutine(int nivelCompletado)
     {
         if (audioSourceMejora == null)
         {
@@ -505,14 +546,68 @@ public sealed class ConstruccionBarco : MonoBehaviour
 
         if (sonidoConstruccion != null)
         {
+            audioSourceMejora.pitch = 1f;
             audioSourceMejora.PlayOneShot(sonidoConstruccion, volumenConstruccion);
+
             yield return new WaitForSeconds(sonidoConstruccion.length + esperaAntesSonidoNivel);
         }
 
         if (sonidoNivelCompletado != null)
         {
+            audioSourceMejora.pitch = 1f;
             audioSourceMejora.PlayOneShot(sonidoNivelCompletado, volumenNivelCompletado);
+
+            yield return new WaitForSeconds(sonidoNivelCompletado.length);
         }
+
+        if (EsUltimoNivelCompletado(nivelCompletado))
+        {
+            ReproducirSonidoNivel5CompletadoExtra();
+        }
+        else
+        {
+            ReproducirSonidoExtraDespuesNivelCompletado();
+        }
+    }
+
+    private void ReproducirSonidoNivel5CompletadoExtra()
+    {
+        AudioClip clip = ObtenerClipAleatorioSinRepetir(
+            sonidosNivel5CompletadoExtra,
+            ref ultimoSonidoNivel5Extra
+        );
+
+        ReproducirClipExtra(
+            clip,
+            volumenNivel5CompletadoExtra
+        );
+    }
+
+    private void ReproducirSonidoExtraDespuesNivelCompletado()
+    {
+        AudioClip clip = ObtenerClipAleatorioSinRepetir(
+            sonidosExtraDespuesNivelCompletado,
+            ref ultimoSonidoExtraDespuesNivel
+        );
+
+        ReproducirClipExtra(
+            clip,
+            volumenExtraDespuesNivelCompletado
+        );
+    }
+
+    private void ReproducirClipExtra(AudioClip clip, float volumen)
+    {
+        if (audioSourceMejora == null || clip == null)
+        {
+            return;
+        }
+
+        float pitchMin = Mathf.Min(pitchMinimoExtra, pitchMaximoExtra);
+        float pitchMax = Mathf.Max(pitchMinimoExtra, pitchMaximoExtra);
+
+        audioSourceMejora.pitch = UnityEngine.Random.Range(pitchMin, pitchMax);
+        audioSourceMejora.PlayOneShot(clip, volumen);
     }
 
     private void ReproducirSonidoInventarioBarco()
@@ -522,6 +617,7 @@ public sealed class ConstruccionBarco : MonoBehaviour
             return;
         }
 
+        audioSourceMejora.pitch = 1f;
         audioSourceMejora.PlayOneShot(sonidoEntregarMaterial, volumenEntregarMaterial);
     }
 
@@ -532,6 +628,44 @@ public sealed class ConstruccionBarco : MonoBehaviour
             return;
         }
 
+        audioSourceMejora.pitch = 1f;
         audioSourceMejora.PlayOneShot(sonidoErrorConstruccion, volumenErrorConstruccion);
     }
+
+    private AudioClip ObtenerClipAleatorioSinRepetir(AudioClip[] clips, ref int ultimoIndice)
+    {
+        if (clips == null || clips.Length == 0)
+        {
+            return null;
+        }
+
+        if (clips.Length == 1)
+        {
+            ultimoIndice = 0;
+            return clips[0];
+        }
+
+        int nuevoIndice;
+        int intentos = 0;
+
+        do
+        {
+            nuevoIndice = UnityEngine.Random.Range(0, clips.Length);
+            intentos++;
+        }
+        while (nuevoIndice == ultimoIndice && intentos < 10);
+
+        ultimoIndice = nuevoIndice;
+        return clips[nuevoIndice];
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (audioSourceMejora != null && outputObjetos != null)
+        {
+            audioSourceMejora.outputAudioMixerGroup = outputObjetos;
+        }
+    }
+#endif
 }

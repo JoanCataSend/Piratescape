@@ -6,6 +6,7 @@ public sealed class SistemaSaludJugador : MonoBehaviour
     [SerializeField] private GameTimeSystem sistemaTiempo;
     [SerializeField] private VisualizadorBarrasEstado visualizador;
     [SerializeField] private movimientoplayer movimientoPlayer;
+    [SerializeField] private PirateExtraAudioController pirateExtraAudioController;
 
     [Header("Salud")]
     [SerializeField] private float saludMaxima = 100f;
@@ -30,6 +31,12 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         {
             movimientoPlayer = GetComponent<movimientoplayer>();
         }
+
+        if (pirateExtraAudioController == null)
+        {
+            pirateExtraAudioController =
+                GetComponent<PirateExtraAudioController>();
+        }
     }
 
     private void OnEnable()
@@ -50,12 +57,20 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     private void Start()
     {
-        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+        saludActual = Mathf.Clamp(
+            saludActual,
+            0f,
+            saludMaxima
+        );
+
         ActualizarHUD();
         ComprobarMuerte();
     }
 
-    private void AlCambiarTiempo(int dia, int hora, int minuto)
+    private void AlCambiarTiempo(
+        int dia,
+        int hora,
+        int minuto)
     {
         if (estaMuerto || modoDiosActivo)
         {
@@ -73,7 +88,12 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         }
 
         saludActual -= perdidaSaludPorMinuto;
-        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+
+        saludActual = Mathf.Clamp(
+            saludActual,
+            0f,
+            saludMaxima
+        );
 
         ActualizarHUD();
         ComprobarMuerte();
@@ -81,13 +101,20 @@ public sealed class SistemaSaludJugador : MonoBehaviour
 
     public void ReducirSaludDirecta(float cantidad)
     {
-        if (cantidad <= 0f || estaMuerto || modoDiosActivo)
+        if (cantidad <= 0f ||
+            estaMuerto ||
+            modoDiosActivo)
         {
             return;
         }
 
         saludActual -= cantidad;
-        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+
+        saludActual = Mathf.Clamp(
+            saludActual,
+            0f,
+            saludMaxima
+        );
 
         ActualizarHUD();
         ComprobarMuerte();
@@ -101,7 +128,12 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         }
 
         saludActual += cantidad;
-        saludActual = Mathf.Clamp(saludActual, 0f, saludMaxima);
+
+        saludActual = Mathf.Clamp(
+            saludActual,
+            0f,
+            saludMaxima
+        );
 
         ActualizarHUD();
     }
@@ -114,6 +146,7 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         {
             estaMuerto = false;
             saludActual = saludMaxima;
+
             ActualizarHUD();
 
             if (movimientoPlayer != null)
@@ -122,14 +155,20 @@ public sealed class SistemaSaludJugador : MonoBehaviour
             }
         }
 
-        Debug.Log("SistemaSaludJugador: GodMode = " + modoDiosActivo);
+        Debug.Log(
+            "SistemaSaludJugador: GodMode = " +
+            modoDiosActivo
+        );
     }
 
     private void ActualizarHUD()
     {
         if (visualizador != null)
         {
-            visualizador.EstablecerSalud(saludActual, saludMaxima);
+            visualizador.EstablecerSalud(
+                saludActual,
+                saludMaxima
+            );
         }
     }
 
@@ -146,6 +185,11 @@ public sealed class SistemaSaludJugador : MonoBehaviour
         }
 
         estaMuerto = true;
+
+        if (pirateExtraAudioController != null)
+        {
+            pirateExtraAudioController.ReproducirMuerte();
+        }
 
         if (movimientoPlayer != null)
         {

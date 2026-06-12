@@ -67194,6 +67194,7 @@ MonoBehaviour:
   sistemaTiempo: {fileID: 1975866679}
   visualizador: {fileID: 1846573672}
   movimientoPlayer: {fileID: 1588489905}
+  pirateExtraAudioController: {fileID: 1588489914}
   saludMaxima: 100
   saludActual: 100
   perdidaSaludPorMinuto: 0.2
@@ -69815,11 +69816,26 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e5e3185a9af85a84ea111cdf38e21c94, type: 3}
   - {fileID: 21300000, guid: 78e2ee8219b5d544dbc765ec580ae4d2, type: 3}
   audioSourceMejora: {fileID: 0}
+  outputObjetos: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
   sonidoConstruccion: {fileID: 8300000, guid: 1eb7ea7a7afbd8742abc9e037dee795b, type: 3}
   sonidoNivelCompletado: {fileID: 8300000, guid: 1f7ef7fd16d661448b7713fd7a18a674, type: 3}
   volumenConstruccion: 0.6
-  volumenNivelCompletado: 0.2
+  volumenNivelCompletado: 0.7
   esperaAntesSonidoNivel: 0.2
+  sonidosNivel5CompletadoExtra:
+  - {fileID: 8300000, guid: 07331f47d91922344b1911b6bb657655, type: 3}
+  - {fileID: 8300000, guid: 8f217234074da3e47a8033149ce0bcb3, type: 3}
+  - {fileID: 8300000, guid: 88bac2ae23a091f4bbe670e84acabbdf, type: 3}
+  - {fileID: 8300000, guid: cce3c1c9f3053eb4eb236bc089f9fd9e, type: 3}
+  - {fileID: 8300000, guid: 07331f47d91922344b1911b6bb657655, type: 3}
+  - {fileID: 8300000, guid: d9613396b13934d409bac02379752d3c, type: 3}
+  volumenNivel5CompletadoExtra: 1
+  sonidosExtraDespuesNivelCompletado:
+  - {fileID: 8300000, guid: 97c2efe8e32634a468851193db84f774, type: 3}
+  - {fileID: 8300000, guid: 6c695d139e334da4badf5c7b25361827, type: 3}
+  volumenExtraDespuesNivelCompletado: 1
+  pitchMinimoExtra: 0.96
+  pitchMaximoExtra: 1.04
   sonidoEntregarMaterial: {fileID: 8300000, guid: 419e362a7283ffc47a28dfa55f63bae3, type: 3}
   volumenEntregarMaterial: 0.05
   sonidoErrorConstruccion: {fileID: 8300000, guid: 8b8af563308719c47859a8fc7e172c64, type: 3}
@@ -122118,6 +122134,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
+      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -125122,14 +125146,6 @@ PrefabInstance:
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 139
       objectReference: {fileID: 0}
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5430645095278042240, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
@@ -127405,6 +127421,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1588489913}
+    - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1588489914}
   m_SourcePrefab: {fileID: 100100000, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
 --- !u!1 &1148824212
 GameObject:
@@ -175683,6 +175702,73 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 26031b68986dbb54ebb535b95b9bb293, type: 3}
   sonidosRecogidaLlave:
   - {fileID: 8300000, guid: e1bf0e0b41b98ed4c9e1ca4fb57bbe96, type: 3}
+--- !u!114 &1588489914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588489892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa84e2803971d3141b9a5bac3f9c2c27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movimientoPlayer: {fileID: 1588489905}
+  audioSourceVoices: {fileID: 0}
+  audioSourcePlayer: {fileID: 0}
+  audioSourceObjetos: {fileID: 0}
+  outputVoices: {fileID: 5573012495549289416, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  outputPlayer: {fileID: -8413363371568429757, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  outputObjetos: {fileID: -5630590406745796260, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  sonidosCansancio:
+  - {fileID: 8300000, guid: 6584bbff926c9f749bd23471791e4ae8, type: 3}
+  - {fileID: 8300000, guid: 523cc45cbbb1fe24b8583c59df3bd636, type: 3}
+  - {fileID: 8300000, guid: 2143239442f6a9642a353ebcadcff0f3, type: 3}
+  - {fileID: 8300000, guid: 74d0dccbbf7a7cd44a9605421c249133, type: 3}
+  - {fileID: 8300000, guid: 790dec4aec0634b45acca31ee9abb6fa, type: 3}
+  - {fileID: 8300000, guid: b1c41edb40460164aa26f5dbf90bc326, type: 3}
+  - {fileID: 8300000, guid: d6d51cce9413b5e4d8233b2914224652, type: 3}
+  - {fileID: 8300000, guid: c8bd8d390809aae43ae8cc4f679b1f9b, type: 3}
+  - {fileID: 8300000, guid: 836b5210175993246a26c61f30763881, type: 3}
+  volumenCansancio: 0.75
+  intervaloCansancioMin: 6
+  intervaloCansancioMax: 8
+  reproducirCansancioAlEmpezar: 1
+  sonidosIdleParado:
+  - {fileID: 8300000, guid: 09bf66316deba174ebc44110fd352c2a, type: 3}
+  volumenIdleParado: 0.8
+  tiempoQuietoParaIdle: 10
+  intervaloIdleMin: 8
+  intervaloIdleMax: 14
+  velocidadMinimaMovimiento: 0.05
+  reproducirIdleSiEstaCansado: 0
+  sonidosMuerte:
+  - {fileID: 8300000, guid: 9fefa3635d92ead41ab34cda4b2ef64f, type: 3}
+  - {fileID: 8300000, guid: 29ebfb8a2b6261e45b7f1faac3f051bb, type: 3}
+  - {fileID: 8300000, guid: 6dc2193129d8aff4fb6dc839d9d861ad, type: 3}
+  - {fileID: 8300000, guid: 06322d3189b4ecd4994ad71b1f16f1e4, type: 3}
+  - {fileID: 8300000, guid: 4ed765e42244d7f4aa95a72cdda5e591, type: 3}
+  - {fileID: 8300000, guid: 63b03010cdb342f4195e49c6eef8d52b, type: 3}
+  - {fileID: 8300000, guid: a9996fe264c64fc4ba4bbf5e2ea165a1, type: 3}
+  volumenMuerte: 0.9
+  sonidosBarcoNivel5:
+  - {fileID: 8300000, guid: 9fefa3635d92ead41ab34cda4b2ef64f, type: 3}
+  - {fileID: 8300000, guid: 29ebfb8a2b6261e45b7f1faac3f051bb, type: 3}
+  - {fileID: 8300000, guid: 6dc2193129d8aff4fb6dc839d9d861ad, type: 3}
+  - {fileID: 8300000, guid: 06322d3189b4ecd4994ad71b1f16f1e4, type: 3}
+  - {fileID: 8300000, guid: 4ed765e42244d7f4aa95a72cdda5e591, type: 3}
+  - {fileID: 8300000, guid: 63b03010cdb342f4195e49c6eef8d52b, type: 3}
+  - {fileID: 8300000, guid: a9996fe264c64fc4ba4bbf5e2ea165a1, type: 3}
+  volumenBarcoNivel5: 0.9
+  sonidosConstruccionBarco:
+  - {fileID: 8300000, guid: 97c2efe8e32634a468851193db84f774, type: 3}
+  - {fileID: 8300000, guid: 6c695d139e334da4badf5c7b25361827, type: 3}
+  volumenConstruccionBarco: 0.85
+  pitchMinimo: 0.96
+  pitchMaximo: 1.04
+  minDistance: 1
+  maxDistance: 15
 --- !u!64 &1592097014
 MeshCollider:
   m_ObjectHideFlags: 0
