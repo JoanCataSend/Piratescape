@@ -19091,7 +19091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &74600274
 RectTransform:
   m_ObjectHideFlags: 0
@@ -50412,7 +50412,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &350386043
 RectTransform:
   m_ObjectHideFlags: 0
@@ -51984,7 +51984,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &376489053
 RectTransform:
   m_ObjectHideFlags: 0
@@ -88709,7 +88709,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &849265002
 RectTransform:
   m_ObjectHideFlags: 0
@@ -122256,6 +122256,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 355002602}
     m_Modifications:
+    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4218
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
+      propertyPath: m_VersionIndex
+      value: 4224
+      objectReference: {fileID: 0}
     - target: {fileID: 443644940800478198, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -125259,14 +125267,6 @@ PrefabInstance:
     - target: {fileID: 8696847069942999147, guid: 774cc3faeb5de0141bfcf182107d6831, type: 3}
       propertyPath: 'm_SelectedVertices.Array.data[0]'
       value: 139
-      objectReference: {fileID: 0}
-    - target: {fileID: 8899243288034210226, guid: ab2c0b5729007754abc37ab351068178, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4218
-      objectReference: {fileID: 0}
-    - target: {fileID: 2260186187519246099, guid: 5ca85aa1baffb90429259cb8bd1eaf5a, type: 3}
-      propertyPath: m_VersionIndex
-      value: 4224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -161325,7 +161325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1409397560
 RectTransform:
   m_ObjectHideFlags: 0
