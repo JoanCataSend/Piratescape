@@ -49529,6 +49529,10 @@ MonoBehaviour:
   intervaloRisasMax: 0.9
   pitchMinimo: 0.96
   pitchMaximo: 1.06
+  detenerMusicaJuegoAlEmpezar: 1
+  musicaJuegoSource: {fileID: 700661240}
+  hacerFadeMusicaJuego: 1
+  duracionFadeMusicaJuego: 1
 --- !u!4 &340867736
 Transform:
   m_ObjectHideFlags: 0
