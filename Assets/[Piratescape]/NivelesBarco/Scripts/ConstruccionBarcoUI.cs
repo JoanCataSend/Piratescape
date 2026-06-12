@@ -44,7 +44,6 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
             construccionBarco = FindFirstObjectByType<ConstruccionBarco>();
         }
 
-        CrearFilaCuerdaSiHaceFalta();
         ConfigurarVisualInicial();
         ActualizarIndicador();
     }
@@ -173,57 +172,7 @@ public sealed class ConstruccionBarcoUI : MonoBehaviour
         }
     }
 
-    private void CrearFilaCuerdaSiHaceFalta()
-    {
-        if (filaCuerda != null || itemCuerda == null || filaClavos == null)
-        {
-            return;
-        }
-
-        filaCuerda = Instantiate(filaClavos, filaClavos.transform.parent);
-        filaCuerda.name = "FilaCuerda";
-        filaCuerda.transform.SetSiblingIndex(filaClavos.transform.GetSiblingIndex() + 1);
-
-        iconoCuerda = BuscarComponenteEquivalenteEnFila(iconoClavos, filaClavos, filaCuerda);
-        textoCuerda = BuscarComponenteEquivalenteEnFila(textoClavos, filaClavos, filaCuerda);
-    }
-
-    private T BuscarComponenteEquivalenteEnFila<T>(T componenteOriginal, GameObject filaOriginal, GameObject filaNueva) where T : Component
-    {
-        if (componenteOriginal == null || filaOriginal == null || filaNueva == null)
-        {
-            return filaNueva != null ? filaNueva.GetComponentInChildren<T>(true) : null;
-        }
-
-        string ruta = ObtenerRutaRelativa(filaOriginal.transform, componenteOriginal.transform);
-        Transform equivalente = string.IsNullOrEmpty(ruta) ? filaNueva.transform : filaNueva.transform.Find(ruta);
-
-        if (equivalente == null)
-        {
-            return filaNueva.GetComponentInChildren<T>(true);
-        }
-
-        return equivalente.GetComponent<T>();
-    }
-
-    private string ObtenerRutaRelativa(Transform raiz, Transform objetivo)
-    {
-        if (raiz == null || objetivo == null || objetivo == raiz)
-        {
-            return string.Empty;
-        }
-
-        string ruta = objetivo.name;
-        Transform actual = objetivo.parent;
-
-        while (actual != null && actual != raiz)
-        {
-            ruta = actual.name + "/" + ruta;
-            actual = actual.parent;
-        }
-
-        return ruta;
-    }
+  
 
     private void ManejarConstruccionActualizada()
     {
