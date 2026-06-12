@@ -53,6 +53,14 @@ public class PuertaMagica : MonoBehaviour, Interactuable
     [SerializeField] private AudioSource audioSourcePortal;
     [SerializeField] private AudioClip sonidoPortal;
     [SerializeField] private float volumenPortal = 0.45f;
+
+    [Header("Sonidos puerta")]
+    [SerializeField] private AudioSource audioSourceEfectosPuerta;
+    [SerializeField] private AudioClip sonidoAbrirPuerta;
+    [SerializeField] private AudioClip sonidoSalidaArena;
+    [SerializeField] private float volumenAbrirPuerta = 0.7f;
+    [SerializeField] private float volumenSalidaArena = 0.8f;
+
     private bool puertaAbierta;
 
     private PlayerInventory inventario;
@@ -78,6 +86,8 @@ public class PuertaMagica : MonoBehaviour, Interactuable
     {
         inventario = FindFirstObjectByType<PlayerInventory>();
         jugador = FindFirstObjectByType<JugadorActivador>();
+
+        PrepararAudioSourceEfectosPuerta();
     }
 
     private void Update()
@@ -232,6 +242,7 @@ public class PuertaMagica : MonoBehaviour, Interactuable
     {
         animacionLlaveEnCurso = true;
         InteractionUI.Instance?.Hide(this);
+        ReproducirSonidoAbrirPuerta();
 
         if (objetoARotarConLlave != null)
         {
@@ -366,4 +377,39 @@ public class PuertaMagica : MonoBehaviour, Interactuable
         PararSonidoPortal();
     }
 
+    private void PrepararAudioSourceEfectosPuerta()
+    {
+        if (audioSourceEfectosPuerta == null)
+        {
+            audioSourceEfectosPuerta = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceEfectosPuerta.playOnAwake = false;
+        audioSourceEfectosPuerta.loop = false;
+        audioSourceEfectosPuerta.spatialBlend = 1f;
+        audioSourceEfectosPuerta.minDistance = 3f;
+        audioSourceEfectosPuerta.maxDistance = 35f;
+        audioSourceEfectosPuerta.rolloffMode = AudioRolloffMode.Logarithmic;
+        audioSourceEfectosPuerta.dopplerLevel = 0f;
+    }
+
+    private void ReproducirSonidoAbrirPuerta()
+    {
+        if (audioSourceEfectosPuerta == null || sonidoAbrirPuerta == null)
+        {
+            return;
+        }
+
+        audioSourceEfectosPuerta.PlayOneShot(sonidoAbrirPuerta, volumenAbrirPuerta);
+    }
+
+    public void ReproducirSonidoSalidaArena()
+    {
+        if (audioSourceEfectosPuerta == null || sonidoSalidaArena == null)
+        {
+            return;
+        }
+
+        audioSourceEfectosPuerta.PlayOneShot(sonidoSalidaArena, volumenSalidaArena);
+    }
 }

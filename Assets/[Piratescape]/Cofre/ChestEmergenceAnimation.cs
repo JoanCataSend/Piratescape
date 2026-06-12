@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class ChestEmergenceAnimation : MonoBehaviour
 {
@@ -7,6 +8,12 @@ public class ChestEmergenceAnimation : MonoBehaviour
     [SerializeField] private Transform chest;
     [SerializeField] private ParticleSystem sandBurstParticles;
     [SerializeField] private ParticleSystem sandFallParticles;
+
+    [Header("Sonido")]
+    [SerializeField] private AudioSource audioSourceEmergencia;
+    [SerializeField] private AudioClip sonidoEmergencia;
+    [SerializeField] private float volumenEmergencia = 0.8f;
+    [SerializeField] private AudioMixerGroup outputEmergencia;
 
     [Header("Animación del cofre")]
     [SerializeField] private float delayBeforeStart = 5f;
@@ -41,6 +48,8 @@ public class ChestEmergenceAnimation : MonoBehaviour
 
         if (sandFallParticles != null)
             sandFallParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        PrepararAudioSourceEmergencia();
     }
 
     private void Start()
@@ -67,6 +76,8 @@ public class ChestEmergenceAnimation : MonoBehaviour
 
         Vector3 startLocalPosition = finalLocalPosition + Vector3.up * buriedOffsetY;
         float elapsed = 0f;
+
+        ReproducirSonidoEmergencia();
 
         // JUSTO AQUÍ empieza a salir el objeto.
         // Por eso las partículas empiezan aquí también.
@@ -108,5 +119,43 @@ public class ChestEmergenceAnimation : MonoBehaviour
 
         if (sandFallParticles != null)
             sandFallParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+    }
+
+    private void PrepararAudioSourceEmergencia()
+    {
+        if (audioSourceEmergencia == null)
+        {
+            audioSourceEmergencia = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceEmergencia.playOnAwake = false;
+        audioSourceEmergencia.loop = false;
+        audioSourceEmergencia.spatialBlend = 1f;
+        audioSourceEmergencia.minDistance = 4f;
+        audioSourceEmergencia.maxDistance = 45f;
+        audioSourceEmergencia.rolloffMode = AudioRolloffMode.Logarithmic;
+        audioSourceEmergencia.dopplerLevel = 0f;
+        audioSourceEmergencia.outputAudioMixerGroup = outputEmergencia;
+    }
+
+    private void ReproducirSonidoEmergencia()
+    {
+        Debug.Log("Intentando reproducir sonido emergencia.", this);
+
+        if (audioSourceEmergencia == null)
+        {
+            Debug.LogWarning("Falta AudioSource Emergencia.", this);
+            return;
+        }
+
+        if (sonidoEmergencia == null)
+        {
+            Debug.LogWarning("Falta Sonido Emergencia.", this);
+            return;
+        }
+
+        Debug.Log("Sonido emergencia: " + sonidoEmergencia.name, this);
+
+        audioSourceEmergencia.PlayOneShot(sonidoEmergencia, volumenEmergencia);
     }
 }

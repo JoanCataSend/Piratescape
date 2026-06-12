@@ -116982,7 +116982,11 @@ MonoBehaviour:
   chest: {fileID: 2774220343855456845}
   sandBurstParticles: {fileID: 39410415}
   sandFallParticles: {fileID: 1165646589}
-  delayBeforeStart: 1
+  audioSourceEmergencia: {fileID: 2774220343855456847}
+  sonidoEmergencia: {fileID: 8300000, guid: d212d8d1542608a4b8ce2d42db62bb23, type: 3}
+  volumenEmergencia: 0.3
+  outputEmergencia: {fileID: -5630590406745796260, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  delayBeforeStart: 0
   buriedOffsetY: -3.3
   riseDuration: 5
   riseCurve:
@@ -207508,6 +207512,10 @@ MonoBehaviour:
   chest: {fileID: 1971776167}
   sandBurstParticles: {fileID: 1340520605}
   sandFallParticles: {fileID: 974060703}
+  audioSourceEmergencia: {fileID: 0}
+  sonidoEmergencia: {fileID: 0}
+  volumenEmergencia: 0.8
+  outputEmergencia: {fileID: 0}
   delayBeforeStart: 5
   buriedOffsetY: -1.2
   riseDuration: 5
@@ -230504,6 +230512,22 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3868641693411411308}
     - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: sonidoAbrirPuerta
+      value: 
+      objectReference: {fileID: 8300000, guid: c0015d7caf78e0344a11cb1391716443, type: 3}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: sonidoSalidaArena
+      value: 
+      objectReference: {fileID: 8300000, guid: d212d8d1542608a4b8ce2d42db62bb23, type: 3}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: volumenAbrirPuerta
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
+      propertyPath: volumenSalidaArena
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872278596352716829, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
       propertyPath: objetoARotarConLlave
       value: 
       objectReference: {fileID: 1798856489}
@@ -230723,7 +230747,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -3635801141997579526, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
