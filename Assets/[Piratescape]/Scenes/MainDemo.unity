@@ -371,6 +371,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1275684881}
+    - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1275684884}
   m_SourcePrefab: {fileID: 100100000, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
 --- !u!1001 &7840229
 PrefabInstance:
@@ -1413,6 +1416,40 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &21399671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21399660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31aabe5efc5e2e24e9e1526d3779beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugador: {fileID: 1588489899}
+  inventarioJugador: {fileID: 1588489902}
+  itemPlatano: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  animatorMono: {fileID: 1816031948}
+  navMeshAgent: {fileID: 0}
+  rangoInteraccion: 2.5
+  platanosNecesariosParaAmistad: 2
+  itemIdPlatano: platano
+  mensajeSinPlatanos: Necesitas platanos
+  mensajeDarPlatano: Dar platano
+  mensajeMonoAmigo: El mono ahora es tu amigo
+  duracionMensajeTemporal: 1.8
+  seguirAlSerAmigo: 1
+  distanciaParar: 1.8
+  velocidadSinNavMesh: 2.5
+  velocidadGiro: 8
+  mantenerAlturaInicialSinNavMesh: 1
+  platanosRecibidos: 0
+  esAmigo: 0
+  triggerRecibirPlatano: RecibirPlatano
+  triggerAmigo: Amigo
+  boolSiguiendo: Siguiendo
 --- !u!1001 &23252349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25145,6 +25182,40 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &128112209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128112198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31aabe5efc5e2e24e9e1526d3779beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugador: {fileID: 1588489899}
+  inventarioJugador: {fileID: 1588489902}
+  itemPlatano: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  animatorMono: {fileID: 765567472}
+  navMeshAgent: {fileID: 0}
+  rangoInteraccion: 2.5
+  platanosNecesariosParaAmistad: 2
+  itemIdPlatano: platano
+  mensajeSinPlatanos: Necesitas platanos
+  mensajeDarPlatano: Dar platano
+  mensajeMonoAmigo: El mono ahora es tu amigo
+  duracionMensajeTemporal: 1.8
+  seguirAlSerAmigo: 1
+  distanciaParar: 1.8
+  velocidadSinNavMesh: 2.5
+  velocidadGiro: 8
+  mantenerAlturaInicialSinNavMesh: 1
+  platanosRecibidos: 0
+  esAmigo: 0
+  triggerRecibirPlatano: RecibirPlatano
+  triggerAmigo: Amigo
+  boolSiguiendo: Siguiendo
 --- !u!1001 &131407977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54161,6 +54232,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 4884995154760334853, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
     - {fileID: 3881991012334459619, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
+    - {fileID: 7869873546869171050, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -2674979963305753408, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
@@ -54187,9 +54259,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9163162019458792444, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1119266905}
-    - targetCorrespondingSourceObject: {fileID: 7869873546869171050, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 883406987}
     - targetCorrespondingSourceObject: {fileID: -3754004066935200519, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1923303100}
@@ -61509,6 +61578,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a80ca85f775d3a74faa38bde6b3b2174, type: 3}
+--- !u!1 &513321624
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 513321625}
+  m_Layer: 0
+  m_Name: asiento
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &513321625
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513321624}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.03, y: 0.64, z: 2.29}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 865655322}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &514008083 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a3117be1624f57e4a8eb0f49596b6ff7, type: 3}
@@ -75285,6 +75385,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.02000001, y: 0.089057274, z: 0.0034803771}
   m_Center: {x: -0.000000059604645, y: 0.000000007450581, z: 0}
+--- !u!1 &655820201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 655820202}
+  m_Layer: 0
+  m_Name: asiento_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &655820202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 655820201}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.11, y: 0.64, z: 9.87}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 865655322}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &657436229
 Mesh:
   m_ObjectHideFlags: 0
@@ -84800,6 +84931,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &765567472 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
+  m_PrefabInstance: {fileID: 1537213603}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &766639843 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1028631702770161645, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
@@ -88622,6 +88758,73 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
   m_PrefabInstance: {fileID: 1984030821}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &865655323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865655318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a806c16382a6f418d2fe84859e53d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agua: {fileID: 1929661857}
+  nombreObjetoAgua: agua
+  puntoInteraccion: {fileID: 2038489929}
+  asientoJugador: {fileID: 513321625}
+  puntoSalida: {fileID: 655820202}
+  jugadorTransform: {fileID: 1588489899}
+  movimientoJugador: {fileID: 1588489905}
+  characterControllerJugador: {fileID: 1588489906}
+  interactuadorJugador: {fileID: 1588489895}
+  recogidaJugador: {fileID: 1588489894}
+  inventarioInputJugador: {fileID: 0}
+  animatorJugador: {fileID: 1233310489}
+  rango: 2.5
+  interactuable: 1
+  promptMontar: Montar
+  promptBajar: Bajar
+  velocidadAdelante: 7
+  velocidadAtras: 3
+  aceleracion: 6
+  frenado: 4
+  velocidadGiro: 85
+  giroMinimoSinMovimiento: 0.35
+  alturaSobreAgua: 0.35
+  suavizadoFlotacion: 8
+  balanceoVertical: 0.08
+  velocidadBalanceo: 1.5
+  mantenerBarcoVertical: 1
+  boolSentado: isSitting
+--- !u!54 &865655324
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865655318}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &867366499
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89576,6 +89779,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
       insertIndex: -1
       addedObject: {fileID: 128112206}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 128112209}
   m_SourcePrefab: {fileID: 100100000, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
 --- !u!1001 &878904930
 PrefabInstance:
@@ -89691,33 +89897,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
---- !u!1 &883406983 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7869873546869171050, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
-  m_PrefabInstance: {fileID: 419115148}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &883406987
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 883406983}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &883471662 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 273515972117399023, guid: 2c6ef3c3a72dce2438d5d7f01f83ff8b, type: 3}
@@ -139326,6 +139505,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1652245625}
+    - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1652245628}
   m_SourcePrefab: {fileID: 100100000, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
 --- !u!1 &1261364446
 GameObject:
@@ -140192,6 +140374,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       insertIndex: -1
       addedObject: {fileID: 21399668}
+    - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 21399671}
   m_SourcePrefab: {fileID: 100100000, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
 --- !u!1001 &1274812878
 PrefabInstance:
@@ -140432,6 +140617,40 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1275684884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1275684873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31aabe5efc5e2e24e9e1526d3779beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugador: {fileID: 1588489899}
+  inventarioJugador: {fileID: 1588489902}
+  itemPlatano: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  animatorMono: {fileID: 765567472}
+  navMeshAgent: {fileID: 0}
+  rangoInteraccion: 2.5
+  platanosNecesariosParaAmistad: 2
+  itemIdPlatano: platano
+  mensajeSinPlatanos: Necesitas platanos
+  mensajeDarPlatano: Dar platano
+  mensajeMonoAmigo: El mono ahora es tu amigo
+  duracionMensajeTemporal: 1.8
+  seguirAlSerAmigo: 1
+  distanciaParar: 1.8
+  velocidadSinNavMesh: 2.5
+  velocidadGiro: 8
+  mantenerAlturaInicialSinNavMesh: 1
+  platanosRecibidos: 0
+  esAmigo: 0
+  triggerRecibirPlatano: RecibirPlatano
+  triggerAmigo: Amigo
+  boolSiguiendo: Siguiendo
 --- !u!1 &1277468379 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6843594802953467939, guid: a9e71c48061b7844a980662c42ee9ec9, type: 3}
@@ -187653,6 +187872,40 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1652245628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652245617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31aabe5efc5e2e24e9e1526d3779beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugador: {fileID: 1588489899}
+  inventarioJugador: {fileID: 1588489902}
+  itemPlatano: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  animatorMono: {fileID: 1816031948}
+  navMeshAgent: {fileID: 0}
+  rangoInteraccion: 2.5
+  platanosNecesariosParaAmistad: 2
+  itemIdPlatano: platano
+  mensajeSinPlatanos: Necesitas platanos
+  mensajeDarPlatano: Dar platano
+  mensajeMonoAmigo: El mono ahora es tu amigo
+  duracionMensajeTemporal: 1.8
+  seguirAlSerAmigo: 1
+  distanciaParar: 1.8
+  velocidadSinNavMesh: 2.5
+  velocidadGiro: 8
+  mantenerAlturaInicialSinNavMesh: 1
+  platanosRecibidos: 0
+  esAmigo: 0
+  triggerRecibirPlatano: RecibirPlatano
+  triggerAmigo: Amigo
+  boolSiguiendo: Siguiendo
 --- !u!1 &1655175296 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3436909889232944542, guid: d8c62adb2d4407e4c95edc846a284f7b, type: 3}
@@ -211369,6 +211622,45 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &1816031948 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5503041400281752089, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
+  m_PrefabInstance: {fileID: 3626537402941048392}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1816031949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816031938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31aabe5efc5e2e24e9e1526d3779beb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugador: {fileID: 1588489899}
+  inventarioJugador: {fileID: 1588489902}
+  itemPlatano: {fileID: 11400000, guid: 5aecfba6aee340d4a9cf485fe0ac2a65, type: 2}
+  animatorMono: {fileID: 1816031948}
+  navMeshAgent: {fileID: 0}
+  rangoInteraccion: 2.5
+  platanosNecesariosParaAmistad: 2
+  itemIdPlatano: platano
+  mensajeSinPlatanos: Necesitas platanos
+  mensajeDarPlatano: Dar platano
+  mensajeMonoAmigo: El mono ahora es tu amigo
+  duracionMensajeTemporal: 1.8
+  seguirAlSerAmigo: 1
+  distanciaParar: 1.8
+  velocidadSinNavMesh: 2.5
+  velocidadGiro: 8
+  mantenerAlturaInicialSinNavMesh: 1
+  platanosRecibidos: 0
+  esAmigo: 0
+  triggerRecibirPlatano: RecibirPlatano
+  triggerAmigo: Amigo
+  boolSiguiendo: Siguiendo
 --- !u!64 &1817893196
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -222577,11 +222869,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 513321625}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038489929}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 655820202}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
       insertIndex: -1
       addedObject: {fileID: 865655319}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 865655324}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 865655323}
   m_SourcePrefab: {fileID: 100100000, guid: 2f9bbc04dd9146645ad6d3f636050bce, type: 3}
 --- !u!1 &1986470681 stripped
 GameObject:
@@ -224245,6 +224552,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
+--- !u!1 &2038489928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2038489929}
+  m_Layer: 0
+  m_Name: asiento_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2038489929
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038489928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.03, y: 0.64, z: -4.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 865655322}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2039795699 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9017844807287473221, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
@@ -236906,6 +237244,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1816031946}
+    - targetCorrespondingSourceObject: {fileID: 1294018015045771993, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1816031949}
   m_SourcePrefab: {fileID: 100100000, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
 --- !u!23 &3868641693411411308 stripped
 MeshRenderer:
