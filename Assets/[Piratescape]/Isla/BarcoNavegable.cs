@@ -42,6 +42,24 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
     [SerializeField] private float velocidadBalanceo = 1.5f;
     [SerializeField] private bool mantenerBarcoVertical = true;
 
+
+    [Header("Bloqueo contra isla/suelo")]
+    [SerializeField] private bool bloquearMovimientoEnTierra = true;
+    [SerializeField] private LayerMask capasTierra;
+    [SerializeField] private bool autoConfigurarCapasTierraSiEstaVacio = true;
+    [SerializeField] private bool detectarObstaculosConSphereCast = true;
+    [SerializeField] private bool detectarTierraDebajoDelBarco = true;
+    [SerializeField] private float radioDeteccionTierra = 0.75f;
+    [SerializeField] private float distanciaAnticipacionTierra = 0.75f;
+    [SerializeField] private float alturaCentroSphereCast = 0.35f;
+    [SerializeField] private float alturaOrigenRaycastTierra = 3f;
+    [SerializeField] private float distanciaRaycastTierra = 7f;
+    [SerializeField] private float margenTierraRespectoAgua = -0.12f;
+    [SerializeField] private float distanciaChequeoProaPopa = 1.7f;
+    [SerializeField] private float distanciaChequeoLateral = 0.8f;
+    [SerializeField] private bool ignorarTriggersTierra = true;
+    [SerializeField] private bool mostrarGizmosBloqueoTierra = true;
+
     [Header("Animacion jugador opcional")]
     [SerializeField] private string boolSentado = "isSitting";
 
@@ -70,6 +88,7 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
         rb = GetComponent<Rigidbody>();
         PrepararRigidbody();
         CachearAgua();
+        AutoConfigurarCapasTierra();
         CachearJugador();
     }
 
@@ -469,7 +488,211 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
         rotacionNueva *= Quaternion.Euler(0f, giro, 0f);
 
         Vector3 direccionAvance = rotacionNueva * Vector3.forward;
-        posicionNueva += direccionAvance * velocidadActual * Time.fixedDeltaTime;
+        Vector3 desplazamiento = direccionAvance * velocidadActual * Time.fixedDeltaTime;
+        Vector3 posicionObjetivo = posicionNueva + desplazamiento;
+
+        if (MovimientoBloqueadoPorTierra(posicionNueva, posicionObjetivo, rotacionNueva, Mathf.Sign(velocidadActual)))
+        {
+            velocidadActual = 0f;
+            return;
+        }
+
+        posicionNueva = posicionObjetivo;
+    }
+
+    private void AutoConfigurarCapasTierra()
+    {
+        if (!autoConfigurarCapasTierraSiEstaVacio || capasTierra.value != 0)
+        {
+            return;
+        }
+
+        string[] nombresCapasProbables =
+        {
+            "Suelo",
+            "Ground",
+            "Isla",
+            "Island",
+            "Terrain",
+            "Terreno",
+            "Mapa",
+            "Arena",
+            "Grass",
+            "Cesped"
+        };
+
+        int mascara = 0;
+
+        for (int i = 0; i < nombresCapasProbables.Length; i++)
+        {
+            int capa = LayerMask.NameToLayer(nombresCapasProbables[i]);
+
+            if (capa >= 0)
+            {
+                mascara |= 1 << capa;
+            }
+        }
+
+        if (mascara != 0)
+        {
+            capasTierra = mascara;
+        }
+    }
+
+    private bool MovimientoBloqueadoPorTierra(
+        Vector3 posicionActual,
+        Vector3 posicionObjetivo,
+        Quaternion rotacionObjetivo,
+        float signoAvance
+    )
+    {
+        if (!bloquearMovimientoEnTierra || capasTierra.value == 0)
+        {
+            return false;
+        }
+
+        Vector3 desplazamientoHorizontal = posicionObjetivo - posicionActual;
+        desplazamientoHorizontal.y = 0f;
+
+        if (desplazamientoHorizontal.sqrMagnitude < 0.0001f)
+        {
+            return false;
+        }
+
+        if (detectarObstaculosConSphereCast && HayObstaculoTierraEnTrayecto(posicionActual, desplazamientoHorizontal))
+        {
+            return true;
+        }
+
+        if (detectarTierraDebajoDelBarco && HayTierraDebajoDeLaHuella(posicionObjetivo, rotacionObjetivo, signoAvance))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HayObstaculoTierraEnTrayecto(Vector3 posicionActual, Vector3 desplazamientoHorizontal)
+    {
+        Vector3 origen = posicionActual + Vector3.up * alturaCentroSphereCast;
+        Vector3 direccion = desplazamientoHorizontal.normalized;
+        float distancia = desplazamientoHorizontal.magnitude + distanciaAnticipacionTierra;
+
+        RaycastHit[] impactos = Physics.SphereCastAll(
+            origen,
+            radioDeteccionTierra,
+            direccion,
+            distancia,
+            capasTierra,
+            ObtenerModoTriggersTierra()
+        );
+
+        for (int i = 0; i < impactos.Length; i++)
+        {
+            Collider colliderImpactado = impactos[i].collider;
+
+            if (ColliderDebeIgnorarse(colliderImpactado))
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HayTierraDebajoDeLaHuella(Vector3 posicionObjetivo, Quaternion rotacionObjetivo, float signoAvance)
+    {
+        Vector3 adelante = rotacionObjetivo * Vector3.forward;
+        Vector3 derecha = rotacionObjetivo * Vector3.right;
+
+        Vector3 centro = posicionObjetivo;
+        Vector3 extremo = signoAvance >= 0f
+            ? posicionObjetivo + adelante * distanciaChequeoProaPopa
+            : posicionObjetivo - adelante * distanciaChequeoProaPopa;
+
+        if (HayTierraDebajoDelPunto(centro) || HayTierraDebajoDelPunto(extremo))
+        {
+            return true;
+        }
+
+        if (HayTierraDebajoDelPunto(extremo + derecha * distanciaChequeoLateral) ||
+            HayTierraDebajoDelPunto(extremo - derecha * distanciaChequeoLateral))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HayTierraDebajoDelPunto(Vector3 punto)
+    {
+        Vector3 origen = punto + Vector3.up * alturaOrigenRaycastTierra;
+
+        RaycastHit[] impactos = Physics.RaycastAll(
+            origen,
+            Vector3.down,
+            distanciaRaycastTierra,
+            capasTierra,
+            ObtenerModoTriggersTierra()
+        );
+
+        float alturaAgua = agua != null ? agua.position.y : transform.position.y;
+        float alturaMinimaBloqueo = alturaAgua + margenTierraRespectoAgua;
+
+        for (int i = 0; i < impactos.Length; i++)
+        {
+            Collider colliderImpactado = impactos[i].collider;
+
+            if (ColliderDebeIgnorarse(colliderImpactado))
+            {
+                continue;
+            }
+
+            if (impactos[i].point.y >= alturaMinimaBloqueo)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private QueryTriggerInteraction ObtenerModoTriggersTierra()
+    {
+        return ignorarTriggersTierra
+            ? QueryTriggerInteraction.Ignore
+            : QueryTriggerInteraction.Collide;
+    }
+
+    private bool ColliderDebeIgnorarse(Collider colliderImpactado)
+    {
+        if (colliderImpactado == null)
+        {
+            return true;
+        }
+
+        Transform transformImpactado = colliderImpactado.transform;
+
+        if (transformImpactado == transform || transformImpactado.IsChildOf(transform))
+        {
+            return true;
+        }
+
+        if (jugadorTransform != null &&
+            (transformImpactado == jugadorTransform || transformImpactado.IsChildOf(jugadorTransform)))
+        {
+            return true;
+        }
+
+        if (agua != null &&
+            (transformImpactado == agua || transformImpactado.IsChildOf(agua)))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private Vector2 LeerInputNavegacion()
@@ -565,12 +788,50 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
         }
     }
 
+    private void DibujarGizmosBloqueoTierra()
+    {
+        Quaternion rotacion = Application.isPlaying && rb != null ? rb.rotation : transform.rotation;
+        Vector3 posicion = Application.isPlaying && rb != null ? rb.position : transform.position;
+        Vector3 adelante = rotacion * Vector3.forward;
+        Vector3 derecha = rotacion * Vector3.right;
+        Vector3 proa = posicion + adelante * distanciaChequeoProaPopa;
+        Vector3 popa = posicion - adelante * distanciaChequeoProaPopa;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(posicion + Vector3.up * alturaCentroSphereCast, radioDeteccionTierra);
+        Gizmos.DrawLine(
+            posicion + Vector3.up * alturaCentroSphereCast,
+            posicion + Vector3.up * alturaCentroSphereCast + adelante * distanciaAnticipacionTierra
+        );
+
+        Gizmos.color = Color.magenta;
+        DibujarPuntoRaycastTierra(posicion);
+        DibujarPuntoRaycastTierra(proa);
+        DibujarPuntoRaycastTierra(popa);
+        DibujarPuntoRaycastTierra(proa + derecha * distanciaChequeoLateral);
+        DibujarPuntoRaycastTierra(proa - derecha * distanciaChequeoLateral);
+        DibujarPuntoRaycastTierra(popa + derecha * distanciaChequeoLateral);
+        DibujarPuntoRaycastTierra(popa - derecha * distanciaChequeoLateral);
+    }
+
+    private void DibujarPuntoRaycastTierra(Vector3 punto)
+    {
+        Vector3 origen = punto + Vector3.up * alturaOrigenRaycastTierra;
+        Gizmos.DrawLine(origen, origen + Vector3.down * distanciaRaycastTierra);
+        Gizmos.DrawWireSphere(punto, 0.12f);
+    }
+
     private void OnDrawGizmosSelected()
     {
         Vector3 centro = puntoInteraccion != null ? puntoInteraccion.position : transform.position;
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(centro, rango);
+
+        if (mostrarGizmosBloqueoTierra)
+        {
+            DibujarGizmosBloqueoTierra();
+        }
 
         if (asientoJugador != null)
         {
