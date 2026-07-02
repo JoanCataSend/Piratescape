@@ -111,6 +111,7 @@ public class movimientoplayer : MonoBehaviour
     private int ultimoIndiceEntradaAgua = -1;
     private int ultimoEstadoAnimatorForzado;
     private bool ultimoFrameAnimatorEnNatacion;
+    private bool forzarRefrescoAnimatorNatacion;
 
     private bool saltoEnCurso;
     private bool estuvoEnElAire;
@@ -944,8 +945,24 @@ public class movimientoplayer : MonoBehaviour
         saltoEnCurso = false;
         estuvoEnElAire = false;
 
+        ReiniciarControlAnimatorNatacion();
+
+        bool estaMoviendoseNadando =
+            moveInput.magnitude > 0.1f &&
+            !isFainted &&
+            !isPickingUp;
+
+        AplicarParametrosAnimatorNatacionInmediatos(
+            true,
+            estaMoviendoseNadando
+        );
+
         SetAnimatorTriggerIfExists(
             triggerEntrarAgua
+        );
+
+        ForzarEstadoAnimatorNatacionActual(
+            estaMoviendoseNadando
         );
 
         GestionarLoopNatacion();
@@ -958,9 +975,18 @@ public class movimientoplayer : MonoBehaviour
         tiempoSinDetectarAgua = 0f;
         playerVelocity = Vector3.zero;
 
+        AplicarParametrosAnimatorNatacionInmediatos(
+            false,
+            false
+        );
+
+        ReiniciarControlAnimatorNatacion();
+
         SetAnimatorTriggerIfExists(
             triggerSalirAgua
         );
+
+        ForzarEstadoAnimatorSalidaAguaActual();
 
         DetenerLoopNatacion();
 
@@ -1333,26 +1359,21 @@ public class movimientoplayer : MonoBehaviour
         if (isSwimming)
         {
             ultimoFrameAnimatorEnNatacion = true;
-
-            string estadoObjetivo =
+            ForzarEstadoAnimatorNatacionActual(
                 isSwimmingMoving
-                    ? estadoAnimatorNadar
-                    : estadoAnimatorFlotar;
-
-            ForzarEstadoAnimatorSiExiste(
-                estadoObjetivo
             );
-
             return;
         }
 
-        if (!ultimoFrameAnimatorEnNatacion)
+        if (!ultimoFrameAnimatorEnNatacion &&
+            !forzarRefrescoAnimatorNatacion)
         {
             return;
         }
 
         ultimoFrameAnimatorEnNatacion = false;
         ultimoEstadoAnimatorForzado = 0;
+        forzarRefrescoAnimatorNatacion = false;
 
         string estadoSalida =
             isRunning
@@ -1386,12 +1407,28 @@ public class movimientoplayer : MonoBehaviour
             animator.GetCurrentAnimatorStateInfo(0);
 
         bool yaEstaEnEstado =
-            estadoActual.shortNameHash == estadoHash ||
-            estadoActual.fullPathHash == estadoHash;
+            EstadoAnimatorCoincide(
+                estadoActual,
+                estadoHash
+            );
 
-        if (ultimoEstadoAnimatorForzado ==
-            estadoHash &&
-            yaEstaEnEstado)
+        bool yaVaHaciaEstado = false;
+
+        if (animator.IsInTransition(0))
+        {
+            AnimatorStateInfo siguienteEstado =
+                animator.GetNextAnimatorStateInfo(0);
+
+            yaVaHaciaEstado =
+                EstadoAnimatorCoincide(
+                    siguienteEstado,
+                    estadoHash
+                );
+        }
+
+        if (!forzarRefrescoAnimatorNatacion &&
+            ultimoEstadoAnimatorForzado == estadoHash &&
+            (yaEstaEnEstado || yaVaHaciaEstado))
         {
             return;
         }
@@ -1399,11 +1436,109 @@ public class movimientoplayer : MonoBehaviour
         animator.CrossFade(
             estadoHash,
             Mathf.Max(0f, duracionCrossFadeNatacion),
-            0
+            0,
+            0f
         );
 
         ultimoEstadoAnimatorForzado =
             estadoHash;
+        forzarRefrescoAnimatorNatacion = false;
+    }
+
+
+    private void ReiniciarControlAnimatorNatacion()
+    {
+        ultimoFrameAnimatorEnNatacion = false;
+        ultimoEstadoAnimatorForzado = 0;
+        forzarRefrescoAnimatorNatacion = true;
+    }
+
+    private void AplicarParametrosAnimatorNatacionInmediatos(
+        bool nadando,
+        bool nadandoConMovimiento)
+    {
+        SetAnimatorBoolIfExists(
+            parametroAnimacionNadando,
+            nadando
+        );
+
+        SetAnimatorBoolIfExists(
+            parametroAnimacionNadandoMovimiento,
+            nadandoConMovimiento
+        );
+
+        if (!nadando)
+        {
+            SetAnimatorBoolIfExists(
+                parametroAnimacionNadandoMovimiento,
+                false
+            );
+        }
+    }
+
+    private void ForzarEstadoAnimatorNatacionActual(
+        bool isSwimmingMoving)
+    {
+        if (!forzarEstadosAnimatorNatacion ||
+            animator == null)
+        {
+            return;
+        }
+
+        string estadoObjetivo =
+            isSwimmingMoving
+                ? estadoAnimatorNadar
+                : estadoAnimatorFlotar;
+
+        ForzarEstadoAnimatorSiExiste(
+            estadoObjetivo
+        );
+    }
+
+    private void ForzarEstadoAnimatorSalidaAguaActual()
+    {
+        if (!forzarEstadosAnimatorNatacion ||
+            animator == null ||
+            isFainted ||
+            isPickingUp)
+        {
+            return;
+        }
+
+        LeerMovimientoActual();
+
+        bool isWalking =
+            moveInput.magnitude > 0.1f;
+
+        bool isTryingToSprint =
+            sprintAction != null &&
+            sprintAction.ReadValue<float>() > 0.5f;
+
+        bool isRunning =
+            isWalking &&
+            isTryingToSprint &&
+            canSprint &&
+            !isTired;
+
+        string estadoSalida =
+            isRunning
+                ? estadoAnimatorRun
+                : isWalking
+                    ? estadoAnimatorWalk
+                    : estadoAnimatorIdle;
+
+        ForzarEstadoAnimatorSiExiste(
+            estadoSalida
+        );
+    }
+
+    private bool EstadoAnimatorCoincide(
+        AnimatorStateInfo estado,
+        int estadoHash)
+    {
+        return
+            estado.shortNameHash == estadoHash ||
+            estado.fullPathHash == estadoHash;
     }
 
     private bool TryGetAnimatorStateHash(
