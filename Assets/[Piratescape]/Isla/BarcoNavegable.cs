@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 
 [DisallowMultipleComponent]
@@ -19,6 +21,7 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
     [SerializeField] private Interactuador interactuadorJugador;
     [SerializeField] private PlayerPickupController recogidaJugador;
     [SerializeField] private PlayerInventoryInput inventarioInputJugador;
+    [SerializeField] private PlayerInventory inventarioJugador;
     [SerializeField] private Animator animatorJugador;
 
     [Header("Interaccion")]
@@ -26,6 +29,55 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
     [SerializeField] private bool interactuable = true;
     [SerializeField] private string promptMontar = "Montar";
     [SerializeField] private string promptBajar = "Bajar";
+
+
+    [Header("Construccion previa del barquito")]
+    [Tooltip("Activalo si quieres que el barquito no aparezca hasta entregar madera.")]
+    [SerializeField] private bool requiereConstruccionParaAparecer = false;
+
+    [Tooltip("Si esta activado, el barco empieza ya construido aunque el sistema de construccion este activo.")]
+    [SerializeField] private bool construidoAlIniciar = false;
+
+    [Tooltip("ItemData de la madera. Recomendado arrastrar aqui el asset de Madera. Si queda vacio, aceptara un item cuyo nombre contenga 'madera' o 'wood'.")]
+    [SerializeField] private ItemData itemMadera;
+
+    [SerializeField] private int maderaNecesaria = 4;
+    [SerializeField] private int maderaEntregada = 0;
+
+    [Tooltip("Hijo visual del barquito que se ocultara hasta construirlo. No arrastres aqui el mismo GameObject que tiene este script.")]
+    [SerializeField] private GameObject visualBarcoConstruido;
+
+    [Tooltip("Opcional: zona/andamio/fantasma de construccion que se vera antes de construir el barquito.")]
+    [SerializeField] private GameObject visualZonaConstruccion;
+
+    [Tooltip("Opcional: renderers extra del barco que quieres ocultar antes de construirlo, si no usas Visual Barco Construido.")]
+    [SerializeField] private Renderer[] renderersBarcoConstruido;
+
+    [Tooltip("Opcional: colliders del barco que quieres desactivar antes de construirlo. No metas aqui el collider de interaccion.")]
+    [SerializeField] private Collider[] collidersBarcoAntesConstruir;
+
+    [SerializeField] private string promptConstruir = "Construir barquito";
+    [SerializeField] private string mensajeSeleccionaMadera = "Selecciona madera para construir";
+    [SerializeField] private string mensajeBarcoConstruido = "Barquito construido";
+    [SerializeField] private float duracionMensajeConstruccion = 1.2f;
+
+    [Header("Efecto construccion barquito")]
+    [SerializeField] private GameObject fxConstruccionBarquito;
+    [SerializeField] private Transform puntoFXConstruccionBarquito;
+    [SerializeField] private bool animarAparicionBarquito = true;
+    [SerializeField] private float duracionAparicionBarquito = 0.8f;
+    [SerializeField] private Vector3 escalaInicialAparicionBarquito = new Vector3(0.15f, 0.15f, 0.15f);
+
+    [Header("Sonido construccion barquito")]
+    [SerializeField] private AudioSource audioSourceConstruccionBarquito;
+
+    [Tooltip("Output del Audio Mixer. Asignar GameAudioMixer / SFX / Objetos.")]
+    [SerializeField] private AudioMixerGroup outputObjetosConstruccion;
+
+    [SerializeField] private AudioClip sonidoEntregarMadera;
+    [SerializeField] private AudioClip sonidoBarquitoConstruido;
+    [SerializeField] private float volumenEntregarMadera = 0.45f;
+    [SerializeField] private float volumenBarquitoConstruido = 0.75f;
 
     [Header("Movimiento")]
     [SerializeField] private float velocidadAdelante = 7f;
@@ -72,6 +124,12 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
     private bool promptVisible;
     private string mensajePromptActual;
 
+    private bool construido;
+    private string mensajeTemporalConstruccion;
+    private float tiempoFinMensajeTemporalConstruccion;
+    private Vector3 escalaOriginalVisualBarco = Vector3.one;
+    private Coroutine rutinaAparicionBarco;
+
     private float velocidadActual;
     private int frameUltimaInteraccion = -1;
 
@@ -90,6 +148,8 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
         CachearAgua();
         AutoConfigurarCapasTierra();
         CachearJugador();
+        PrepararAudioSourceConstruccionBarquito();
+        InicializarConstruccionBarquito();
     }
 
     private void Start()
@@ -175,6 +235,12 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
             return;
         }
 
+        if (ConstruccionPendiente())
+        {
+            IntentarEntregarMaderaBarquito();
+            return;
+        }
+
         MontarJugador();
     }
 
@@ -253,6 +319,11 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
             inventarioInputJugador = jugadorTransform.GetComponent<PlayerInventoryInput>();
         }
 
+        if (inventarioJugador == null)
+        {
+            inventarioJugador = jugadorTransform.GetComponent<PlayerInventory>();
+        }
+
         if (animatorJugador == null)
         {
             animatorJugador = jugadorTransform.GetComponentInChildren<Animator>();
@@ -292,7 +363,7 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
     private void ActualizarPrompt()
     {
         bool debeMostrarPrompt = interactuable && (activo || montado);
-        string mensaje = montado ? promptBajar : promptMontar;
+        string mensaje = ObtenerMensajePromptActual();
 
         if (!debeMostrarPrompt)
         {
@@ -315,6 +386,31 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
         InteractionUI.Instance.Show(this, mensaje);
     }
 
+    private string ObtenerMensajePromptActual()
+    {
+        if (!string.IsNullOrWhiteSpace(mensajeTemporalConstruccion) &&
+            Time.time < tiempoFinMensajeTemporalConstruccion)
+        {
+            return mensajeTemporalConstruccion;
+        }
+
+        mensajeTemporalConstruccion = null;
+
+        if (montado)
+        {
+            return promptBajar;
+        }
+
+        if (ConstruccionPendiente())
+        {
+            int necesaria = Mathf.Max(1, maderaNecesaria);
+            int entregada = Mathf.Clamp(maderaEntregada, 0, necesaria);
+            return promptConstruir + " " + entregada + "/" + necesaria;
+        }
+
+        return promptMontar;
+    }
+
     private void OcultarPrompt()
     {
         if (!promptVisible)
@@ -331,8 +427,303 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
         mensajePromptActual = null;
     }
 
+
+    private void InicializarConstruccionBarquito()
+    {
+        maderaNecesaria = Mathf.Max(1, maderaNecesaria);
+        maderaEntregada = Mathf.Clamp(maderaEntregada, 0, maderaNecesaria);
+
+        if (visualBarcoConstruido != null)
+        {
+            escalaOriginalVisualBarco = visualBarcoConstruido.transform.localScale;
+        }
+
+        construido = !requiereConstruccionParaAparecer || construidoAlIniciar || maderaEntregada >= maderaNecesaria;
+
+        if (construido)
+        {
+            maderaEntregada = maderaNecesaria;
+        }
+
+        AplicarEstadoVisualConstruccionBarquito(false);
+    }
+
+    private bool ConstruccionPendiente()
+    {
+        return requiereConstruccionParaAparecer && !construido;
+    }
+
+    private bool BarquitoConstruido()
+    {
+        return !requiereConstruccionParaAparecer || construido;
+    }
+
+    private void IntentarEntregarMaderaBarquito()
+    {
+        CachearJugador();
+
+        if (inventarioJugador == null)
+        {
+            inventarioJugador = FindFirstObjectByType<PlayerInventory>();
+        }
+
+        if (inventarioJugador == null)
+        {
+            MostrarMensajeTemporalConstruccion("No encuentro el inventario del jugador");
+            return;
+        }
+
+        InventorySlot slotSeleccionado = inventarioJugador.GetSlot(inventarioJugador.SelectedSlotIndex);
+
+        if (slotSeleccionado == null || slotSeleccionado.IsEmpty() || slotSeleccionado.itemData == null)
+        {
+            MostrarMensajeTemporalConstruccion(mensajeSeleccionaMadera);
+            ReproducirSonidoConstruccionBarquito(null, 0f);
+            return;
+        }
+
+        ItemData itemSeleccionado = slotSeleccionado.itemData;
+
+        if (!EsItemMaderaValido(itemSeleccionado))
+        {
+            MostrarMensajeTemporalConstruccion(mensajeSeleccionaMadera);
+            ReproducirSonidoConstruccionBarquito(null, 0f);
+            return;
+        }
+
+        int cantidadRemovida = inventarioJugador.RemoverHasta(itemSeleccionado, 1);
+
+        if (cantidadRemovida <= 0)
+        {
+            MostrarMensajeTemporalConstruccion("No tienes madera suficiente");
+            return;
+        }
+
+        maderaEntregada = Mathf.Clamp(maderaEntregada + cantidadRemovida, 0, maderaNecesaria);
+        ReproducirSonidoConstruccionBarquito(sonidoEntregarMadera, volumenEntregarMadera);
+
+        if (maderaEntregada >= maderaNecesaria)
+        {
+            CompletarConstruccionBarquito();
+            return;
+        }
+
+        ActualizarPrompt();
+    }
+
+    private bool EsItemMaderaValido(ItemData item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+
+        if (itemMadera != null)
+        {
+            return item == itemMadera;
+        }
+
+        string nombreAsset = item.name != null ? item.name.ToLower() : "";
+        string nombreMostrar = item.DisplayName != null ? item.DisplayName.ToLower() : "";
+
+        return nombreAsset.Contains("madera") ||
+               nombreAsset.Contains("wood") ||
+               nombreMostrar.Contains("madera") ||
+               nombreMostrar.Contains("wood");
+    }
+
+    private void CompletarConstruccionBarquito()
+    {
+        construido = true;
+        maderaEntregada = maderaNecesaria;
+        velocidadActual = 0f;
+
+        AplicarEstadoVisualConstruccionBarquito(true);
+        ReproducirSonidoConstruccionBarquito(sonidoBarquitoConstruido, volumenBarquitoConstruido);
+        MostrarMensajeTemporalConstruccion(mensajeBarcoConstruido);
+    }
+
+    private void AplicarEstadoVisualConstruccionBarquito(bool reproducirEfecto)
+    {
+        bool mostrarBarco = BarquitoConstruido();
+
+        if (visualZonaConstruccion != null)
+        {
+            visualZonaConstruccion.SetActive(!mostrarBarco);
+        }
+
+        CambiarEstadoRenderersBarco(mostrarBarco);
+        CambiarEstadoCollidersBarco(mostrarBarco);
+
+        if (visualBarcoConstruido != null && visualBarcoConstruido != gameObject)
+        {
+            if (mostrarBarco)
+            {
+                visualBarcoConstruido.SetActive(true);
+
+                if (reproducirEfecto && animarAparicionBarquito)
+                {
+                    if (rutinaAparicionBarco != null)
+                    {
+                        StopCoroutine(rutinaAparicionBarco);
+                    }
+
+                    rutinaAparicionBarco = StartCoroutine(AparicionBarquitoRoutine());
+                }
+                else
+                {
+                    visualBarcoConstruido.transform.localScale = escalaOriginalVisualBarco;
+                }
+            }
+            else
+            {
+                visualBarcoConstruido.transform.localScale = escalaOriginalVisualBarco;
+                visualBarcoConstruido.SetActive(false);
+            }
+        }
+        else if (visualBarcoConstruido == gameObject)
+        {
+            Debug.LogWarning("BarcoNavegable: no pongas el mismo GameObject del script en Visual Barco Construido. Usa un hijo visual del barco.", this);
+        }
+
+        if (reproducirEfecto)
+        {
+            InstanciarFXConstruccionBarquito();
+        }
+    }
+
+    private IEnumerator AparicionBarquitoRoutine()
+    {
+        if (visualBarcoConstruido == null)
+        {
+            yield break;
+        }
+
+        Transform visual = visualBarcoConstruido.transform;
+        Vector3 escalaInicio = escalaInicialAparicionBarquito;
+        Vector3 escalaFin = escalaOriginalVisualBarco;
+        float duracion = Mathf.Max(0.01f, duracionAparicionBarquito);
+        float tiempo = 0f;
+
+        visual.localScale = escalaInicio;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.deltaTime;
+            float t = Mathf.Clamp01(tiempo / duracion);
+            t = Mathf.SmoothStep(0f, 1f, t);
+            visual.localScale = Vector3.Lerp(escalaInicio, escalaFin, t);
+            yield return null;
+        }
+
+        visual.localScale = escalaFin;
+        rutinaAparicionBarco = null;
+    }
+
+    private void CambiarEstadoRenderersBarco(bool activoRenderers)
+    {
+        if (renderersBarcoConstruido == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < renderersBarcoConstruido.Length; i++)
+        {
+            if (renderersBarcoConstruido[i] != null)
+            {
+                renderersBarcoConstruido[i].enabled = activoRenderers;
+            }
+        }
+    }
+
+    private void CambiarEstadoCollidersBarco(bool activoColliders)
+    {
+        if (collidersBarcoAntesConstruir == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < collidersBarcoAntesConstruir.Length; i++)
+        {
+            Collider col = collidersBarcoAntesConstruir[i];
+
+            if (col == null)
+            {
+                continue;
+            }
+
+            col.enabled = activoColliders;
+        }
+    }
+
+    private void MostrarMensajeTemporalConstruccion(string mensaje)
+    {
+        mensajeTemporalConstruccion = mensaje;
+        tiempoFinMensajeTemporalConstruccion = Time.time + Mathf.Max(0.1f, duracionMensajeConstruccion);
+        mensajePromptActual = null;
+        ActualizarPrompt();
+    }
+
+    private void InstanciarFXConstruccionBarquito()
+    {
+        if (fxConstruccionBarquito == null)
+        {
+            return;
+        }
+
+        Vector3 posicionFX = puntoFXConstruccionBarquito != null
+            ? puntoFXConstruccionBarquito.position
+            : transform.position;
+
+        Quaternion rotacionFX = puntoFXConstruccionBarquito != null
+            ? puntoFXConstruccionBarquito.rotation
+            : Quaternion.identity;
+
+        GameObject fx = Instantiate(fxConstruccionBarquito, posicionFX, rotacionFX);
+        fx.SetActive(true);
+    }
+
+    private void PrepararAudioSourceConstruccionBarquito()
+    {
+        if (audioSourceConstruccionBarquito == null)
+        {
+            audioSourceConstruccionBarquito = GetComponent<AudioSource>();
+        }
+
+        if (audioSourceConstruccionBarquito == null)
+        {
+            audioSourceConstruccionBarquito = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSourceConstruccionBarquito.playOnAwake = false;
+        audioSourceConstruccionBarquito.loop = false;
+        audioSourceConstruccionBarquito.spatialBlend = 0f;
+        audioSourceConstruccionBarquito.dopplerLevel = 0f;
+
+        if (outputObjetosConstruccion != null)
+        {
+            audioSourceConstruccionBarquito.outputAudioMixerGroup = outputObjetosConstruccion;
+        }
+    }
+
+    private void ReproducirSonidoConstruccionBarquito(AudioClip clip, float volumen)
+    {
+        if (audioSourceConstruccionBarquito == null || clip == null)
+        {
+            return;
+        }
+
+        audioSourceConstruccionBarquito.pitch = 1f;
+        audioSourceConstruccionBarquito.PlayOneShot(clip, volumen);
+    }
+
     private void MontarJugador()
     {
+        if (!BarquitoConstruido())
+        {
+            return;
+        }
+
         CachearJugador();
 
         if (jugadorTransform == null)
@@ -844,5 +1235,24 @@ public class BarcoNavegable : MonoBehaviour, Interactuable
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(puntoSalida.position, 0.12f);
         }
+
+        if (requiereConstruccionParaAparecer && !construido)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireCube(transform.position + Vector3.up * 0.5f, Vector3.one * 0.7f);
+        }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        maderaNecesaria = Mathf.Max(1, maderaNecesaria);
+        maderaEntregada = Mathf.Clamp(maderaEntregada, 0, maderaNecesaria);
+
+        if (audioSourceConstruccionBarquito != null && outputObjetosConstruccion != null)
+        {
+            audioSourceConstruccionBarquito.outputAudioMixerGroup = outputObjetosConstruccion;
+        }
+    }
+#endif
 }
