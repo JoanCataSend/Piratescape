@@ -37,6 +37,13 @@ public class MonoAmistadPlatano : MonoBehaviour
     [SerializeField] private float suavizadoAlturaSuelo = 18f;
     [SerializeField] private bool corregirAlturaConNavMeshAgent = true;
     [SerializeField] private bool ignorarTriggersSuelo = true;
+    [SerializeField] private bool ignorarOtrosMonosComoSuelo = true;
+    [SerializeField] private bool ignorarJugadorComoSuelo = true;
+    [SerializeField] private bool ignorarItemsComoSuelo = true;
+
+    [Header("Separacion entre monos")]
+    [SerializeField] private bool ignorarColisionesFisicasConOtrosMonos = true;
+    [SerializeField] private float intervaloActualizarColisionesMonos = 2f;
 
     [Header("Orientacion")]
     [SerializeField] private bool mirarSiempreAlJugador = true;
@@ -73,6 +80,8 @@ public class MonoAmistadPlatano : MonoBehaviour
     [SerializeField] private string triggerSoltarItem = "SoltarItem";
 
     private float alturaInicial;
+    private Collider[] collidersPropios;
+    private float siguienteActualizacionColisionesMonos;
     private bool promptMostrado;
     private float tiempoHastaPermitirOcultarPrompt;
 
@@ -98,6 +107,7 @@ public class MonoAmistadPlatano : MonoBehaviour
     private void Awake()
     {
         alturaInicial = transform.position.y;
+        collidersPropios = GetComponentsInChildren<Collider>(true);
 
         if (jugador == null)
         {
@@ -125,11 +135,13 @@ public class MonoAmistadPlatano : MonoBehaviour
         }
 
         ConfigurarNavMeshAgent();
+        ConfigurarColisionesConOtrosMonos();
     }
 
     private void OnEnable()
     {
         ConfigurarNavMeshAgent();
+        ConfigurarColisionesConOtrosMonos();
     }
 
     private void Update()
@@ -155,6 +167,8 @@ public class MonoAmistadPlatano : MonoBehaviour
         {
             return;
         }
+
+        ActualizarColisionesConOtrosMonosSiHaceFalta();
 
         if (esAmigo)
         {
@@ -779,6 +793,11 @@ public class MonoAmistadPlatano : MonoBehaviour
                 continue;
             }
 
+            if (!EsImpactoValidoComoSuelo(impacto.collider))
+            {
+                continue;
+            }
+
             if (impacto.distance < mejorDistancia)
             {
                 mejorDistancia = impacto.distance;
@@ -794,6 +813,104 @@ public class MonoAmistadPlatano : MonoBehaviour
 
         alturaSuelo = mejorImpacto.point.y;
         return true;
+    }
+
+
+    private bool EsImpactoValidoComoSuelo(Collider colliderImpacto)
+    {
+        if (colliderImpacto == null)
+        {
+            return false;
+        }
+
+        if (ignorarOtrosMonosComoSuelo)
+        {
+            MonoAmistadPlatano monoDelCollider = colliderImpacto.GetComponentInParent<MonoAmistadPlatano>();
+
+            if (monoDelCollider != null && monoDelCollider != this)
+            {
+                return false;
+            }
+        }
+
+        if (ignorarJugadorComoSuelo && jugador != null)
+        {
+            if (colliderImpacto.transform == jugador || colliderImpacto.transform.IsChildOf(jugador))
+            {
+                return false;
+            }
+        }
+
+        if (ignorarItemsComoSuelo)
+        {
+            ObjetoRecogibleInteractuable itemDelCollider = colliderImpacto.GetComponentInParent<ObjetoRecogibleInteractuable>();
+
+            if (itemDelCollider != null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void ActualizarColisionesConOtrosMonosSiHaceFalta()
+    {
+        if (!ignorarColisionesFisicasConOtrosMonos)
+        {
+            return;
+        }
+
+        if (Time.time < siguienteActualizacionColisionesMonos)
+        {
+            return;
+        }
+
+        siguienteActualizacionColisionesMonos = Time.time + Mathf.Max(0.25f, intervaloActualizarColisionesMonos);
+        ConfigurarColisionesConOtrosMonos();
+    }
+
+    private void ConfigurarColisionesConOtrosMonos()
+    {
+        if (!ignorarColisionesFisicasConOtrosMonos)
+        {
+            return;
+        }
+
+        if (collidersPropios == null || collidersPropios.Length == 0)
+        {
+            collidersPropios = GetComponentsInChildren<Collider>(true);
+        }
+
+        MonoAmistadPlatano[] monos = FindObjectsByType<MonoAmistadPlatano>(FindObjectsSortMode.None);
+
+        foreach (MonoAmistadPlatano otroMono in monos)
+        {
+            if (otroMono == null || otroMono == this)
+            {
+                continue;
+            }
+
+            Collider[] collidersOtroMono = otroMono.GetComponentsInChildren<Collider>(true);
+
+            foreach (Collider colliderPropio in collidersPropios)
+            {
+                if (colliderPropio == null)
+                {
+                    continue;
+                }
+
+                foreach (Collider colliderOtro in collidersOtroMono)
+                {
+                    if (colliderOtro == null || colliderOtro == colliderPropio)
+                    {
+                        continue;
+                    }
+
+                    Physics.IgnoreCollision(colliderPropio, colliderOtro, true);
+                }
+            }
+        }
     }
 
     private void SeguirJugador()

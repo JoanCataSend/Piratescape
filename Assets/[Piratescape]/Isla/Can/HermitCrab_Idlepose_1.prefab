@@ -1,0 +1,150 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4188126940186197741
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_Name
+      value: HermitCrab_Idlepose_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: c7cfc56f39d443d4ab51264ab6001380, type: 2}
+    - target: {fileID: 5866666021909216657, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2515607525588184914}
+  m_SourcePrefab: {fileID: 100100000, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+--- !u!1 &3953701507593372604 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+  m_PrefabInstance: {fileID: 4188126940186197741}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2515607525588184914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3953701507593372604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de48980587ef4744973eef06afb6e00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jugador: {fileID: 0}
+  movimientoJugador: {fileID: 0}
+  feedbackDanioJugador: {fileID: 0}
+  animatorCangrejo: {fileID: 5866666021909216657, guid: d0767d5b14306a441ae847e541807bd3, type: 3}
+  rangoDeteccion: 8
+  rangoPerderObjetivo: 12
+  noAtacarSiJugadorEstaNadando: 1
+  noAtacarSiJugadorEstaEnBarco: 1
+  usarNavMeshAgentSiExiste: 1
+  velocidadPatrulla: 1.2
+  velocidadPersecucion: 3.2
+  velocidadGiro: 10
+  distanciaPararCercaJugador: 0.75
+  correccionRotacionModeloY: 0
+  radioPatrulla: 2
+  distanciaLlegadaPatrulla: 0.45
+  tiempoEntreCambiosPatrulla: 3.5
+  ajustarAlturaAlSuelo: 1
+  capasSuelo:
+    serializedVersion: 2
+    m_Bits: 256
+  autoConfigurarCapasSueloSiEstaVacio: 1
+  alturaSobreSuelo: 0.03
+  alturaOrigenRaycastSuelo: 2
+  distanciaRaycastSuelo: 6
+  suavizadoAlturaSuelo: 18
+  ignorarTriggersSuelo: 1
+  empezarEscondidoBajoArena: 1
+  rangoActivarSalidaArena: 3.74
+  volverBajoArenaAlAlejarse: 1
+  rangoVolverBajoArena: 12
+  congelarPrimerFrameMientrasEstaEscondido: 1
+  reproducirAnimacionConPlayDirecto: 1
+  estadoAnimatorSalidaArena: SalirDeArena
+  triggerSalirArena: salirArena
+  duracionAnimacionSalidaArena: 1
+  estadoAnimatorEntradaArena: EntrarArena
+  triggerEntrarArena: entrarArena
+  duracionAnimacionEntradaArena: 1
+  reproducirEstadoActivoAlTerminar: 1
+  estadoAnimatorActivo: Idle
+  retardoAntesDeAtacarTrasSalir: 0.35
+  activarSalidaSoloAlEntrarEnRango: 1
+  noAjustarAlturaSueloMientrasEstaEscondidoOSaliendo: 1
+  desactivarNavMeshAgentMientrasEstaEnArena: 1
+  usarRootMotionSoloDuranteArena: 0
+  frameNormalizadoOcultoSalidaArena: 0
+  forzarEvaluacionAnimatorAlCambiarEstado: 1
+  congelarAnimatorConSpeedCero: 1
+  desactivarAnimatorMientrasEstaEscondido: 1
+  forzarRootMotionOffSiNoSeUsaDuranteArena: 1
+  danioPorAtaque: 8
+  distanciaAtaque: 1.05
+  tiempoEntreAtaques: 1.25
+  audioSourceCangrejo: {fileID: 0}
+  sonidosAtaqueCangrejo: []
+  volumenAtaqueCangrejo: 0.7
+  boolCaminando: isWalking
+  boolPersiguiendo: isChasing
+  triggerAtaque: attack
+  parametroVelocidad: speed
+  mostrarGizmos: 1
+  mostrarLogsAtaque: 0
