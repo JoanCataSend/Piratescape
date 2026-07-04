@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6d8fe0093d58f489832c67a1a076d2, type: 3}
+  m_Name: CanaPescar
+  m_EditorClassIdentifier: 
+  itemId: cana_pescar
+  displayName: "Ca\xF1a de pescar"
+  description: "Ca\xF1a sencilla para pescar en el agua."
+  icon: {fileID: 21300000, guid: 6098bd415581a8b41b8fcc8347629c4f, type: 3}
+  worldPrefab: {fileID: 6772317700888818471, guid: 227d6fd819e6d694b88b32306fa64c2b, type: 3}
+  handPrefab: {fileID: 6772317700888818471, guid: 227d6fd819e6d694b88b32306fa64c2b, type: 3}
+  handLocalPosition: {x: 0, y: 0, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 1, y: 1, z: 1}

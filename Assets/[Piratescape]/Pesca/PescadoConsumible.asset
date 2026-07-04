@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa92465034ab8b4a8afcbdd6105a430, type: 3}
+  m_Name: PescadoConsumible
+  m_EditorClassIdentifier: 
+  itemId: pescado
+  displayName: Pescado
+  description: "Pescado fresco. Recupera vida y energ\xEDa al comerlo."
+  icon: {fileID: 21300000, guid: 6be9fde6896ea3149a5a7dd836436ed7, type: 3}
+  worldPrefab: {fileID: 1001553872895808245, guid: 417f5f72a8ad9554c9906ab6ce508ad2, type: 3}
+  handPrefab: {fileID: 919132149155446097, guid: 2db6dcdb7cfe276479b9a49c7e9bafcd, type: 3}
+  handLocalPosition: {x: 0, y: 0, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 1, y: 1, z: 1}
+  healthRestore: 20
+  energyRestore: 25
