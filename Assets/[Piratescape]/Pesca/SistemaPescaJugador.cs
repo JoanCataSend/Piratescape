@@ -51,6 +51,14 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     [SerializeField] private bool autoConfigurarCapasAgua = true;
     [SerializeField] private bool detectarTriggersAgua = true;
 
+    [Header("Suelo que bloquea la pesca")]
+    [Tooltip("Evita lanzar la caña si el raycast encuentra agua, pero hay suelo/isla/arena por encima de esa agua.")]
+    [SerializeField] private bool bloquearPescaSiSueloOcultaAgua = true;
+    [SerializeField] private LayerMask capasSueloBloqueanPesca;
+    [SerializeField] private bool autoConfigurarCapasSueloBloqueanPesca = true;
+    [SerializeField] private bool ignorarTriggersSueloBloqueoPesca = true;
+    [SerializeField] private float margenSueloSobreAgua = 0.08f;
+
     [Header("Movimiento del anzuelo")]
     [SerializeField] private float duracionLanzamientoAnzuelo = 0.45f;
     [SerializeField] private float alturaArcoLanzamiento = 0.65f;
@@ -109,6 +117,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         CachearReferencias();
         PrepararAudio();
         AutoConfigurarLayerAguaSiHaceFalta();
+        AutoConfigurarLayersSueloBloqueanPescaSiHaceFalta();
         ValidarValores();
     }
 
@@ -500,7 +509,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         puntoAgua = Vector3.zero;
 
         Vector3 direccion = ObtenerDireccionLanzamiento();
-        QueryTriggerInteraction triggerMode = detectarTriggersAgua
+        QueryTriggerInteraction triggerModeAgua = detectarTriggersAgua
             ? QueryTriggerInteraction.Collide
             : QueryTriggerInteraction.Ignore;
 
@@ -508,14 +517,48 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         {
             Vector3 origen = transform.position + direccion * distancia + Vector3.up * alturaOrigenRaycastAgua;
 
-            if (Physics.Raycast(origen, Vector3.down, out RaycastHit hit, distanciaRaycastAgua, capasAgua, triggerMode))
+            if (!Physics.Raycast(origen, Vector3.down, out RaycastHit hitAgua, distanciaRaycastAgua, capasAgua, triggerModeAgua))
             {
-                puntoAgua = hit.point;
-                return true;
+                continue;
             }
+
+            if (AguaEstaTapadaPorSuelo(origen, hitAgua.distance))
+            {
+                continue;
+            }
+
+            puntoAgua = hitAgua.point;
+            return true;
         }
 
         return false;
+    }
+
+    private bool AguaEstaTapadaPorSuelo(Vector3 origenRaycast, float distanciaHastaAgua)
+    {
+        if (!bloquearPescaSiSueloOcultaAgua)
+        {
+            return false;
+        }
+
+        if (capasSueloBloqueanPesca.value == 0)
+        {
+            return false;
+        }
+
+        QueryTriggerInteraction triggerModeSuelo = ignorarTriggersSueloBloqueoPesca
+            ? QueryTriggerInteraction.Ignore
+            : QueryTriggerInteraction.Collide;
+
+        float distanciaChequeoSuelo = Mathf.Max(0.01f, distanciaHastaAgua - margenSueloSobreAgua);
+
+        return Physics.Raycast(
+            origenRaycast,
+            Vector3.down,
+            distanciaChequeoSuelo,
+            capasSueloBloqueanPesca,
+            triggerModeSuelo
+        );
     }
 
     private Vector3 ObtenerDireccionLanzamiento()
@@ -780,6 +823,40 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         }
     }
 
+    private void AutoConfigurarLayersSueloBloqueanPescaSiHaceFalta()
+    {
+        if (!autoConfigurarCapasSueloBloqueanPesca || capasSueloBloqueanPesca.value != 0)
+        {
+            return;
+        }
+
+        string[] nombresCapasSuelo =
+        {
+            "Suelo",
+            "Isla",
+            "Ground",
+            "Terrain",
+            "Terreno"
+        };
+
+        int mascara = 0;
+
+        for (int i = 0; i < nombresCapasSuelo.Length; i++)
+        {
+            int layer = LayerMask.NameToLayer(nombresCapasSuelo[i]);
+
+            if (layer >= 0)
+            {
+                mascara |= 1 << layer;
+            }
+        }
+
+        if (mascara != 0)
+        {
+            capasSueloBloqueanPesca = mascara;
+        }
+    }
+
     private void ValidarValores()
     {
         tiempoMinimoPicada = Mathf.Max(0.1f, tiempoMinimoPicada);
@@ -790,5 +867,6 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         intervaloActualizarPuntoAgua = Mathf.Max(0.02f, intervaloActualizarPuntoAgua);
         duracionLanzamientoAnzuelo = Mathf.Max(0.01f, duracionLanzamientoAnzuelo);
         duracionRetornoAnzuelo = Mathf.Max(0.01f, duracionRetornoAnzuelo);
+        margenSueloSobreAgua = Mathf.Max(0f, margenSueloSobreAgua);
     }
 }

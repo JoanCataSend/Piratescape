@@ -127959,7 +127959,7 @@ Transform:
   m_GameObject: {fileID: 587593477}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15272912, y: -0.000000036405524, z: 0.0000000056261906, w: 0.98826814}
-  m_LocalPosition: {x: -59, y: 1.8575884, z: -39.051147}
+  m_LocalPosition: {x: -46.76, y: 1.8575884, z: 7.058849}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -191363,15 +191363,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6248687023983503773, guid: 227d6fd819e6d694b88b32306fa64c2b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -63.22376
+      value: -55.736
       objectReference: {fileID: 0}
     - target: {fileID: 6248687023983503773, guid: 227d6fd819e6d694b88b32306fa64c2b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.75292563
+      value: 1.056
       objectReference: {fileID: 0}
     - target: {fileID: 6248687023983503773, guid: 227d6fd819e6d694b88b32306fa64c2b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.212997
+      value: 9.082
       objectReference: {fileID: 0}
     - target: {fileID: 6248687023983503773, guid: 227d6fd819e6d694b88b32306fa64c2b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -209003,7 +209003,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -72
+      value: -59.76
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -209011,7 +209011,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -40.59
+      value: 5.52
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -270990,7 +270990,7 @@ MonoBehaviour:
   usarTeclaE: 1
   permitirClickComoAlternativa: 0
   permitirMando: 1
-  prefabAnzuelo: {fileID: 2992194533557172515, guid: 5c427e441f1f5184a905decb21b8e536, type: 3}
+  prefabAnzuelo: {fileID: 3287725549341607999, guid: b5f25787c24e2f042808b655f54a4f38, type: 3}
   usarDireccionCamaraParaLanzar: 0
   usarRotacionOriginalPrefabAnzuelo: 1
   rotacionExtraAnzueloEuler: {x: 0, y: 0, z: 0}
@@ -271004,6 +271004,13 @@ MonoBehaviour:
     m_Bits: 16
   autoConfigurarCapasAgua: 1
   detectarTriggersAgua: 1
+  bloquearPescaSiSueloOcultaAgua: 1
+  capasSueloBloqueanPesca:
+    serializedVersion: 2
+    m_Bits: 256
+  autoConfigurarCapasSueloBloqueanPesca: 1
+  ignorarTriggersSueloBloqueoPesca: 1
+  margenSueloSobreAgua: 0.08
   duracionLanzamientoAnzuelo: 0.45
   alturaArcoLanzamiento: 0.65
   duracionRetornoAnzuelo: 0.32
