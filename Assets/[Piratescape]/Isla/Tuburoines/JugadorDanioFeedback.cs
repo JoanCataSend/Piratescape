@@ -6,6 +6,13 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class JugadorDanioFeedback : MonoBehaviour
 {
+    public static event System.Action<Transform, Vector3, int> OnJugadorDaniado;
+
+    public Transform UltimoAtacante { get; private set; }
+    public Vector3 UltimaPosicionDanio { get; private set; }
+    public int UltimaCantidadDanio { get; private set; }
+    public float TiempoUltimoDanio { get; private set; }
+
     [Header("Referencias")]
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private SistemaSaludJugador sistemaSaludJugador;
@@ -43,7 +50,22 @@ public class JugadorDanioFeedback : MonoBehaviour
         int cantidad,
         Vector3 origenDanio)
     {
+        RecibirDanio(
+            cantidad,
+            origenDanio,
+            null);
+    }
+
+    public void RecibirDanio(
+        int cantidad,
+        Vector3 origenDanio,
+        Transform atacante)
+    {
         AplicarDanio(cantidad);
+        RegistrarDanio(
+            cantidad,
+            origenDanio,
+            atacante);
         ReproducirFeedbackDanio(origenDanio);
     }
 
@@ -51,6 +73,22 @@ public class JugadorDanioFeedback : MonoBehaviour
     {
         ReproducirSonidoDolor();
         LanzarFlashRojo();
+    }
+
+    private void RegistrarDanio(
+        int cantidad,
+        Vector3 origenDanio,
+        Transform atacante)
+    {
+        UltimoAtacante = atacante;
+        UltimaPosicionDanio = origenDanio;
+        UltimaCantidadDanio = cantidad;
+        TiempoUltimoDanio = Time.time;
+
+        OnJugadorDaniado?.Invoke(
+            atacante,
+            origenDanio,
+            cantidad);
     }
 
     private void CachearReferencias()

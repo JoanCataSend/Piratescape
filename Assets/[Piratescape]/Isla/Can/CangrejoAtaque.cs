@@ -873,7 +873,7 @@ public class CangrejoAtaque : MonoBehaviour
 
         if (feedbackDanioJugador != null)
         {
-            feedbackDanioJugador.RecibirDanio(danioPorAtaque, transform.position);
+            feedbackDanioJugador.RecibirDanio(danioPorAtaque, transform.position, transform);
         }
         else
         {
