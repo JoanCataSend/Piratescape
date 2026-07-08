@@ -273215,12 +273215,12 @@ MonoBehaviour:
   triggerRecogerBien: FishCatch
   triggerRecogerMal: FishFail
   audioSourcePesca: {fileID: 0}
-  outputPesca: {fileID: 0}
-  sonidoLanzar: {fileID: 0}
+  outputPesca: {fileID: -5630590406745796260, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
+  sonidoLanzar: {fileID: 8300000, guid: b9a02d26cb2b00b4c9b104f7fe819f40, type: 3}
   sonidoFlotarAgua: {fileID: 0}
-  sonidoPicada: {fileID: 0}
-  sonidoPescaConseguida: {fileID: 0}
-  sonidoPescaFallida: {fileID: 0}
+  sonidoPicada: {fileID: 8300000, guid: 0abc5f40923878543a1223a5a2ff17a7, type: 3}
+  sonidoPescaConseguida: {fileID: 8300000, guid: 419e362a7283ffc47a28dfa55f63bae3, type: 3}
+  sonidoPescaFallida: {fileID: 8300000, guid: 8b8af563308719c47859a8fc7e172c64, type: 3}
   volumenAudio: 0.8
   mostrarMensajes: 1
   duracionMensajes: 1.4
