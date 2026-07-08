@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
@@ -14,6 +15,40 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         Recogiendo
     }
 
+    private enum RarezaPez
+    {
+        Comun,
+        PocoComun,
+        Raro,
+        Epico,
+        Legendario
+    }
+
+    [System.Serializable]
+    private sealed class PezPescable
+    {
+        [Header("Item")]
+        [SerializeField] private string nombreDebug = "Pez";
+        [SerializeField] private ConsumibleItemData itemPez;
+        [SerializeField] private int cantidad = 1;
+
+        [Header("Rareza")]
+        [SerializeField] private RarezaPez rareza = RarezaPez.Comun;
+        [Tooltip("Cuanto mayor sea este numero, mas probable es que salga este pez. Ejemplo: comun 70, raro 15, legendario 1.")]
+        [SerializeField] private int pesoProbabilidad = 50;
+
+        [Header("Mensaje opcional")]
+        [SerializeField] private string mensajeCapturaPersonalizado;
+
+        public string NombreDebug => nombreDebug;
+        public ConsumibleItemData ItemPez => itemPez;
+        public int Cantidad => Mathf.Max(1, cantidad);
+        public RarezaPez Rareza => rareza;
+        public int PesoProbabilidad => Mathf.Max(0, pesoProbabilidad);
+        public string MensajeCapturaPersonalizado => mensajeCapturaPersonalizado;
+        public bool EsValido => itemPez != null && PesoProbabilidad > 0;
+    }
+
     [Header("Referencias")]
     [SerializeField] private PlayerInventory inventarioJugador;
     [SerializeField] private Animator animatorJugador;
@@ -25,6 +60,12 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     [SerializeField] private ItemData itemCanaPescar;
     [SerializeField] private ConsumibleItemData itemPescado;
     [SerializeField] private int cantidadPescadoGanado = 1;
+
+    [Header("Peces diferentes y rareza")]
+    [SerializeField] private bool usarTablaPecesConRareza = true;
+    [SerializeField] private bool usarPescadoBaseComoFallback = true;
+    [SerializeField] private bool mostrarRarezaEnMensaje = true;
+    [SerializeField] private List<PezPescable> pecesDisponibles = new List<PezPescable>();
 
     [Header("Deteccion de agua y prompt")]
     [SerializeField] private bool mostrarPromptAlEstarCercaDelAgua = true;
@@ -103,6 +144,10 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     private AnzueloPesca anzueloActual;
     private Coroutine rutinaPesca;
     private Vector3 posicionAnzueloActual;
+
+    private ConsumibleItemData itemPescadoResultadoActual;
+    private int cantidadPescadoResultadoActual = 1;
+    private PezPescable pezResultadoActual;
 
     private Vector3 ultimoPuntoAguaDetectado;
     private bool hayPuntoAguaDetectado;
@@ -398,8 +443,9 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         estadoActual = EstadoPesca.Recogiendo;
         OcultarPromptPesca();
         ReproducirTrigger(triggerRecogerBien);
+        PrepararResultadoPescaConExito();
 
-        rutinaPesca = StartCoroutine(TerminarPescaRoutine(true, "¡Has pescado " + ObtenerNombreItem(itemPescado) + "!"));
+        rutinaPesca = StartCoroutine(TerminarPescaRoutine(true, CrearMensajeResultadoPesca()));
     }
 
     private void FallarPesca(string mensaje)
@@ -448,10 +494,12 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         if (pescaConExito)
         {
             bool pescadoAñadido = false;
+            ConsumibleItemData itemResultado = ObtenerItemPescadoResultadoActual();
+            int cantidadResultado = ObtenerCantidadPescadoResultadoActual();
 
-            if (inventarioJugador != null && itemPescado != null)
+            if (inventarioJugador != null && itemResultado != null)
             {
-                pescadoAñadido = inventarioJugador.TryAddItem(itemPescado, cantidadPescadoGanado);
+                pescadoAñadido = inventarioJugador.TryAddItem(itemResultado, cantidadResultado);
             }
 
             if (pescadoAñadido)
@@ -467,7 +515,139 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         }
 
         estadoActual = EstadoPesca.Inactivo;
+        LimpiarResultadoPesca();
         rutinaPesca = null;
+    }
+
+    private void PrepararResultadoPescaConExito()
+    {
+        pezResultadoActual = SeleccionarPezPorRareza();
+
+        if (pezResultadoActual != null && pezResultadoActual.ItemPez != null)
+        {
+            itemPescadoResultadoActual = pezResultadoActual.ItemPez;
+            cantidadPescadoResultadoActual = pezResultadoActual.Cantidad;
+            return;
+        }
+
+        itemPescadoResultadoActual = itemPescado;
+        cantidadPescadoResultadoActual = Mathf.Max(1, cantidadPescadoGanado);
+    }
+
+    private PezPescable SeleccionarPezPorRareza()
+    {
+        if (!usarTablaPecesConRareza || pecesDisponibles == null || pecesDisponibles.Count == 0)
+        {
+            return null;
+        }
+
+        int pesoTotal = 0;
+
+        for (int i = 0; i < pecesDisponibles.Count; i++)
+        {
+            PezPescable pez = pecesDisponibles[i];
+
+            if (pez == null || !pez.EsValido)
+            {
+                continue;
+            }
+
+            pesoTotal += pez.PesoProbabilidad;
+        }
+
+        if (pesoTotal <= 0)
+        {
+            return null;
+        }
+
+        int tirada = UnityEngine.Random.Range(0, pesoTotal);
+        int acumulado = 0;
+
+        for (int i = 0; i < pecesDisponibles.Count; i++)
+        {
+            PezPescable pez = pecesDisponibles[i];
+
+            if (pez == null || !pez.EsValido)
+            {
+                continue;
+            }
+
+            acumulado += pez.PesoProbabilidad;
+
+            if (tirada < acumulado)
+            {
+                return pez;
+            }
+        }
+
+        return null;
+    }
+
+    private string CrearMensajeResultadoPesca()
+    {
+        if (pezResultadoActual != null && !string.IsNullOrWhiteSpace(pezResultadoActual.MensajeCapturaPersonalizado))
+        {
+            return pezResultadoActual.MensajeCapturaPersonalizado;
+        }
+
+        ConsumibleItemData itemResultado = ObtenerItemPescadoResultadoActual();
+        string nombre = ObtenerNombreItem(itemResultado);
+
+        if (pezResultadoActual != null && mostrarRarezaEnMensaje)
+        {
+            return "¡Has pescado " + nombre + "! (" + ObtenerTextoRareza(pezResultadoActual.Rareza) + ")";
+        }
+
+        return "¡Has pescado " + nombre + "!";
+    }
+
+    private string ObtenerTextoRareza(RarezaPez rareza)
+    {
+        switch (rareza)
+        {
+            case RarezaPez.PocoComun:
+                return "Poco común";
+            case RarezaPez.Raro:
+                return "Raro";
+            case RarezaPez.Epico:
+                return "Épico";
+            case RarezaPez.Legendario:
+                return "Legendario";
+            default:
+                return "Común";
+        }
+    }
+
+    private ConsumibleItemData ObtenerItemPescadoResultadoActual()
+    {
+        if (itemPescadoResultadoActual != null)
+        {
+            return itemPescadoResultadoActual;
+        }
+
+        if (usarPescadoBaseComoFallback)
+        {
+            return itemPescado;
+        }
+
+        return null;
+    }
+
+    private int ObtenerCantidadPescadoResultadoActual()
+    {
+        if (itemPescadoResultadoActual != null)
+        {
+            return Mathf.Max(1, cantidadPescadoResultadoActual);
+        }
+
+        return Mathf.Max(1, cantidadPescadoGanado);
+    }
+
+    private void LimpiarResultadoPesca()
+    {
+        itemPescadoResultadoActual = null;
+        cantidadPescadoResultadoActual = 1;
+        pezResultadoActual = null;
     }
 
     private IEnumerator MoverAnzueloConArcoRoutine(
@@ -658,13 +838,15 @@ public sealed class SistemaPescaJugador : MonoBehaviour
 
     private void SoltarPescadoEnSueloSiHaceFalta()
     {
-        if (itemPescado == null || itemPescado.WorldPrefab == null)
+        ConsumibleItemData itemResultado = ObtenerItemPescadoResultadoActual();
+
+        if (itemResultado == null || itemResultado.WorldPrefab == null)
         {
             return;
         }
 
         Vector3 posicion = transform.position + transform.forward * 1.2f + Vector3.up * 0.6f;
-        Instantiate(itemPescado.WorldPrefab, posicion, Quaternion.identity);
+        Instantiate(itemResultado.WorldPrefab, posicion, Quaternion.identity);
     }
 
     private bool SeHaPulsadoInteraccionPesca()
@@ -864,6 +1046,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         tiempoParaReaccionar = Mathf.Max(0.1f, tiempoParaReaccionar);
         pasoBusquedaAgua = Mathf.Max(0.1f, pasoBusquedaAgua);
         cantidadPescadoGanado = Mathf.Max(1, cantidadPescadoGanado);
+        cantidadPescadoResultadoActual = Mathf.Max(1, cantidadPescadoResultadoActual);
         intervaloActualizarPuntoAgua = Mathf.Max(0.02f, intervaloActualizarPuntoAgua);
         duracionLanzamientoAnzuelo = Mathf.Max(0.01f, duracionLanzamientoAnzuelo);
         duracionRetornoAnzuelo = Mathf.Max(0.01f, duracionRetornoAnzuelo);

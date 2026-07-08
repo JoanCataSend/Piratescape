@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfa92465034ab8b4a8afcbdd6105a430, type: 3}
-  m_Name: PescadoConsumible
+  m_Name: PezLeon
   m_EditorClassIdentifier: 
   itemId: pescado
   displayName: Pescado
   description: "Pescado fresco. Recupera vida y energ\xEDa al comerlo."
-  icon: {fileID: 21300000, guid: 6be9fde6896ea3149a5a7dd836436ed7, type: 3}
-  worldPrefab: {fileID: 5816480861835306570, guid: 1dd1c94e243d33641b383a3e80a1a564, type: 3}
-  handPrefab: {fileID: 5816480861835306570, guid: 1dd1c94e243d33641b383a3e80a1a564, type: 3}
+  icon: {fileID: 21300000, guid: feb15ddcf33d3ba41bddea38ed36aba4, type: 3}
+  worldPrefab: {fileID: 5154713603136310187, guid: b412dfccf55cefa42b2a545a9e34326c, type: 3}
+  handPrefab: {fileID: 5154713603136310187, guid: b412dfccf55cefa42b2a545a9e34326c, type: 3}
   handLocalPosition: {x: 0, y: 0, z: 0}
   handLocalRotation: {x: 0, y: 0, z: 0}
-  handLocalScale: {x: 1, y: 1, z: 1}
+  handLocalScale: {x: 0.1, y: 0.1, z: 0.1}
   healthRestore: 20
   energyRestore: 25
