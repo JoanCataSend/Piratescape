@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa92465034ab8b4a8afcbdd6105a430, type: 3}
+  m_Name: FarolPirata
+  m_EditorClassIdentifier: 
+  itemId: farol_pirata
+  displayName: Faro
+  description: Faro, para hacer luz
+  icon: {fileID: 21300000, guid: d551326ae6b83d6479ba10227fb79e9e, type: 3}
+  worldPrefab: {fileID: 957602756745070383, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+  handPrefab: {fileID: 957602756745070383, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+  handLocalPosition: {x: 0, y: 0, z: 0}
+  handLocalRotation: {x: 0, y: 0, z: 0}
+  handLocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  healthRestore: 0
+  energyRestore: 0

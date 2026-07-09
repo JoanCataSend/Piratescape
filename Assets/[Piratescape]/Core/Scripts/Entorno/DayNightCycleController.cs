@@ -84,6 +84,19 @@ public class DayNightCycleController : MonoBehaviour
     [SerializeField] private float sunsetFogDensity = 0.0030f;
     [SerializeField] private float nightFogDensity = 0.0048f;
 
+
+    [Header("Visibilidad nocturna")]
+    [SerializeField] private bool mejorarVisibilidadNocturna = true;
+    [SerializeField] private bool mejorarVisibilidadEnTormenta = true;
+    [SerializeField] private Color colorAmbienteMinimoNoche = new Color(0.20f, 0.25f, 0.36f);
+    [SerializeField] private Color colorAmbienteMinimoNocheTormenta = new Color(0.24f, 0.29f, 0.42f);
+    [SerializeField] private float intensidadMinimaLunaNoche = 0.35f;
+    [SerializeField] private float intensidadMinimaLunaNocheTormenta = 0.46f;
+    [SerializeField] private float reflejosMinimosNoche = 0.16f;
+    [SerializeField] private float reflejosMinimosNocheTormenta = 0.22f;
+    [SerializeField] private bool limitarNieblaNocheTormenta = true;
+    [SerializeField] private float densidadMaximaNieblaNocheTormenta = 0.010f;
+
     [Header("Rotación")]
     [SerializeField] private float sunYaw = 170f;
     [SerializeField] private float moonYaw = 170f;
@@ -119,6 +132,11 @@ public class DayNightCycleController : MonoBehaviour
         dayFogDensity = Mathf.Max(0f, dayFogDensity);
         sunsetFogDensity = Mathf.Max(0f, sunsetFogDensity);
         nightFogDensity = Mathf.Max(0f, nightFogDensity);
+        intensidadMinimaLunaNoche = Mathf.Max(0f, intensidadMinimaLunaNoche);
+        intensidadMinimaLunaNocheTormenta = Mathf.Max(0f, intensidadMinimaLunaNocheTormenta);
+        reflejosMinimosNoche = Mathf.Max(0f, reflejosMinimosNoche);
+        reflejosMinimosNocheTormenta = Mathf.Max(0f, reflejosMinimosNocheTormenta);
+        densidadMaximaNieblaNocheTormenta = Mathf.Max(0f, densidadMaximaNieblaNocheTormenta);
     }
 
     private void Awake()
@@ -618,8 +636,14 @@ public class DayNightCycleController : MonoBehaviour
     private void ActualizarAmbiente()
     {
         RenderSettings.ambientMode = AmbientMode.Flat;
-        RenderSettings.ambientLight = ObtenerColorAmbienteVisual();
-        RenderSettings.reflectionIntensity = ObtenerReflejosVisual();
+
+        Color colorAmbiente = AplicarTinteClimaAColor(ObtenerColorAmbienteVisual());
+        colorAmbiente = AplicarMejoraVisibilidadAmbiente(colorAmbiente);
+        RenderSettings.ambientLight = colorAmbiente;
+
+        float reflejos = ObtenerReflejosVisual() * ObtenerMultiplicadorReflejosClima();
+        reflejos = AplicarMejoraVisibilidadReflejos(reflejos);
+        RenderSettings.reflectionIntensity = reflejos;
     }
 
     private void ActualizarSol(float hour)
@@ -629,8 +653,8 @@ public class DayNightCycleController : MonoBehaviour
             return;
         }
 
-        sunLight.intensity = ObtenerIntensidadSolVisual();
-        sunLight.color = ObtenerColorSolVisual();
+        sunLight.intensity = ObtenerIntensidadSolVisual() * ObtenerMultiplicadorSolClima();
+        sunLight.color = AplicarTinteClimaAColor(ObtenerColorSolVisual());
         sunLight.enabled = sunLight.intensity > 0.001f;
 
         float anguloX = ObtenerAnguloSol(hour);
@@ -644,8 +668,8 @@ public class DayNightCycleController : MonoBehaviour
             return;
         }
 
-        moonLight.intensity = ObtenerIntensidadLunaVisual();
-        moonLight.color = moonColor;
+        moonLight.intensity = AplicarMejoraVisibilidadLuna(ObtenerIntensidadLunaVisual() * ObtenerMultiplicadorLunaClima());
+        moonLight.color = AplicarTinteClimaAColor(moonColor);
         moonLight.enabled = moonLight.intensity > 0.001f;
 
         float anguloX = ObtenerAnguloLuna(hour);
@@ -657,8 +681,9 @@ public class DayNightCycleController : MonoBehaviour
 
         RenderSettings.fog = true;
         RenderSettings.fogMode = fogMode;
-        RenderSettings.fogColor = ObtenerColorNieblaVisual();
-        RenderSettings.fogDensity = ObtenerDensidadNieblaVisual();
+        RenderSettings.fogColor = AplicarTinteClimaANiebla(ObtenerColorNieblaVisual());
+        float densidadNiebla = ObtenerDensidadNieblaVisual() * ObtenerMultiplicadorNieblaClima() + ObtenerDensidadNieblaAdicionalClima();
+        RenderSettings.fogDensity = AplicarLimiteNieblaNocheTormenta(densidadNiebla);
     }
 
     private Color ObtenerColorAmbientePorMomento(MomentoDia momento)
@@ -803,8 +828,157 @@ public class DayNightCycleController : MonoBehaviour
 
         return 200f;
     }
-    private void MostrarMensajeInicioNoche()
+
+    private Color AplicarTinteClimaAColor(Color colorBase)
     {
+        if (rainController == null)
+        {
+            return colorBase;
+        }
+
+        Color tinte = rainController.ColorTinteAmbienteClima;
+        return new Color(
+            colorBase.r * tinte.r,
+            colorBase.g * tinte.g,
+            colorBase.b * tinte.b,
+            colorBase.a);
+    }
+
+    private Color AplicarTinteClimaANiebla(Color colorBase)
+    {
+        if (rainController == null)
+        {
+            return colorBase;
+        }
+
+        Color tinte = rainController.ColorTinteNieblaClima;
+        float fuerza = rainController.IntensidadVisualClima;
+        Color colorTinte = new Color(
+            colorBase.r * tinte.r,
+            colorBase.g * tinte.g,
+            colorBase.b * tinte.b,
+            colorBase.a);
+
+        return Color.Lerp(colorBase, colorTinte, fuerza);
+    }
+
+    private float ObtenerMultiplicadorSolClima()
+    {
+        return rainController != null ? rainController.MultiplicadorSolClima : 1f;
+    }
+
+    private float ObtenerMultiplicadorLunaClima()
+    {
+        return rainController != null ? rainController.MultiplicadorLunaClima : 1f;
+    }
+
+    private float ObtenerMultiplicadorReflejosClima()
+    {
+        return rainController != null ? rainController.MultiplicadorReflejosClima : 1f;
+    }
+
+    private float ObtenerMultiplicadorNieblaClima()
+    {
+        return rainController != null ? rainController.MultiplicadorDensidadNieblaClima : 1f;
+    }
+
+    private float ObtenerDensidadNieblaAdicionalClima()
+    {
+        return rainController != null ? rainController.DensidadNieblaAdicionalClima : 0f;
+    }
+
+
+    private Color AplicarMejoraVisibilidadAmbiente(Color colorActual)
+    {
+        if (!mejorarVisibilidadNocturna || !EsNocheActual())
+        {
+            return colorActual;
+        }
+
+        Color minimo = colorAmbienteMinimoNoche;
+
+        if (mejorarVisibilidadEnTormenta && EstaEnTormenta())
+        {
+            minimo = Color.Lerp(colorAmbienteMinimoNoche, colorAmbienteMinimoNocheTormenta, ObtenerIntensidadClima());
+        }
+
+        return MaxColor(colorActual, minimo);
+    }
+
+    private float AplicarMejoraVisibilidadLuna(float intensidadActual)
+    {
+        if (!mejorarVisibilidadNocturna || !EsNocheActual())
+        {
+            return intensidadActual;
+        }
+
+        float intensidadMinima = intensidadMinimaLunaNoche;
+
+        if (mejorarVisibilidadEnTormenta && EstaEnTormenta())
+        {
+            intensidadMinima = Mathf.Lerp(intensidadMinimaLunaNoche, intensidadMinimaLunaNocheTormenta, ObtenerIntensidadClima());
+        }
+
+        return Mathf.Max(intensidadActual, intensidadMinima);
+    }
+
+    private float AplicarMejoraVisibilidadReflejos(float reflejosActuales)
+    {
+        if (!mejorarVisibilidadNocturna || !EsNocheActual())
+        {
+            return reflejosActuales;
+        }
+
+        float reflejosMinimos = reflejosMinimosNoche;
+
+        if (mejorarVisibilidadEnTormenta && EstaEnTormenta())
+        {
+            reflejosMinimos = Mathf.Lerp(reflejosMinimosNoche, reflejosMinimosNocheTormenta, ObtenerIntensidadClima());
+        }
+
+        return Mathf.Max(reflejosActuales, reflejosMinimos);
+    }
+
+    private float AplicarLimiteNieblaNocheTormenta(float densidadActual)
+    {
+        if (!limitarNieblaNocheTormenta || !EsNocheActual() || !EstaEnTormenta())
+        {
+            return densidadActual;
+        }
+
+        return Mathf.Min(densidadActual, densidadMaximaNieblaNocheTormenta);
+    }
+
+    private bool EsNocheActual()
+    {
+        if (timeSystem != null)
+        {
+            return timeSystem.IsNight;
+        }
+
+        return momentoActual == MomentoDia.Noche || momentoDestino == MomentoDia.Noche;
+    }
+
+    private bool EstaEnTormenta()
+    {
+        return rainController != null && rainController.EstaEnTormenta;
+    }
+
+    private float ObtenerIntensidadClima()
+    {
+        return rainController != null ? Mathf.Clamp01(rainController.IntensidadVisualClima) : 0f;
+    }
+
+    private Color MaxColor(Color a, Color b)
+    {
+        return new Color(
+            Mathf.Max(a.r, b.r),
+            Mathf.Max(a.g, b.g),
+            Mathf.Max(a.b, b.b),
+            Mathf.Max(a.a, b.a));
+    }
+
+    private void MostrarMensajeInicioNoche()    {
         if (NightMessageUI.Instance != null)
         {
             NightMessageUI.Instance.ShowMessage(mensajeInicioNoche);

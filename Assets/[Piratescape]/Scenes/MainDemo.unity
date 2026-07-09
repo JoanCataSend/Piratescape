@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -330,7 +330,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: 237842898754857502, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: 'puntosAparicion.Array.data[0]'
@@ -2078,6 +2078,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -2125,6 +2133,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 1
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -10413,6 +10423,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -10678,6 +10692,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -16127,9 +16145,18 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1055200037}
+  - {fileID: 463812998}
+  - {fileID: 449032487}
+  - {fileID: 1968911016}
+  - {fileID: 2132930885}
+  - {fileID: 1478801268}
   - {fileID: 1108082190}
   - {fileID: 1088666906}
   - {fileID: 409147243}
+  - {fileID: 2046123605}
+  - {fileID: 1534174875}
+  - {fileID: 395630584}
+  - {fileID: 2003334544}
   - {fileID: 1140913903}
   - {fileID: 1333320748}
   m_Father: {fileID: 2016242474}
@@ -16406,6 +16433,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -17974,10 +18005,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -18336,11 +18397,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4907105465033273064, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2183609
+      value: -0.26
       objectReference: {fileID: 0}
     - target: {fileID: 4907105465033273064, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 19.719398
+      value: 15.5
       objectReference: {fileID: 0}
     - target: {fileID: 4907105465033273064, guid: 4bb35e5f397f36845836eb3f48de4717, type: 3}
       propertyPath: m_LocalRotation.w
@@ -40247,7 +40308,10 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 166150681ddccfa4286a491f2585fd7d, type: 2}
     - target: {fileID: 5866666021909216657, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       propertyPath: m_WarningMessage
-      value: 
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'mixamorig:RightArm'\n\tFrom animation clip
+        'Mano'"
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       propertyPath: m_ApplyRootMotion
@@ -40259,6 +40323,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       insertIndex: -1
       addedObject: {fileID: 640076198}
+    - targetCorrespondingSourceObject: {fileID: -8333627713332763490, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 491901147}
     - targetCorrespondingSourceObject: {fileID: 5097370190579632962, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
       insertIndex: 0
       addedObject: {fileID: 1871079143}
@@ -40518,6 +40585,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -40565,6 +40640,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 0
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -47011,6 +47088,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -65846,10 +65927,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -70644,9 +70755,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeSystem: {fileID: 0}
+  rainController: {fileID: 0}
   starsFX: {fileID: 0}
   startHour: 23
   endHour: 5
+  fadeMinutes: 60
+  maxRateOverTime: 45
+  starColor: {r: 0.75, g: 0.86, b: 1, a: 1}
+  apagarObjetoCuandoNoSeVe: 1
+  ocultarConMalClima: 1
+  visibilidadMinimaConTormenta: 0.05
+  visibilidadMinimaConLluvia: 0.15
+  visibilidadMinimaConNiebla: 0.08
+  visibilidadMinimaConNublado: 0.35
+  velocidadSuavizado: 2.5
+  intensidadActual: 0
+  intensidadObjetivo: 0
 --- !u!4 &343130150
 Transform:
   m_ObjectHideFlags: 0
@@ -80976,6 +81100,63 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1001 &353543827
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 56.298622
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 15.722656
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &354731635 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3379229225652440580, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -83288,6 +83469,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radioComprobacion: 0.6
+--- !u!4 &395630584 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 353543827}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &395913774 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1941764712262244095, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -112131,6 +112317,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1637288797}
   m_LocalEulerAnglesHint: {x: 0, y: -135.337, z: 0}
+--- !u!4 &449032487 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1122733336}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &449460036
 GameObject:
   m_ObjectHideFlags: 0
@@ -112551,15 +112742,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1816031944}
+  - {fileID: 1571641142}
   - {fileID: 765567468}
-  - {fileID: 128112204}
   - {fileID: 1195225071}
-  - {fileID: 1652245623}
-  - {fileID: 1742030496}
-  - {fileID: 1923472322}
-  - {fileID: 1275684879}
-  - {fileID: 21399666}
   m_Father: {fileID: 860693853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &454778280
@@ -113581,6 +113766,16 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!4 &463757651 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8333627713332763490, guid: f72c6c224b6dcc54fbdda23b137a0459, type: 3}
+  m_PrefabInstance: {fileID: 127218791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &463812998 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1646406145}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &466867457
 GameObject:
   m_ObjectHideFlags: 0
@@ -114529,6 +114724,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -114737,6 +114936,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7387926931826281997, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
+--- !u!1 &491901146
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 491901147}
+  m_Layer: 0
+  m_Name: Mano
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &491901147
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491901146}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 463757651}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &493467534 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8487679554082382498, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -120489,6 +120719,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -124930,6 +125164,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -126221,6 +126459,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -138140,6 +138382,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -145457,6 +145703,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -146768,10 +147018,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -150464,10 +150744,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -160125,7 +160435,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
       propertyPath: m_LocalPosition.x
@@ -160137,7 +160447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -61.297184
+      value: -61.297188
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 57cdcecfc806de446ab09d931bca3426, type: 3}
       propertyPath: m_LocalRotation.w
@@ -172903,6 +173213,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -173590,10 +173904,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -177119,6 +177463,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -182444,6 +182792,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -187776,10 +188128,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -188326,6 +188708,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -188716,6 +189102,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -189584,6 +189974,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -192348,10 +192742,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -198962,10 +199386,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -199952,10 +200406,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -207216,6 +207700,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 448981943113531866, guid: 4621c76ef3097084ba53cddde325f127, type: 3}
   m_PrefabInstance: {fileID: 443197999}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1122733336
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 111.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 93.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1123027600 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -600088862197110749, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -209538,10 +210079,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -209982,6 +210553,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1588489918}
+    - targetCorrespondingSourceObject: {fileID: 4482815719365468449, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1588489919}
   m_SourcePrefab: {fileID: 100100000, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
 --- !u!1 &1146805832 stripped
 GameObject:
@@ -225756,6 +226330,16 @@ MonoBehaviour:
   dayFogDensity: 0.009
   sunsetFogDensity: 0.006
   nightFogDensity: 0.015
+  mejorarVisibilidadNocturna: 0
+  mejorarVisibilidadEnTormenta: 1
+  colorAmbienteMinimoNoche: {r: 0.2, g: 0.25, b: 0.36, a: 1}
+  colorAmbienteMinimoNocheTormenta: {r: 0.24, g: 0.29, b: 0.42, a: 1}
+  intensidadMinimaLunaNoche: 0.35
+  intensidadMinimaLunaNocheTormenta: 0.46
+  reflejosMinimosNoche: 0.16
+  reflejosMinimosNocheTormenta: 0.22
+  limitarNieblaNocheTormenta: 1
+  densidadMaximaNieblaNocheTormenta: 0.01
   sunYaw: 170
   moonYaw: 170
   skyboxActualNombre: 
@@ -226263,7 +226847,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: 237842898754857502, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: 'puntosAparicion.Array.data[0]'
@@ -226315,7 +226899,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1927142805435725923, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -60.59099
+      value: -60.590996
       objectReference: {fileID: 0}
     - target: {fileID: 1927142805435725923, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: m_LocalRotation.w
@@ -226626,10 +227210,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -227696,7 +228310,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: 237842898754857502, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: 'puntosAparicion.Array.data[0]'
@@ -228135,6 +228749,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -228182,6 +228804,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 1
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -228268,6 +228892,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -228315,6 +228947,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 0
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -230454,7 +231088,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: 237842898754857502, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: 'puntosAparicion.Array.data[0]'
@@ -230506,7 +231140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1927142805435725923, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -64.00719
+      value: -64.007195
       objectReference: {fileID: 0}
     - target: {fileID: 1927142805435725923, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: m_LocalRotation.w
@@ -237940,6 +238574,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -244252,6 +244890,40 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -30, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1364767726
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1364767727}
+  m_Layer: 0
+  m_Name: Luz
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1364767727
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364767726}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1504668339}
+  - {fileID: 2135065401}
+  - {fileID: 1766923343}
+  m_Father: {fileID: 1922425761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1365294654
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -253785,6 +254457,63 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1001 &1416461151
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1417784131
 GameObject:
   m_ObjectHideFlags: 0
@@ -254000,6 +254729,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -255397,10 +256130,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -255431,6 +256194,63 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 672551834481701363, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
+--- !u!1001 &1442277991
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 111.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 121.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!4 &1442494067 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4437609406103279878, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
@@ -255454,10 +256274,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -260388,10 +261238,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -262028,13 +262908,48 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
+--- !u!4 &1478801268 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1784239618}
+  m_PrefabAsset: {fileID: 0}
 --- !u!64 &1479193413
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -263684,6 +264599,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -265306,7 +266225,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1922425761}
+  m_Father: {fileID: 1364767727}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!4 &1504887540 stripped
 Transform:
@@ -266819,10 +267738,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -267402,6 +268351,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1806810134458854372, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
+--- !u!4 &1534174875 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1416461151}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1534281794
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -268933,6 +269887,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -269035,6 +269993,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -270969,6 +271931,44 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6747242673119070641, guid: ea2eddd4e03b3e74cbb32bb99ee56577, type: 3}
   m_PrefabInstance: {fileID: 1407789519}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1571641141
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1571641142}
+  m_Layer: 0
+  m_Name: Amigables
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1571641142
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571641141}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1816031944}
+  - {fileID: 128112204}
+  - {fileID: 1652245623}
+  - {fileID: 1742030496}
+  - {fileID: 1923472322}
+  - {fileID: 1275684879}
+  - {fileID: 21399666}
+  m_Father: {fileID: 453627343}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1572239153 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2423171187709499238, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -272483,10 +273483,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -272753,7 +273783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInventory: {fileID: 1588489902}
-  handItemPoint: {fileID: 1871079143}
+  handItemPoint: {fileID: 491901147}
 --- !u!114 &1588489910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273085,7 +274115,9 @@ MonoBehaviour:
   audioSourceDolor: {fileID: 0}
   outputDolorPirata: {fileID: -8413363371568429757, guid: 02f9e0b8314aa3744b81020b1ae2baf9, type: 2}
   sonidosDolorPirata:
-  - {fileID: 8300000, guid: 61bf7cfc4c22a214c9c19ff5b4628550, type: 3}
+  - {fileID: 8300000, guid: 29ebfb8a2b6261e45b7f1faac3f051bb, type: 3}
+  - {fileID: 8300000, guid: 6dc2193129d8aff4fb6dc839d9d861ad, type: 3}
+  - {fileID: 8300000, guid: 5c78a93d9f2ef9f4e83ba9cee9b0be0b, type: 3}
   volumenDolor: 0.8
   pitchDolorMinimo: 0.96
   pitchDolorMaximo: 1.04
@@ -273225,6 +274257,67 @@ MonoBehaviour:
   mostrarMensajes: 1
   duracionMensajes: 1.4
   mostrarLogs: 0
+--- !u!114 &1588489919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588489892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0cef8eca90c5d4c8fcd96937c2c8f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventarioJugador: {fileID: 1588489902}
+  animatorJugador: {fileID: 1233310489}
+  puntoManoFarol: {fileID: 491901147}
+  camaraPrincipal: {fileID: 0}
+  requerirFarolSeleccionado: 1
+  itemFarol: {fileID: 11400000, guid: 0671b8dd15bd14544a93c842ed498d1e, type: 2}
+  itemIdFarol: farol_pirata
+  permitirCoincidenciaPorNombre: 1
+  prefabFarol: {fileID: 1782146039}
+  crearInstanciaFarolAutomaticamente: 1
+  mantenerInstanciaAunqueNoEsteSeleccionado: 1
+  ocultarFarolAlDeseleccionar: 1
+  usarRotacionOriginalPrefab: 1
+  usarEscalaOriginalPrefab: 1
+  posicionLocalFarol: {x: -0.2, y: 0, z: 0.31}
+  rotacionExtraLocalFarol: {x: -90, y: -40, z: 0}
+  escalaLocalFarol: {x: 1, y: 1, z: 1}
+  aplicarTransformLocalCadaFrame: 1
+  farolLight: {fileID: 0}
+  buscarLightEnPrefab: 1
+  usarSiempreLightDeLaInstancia: 1
+  activarTodasLasLucesDelFarol: 1
+  crearLightSiFalta: 1
+  nombreLightAuto: Luz_Farol
+  posicionLocalLight: {x: 0, y: 0, z: 0}
+  rotacionLocalLight: {x: 8, y: 0, z: 0}
+  tipoLuz: 2
+  colorFarol: {r: 1, g: 0.72, b: 0.38, a: 1}
+  intensidadFarol: 7
+  rangoFarol: 16
+  anguloFarol: 70
+  sombrasFuerza: 0.45
+  tipoSombras: 2
+  usarDireccionCamaraPrincipal: 0
+  buscarCamaraPrincipalSiFalta: 1
+  suavizadoRotacionCamara: 14
+  usarAnimacionFarol: 1
+  boolTieneFarol: TieneFarol
+  triggerEquiparFarol: EquiparFarol
+  triggerGuardarFarol: GuardarFarol
+  usarParpadeoSuave: 1
+  fuerzaParpadeo: 0.12
+  velocidadParpadeo: 5
+  audioSource: {fileID: 0}
+  sonidoEquipar: {fileID: 0}
+  sonidoGuardar: {fileID: 0}
+  volumenAudio: 0.75
+  farolSeleccionado: 0
+  mostrarLogs: 0
 --- !u!1 &1588562870 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1497474815261963689, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -273264,6 +274357,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -273557,10 +274654,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -278977,10 +280104,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -286613,6 +287770,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77a3764539db7744cac5b0c14366a3a1, type: 3}
+--- !u!1001 &1644089015
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1644117055 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8375026474008961637, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -286837,6 +288051,63 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1001 &1646406145
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 111.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 64.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1646911308 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6594701344776322914, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -286918,10 +288189,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -287132,6 +288433,63 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 93b738b0e1898734c9411830041900fc, type: 3}
   m_PrefabInstance: {fileID: 793297958}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1651320882
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.7986221
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 15.722656
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1651754379
 GameObject:
   m_ObjectHideFlags: 0
@@ -287418,6 +288776,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -287465,6 +288831,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 1
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -294467,6 +295835,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -297294,9 +298666,78 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeSystem: {fileID: 1975866679}
   rainFX: {fileID: 1164341488}
-  rainChancePerDay: 0.1
-  alwaysRain: 0
+  fogFX: {fileID: 0}
+  jugador: {fileID: 1588489899}
   rainAudioSource: {fileID: 1741039750}
+  stormAudioSource: {fileID: 0}
+  thunderAudioSource: {fileID: 0}
+  thunderClips:
+  - {fileID: 8300000, guid: a41f621b79e93e244838b21fa647516a, type: 3}
+  crearThunderAudioSourceAutomaticoSiFalta: 1
+  truenoEn2D: 1
+  volumenTrueno: 0.95
+  lightningLight: {fileID: 1766923345}
+  lightningColor: {r: 0.75, g: 0.86, b: 1, a: 1}
+  lightningIntensity: 2.7
+  lightningDuration: 0.08
+  minSecondsBetweenLightning: 7
+  maxSecondsBetweenLightning: 18
+  thunderDelay: 0.35
+  elegirClimaCadaDia: 1
+  climaInicial: 0
+  probabilidadNublado: 0.22
+  probabilidadLluviaSuave: 0.12
+  probabilidadTormenta: 0.045
+  probabilidadNiebla: 0.08
+  rainChancePerDay: 0.1
+  usarProbabilidadLluviaAntigua: 0
+  duracionTransicionClima: 16
+  fadeAudioVelocidad: 2.5
+  detenerFXCuandoNoSeVen: 1
+  rainFXSigueAlJugador: 1
+  buscarJugadorPorTag: 1
+  tagJugador: Player
+  offsetRainFXJugador: {x: 0, y: 14, z: 0}
+  offsetFogFXJugador: {x: 0, y: 1.2, z: 0}
+  mantenerAlturaRainFX: 1
+  crearRainFXAutomaticoSiFalta: 0
+  configurarRainFXPorCodigo: 1
+  instanciarRainFXSiEsPrefabAsset: 1
+  usarLluviaSimpleVisible: 1
+  crearMaterialLluviaSimple: 1
+  crearFogFXAutomaticoSiFalta: 0
+  configurarFogFXPorCodigo: 1
+  rainRateSuave: 520
+  rainRateTormenta: 1100
+  rainVelocidadSuave: 14
+  rainVelocidadTormenta: 25
+  rainRadio: 18
+  alturaCajaLluvia: 2.5
+  tamanoGotaMin: 0.01
+  tamanoGotaMax: 0.022
+  largoGota: 1.15
+  rainColor: {r: 0.72, g: 0.88, b: 1, a: 0.55}
+  usarTexturaGotaFina: 1
+  fogRate: 20
+  fogRadio: 7
+  fogParticleColor: {r: 0.75, g: 0.85, b: 1, a: 0.16}
+  colorTinteNublado: {r: 0.68, g: 0.72, b: 0.8, a: 1}
+  colorTinteLluvia: {r: 0.5, g: 0.6, b: 0.76, a: 1}
+  colorTinteTormenta: {r: 0.35, g: 0.42, b: 0.6, a: 1}
+  colorTinteNiebla: {r: 0.72, g: 0.8, b: 0.9, a: 1}
+  colorNieblaClima: {r: 0.58, g: 0.66, b: 0.8, a: 1}
+  colorNieblaTormenta: {r: 0.28, g: 0.34, b: 0.5, a: 1}
+  bonusRarezaPescaLluvia: 1.25
+  bonusRarezaPescaTormenta: 1.8
+  bonusRarezaPescaNiebla: 1.15
+  alwaysRain: 0
+  climaAlwaysRain: 2
+  forzarClima: 1
+  climaForzado: 3
+  mostrarLogsClima: 1
+  climaActualDebug: 0
+  intensidadClimaDebug: 0
+  estaLloviendoDebug: 0
 --- !u!4 &1673731871
 Transform:
   m_ObjectHideFlags: 0
@@ -298200,10 +299641,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -298277,6 +299748,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -301070,10 +302545,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -307200,10 +308705,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -307278,6 +308813,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -309261,7 +310800,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: 237842898754857502, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: 'puntosAparicion.Array.data[0]'
@@ -309900,6 +311439,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -309947,6 +311494,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 1
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -310294,6 +311843,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -310994,10 +312547,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -311435,6 +313018,127 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0737fac9f95f6a540aca5edaf5c70fce, type: 3}
+--- !u!1 &1766923342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1766923343}
+  - component: {fileID: 1766923345}
+  - component: {fileID: 1766923344}
+  m_Layer: 0
+  m_Name: Trueno
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1766923343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766923342}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: -251.29926, y: -28.622246, z: 279.71295}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1364767727}
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1766923344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766923342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+--- !u!108 &1766923345
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766923342}
+  m_Enabled: 1
+  serializedVersion: 11
+  m_Type: 1
+  m_Color: {r: 0.6745283, g: 0.8197774, b: 1, a: 1}
+  m_Intensity: 0
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!1 &1766944035 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1588902057930512801, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -312579,6 +314283,68 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5402202952707582805, guid: fe4b95b8f427e4b48bbf496426d75660, type: 3}
+--- !u!1 &1782146039 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 957602756745070383, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+  m_PrefabInstance: {fileID: 6470016001307726924}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1784239618
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 91
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 178.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1784867414
 GameObject:
   m_ObjectHideFlags: 0
@@ -316297,6 +318063,63 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5902438668197411763, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
+--- !u!1001 &1795118052
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 90406509}
+    m_Modifications:
+    - target: {fileID: 3489967608080446182, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_Name
+      value: Shark_GreatWhite_17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 111.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 153.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
 --- !u!1 &1796995960 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7569300698729363992, guid: bf67bb549fceeeb4896204913ac6e96b, type: 3}
@@ -325659,6 +327482,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -325706,6 +327537,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 1
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -325757,6 +327590,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -351294,10 +353131,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -352735,10 +354602,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -354100,8 +355997,7 @@ Transform:
   m_Children:
   - {fileID: 1254907601}
   - {fileID: 1193848680}
-  - {fileID: 1504668339}
-  - {fileID: 2135065401}
+  - {fileID: 1364767727}
   - {fileID: 559680996}
   - {fileID: 1435002600}
   - {fileID: 1963672664}
@@ -354414,6 +356310,14 @@ MonoBehaviour:
   intervaloActualizarColisionesMonos: 2
   mirarSiempreAlJugador: 1
   correccionRotacionYModelo: 0
+  modoAmigo: 0
+  permitirCambiarModoConInteraccion: 1
+  textoPromptCambiarModo: Cambiar orden
+  mensajeModoSigueme: 'Modo: sigueme'
+  mensajeModoEsperarAqui: 'Modo: esperar aqui'
+  mensajeModoBuscarObjetos: 'Modo: buscar objetos'
+  mensajeModoDefenderme: 'Modo: defenderme'
+  mostrarModoActualEnPrompt: 1
   recogerItemsSiEsAmigo: 1
   rangoBusquedaItems: 8
   intervaloBusquedaItems: 0.75
@@ -354461,6 +356365,8 @@ MonoBehaviour:
   cancelarObjetivoDeRecoleccionParaDefender: 1
   triggerAtacarEnemigo: Attack
   mostrarLogsDefensa: 1
+  radioDefensaActiva: 8
+  intervaloBusquedaEnemigosDefensa: 0.45
   mostrarLogsRecolector: 0
   platanosRecibidos: 0
   esAmigo: 0
@@ -360507,6 +362413,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 37}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &1968911016 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1442277991}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1969556305 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1022218088649950695, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -366622,6 +368533,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1806810134458854372, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
+--- !u!4 &2003334544 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1651320882}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2005092548 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8821987773185622634, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -367531,10 +369447,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -371436,6 +373382,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7387926931826281997, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
+--- !u!4 &2046123605 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1644089015}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &2047280605
 Mesh:
   m_ObjectHideFlags: 0
@@ -371720,10 +373671,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -372683,10 +374664,40 @@ MonoBehaviour:
   destruirAlMorir: 0
   desactivarAlMorir: 1
   retardoMuerte: 0.1
+  activarFlashRojoAlRecibirDanio: 1
+  colorFlashDanio: {r: 1, g: 0.05, b: 0.02, a: 1}
+  duracionFlashDanio: 0.12
+  repeticionesFlashDanio: 1
+  incluirRenderersInactivos: 1
   particulasMuerte: {fileID: 0}
   audioSource: {fileID: 0}
   sonidoMuerte: {fileID: 0}
   volumenMuerte: 0.8
+  crearParticulasMuerteAutomaticas: 1
+  usarAutomaticasSoloSiNoHayAsignadas: 1
+  usarSimulationSpaceWorld: 1
+  offsetParticulasMuerte: {x: 0, y: 0.35, z: 0}
+  tiempoDestruirFXMuerte: 3
+  crearPolvoMuerte: 1
+  colorPolvoMuerte: {r: 0.72, g: 0.62, b: 0.46, a: 0.85}
+  polvoMuerteMin: 28
+  polvoMuerteMax: 42
+  tamanoPolvoMin: 0.08
+  tamanoPolvoMax: 0.24
+  expansionHorizontalPolvo: 0.9
+  velocidadVerticalPolvoMin: 0.15
+  velocidadVerticalPolvoMax: 0.75
+  radioSpawnPolvo: 0.18
+  crearBrillosMuerte: 1
+  colorBrilloMuerte: {r: 1, g: 0.9, b: 0.25, a: 1}
+  brillosMuerteMin: 8
+  brillosMuerteMax: 14
+  tamanoBrilloMin: 0.045
+  tamanoBrilloMax: 0.09
+  expansionHorizontalBrillo: 0.55
+  velocidadVerticalBrilloMin: 0.75
+  velocidadVerticalBrilloMax: 1.55
+  radioSpawnBrillos: 0.1
   animator: {fileID: 0}
   triggerDanio: Hit
   triggerMuerte: Die
@@ -377829,6 +379840,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588489899}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
       objectReference: {fileID: 1588489905}
@@ -382169,6 +384184,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1295382035}
   m_SourcePrefab: {fileID: 100100000, guid: 1e57947ff542a7c40a2e5401c73d2e0a, type: 3}
+--- !u!4 &2132930885 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4261825404734629980, guid: 9cf570837ab9aa1458aa109542816a2f, type: 3}
+  m_PrefabInstance: {fileID: 1795118052}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2133868989 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6180870014558963134, guid: 7dbdd374aa751634fa12e8ef0c3f6694, type: 3}
@@ -382368,7 +384388,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1922425761}
+  m_Father: {fileID: 1364767727}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &2135440278
 PrefabInstance:
@@ -384468,7 +386488,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 453627343}
+    m_TransformParent: {fileID: 1571641142}
     m_Modifications:
     - target: {fileID: 237842898754857502, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: 'puntosAparicion.Array.data[0]'
@@ -384520,7 +386540,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1927142805435725923, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -60.885815
+      value: -60.88581
       objectReference: {fileID: 0}
     - target: {fileID: 1927142805435725923, guid: 6bf7ed80332b1fa40b015a6817e88873, type: 3}
       propertyPath: m_LocalRotation.w
@@ -384572,6 +386592,63 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7019346201526917270, guid: 397b04631ccb10e47b2136ed691b875b, type: 3}
   m_PrefabInstance: {fileID: 2087043742525278732}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6470016001307726924
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 957602756745070383, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_Name
+      value: Faro
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -62.82801
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.698
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.826287
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472229134262798089, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 786b3007f64c73f49af0d8fd34dfcd90, type: 3}
 --- !u!1001 &6705356622635240002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -384584,6 +386661,10 @@ PrefabInstance:
       propertyPath: jugador
       value: 
       objectReference: {fileID: 1588489899}
+    - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
+      propertyPath: capasSuelo.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2515607525588184914, guid: b994a12a7ab1bf040aa4e938ae55c613, type: 3}
       propertyPath: movimientoJugador
       value: 
@@ -384856,3 +386937,4 @@ SceneRoots:
   - {fileID: 1844396586}
   - {fileID: 933499534}
   - {fileID: 1017284421}
+  - {fileID: 6470016001307726924}

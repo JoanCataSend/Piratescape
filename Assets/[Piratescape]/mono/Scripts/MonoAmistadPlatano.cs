@@ -51,6 +51,16 @@ public class MonoAmistadPlatano : MonoBehaviour
     [SerializeField] private bool mirarSiempreAlJugador = true;
     [SerializeField] private float correccionRotacionYModelo = 0f;
 
+    [Header("Modos del mono amigo")]
+    [SerializeField] private ModoMonoAmigo modoAmigo = ModoMonoAmigo.Sigueme;
+    [SerializeField] private bool permitirCambiarModoConInteraccion = true;
+    [SerializeField] private string textoPromptCambiarModo = "Cambiar orden";
+    [SerializeField] private string mensajeModoSigueme = "Modo: sigueme";
+    [SerializeField] private string mensajeModoEsperarAqui = "Modo: esperar aqui";
+    [SerializeField] private string mensajeModoBuscarObjetos = "Modo: buscar objetos";
+    [SerializeField] private string mensajeModoDefenderme = "Modo: defenderme";
+    [SerializeField] private bool mostrarModoActualEnPrompt = true;
+
     [Header("Recolector de items")]
     [SerializeField] private bool recogerItemsSiEsAmigo = true;
     [SerializeField] private float rangoBusquedaItems = 8f;
@@ -82,6 +92,8 @@ public class MonoAmistadPlatano : MonoBehaviour
     [SerializeField] private bool cancelarObjetivoDeRecoleccionParaDefender = true;
     [SerializeField] private string triggerAtacarEnemigo = "Attack";
     [SerializeField] private bool mostrarLogsDefensa = false;
+    [SerializeField] private float radioDefensaActiva = 8f;
+    [SerializeField] private float intervaloBusquedaEnemigosDefensa = 0.45f;
 
     [Header("Depuracion opcional")]
     [SerializeField] private bool mostrarLogsRecolector = false;
@@ -148,9 +160,18 @@ public class MonoAmistadPlatano : MonoBehaviour
     private Transform enemigoObjetivo;
     private float tiempoHastaAbandonarDefensa;
     private float tiempoSiguienteAtaqueEnemigo;
+    private float siguienteBusquedaDefensaActiva;
     private Material materialCorazonesGenerado;
     private static Texture2D texturaCorazonPixelCompartida;
     private static Texture2D texturaCorazonSuaveCompartida;
+
+    private enum ModoMonoAmigo
+    {
+        Sigueme,
+        EsperarAqui,
+        BuscarObjetos,
+        Defenderme
+    }
 
     private enum EstadoRecolector
     {
@@ -237,7 +258,7 @@ public class MonoAmistadPlatano : MonoBehaviour
 
         if (esAmigo)
         {
-            OcultarPrompt();
+            GestionarInteraccionModoAmigo();
             GestionarComportamientoAmigo();
             return;
         }
@@ -365,6 +386,7 @@ public class MonoAmistadPlatano : MonoBehaviour
     {
         esAmigo = true;
         platanosRecibidos = Mathf.Max(platanosRecibidos, platanosNecesariosParaAmistad);
+        modoAmigo = ModoMonoAmigo.Sigueme;
         estadoRecolector = EstadoRecolector.SiguiendoJugador;
 
         ReproducirTrigger(triggerAmigo);
@@ -383,21 +405,66 @@ public class MonoAmistadPlatano : MonoBehaviour
             return;
         }
 
+        if (itemRecogido != null)
+        {
+            VolverAlJugadorConItem();
+            return;
+        }
+
+        switch (modoAmigo)
+        {
+            case ModoMonoAmigo.Sigueme:
+                GestionarModoSigueme();
+                break;
+
+            case ModoMonoAmigo.EsperarAqui:
+                GestionarModoEsperarAqui();
+                break;
+
+            case ModoMonoAmigo.BuscarObjetos:
+                GestionarModoBuscarObjetos();
+                break;
+
+            case ModoMonoAmigo.Defenderme:
+                GestionarModoDefenderme();
+                break;
+        }
+    }
+
+    private void GestionarModoSigueme()
+    {
         if (defenderJugadorSiRecibeDanio && EnemigoObjetivoValido())
         {
             DefenderJugadorContraEnemigo();
             return;
         }
 
+        itemObjetivo = null;
+        estadoRecolector = EstadoRecolector.SiguiendoJugador;
+        SeguirJugador();
+    }
+
+    private void GestionarModoEsperarAqui()
+    {
+        itemObjetivo = null;
+        enemigoObjetivo = null;
+        estadoRecolector = EstadoRecolector.SiguiendoJugador;
+        CambiarBool(boolSiguiendo, false);
+        PararNavMeshAgent();
+
+        if (mirarSiempreAlJugador && jugador != null)
+        {
+            MirarHacia(jugador.position);
+        }
+    }
+
+    private void GestionarModoBuscarObjetos()
+    {
+        enemigoObjetivo = null;
+
         if (!recogerItemsSiEsAmigo)
         {
             SeguirJugador();
-            return;
-        }
-
-        if (itemRecogido != null)
-        {
-            VolverAlJugadorConItem();
             return;
         }
 
@@ -424,6 +491,24 @@ public class MonoAmistadPlatano : MonoBehaviour
             return;
         }
 
+        SeguirJugador();
+    }
+
+    private void GestionarModoDefenderme()
+    {
+        if (defenderJugadorSiRecibeDanio)
+        {
+            BuscarEnemigoActivoParaDefenderSiHaceFalta();
+        }
+
+        if (defenderJugadorSiRecibeDanio && EnemigoObjetivoValido())
+        {
+            DefenderJugadorContraEnemigo();
+            return;
+        }
+
+        itemObjetivo = null;
+        estadoRecolector = EstadoRecolector.SiguiendoJugador;
         SeguirJugador();
     }
 
@@ -1271,6 +1356,142 @@ public class MonoAmistadPlatano : MonoBehaviour
         navMeshAgent.ResetPath();
     }
 
+    private void GestionarInteraccionModoAmigo()
+    {
+        if (!permitirCambiarModoConInteraccion || jugador == null)
+        {
+            OcultarPrompt();
+            return;
+        }
+
+        float distancia = Vector3.Distance(transform.position, jugador.position);
+
+        if (distancia > rangoInteraccion)
+        {
+            OcultarPrompt();
+            return;
+        }
+
+        if (Time.time < tiempoHastaPermitirOcultarPrompt)
+        {
+            return;
+        }
+
+        MostrarPromptModoAmigo();
+
+        if (SeHaPulsadoInteraccion())
+        {
+            CambiarAlSiguienteModoAmigo();
+        }
+    }
+
+    private void MostrarPromptModoAmigo()
+    {
+        if (InteractionUI.Instance == null)
+        {
+            return;
+        }
+
+        string texto = textoPromptCambiarModo;
+
+        if (mostrarModoActualEnPrompt)
+        {
+            texto += ": " + ObtenerNombreModoAmigo(modoAmigo);
+        }
+
+        InteractionUI.Instance.Show(this, texto);
+        promptMostrado = true;
+    }
+
+    private void CambiarAlSiguienteModoAmigo()
+    {
+        ModoMonoAmigo modoAnterior = modoAmigo;
+
+        switch (modoAmigo)
+        {
+            case ModoMonoAmigo.Sigueme:
+                modoAmigo = ModoMonoAmigo.EsperarAqui;
+                break;
+
+            case ModoMonoAmigo.EsperarAqui:
+                modoAmigo = ModoMonoAmigo.BuscarObjetos;
+                break;
+
+            case ModoMonoAmigo.BuscarObjetos:
+                modoAmigo = ModoMonoAmigo.Defenderme;
+                break;
+
+            default:
+                modoAmigo = ModoMonoAmigo.Sigueme;
+                break;
+        }
+
+        PrepararCambioDeModo(modoAnterior, modoAmigo);
+        MostrarMensajeTemporal(ObtenerMensajeModoAmigo(modoAmigo));
+    }
+
+    private void PrepararCambioDeModo(ModoMonoAmigo modoAnterior, ModoMonoAmigo modoNuevo)
+    {
+        itemObjetivo = null;
+        enemigoObjetivo = null;
+        tiempoHastaAbandonarDefensa = 0f;
+        tiempoSiguienteAtaqueEnemigo = 0f;
+        siguienteBusquedaDefensaActiva = 0f;
+
+        if (modoNuevo == ModoMonoAmigo.EsperarAqui)
+        {
+            CambiarBool(boolSiguiendo, false);
+            PararNavMeshAgent();
+            return;
+        }
+
+        if (modoNuevo == ModoMonoAmigo.BuscarObjetos)
+        {
+            siguienteBusquedaItems = 0f;
+        }
+
+        if (modoNuevo == ModoMonoAmigo.Sigueme || modoNuevo == ModoMonoAmigo.Defenderme)
+        {
+            estadoRecolector = EstadoRecolector.SiguiendoJugador;
+        }
+    }
+
+    private string ObtenerNombreModoAmigo(ModoMonoAmigo modo)
+    {
+        switch (modo)
+        {
+            case ModoMonoAmigo.EsperarAqui:
+                return "Esperar aqui";
+
+            case ModoMonoAmigo.BuscarObjetos:
+                return "Buscar objetos";
+
+            case ModoMonoAmigo.Defenderme:
+                return "Defenderme";
+
+            default:
+                return "Sigueme";
+        }
+    }
+
+    private string ObtenerMensajeModoAmigo(ModoMonoAmigo modo)
+    {
+        switch (modo)
+        {
+            case ModoMonoAmigo.EsperarAqui:
+                return mensajeModoEsperarAqui;
+
+            case ModoMonoAmigo.BuscarObjetos:
+                return mensajeModoBuscarObjetos;
+
+            case ModoMonoAmigo.Defenderme:
+                return mensajeModoDefenderme;
+
+            default:
+                return mensajeModoSigueme;
+        }
+    }
+
     private void MostrarPrompt()
     {
         if (InteractionUI.Instance == null)
@@ -1328,9 +1549,40 @@ public class MonoAmistadPlatano : MonoBehaviour
 
 
 
+    private bool ModoActualPermiteDefenderPorDanio()
+    {
+        return modoAmigo == ModoMonoAmigo.Sigueme || modoAmigo == ModoMonoAmigo.Defenderme;
+    }
+
+    private void BuscarEnemigoActivoParaDefenderSiHaceFalta()
+    {
+        if (Time.time < siguienteBusquedaDefensaActiva)
+        {
+            return;
+        }
+
+        siguienteBusquedaDefensaActiva = Time.time + Mathf.Max(0.1f, intervaloBusquedaEnemigosDefensa);
+
+        Transform objetivo = BuscarEnemigoCercaDe(jugador.position, Mathf.Max(0.25f, radioDefensaActiva));
+
+        if (objetivo == null)
+        {
+            return;
+        }
+
+        enemigoObjetivo = objetivo;
+        tiempoHastaAbandonarDefensa = Time.time + Mathf.Max(0.5f, tiempoPerseguirEnemigoTrasDanio);
+        estadoRecolector = EstadoRecolector.DefendiendoJugador;
+
+        if (mostrarLogsDefensa)
+        {
+            Debug.Log($"[MonoAmistadPlatano] Modo defenderme: enemigo detectado cerca del jugador: {enemigoObjetivo.name}", this);
+        }
+    }
+
     private void AlJugadorLeHanHechoDanio(Transform atacante, Vector3 posicionDanio, int cantidadDanio)
     {
-        if (!defenderJugadorSiRecibeDanio || !esAmigo || jugador == null)
+        if (!defenderJugadorSiRecibeDanio || !esAmigo || jugador == null || !ModoActualPermiteDefenderPorDanio())
         {
             return;
         }
@@ -1421,7 +1673,12 @@ public class MonoAmistadPlatano : MonoBehaviour
 
     private Transform BuscarEnemigoCercaDe(Vector3 posicion)
     {
-        float radio = Mathf.Max(0.25f, radioBuscarEnemigoCercaDanio);
+        return BuscarEnemigoCercaDe(posicion, Mathf.Max(0.25f, radioBuscarEnemigoCercaDanio));
+    }
+
+    private Transform BuscarEnemigoCercaDe(Vector3 posicion, float radio)
+    {
+        radio = Mathf.Max(0.25f, radio);
         Collider[] impactos = Physics.OverlapSphere(posicion, radio, capasEnemigos, QueryTriggerInteraction.Collide);
 
         Transform mejor = null;
