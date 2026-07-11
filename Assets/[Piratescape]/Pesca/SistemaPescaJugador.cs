@@ -90,6 +90,20 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     [SerializeField] private bool desactivarRigidbodiesCanaEnMano = true;
     [SerializeField] private bool mostrarLogsVisualCana = false;
 
+    [Header("Punta de la caña para el anzuelo")]
+    [Tooltip("Hace que el anzuelo salga y vuelva a la punta de la caña visual, no a la mano del jugador.")]
+    [SerializeField] private bool usarPuntaCanaComoSalidaAnzuelo = true;
+    [Tooltip("Punto exacto de la punta de la caña. Lo ideal es crear un Empty hijo del prefab de la caña y arrastrarlo aquí.")]
+    [SerializeField] private Transform puntoPuntaCana;
+    [Tooltip("Si no asignas puntoPuntaCana, el script crea un Empty hijo de la caña visual usando la posición local de abajo.")]
+    [SerializeField] private bool crearPuntaCanaAutomaticaSiFalta = true;
+    [SerializeField] private string nombrePuntoPuntaCanaAutomatico = "PuntoPuntaCana";
+    [Tooltip("Posición local aproximada de la punta dentro del prefab visual de la caña. Ajusta este valor hasta que el gizmo/punto quede en la punta real.")]
+    [SerializeField] private Vector3 posicionLocalPuntaCana = new Vector3(0f, 0f, 1.6f);
+    [Tooltip("Si está activo, actualiza la punta automática cada frame por si cambias el offset en Play Mode.")]
+    [SerializeField] private bool aplicarPosicionPuntaCanaCadaFrame = true;
+    [SerializeField] private bool mostrarLogsPuntaCana = false;
+
     [Header("Peces diferentes y rareza")]
     [SerializeField] private bool usarTablaPecesConRareza = true;
     [SerializeField] private bool usarPescadoBaseComoFallback = true;
@@ -186,6 +200,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     private GameObject canaVisualGO;
     private Transform canaVisualTransform;
     private GameObject prefabVisualCanaUsado;
+    private Transform puntoPuntaCanaAutomatico;
 
     public bool EstaPescando => estadoActual != EstadoPesca.Inactivo;
     public bool EstaPicando => estadoActual == EstadoPesca.Picando;
@@ -249,6 +264,11 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         if (mostrarCanaEnManoAlSeleccionar && aplicarTransformLocalCanaCadaFrame && canaVisualTransform != null)
         {
             AplicarTransformLocalCana();
+        }
+
+        if (usarPuntaCanaComoSalidaAnzuelo && aplicarPosicionPuntaCanaCadaFrame && puntoPuntaCanaAutomatico != null)
+        {
+            puntoPuntaCanaAutomatico.localPosition = posicionLocalPuntaCana;
         }
     }
 
@@ -536,6 +556,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         canaVisualGO = null;
         canaVisualTransform = null;
         prefabVisualCanaUsado = null;
+        puntoPuntaCanaAutomatico = null;
     }
 
     private GameObject ObtenerPrefabVisualCana()
@@ -771,6 +792,70 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     }
 
+    private Transform ObtenerPuntoSalidaAnzueloReal()
+    {
+        if (usarPuntaCanaComoSalidaAnzuelo)
+        {
+            if (puntoPuntaCana != null)
+            {
+                return puntoPuntaCana;
+            }
+
+            Transform puntoAuto = ObtenerPuntoPuntaCanaAutomatico();
+
+            if (puntoAuto != null)
+            {
+                return puntoAuto;
+            }
+        }
+
+        return puntoSalidaAnzuelo;
+    }
+
+    private Transform ObtenerPuntoPuntaCanaAutomatico()
+    {
+        if (!crearPuntaCanaAutomaticaSiFalta)
+        {
+            return null;
+        }
+
+        if (puntoPuntaCanaAutomatico != null)
+        {
+            return puntoPuntaCanaAutomatico;
+        }
+
+        if (canaVisualTransform == null)
+        {
+            return null;
+        }
+
+        string nombrePunto = string.IsNullOrWhiteSpace(nombrePuntoPuntaCanaAutomatico)
+            ? "PuntoPuntaCana"
+            : nombrePuntoPuntaCanaAutomatico;
+
+        Transform existente = BuscarHijoPorNombre(canaVisualTransform, nombrePunto);
+
+        if (existente != null)
+        {
+            puntoPuntaCanaAutomatico = existente;
+            return puntoPuntaCanaAutomatico;
+        }
+
+        GameObject punto = new GameObject(nombrePunto);
+        punto.transform.SetParent(canaVisualTransform, false);
+        punto.transform.localPosition = posicionLocalPuntaCana;
+        punto.transform.localRotation = Quaternion.identity;
+        punto.transform.localScale = Vector3.one;
+        puntoPuntaCanaAutomatico = punto.transform;
+
+        if (mostrarLogsPuntaCana)
+        {
+            Debug.Log("[SistemaPescaJugador] Punto de punta de caña creado automaticamente. Ajusta Posicion Local Punta Cana hasta que quede en la punta real.", this);
+        }
+
+        return puntoPuntaCanaAutomatico;
+    }
+
     private void IntentarLanzarAnzuelo(Vector3 puntoAgua)
     {
         OcultarPromptPesca();
@@ -815,7 +900,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
 
         if (anzueloActual != null)
         {
-            anzueloActual.Inicializar(puntoAgua, puntoSalidaAnzuelo);
+            anzueloActual.Inicializar(puntoAgua, ObtenerPuntoSalidaAnzueloReal());
         }
 
         ReproducirSonido(sonidoFlotarAgua);
@@ -1214,9 +1299,11 @@ public sealed class SistemaPescaJugador : MonoBehaviour
 
     private Vector3 ObtenerPosicionSalidaAnzuelo()
     {
-        if (puntoSalidaAnzuelo != null)
+        Transform puntoSalidaReal = ObtenerPuntoSalidaAnzueloReal();
+
+        if (puntoSalidaReal != null)
         {
-            return puntoSalidaAnzuelo.position;
+            return puntoSalidaReal.position;
         }
 
         Vector3 direccion = ObtenerDireccionLanzamiento();
@@ -1251,7 +1338,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
             anzueloActual = anzueloActualGO.AddComponent<AnzueloPesca>();
         }
 
-        anzueloActual.PrepararParaLanzamiento(posicionInicial, puntoSalidaAnzuelo);
+        anzueloActual.PrepararParaLanzamiento(posicionInicial, ObtenerPuntoSalidaAnzueloReal());
     }
 
     private Quaternion ObtenerRotacionInicialAnzuelo()
