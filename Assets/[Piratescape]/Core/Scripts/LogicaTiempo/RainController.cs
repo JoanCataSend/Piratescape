@@ -64,6 +64,20 @@ public class RainController : MonoBehaviour
     [SerializeField] private Vector3 offsetFogFXJugador = new Vector3(0f, 1.2f, 0f);
     [SerializeField] private bool mantenerAlturaRainFX = true;
 
+    [Header("Interiores / cuevas")]
+    [SerializeField] private bool permitirBloqueoLluviaEnInteriores = true;
+    [Tooltip("Velocidad del fade al entrar/salir de cuevas. 12 = casi instantaneo, 3 = suave.")]
+    [SerializeField] private float velocidadFadeInterior = 12f;
+    [Tooltip("Si esta activo, la lluvia deja de emitir dentro de cuevas cuando la oclusion llega casi a 1.")]
+    [SerializeField] private bool apagarRainFXSiInteriorCompleto = true;
+    [SerializeField] private bool reducirAudioLluviaEnInterior = true;
+    [Range(0f, 1f)] [SerializeField] private float volumenLluviaInterior = 0f;
+    [Range(0f, 1f)] [SerializeField] private float volumenTormentaInterior = 0.18f;
+    [SerializeField] private bool reducirTruenoEnInterior = true;
+    [Range(0f, 1f)] [SerializeField] private float volumenTruenoInterior = 0.28f;
+    [SerializeField] private bool bloquearRayosEnInteriorProfundo = false;
+    [Range(0f, 1f)] [SerializeField] private float oclusionInteriorParaBloquearRayos = 0.8f;
+
     [Header("Configuracion automatica FX")]
     [SerializeField] private bool crearRainFXAutomaticoSiFalta = false;
     [SerializeField] private bool configurarRainFXPorCodigo = true;
@@ -134,6 +148,8 @@ public class RainController : MonoBehaviour
     private Coroutine lightningRoutine;
     private Material materialLluviaRuntime;
     private Texture2D texturaLluviaRuntime;
+    private float targetInteriorOcclusion;
+    private float currentInteriorOcclusion;
 
     public event Action<bool> OnRainChanged;
     public event Action<EstadoClima> OnWeatherChanged;
@@ -144,6 +160,8 @@ public class RainController : MonoBehaviour
     public bool HayNiebla => climaActual == EstadoClima.Niebla && intensidadClima > 0.15f;
     public EstadoClima ClimaActual => climaActual;
     public float IntensidadVisualClima => intensidadClima;
+    public float OclusionLluviaInterior => currentInteriorOcclusion;
+    public bool LluviaVisibleExterior => rainActive && currentRainAmount * (1f - currentInteriorOcclusion) > 0.02f;
     public float BonusRarezaPesca => ObtenerBonusRarezaPesca();
     public float MultiplicadorSolClima => Mathf.Lerp(1f, ObtenerMultiplicadorSolObjetivo(climaActual), intensidadClima);
     public float MultiplicadorLunaClima => Mathf.Lerp(1f, ObtenerMultiplicadorLunaObjetivo(climaActual), intensidadClima);
@@ -236,6 +254,7 @@ public class RainController : MonoBehaviour
 
         SeguirJugadorConFX();
         ActualizarTransicionClima();
+        ActualizarOcclusionInterior();
         ActualizarFXLluvia();
         ActualizarFXNiebla();
         ActualizarAudio();
@@ -749,6 +768,29 @@ public class RainController : MonoBehaviour
         }
     }
 
+    private void ActualizarOcclusionInterior()
+    {
+        if (!permitirBloqueoLluviaEnInteriores)
+        {
+            currentInteriorOcclusion = 0f;
+            targetInteriorOcclusion = 0f;
+            return;
+        }
+
+        float velocidad = Mathf.Max(0.1f, velocidadFadeInterior);
+        currentInteriorOcclusion = Mathf.MoveTowards(currentInteriorOcclusion, targetInteriorOcclusion, Time.deltaTime * velocidad);
+    }
+
+    private float ObtenerFactorLluviaVisible()
+    {
+        if (!permitirBloqueoLluviaEnInteriores)
+        {
+            return 1f;
+        }
+
+        return 1f - Mathf.Clamp01(currentInteriorOcclusion);
+    }
+
     private void ActualizarFXLluvia()
     {
         if (rainFX == null)
@@ -756,7 +798,9 @@ public class RainController : MonoBehaviour
             return;
         }
 
-        bool visible = currentRainAmount > 0.015f;
+        float factorExterior = ObtenerFactorLluviaVisible();
+        float rainAmountVisible = currentRainAmount * factorExterior;
+        bool visible = rainAmountVisible > 0.015f;
 
         if (visible && !rainFX.gameObject.activeSelf)
         {
@@ -769,7 +813,7 @@ public class RainController : MonoBehaviour
         }
 
         var emission = rainFX.emission;
-        float rateTarget = Mathf.Lerp(0f, climaActual == EstadoClima.Tormenta ? rainRateTormenta : rainRateSuave, currentRainAmount);
+        float rateTarget = Mathf.Lerp(0f, climaActual == EstadoClima.Tormenta ? rainRateTormenta : rainRateSuave, rainAmountVisible);
         emission.rateOverTime = rateTarget;
 
         var main = rainFX.main;
@@ -794,7 +838,11 @@ public class RainController : MonoBehaviour
 
         if (!visible && detenerFXCuandoNoSeVen)
         {
-            rainFX.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            ParticleSystemStopBehavior stopBehavior = apagarRainFXSiInteriorCompleto && currentInteriorOcclusion > 0.95f
+                ? ParticleSystemStopBehavior.StopEmittingAndClear
+                : ParticleSystemStopBehavior.StopEmitting;
+
+            rainFX.Stop(true, stopBehavior);
             rainFX.gameObject.SetActive(false);
         }
     }
@@ -830,8 +878,16 @@ public class RainController : MonoBehaviour
 
     private void ActualizarAudio()
     {
-        float rainTargetVolume = currentRainAmount > 0.02f ? baseRainVolume * Mathf.Clamp01(currentRainAmount) : 0f;
-        float stormTargetVolume = climaActual == EstadoClima.Tormenta ? baseStormVolume * intensidadClima : 0f;
+        float factorAudioInterior = reducirAudioLluviaEnInterior
+            ? Mathf.Lerp(1f, Mathf.Clamp01(volumenLluviaInterior), currentInteriorOcclusion)
+            : 1f;
+
+        float factorTormentaInterior = reducirAudioLluviaEnInterior
+            ? Mathf.Lerp(1f, Mathf.Clamp01(volumenTormentaInterior), currentInteriorOcclusion)
+            : 1f;
+
+        float rainTargetVolume = currentRainAmount > 0.02f ? baseRainVolume * Mathf.Clamp01(currentRainAmount) * factorAudioInterior : 0f;
+        float stormTargetVolume = climaActual == EstadoClima.Tormenta ? baseStormVolume * intensidadClima * factorTormentaInterior : 0f;
 
         if (rainAudioSource != null)
         {
@@ -867,6 +923,11 @@ public class RainController : MonoBehaviour
     private void ActualizarRayos()
     {
         if (climaActual != EstadoClima.Tormenta || intensidadClima < 0.85f)
+        {
+            return;
+        }
+
+        if (bloquearRayosEnInteriorProfundo && currentInteriorOcclusion >= oclusionInteriorParaBloquearRayos)
         {
             return;
         }
@@ -938,7 +999,10 @@ public class RainController : MonoBehaviour
             AudioClip clip = thunderClips[UnityEngine.Random.Range(0, thunderClips.Length)];
             if (clip != null)
             {
-                thunderAudioSource.PlayOneShot(clip, Mathf.Clamp01(volumenTrueno));
+                float factorTruenoInterior = reducirTruenoEnInterior
+                    ? Mathf.Lerp(1f, Mathf.Clamp01(volumenTruenoInterior), currentInteriorOcclusion)
+                    : 1f;
+                thunderAudioSource.PlayOneShot(clip, Mathf.Clamp01(volumenTrueno * factorTruenoInterior));
 
                 if (mostrarLogsClima)
                 {
@@ -950,7 +1014,10 @@ public class RainController : MonoBehaviour
 
         if (thunderAudioSource.clip != null)
         {
-            thunderAudioSource.volume = Mathf.Clamp01(volumenTrueno);
+            float factorTruenoInterior = reducirTruenoEnInterior
+                ? Mathf.Lerp(1f, Mathf.Clamp01(volumenTruenoInterior), currentInteriorOcclusion)
+                : 1f;
+            thunderAudioSource.volume = Mathf.Clamp01(volumenTrueno * factorTruenoInterior);
             thunderAudioSource.Play();
 
             if (mostrarLogsClima)
@@ -1116,6 +1183,45 @@ public class RainController : MonoBehaviour
         estaLloviendoDebug = rainActive;
     }
 
+    public void SetInteriorRainOcclusion(float cantidad)
+    {
+        if (!permitirBloqueoLluviaEnInteriores)
+        {
+            return;
+        }
+
+        targetInteriorOcclusion = Mathf.Clamp01(cantidad);
+    }
+
+    public void SetInteriorRainOcclusionImmediate(float cantidad)
+    {
+        if (!permitirBloqueoLluviaEnInteriores)
+        {
+            return;
+        }
+
+        targetInteriorOcclusion = Mathf.Clamp01(cantidad);
+        currentInteriorOcclusion = targetInteriorOcclusion;
+    }
+
+    public void ClearInteriorRainOcclusion()
+    {
+        targetInteriorOcclusion = 0f;
+    }
+
+    public void ConfigurarModoLluviaExteriorFija()
+    {
+        rainFXSigueAlJugador = false;
+        mantenerAlturaRainFX = false;
+        rainRadio = Mathf.Max(rainRadio, 35f);
+        alturaCajaLluvia = Mathf.Max(alturaCajaLluvia, 4f);
+
+        if (rainFX != null && configurarRainFXPorCodigo)
+        {
+            ConfigurarRainFX(rainFX);
+        }
+    }
+
     public void ForzarClima(EstadoClima nuevoClima)
     {
         forzarClima = true;
@@ -1127,6 +1233,24 @@ public class RainController : MonoBehaviour
     {
         forzarClima = false;
         AplicarClimaObjetivo(ObtenerClimaDeseado(), false);
+    }
+
+    [ContextMenu("Debug/Cueva bloquear lluvia")]
+    private void DebugCuevaBloquearLluvia()
+    {
+        SetInteriorRainOcclusionImmediate(1f);
+    }
+
+    [ContextMenu("Debug/Cueva permitir lluvia")]
+    private void DebugCuevaPermitirLluvia()
+    {
+        SetInteriorRainOcclusionImmediate(0f);
+    }
+
+    [ContextMenu("Debug/Configurar modo lluvia exterior fija")]
+    private void DebugConfigurarModoLluviaExteriorFija()
+    {
+        ConfigurarModoLluviaExteriorFija();
     }
 
     [ContextMenu("Debug/Reconfigurar Rain FX Visible")]
