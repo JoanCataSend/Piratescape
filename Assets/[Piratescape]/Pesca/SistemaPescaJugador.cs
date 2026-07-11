@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
@@ -58,8 +59,36 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     [Header("Items")]
     [SerializeField] private bool requerirCanaSeleccionada = true;
     [SerializeField] private ItemData itemCanaPescar;
+    [SerializeField] private string itemIdCanaPescar = "cana_pescar";
+    [SerializeField] private bool permitirCoincidenciaCanaPorNombre = true;
     [SerializeField] private ConsumibleItemData itemPescado;
     [SerializeField] private int cantidadPescadoGanado = 1;
+
+    [Header("Animacion caña seleccionada")]
+    [Tooltip("Activa un bool del Animator mientras la caña esté seleccionada en la hotbar. Usa una Animator Layer con Avatar Mask para que solo afecte a brazos/torso y no pise las piernas.")]
+    [SerializeField] private bool actualizarAnimacionCanaSeleccionada = true;
+    [SerializeField] private string boolTieneCana = "TieneCana";
+    [SerializeField] private string triggerEquiparCana = "EquiparCana";
+    [SerializeField] private string triggerGuardarCana = "GuardarCana";
+    [SerializeField] private bool mostrarLogsAnimacionCana = false;
+
+    [Header("Visual caña en mano")]
+    [Tooltip("Muestra un prefab de la caña en la mano mientras la caña esté seleccionada en la hotbar.")]
+    [SerializeField] private bool mostrarCanaEnManoAlSeleccionar = true;
+    [SerializeField] private GameObject prefabVisualCana;
+    [SerializeField] private bool usarWorldPrefabDelItemCanaSiFalta = true;
+    [SerializeField] private Transform puntoManoCana;
+    [SerializeField] private bool crearPuntoManoCanaAutomaticoSiFalta = true;
+    [SerializeField] private string nombrePuntoManoCanaAutomatico = "PuntoManoCana";
+    [SerializeField] private Vector3 posicionLocalCana = new Vector3(0.05f, 0.02f, 0.28f);
+    [SerializeField] private Vector3 rotacionExtraLocalCanaEuler = Vector3.zero;
+    [SerializeField] private Vector3 escalaLocalCana = Vector3.one;
+    [SerializeField] private bool usarRotacionOriginalPrefabCana = true;
+    [SerializeField] private bool usarEscalaOriginalPrefabCana = true;
+    [SerializeField] private bool aplicarTransformLocalCanaCadaFrame = true;
+    [SerializeField] private bool desactivarCollidersCanaEnMano = true;
+    [SerializeField] private bool desactivarRigidbodiesCanaEnMano = true;
+    [SerializeField] private bool mostrarLogsVisualCana = false;
 
     [Header("Peces diferentes y rareza")]
     [SerializeField] private bool usarTablaPecesConRareza = true;
@@ -153,6 +182,10 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     private bool hayPuntoAguaDetectado;
     private float proximaActualizacionAgua;
     private bool promptMostrado;
+    private bool canaSeleccionadaAnterior;
+    private GameObject canaVisualGO;
+    private Transform canaVisualTransform;
+    private GameObject prefabVisualCanaUsado;
 
     public bool EstaPescando => estadoActual != EstadoPesca.Inactivo;
     public bool EstaPicando => estadoActual == EstadoPesca.Picando;
@@ -164,6 +197,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         AutoConfigurarLayerAguaSiHaceFalta();
         AutoConfigurarLayersSueloBloqueanPescaSiHaceFalta();
         ValidarValores();
+        ActualizarAnimacionCanaSeleccionada(true);
     }
 
     private void OnDisable()
@@ -178,6 +212,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         }
 
         estadoActual = EstadoPesca.Inactivo;
+        DesactivarAnimacionCana();
     }
 
     private void Update()
@@ -187,6 +222,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
             return;
         }
 
+        ActualizarAnimacionCanaSeleccionada(false);
         ActualizarDeteccionAguaYPrompt();
 
         if (cancelarSiJugadorSeAleja && EstaPescando && anzueloActualGO != null)
@@ -206,6 +242,14 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         }
 
         ProcesarInteraccionPesca();
+    }
+
+    private void LateUpdate()
+    {
+        if (mostrarCanaEnManoAlSeleccionar && aplicarTransformLocalCanaCadaFrame && canaVisualTransform != null)
+        {
+            AplicarTransformLocalCana();
+        }
     }
 
     private void ActualizarDeteccionAguaYPrompt()
@@ -305,24 +349,426 @@ public sealed class SistemaPescaJugador : MonoBehaviour
             return true;
         }
 
-        if (itemCanaPescar == null)
-        {
-            return false;
-        }
+        return EstaSeleccionadaLaCana();
+    }
 
+    private bool EstaSeleccionadaLaCana()
+    {
+        return EsItemCanaPescar(ObtenerItemSeleccionadoInventario());
+    }
+
+    private ItemData ObtenerItemSeleccionadoInventario()
+    {
         if (inventarioJugador == null)
         {
-            return false;
+            return null;
         }
 
         InventorySlot slot = inventarioJugador.GetSlot(inventarioJugador.SelectedSlotIndex);
 
-        if (slot == null || slot.IsEmpty())
+        if (slot == null || slot.IsEmpty() || slot.itemData == null)
+        {
+            return null;
+        }
+
+        return slot.itemData;
+    }
+
+    private bool EsItemCanaPescar(ItemData item)
+    {
+        if (item == null)
         {
             return false;
         }
 
-        return slot.itemData == itemCanaPescar;
+        if (itemCanaPescar != null && item == itemCanaPescar)
+        {
+            return true;
+        }
+
+        string id = item.ItemId != null ? item.ItemId.ToLowerInvariant() : string.Empty;
+        string idBuscado = itemIdCanaPescar != null ? itemIdCanaPescar.ToLowerInvariant() : "cana_pescar";
+
+        if (!string.IsNullOrWhiteSpace(idBuscado) && id == idBuscado)
+        {
+            return true;
+        }
+
+        if (!permitirCoincidenciaCanaPorNombre)
+        {
+            return false;
+        }
+
+        string nombreAsset = item.name != null ? item.name.ToLowerInvariant() : string.Empty;
+        string nombreMostrar = item.DisplayName != null ? item.DisplayName.ToLowerInvariant() : string.Empty;
+
+        return nombreAsset.Contains("cana") ||
+               nombreMostrar.Contains("cana") ||
+               nombreAsset.Contains("caña") ||
+               nombreMostrar.Contains("caña") ||
+               nombreAsset.Contains("pescar") ||
+               nombreMostrar.Contains("pescar") ||
+               nombreAsset.Contains("fishing") ||
+               nombreMostrar.Contains("fishing") ||
+               nombreAsset.Contains("rod") ||
+               nombreMostrar.Contains("rod");
+    }
+
+    private void ActualizarAnimacionCanaSeleccionada(bool forzar)
+    {
+        bool canaSeleccionada = EstaSeleccionadaLaCana();
+
+        if (!forzar && canaSeleccionada == canaSeleccionadaAnterior)
+        {
+            return;
+        }
+
+        canaSeleccionadaAnterior = canaSeleccionada;
+
+        if (actualizarAnimacionCanaSeleccionada)
+        {
+            CambiarBoolAnimator(boolTieneCana, canaSeleccionada);
+
+            if (canaSeleccionada)
+            {
+                ReproducirTriggerSeguro(triggerEquiparCana);
+            }
+            else
+            {
+                ReproducirTriggerSeguro(triggerGuardarCana);
+            }
+
+            if (mostrarLogsAnimacionCana)
+            {
+                Debug.Log("[SistemaPescaJugador] Animacion caña seleccionada = " + canaSeleccionada, this);
+            }
+        }
+
+        ActualizarVisualCanaEnMano(canaSeleccionada);
+    }
+
+    private void DesactivarAnimacionCana()
+    {
+        canaSeleccionadaAnterior = false;
+
+        if (actualizarAnimacionCanaSeleccionada)
+        {
+            CambiarBoolAnimator(boolTieneCana, false);
+        }
+
+        OcultarVisualCanaEnMano();
+    }
+
+    private void ActualizarVisualCanaEnMano(bool canaSeleccionada)
+    {
+        if (!mostrarCanaEnManoAlSeleccionar)
+        {
+            OcultarVisualCanaEnMano();
+            return;
+        }
+
+        if (canaSeleccionada)
+        {
+            MostrarVisualCanaEnMano();
+        }
+        else
+        {
+            OcultarVisualCanaEnMano();
+        }
+    }
+
+    private void MostrarVisualCanaEnMano()
+    {
+        if (canaVisualGO != null)
+        {
+            canaVisualGO.SetActive(true);
+            AplicarTransformLocalCana();
+            return;
+        }
+
+        GameObject prefab = ObtenerPrefabVisualCana();
+
+        if (prefab == null)
+        {
+            if (mostrarLogsVisualCana)
+            {
+                Debug.LogWarning("[SistemaPescaJugador] No hay Prefab Visual Caña asignado y no se ha encontrado un WorldPrefab en el item de la caña.", this);
+            }
+
+            return;
+        }
+
+        Transform puntoMano = ObtenerPuntoManoCana();
+
+        if (puntoMano == null)
+        {
+            if (mostrarLogsVisualCana)
+            {
+                Debug.LogWarning("[SistemaPescaJugador] No se ha encontrado Punto Mano Caña.", this);
+            }
+
+            return;
+        }
+
+        prefabVisualCanaUsado = prefab;
+        canaVisualGO = Instantiate(prefab, puntoMano);
+        canaVisualGO.name = prefab.name + "_EnMano";
+        canaVisualTransform = canaVisualGO.transform;
+
+        PrepararVisualCanaInstanciada();
+        AplicarTransformLocalCana();
+
+        if (mostrarLogsVisualCana)
+        {
+            Debug.Log("[SistemaPescaJugador] Caña visual creada en la mano.", this);
+        }
+    }
+
+    private void OcultarVisualCanaEnMano()
+    {
+        if (canaVisualGO == null)
+        {
+            canaVisualTransform = null;
+            return;
+        }
+
+        Destroy(canaVisualGO);
+        canaVisualGO = null;
+        canaVisualTransform = null;
+        prefabVisualCanaUsado = null;
+    }
+
+    private GameObject ObtenerPrefabVisualCana()
+    {
+        if (prefabVisualCana != null)
+        {
+            return prefabVisualCana;
+        }
+
+        if (!usarWorldPrefabDelItemCanaSiFalta)
+        {
+            return null;
+        }
+
+        ItemData itemSeleccionado = ObtenerItemSeleccionadoInventario();
+
+        if (!EsItemCanaPescar(itemSeleccionado))
+        {
+            return null;
+        }
+
+        return BuscarPrefabEnItemData(itemSeleccionado);
+    }
+
+    private GameObject BuscarPrefabEnItemData(ItemData item)
+    {
+        if (item == null)
+        {
+            return null;
+        }
+
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        string[] nombresPosibles =
+        {
+            "WorldPrefab",
+            "worldPrefab",
+            "Prefab",
+            "prefab",
+            "prefabMundo",
+            "worldObjectPrefab"
+        };
+
+        System.Type tipo = item.GetType();
+
+        while (tipo != null)
+        {
+            for (int i = 0; i < nombresPosibles.Length; i++)
+            {
+                PropertyInfo propiedad = tipo.GetProperty(nombresPosibles[i], flags);
+
+                if (propiedad != null && typeof(GameObject).IsAssignableFrom(propiedad.PropertyType))
+                {
+                    return propiedad.GetValue(item) as GameObject;
+                }
+
+                FieldInfo campo = tipo.GetField(nombresPosibles[i], flags);
+
+                if (campo != null && typeof(GameObject).IsAssignableFrom(campo.FieldType))
+                {
+                    return campo.GetValue(item) as GameObject;
+                }
+            }
+
+            tipo = tipo.BaseType;
+        }
+
+        return null;
+    }
+
+    private Transform ObtenerPuntoManoCana()
+    {
+        if (puntoManoCana != null)
+        {
+            return puntoManoCana;
+        }
+
+        Transform manoDerecha = ObtenerManoDerechaJugador();
+
+        if (manoDerecha == null)
+        {
+            return transform;
+        }
+
+        if (!crearPuntoManoCanaAutomaticoSiFalta)
+        {
+            return manoDerecha;
+        }
+
+        GameObject punto = new GameObject(string.IsNullOrWhiteSpace(nombrePuntoManoCanaAutomatico) ? "PuntoManoCana" : nombrePuntoManoCanaAutomatico);
+        punto.transform.SetParent(manoDerecha, false);
+        punto.transform.localPosition = Vector3.zero;
+        punto.transform.localRotation = Quaternion.identity;
+        punto.transform.localScale = Vector3.one;
+        puntoManoCana = punto.transform;
+        return puntoManoCana;
+    }
+
+    private Transform ObtenerManoDerechaJugador()
+    {
+        if (animatorJugador != null && animatorJugador.isHuman)
+        {
+            Transform manoHumanoid = animatorJugador.GetBoneTransform(HumanBodyBones.RightHand);
+
+            if (manoHumanoid != null)
+            {
+                return manoHumanoid;
+            }
+        }
+
+        string[] nombresMano =
+        {
+            "RightHand",
+            "mixamorig:RightHand",
+            "mixamorig:RightHandIndex1",
+            "Hand_R",
+            "hand.R",
+            "R_Hand",
+            "Right Hand",
+            "ManoDerecha"
+        };
+
+        for (int i = 0; i < nombresMano.Length; i++)
+        {
+            Transform encontrado = BuscarHijoPorNombre(transform, nombresMano[i]);
+
+            if (encontrado != null)
+            {
+                return encontrado;
+            }
+        }
+
+        return null;
+    }
+
+    private Transform BuscarHijoPorNombre(Transform raiz, string nombre)
+    {
+        if (raiz == null || string.IsNullOrWhiteSpace(nombre))
+        {
+            return null;
+        }
+
+        if (raiz.name == nombre)
+        {
+            return raiz;
+        }
+
+        for (int i = 0; i < raiz.childCount; i++)
+        {
+            Transform encontrado = BuscarHijoPorNombre(raiz.GetChild(i), nombre);
+
+            if (encontrado != null)
+            {
+                return encontrado;
+            }
+        }
+
+        return null;
+    }
+
+    private void PrepararVisualCanaInstanciada()
+    {
+        if (canaVisualGO == null)
+        {
+            return;
+        }
+
+        if (desactivarCollidersCanaEnMano)
+        {
+            Collider[] colliders = canaVisualGO.GetComponentsInChildren<Collider>(true);
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i] != null)
+                {
+                    colliders[i].enabled = false;
+                }
+            }
+        }
+
+        if (desactivarRigidbodiesCanaEnMano)
+        {
+            Rigidbody[] rigidbodies = canaVisualGO.GetComponentsInChildren<Rigidbody>(true);
+
+            for (int i = 0; i < rigidbodies.Length; i++)
+            {
+                if (rigidbodies[i] == null)
+                {
+                    continue;
+                }
+
+                rigidbodies[i].linearVelocity = Vector3.zero;
+                rigidbodies[i].angularVelocity = Vector3.zero;
+                rigidbodies[i].useGravity = false;
+                rigidbodies[i].isKinematic = true;
+            }
+        }
+    }
+
+    private void AplicarTransformLocalCana()
+    {
+        if (canaVisualTransform == null)
+        {
+            return;
+        }
+
+        canaVisualTransform.localPosition = posicionLocalCana;
+
+        Quaternion rotacionLocal = Quaternion.identity;
+
+        if (usarRotacionOriginalPrefabCana)
+        {
+            GameObject prefab = prefabVisualCanaUsado != null ? prefabVisualCanaUsado : ObtenerPrefabVisualCana();
+
+            if (prefab != null)
+            {
+                rotacionLocal = prefab.transform.localRotation;
+            }
+        }
+
+        rotacionLocal *= Quaternion.Euler(rotacionExtraLocalCanaEuler);
+        canaVisualTransform.localRotation = rotacionLocal;
+
+        GameObject prefabEscala = prefabVisualCanaUsado != null ? prefabVisualCanaUsado : ObtenerPrefabVisualCana();
+        Vector3 escalaBase = usarEscalaOriginalPrefabCana && prefabEscala != null
+            ? prefabEscala.transform.localScale
+            : Vector3.one;
+
+        canaVisualTransform.localScale = MultiplicarVector3(escalaBase, escalaLocalCana);
+    }
+
+    private Vector3 MultiplicarVector3(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     }
 
     private void IntentarLanzarAnzuelo(Vector3 puntoAgua)
@@ -877,6 +1323,50 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         }
 
         animatorJugador.SetTrigger(triggerName);
+    }
+
+    private void ReproducirTriggerSeguro(string triggerName)
+    {
+        if (animatorJugador == null || string.IsNullOrWhiteSpace(triggerName))
+        {
+            return;
+        }
+
+        if (TieneParametroAnimator(triggerName, AnimatorControllerParameterType.Trigger))
+        {
+            animatorJugador.SetTrigger(triggerName);
+        }
+    }
+
+    private void CambiarBoolAnimator(string nombreParametro, bool valor)
+    {
+        if (animatorJugador == null || string.IsNullOrWhiteSpace(nombreParametro))
+        {
+            return;
+        }
+
+        if (TieneParametroAnimator(nombreParametro, AnimatorControllerParameterType.Bool))
+        {
+            animatorJugador.SetBool(nombreParametro, valor);
+        }
+    }
+
+    private bool TieneParametroAnimator(string nombreParametro, AnimatorControllerParameterType tipo)
+    {
+        if (animatorJugador == null || string.IsNullOrWhiteSpace(nombreParametro))
+        {
+            return false;
+        }
+
+        foreach (AnimatorControllerParameter parametro in animatorJugador.parameters)
+        {
+            if (parametro.type == tipo && parametro.name == nombreParametro)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ReproducirSonido(AudioClip clip)
