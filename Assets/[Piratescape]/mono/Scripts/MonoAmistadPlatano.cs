@@ -392,6 +392,7 @@ public class MonoAmistadPlatano : MonoBehaviour
         ReproducirTrigger(triggerAmigo);
         CambiarBool(boolSiguiendo, seguirAlSerAmigo);
         ReproducirFXCorazonesAmistad();
+        MiniMissionManager.ReportarEventoGlobal("mono_amigo");
         MostrarMensajeTemporal(mensajeMonoAmigo);
         ConfigurarNavMeshAgent();
     }

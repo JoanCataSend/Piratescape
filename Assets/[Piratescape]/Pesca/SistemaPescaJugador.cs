@@ -50,6 +50,44 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         public bool EsValido => itemPez != null && PesoProbabilidad > 0;
     }
 
+    [System.Serializable]
+    private sealed class ConfigDurabilidadCana
+    {
+        [Header("Identificacion")]
+        [SerializeField] private string nombreDebug = "Caña";
+        [SerializeField] private ItemData itemCana;
+        [SerializeField] private string itemIdCana;
+
+        [Header("Durabilidad")]
+        [Tooltip("Usos maximos de esta caña. Ejemplo: caña vieja 30, caña normal 100, caña fantasma 200.")]
+        [SerializeField] private int usosMaximos = 100;
+
+        public int UsosMaximos => Mathf.Max(1, usosMaximos);
+
+        public bool Coincide(ItemData item)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            if (itemCana != null && item == itemCana)
+            {
+                return true;
+            }
+
+            if (string.IsNullOrWhiteSpace(itemIdCana))
+            {
+                return false;
+            }
+
+            string idItem = item.ItemId != null ? item.ItemId.ToLowerInvariant() : string.Empty;
+            string idBuscado = itemIdCana.ToLowerInvariant();
+
+            return idItem == idBuscado;
+        }
+    }
+
     [Header("Referencias")]
     [SerializeField] private PlayerInventory inventarioJugador;
     [SerializeField] private Animator animatorJugador;
@@ -63,6 +101,20 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     [SerializeField] private bool permitirCoincidenciaCanaPorNombre = true;
     [SerializeField] private ConsumibleItemData itemPescado;
     [SerializeField] private int cantidadPescadoGanado = 1;
+
+    [Header("Durabilidad caña")]
+    [Tooltip("Si está activo, cada vez que lanzas la caña se consume 1 uso. Cuando llega a 0, se rompe y se elimina del inventario.")]
+    [SerializeField] private bool usarDurabilidadCana = true;
+    [Tooltip("Usos por defecto si la caña seleccionada no tiene una configuración concreta en la lista de abajo.")]
+    [SerializeField] private int usosMaximosCanaDefault = 100;
+    [Tooltip("La durabilidad se consume al terminar el lance, tanto si pescas como si fallas. Así la última tirada puede completarse antes de romper la caña.")]
+    [SerializeField] private bool consumirUsoAlTerminarLance = true;
+    [SerializeField] private bool romperCanaAlLlegarACero = true;
+    [SerializeField] private bool mostrarDurabilidadEnPrompt = true;
+    [SerializeField] private int avisarDurabilidadBajaEn = 10;
+    [SerializeField] private string mensajeCanaRota = "La caña se ha roto.";
+    [SerializeField] private string mensajeCanaMuyGastada = "La caña está muy desgastada.";
+    [SerializeField] private List<ConfigDurabilidadCana> configuracionesDurabilidadCana = new List<ConfigDurabilidadCana>();
 
     [Header("Animacion caña seleccionada")]
     [Tooltip("Activa un bool del Animator mientras la caña esté seleccionada en la hotbar. Usa una Animator Layer con Avatar Mask para que solo afecte a brazos/torso y no pise las piernas.")]
@@ -201,6 +253,9 @@ public sealed class SistemaPescaJugador : MonoBehaviour
     private Transform canaVisualTransform;
     private GameObject prefabVisualCanaUsado;
     private Transform puntoPuntaCanaAutomatico;
+    private readonly Dictionary<string, int> durabilidadActualCanaPorClave = new Dictionary<string, int>();
+    private bool consumirUsoCanaPendiente;
+    private ItemData itemCanaUsadaEnLance;
 
     public bool EstaPescando => estadoActual != EstadoPesca.Inactivo;
     public bool EstaPicando => estadoActual == EstadoPesca.Picando;
@@ -227,6 +282,8 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         }
 
         estadoActual = EstadoPesca.Inactivo;
+        consumirUsoCanaPendiente = false;
+        itemCanaUsadaEnLance = null;
         DesactivarAnimacionCana();
     }
 
@@ -315,7 +372,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
 
         if (estadoActual == EstadoPesca.Inactivo && hayPuntoAguaDetectado)
         {
-            MostrarPromptPesca(mensajePromptLanzar);
+            MostrarPromptPesca(ObtenerMensajePromptLanzarConDurabilidad());
         }
         else if (estadoActual == EstadoPesca.Picando)
         {
@@ -333,6 +390,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         {
             if (!PuedeIntentarPescar())
             {
+                MostrarMensajeNoPuedePescar();
                 return;
             }
 
@@ -369,12 +427,70 @@ public sealed class SistemaPescaJugador : MonoBehaviour
             return true;
         }
 
-        return EstaSeleccionadaLaCana();
+        ItemData canaSeleccionada = ObtenerItemSeleccionadoInventario();
+
+        if (!EsItemCanaPescar(canaSeleccionada))
+        {
+            return false;
+        }
+
+        return CanaTieneDurabilidadDisponible(canaSeleccionada);
     }
 
     private bool EstaSeleccionadaLaCana()
     {
         return EsItemCanaPescar(ObtenerItemSeleccionadoInventario());
+    }
+
+    private bool CanaTieneDurabilidadDisponible(ItemData itemCana)
+    {
+        if (!usarDurabilidadCana || itemCana == null)
+        {
+            return true;
+        }
+
+        return ObtenerDurabilidadActualCana(itemCana) > 0;
+    }
+
+    private string ObtenerMensajePromptLanzarConDurabilidad()
+    {
+        if (!mostrarDurabilidadEnPrompt || !usarDurabilidadCana)
+        {
+            return mensajePromptLanzar;
+        }
+
+        ItemData canaSeleccionada = ObtenerItemSeleccionadoInventario();
+
+        if (!EsItemCanaPescar(canaSeleccionada))
+        {
+            return mensajePromptLanzar;
+        }
+
+        int durabilidadActual = ObtenerDurabilidadActualCana(canaSeleccionada);
+        int durabilidadMaxima = ObtenerDurabilidadMaximaCana(canaSeleccionada);
+
+        return mensajePromptLanzar + " (" + durabilidadActual + "/" + durabilidadMaxima + ")";
+    }
+
+    private void MostrarMensajeNoPuedePescar()
+    {
+        if (!requerirCanaSeleccionada)
+        {
+            return;
+        }
+
+        ItemData itemSeleccionado = ObtenerItemSeleccionadoInventario();
+
+        if (!EsItemCanaPescar(itemSeleccionado))
+        {
+            MostrarMensajeTemporal("Selecciona la caña de pescar.");
+            return;
+        }
+
+        if (usarDurabilidadCana && ObtenerDurabilidadActualCana(itemSeleccionado) <= 0)
+        {
+            MostrarMensajeTemporal(mensajeCanaRota);
+        }
     }
 
     private ItemData ObtenerItemSeleccionadoInventario()
@@ -871,6 +987,8 @@ public sealed class SistemaPescaJugador : MonoBehaviour
             return;
         }
 
+        RegistrarUsoCanaPendiente();
+
         ReproducirTrigger(triggerLanzar);
         ReproducirSonido(sonidoLanzar);
         MostrarMensajeTemporal("Espera a que pique...");
@@ -1024,6 +1142,9 @@ public sealed class SistemaPescaJugador : MonoBehaviour
 
         if (pescaConExito)
         {
+            MiniMissionManager.ReportarEventoGlobal("pescar_primer_pez");
+            MiniMissionManager.ReportarEventoGlobal("pescar_cualquier_pez");
+
             bool pescadoAñadido = false;
             ConsumibleItemData itemResultado = ObtenerItemPescadoResultadoActual();
             int cantidadResultado = ObtenerCantidadPescadoResultadoActual();
@@ -1045,9 +1166,190 @@ public sealed class SistemaPescaJugador : MonoBehaviour
             }
         }
 
+        ConsumirUsoCanaPendienteSiHaceFalta();
+
         estadoActual = EstadoPesca.Inactivo;
         LimpiarResultadoPesca();
         rutinaPesca = null;
+    }
+
+    private void RegistrarUsoCanaPendiente()
+    {
+        consumirUsoCanaPendiente = false;
+        itemCanaUsadaEnLance = null;
+
+        if (!usarDurabilidadCana || !consumirUsoAlTerminarLance)
+        {
+            return;
+        }
+
+        ItemData canaSeleccionada = ObtenerItemSeleccionadoInventario();
+
+        if (!EsItemCanaPescar(canaSeleccionada))
+        {
+            return;
+        }
+
+        consumirUsoCanaPendiente = true;
+        itemCanaUsadaEnLance = canaSeleccionada;
+    }
+
+    private void ConsumirUsoCanaPendienteSiHaceFalta()
+    {
+        if (!consumirUsoCanaPendiente || itemCanaUsadaEnLance == null)
+        {
+            consumirUsoCanaPendiente = false;
+            itemCanaUsadaEnLance = null;
+            return;
+        }
+
+        ConsumirUsoCana(itemCanaUsadaEnLance);
+        consumirUsoCanaPendiente = false;
+        itemCanaUsadaEnLance = null;
+    }
+
+    private void ConsumirUsoCana(ItemData cana)
+    {
+        if (!usarDurabilidadCana || cana == null)
+        {
+            return;
+        }
+
+        int durabilidadActual = ObtenerDurabilidadActualCana(cana);
+        int durabilidadMaxima = ObtenerDurabilidadMaximaCana(cana);
+        durabilidadActual = Mathf.Max(0, durabilidadActual - 1);
+        EstablecerDurabilidadActualCana(cana, durabilidadActual);
+
+        if (mostrarLogs)
+        {
+            Debug.Log("[SistemaPescaJugador] Durabilidad caña: " + durabilidadActual + "/" + durabilidadMaxima, this);
+        }
+
+        if (durabilidadActual <= 0)
+        {
+            if (romperCanaAlLlegarACero)
+            {
+                RomperCana(cana);
+            }
+
+            return;
+        }
+
+        if (avisarDurabilidadBajaEn > 0 && durabilidadActual <= avisarDurabilidadBajaEn)
+        {
+            MostrarMensajeTemporal(mensajeCanaMuyGastada + " (" + durabilidadActual + "/" + durabilidadMaxima + ")");
+        }
+    }
+
+    private int ObtenerDurabilidadActualCana(ItemData cana)
+    {
+        if (cana == null)
+        {
+            return 0;
+        }
+
+        string clave = ObtenerClaveDurabilidadCana(cana);
+        int durabilidadMaxima = ObtenerDurabilidadMaximaCana(cana);
+
+        if (!durabilidadActualCanaPorClave.TryGetValue(clave, out int durabilidadActual))
+        {
+            durabilidadActual = durabilidadMaxima;
+            durabilidadActualCanaPorClave[clave] = durabilidadActual;
+        }
+
+        durabilidadActual = Mathf.Clamp(durabilidadActual, 0, durabilidadMaxima);
+        durabilidadActualCanaPorClave[clave] = durabilidadActual;
+        return durabilidadActual;
+    }
+
+    private void EstablecerDurabilidadActualCana(ItemData cana, int valor)
+    {
+        if (cana == null)
+        {
+            return;
+        }
+
+        string clave = ObtenerClaveDurabilidadCana(cana);
+        int durabilidadMaxima = ObtenerDurabilidadMaximaCana(cana);
+        durabilidadActualCanaPorClave[clave] = Mathf.Clamp(valor, 0, durabilidadMaxima);
+    }
+
+    private int ObtenerDurabilidadMaximaCana(ItemData cana)
+    {
+        if (cana == null)
+        {
+            return Mathf.Max(1, usosMaximosCanaDefault);
+        }
+
+        ConfigDurabilidadCana config = ObtenerConfigDurabilidadCana(cana);
+
+        if (config != null)
+        {
+            return config.UsosMaximos;
+        }
+
+        return Mathf.Max(1, usosMaximosCanaDefault);
+    }
+
+    private ConfigDurabilidadCana ObtenerConfigDurabilidadCana(ItemData cana)
+    {
+        if (cana == null || configuracionesDurabilidadCana == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < configuracionesDurabilidadCana.Count; i++)
+        {
+            ConfigDurabilidadCana config = configuracionesDurabilidadCana[i];
+
+            if (config != null && config.Coincide(cana))
+            {
+                return config;
+            }
+        }
+
+        return null;
+    }
+
+    private string ObtenerClaveDurabilidadCana(ItemData cana)
+    {
+        if (cana == null)
+        {
+            return "cana_null";
+        }
+
+        string id = cana.ItemId;
+
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            id = cana.name;
+        }
+
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            id = cana.GetInstanceID().ToString();
+        }
+
+        return "cana_durabilidad_" + id.ToLowerInvariant();
+    }
+
+    private void RomperCana(ItemData cana)
+    {
+        if (cana == null)
+        {
+            return;
+        }
+
+        string clave = ObtenerClaveDurabilidadCana(cana);
+        durabilidadActualCanaPorClave.Remove(clave);
+
+        if (inventarioJugador != null)
+        {
+            inventarioJugador.RemoveItem(cana, 1);
+        }
+
+        MostrarMensajeTemporal(mensajeCanaRota);
+        ActualizarAnimacionCanaSeleccionada(true);
     }
 
     private void PrepararResultadoPescaConExito()
@@ -1628,5 +1930,7 @@ public sealed class SistemaPescaJugador : MonoBehaviour
         duracionLanzamientoAnzuelo = Mathf.Max(0.01f, duracionLanzamientoAnzuelo);
         duracionRetornoAnzuelo = Mathf.Max(0.01f, duracionRetornoAnzuelo);
         margenSueloSobreAgua = Mathf.Max(0f, margenSueloSobreAgua);
+        usosMaximosCanaDefault = Mathf.Max(1, usosMaximosCanaDefault);
+        avisarDurabilidadBajaEn = Mathf.Max(0, avisarDurabilidadBajaEn);
     }
 }
