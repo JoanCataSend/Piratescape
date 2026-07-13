@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 11002360}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15264115, y: 0.000000010422214, z: -0.0000000016097218, w: 0.98828167}
-  m_LocalPosition: {x: -47.03, y: 3.392589, z: -0.29115105}
+  m_LocalPosition: {x: -52.809998, y: 3.392589, z: 10.628849}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -315,7 +315,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -60.03
+      value: -65.81
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -323,7 +323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.83
+      value: 9.09
       objectReference: {fileID: 0}
     - target: {fileID: 1824575676293820344, guid: a685c9ada9b994344b0568373300c1cd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -654,8 +654,46 @@ MonoBehaviour:
   camaraJugador: {fileID: 11002365}
   requerirCanaSeleccionada: 1
   itemCanaPescar: {fileID: 11400000, guid: 9e86bd1a4e0f4a6cb27a7196d40c9a1d, type: 2}
+  itemIdCanaPescar: cana_pescar
+  permitirCoincidenciaCanaPorNombre: 1
   itemPescado: {fileID: 11400000, guid: 3e07a94833e54883921c894cd07a41fa, type: 2}
   cantidadPescadoGanado: 1
+  usarDurabilidadCana: 1
+  usosMaximosCanaDefault: 100
+  consumirUsoAlTerminarLance: 1
+  romperCanaAlLlegarACero: 1
+  mostrarDurabilidadEnPrompt: 1
+  avisarDurabilidadBajaEn: 10
+  mensajeCanaRota: "La ca\xF1a se ha roto."
+  mensajeCanaMuyGastada: "La ca\xF1a est\xE1 muy desgastada."
+  configuracionesDurabilidadCana: []
+  actualizarAnimacionCanaSeleccionada: 1
+  boolTieneCana: TieneCana
+  triggerEquiparCana: EquiparCana
+  triggerGuardarCana: GuardarCana
+  mostrarLogsAnimacionCana: 0
+  mostrarCanaEnManoAlSeleccionar: 1
+  prefabVisualCana: {fileID: 0}
+  usarWorldPrefabDelItemCanaSiFalta: 1
+  puntoManoCana: {fileID: 0}
+  crearPuntoManoCanaAutomaticoSiFalta: 1
+  nombrePuntoManoCanaAutomatico: PuntoManoCana
+  posicionLocalCana: {x: 0.05, y: 0.02, z: 0.28}
+  rotacionExtraLocalCanaEuler: {x: 0, y: 0, z: 0}
+  escalaLocalCana: {x: 1, y: 1, z: 1}
+  usarRotacionOriginalPrefabCana: 1
+  usarEscalaOriginalPrefabCana: 1
+  aplicarTransformLocalCanaCadaFrame: 1
+  desactivarCollidersCanaEnMano: 1
+  desactivarRigidbodiesCanaEnMano: 1
+  mostrarLogsVisualCana: 0
+  usarPuntaCanaComoSalidaAnzuelo: 1
+  puntoPuntaCana: {fileID: 0}
+  crearPuntaCanaAutomaticaSiFalta: 1
+  nombrePuntoPuntaCanaAutomatico: PuntoPuntaCana
+  posicionLocalPuntaCana: {x: 0, y: 0, z: 1.6}
+  aplicarPosicionPuntaCanaCadaFrame: 1
+  mostrarLogsPuntaCana: 0
   usarTablaPecesConRareza: 1
   usarPescadoBaseComoFallback: 1
   mostrarRarezaEnMensaje: 1
@@ -15964,7 +16002,7 @@ Transform:
   m_GameObject: {fileID: 259481919}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15272912, y: -0.000000036405524, z: 0.0000000056261906, w: 0.98826814}
-  m_LocalPosition: {x: -47.03, y: 3.392589, z: -0.29115105}
+  m_LocalPosition: {x: -52.809998, y: 3.392589, z: 10.628849}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -33905,6 +33943,63 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1001 &1056379185245283828
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 290197054032067530, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_Name
+      value: CuevaBuena
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 55.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 35.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -189.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.24265426
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9701129
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 151.913
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102585872936755568, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 02f8bf9bd54df5348b3e0f7935f88978, type: 3}
 --- !u!1001 &3775581332502079148
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34629,3 +34724,4 @@ SceneRoots:
   - {fileID: 924899691}
   - {fileID: 106958119}
   - {fileID: 897273944}
+  - {fileID: 1056379185245283828}

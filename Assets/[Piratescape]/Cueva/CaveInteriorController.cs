@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [DefaultExecutionOrder(1000)]
 [DisallowMultipleComponent]
@@ -46,6 +47,27 @@ public class CaveInteriorController : MonoBehaviour
     [Range(0f, 1f)] [SerializeField] private float mezclaColorAmbienteFondo = 0.85f;
     [SerializeField] private Color colorAmbienteCueva = new Color(0.035f, 0.042f, 0.055f);
 
+    [Header("Oscuridad real interior")]
+    [Tooltip("Hace que la cueva se comporte como interior: no baja la exposicion de camara, solo quita luz exterior/ambiente. Antorchas y faroles siguen iluminando.")]
+    [SerializeField] private bool usarOscuridadInteriorReal = true;
+    [Tooltip("Desde esta profundidad empieza a apagarse fuerte la luz exterior.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float profundidadInicioOscuridadTotal = 0.12f;
+    [Tooltip("A partir de esta profundidad la cueva queda practicamente negra si no hay antorcha/farol.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float profundidadOscuridadTotal = 0.72f;
+    [Tooltip("Curva extra de oscuridad. 0 = entrada, 1 = fondo.")]
+    [SerializeField] private AnimationCurve curvaOscuridadInterior = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    [Range(0f, 1f)] [SerializeField] private float multiplicadorSolOscuridadTotal = 0f;
+    [Range(0f, 1f)] [SerializeField] private float multiplicadorLunaOscuridadTotal = 0f;
+    [Range(0f, 1f)] [SerializeField] private float multiplicadorReflejosOscuridadTotal = 0f;
+    [Tooltip("Si esta activo, cambia el modo de ambiente a Flat dentro de la cueva para que no entre luz de skybox.")]
+    [SerializeField] private bool forzarAmbientePlanoEnCueva = true;
+    [Tooltip("Color de ambiente cuando estas al fondo. Negro = sin luz ambiental.")]
+    [SerializeField] private Color colorAmbienteOscuridadTotal = Color.black;
+    [Tooltip("Opcional: apaga otras luces exteriores que puedan colarse dentro de la cueva.")]
+    [SerializeField] private Light[] lucesExterioresExtra;
+
     [Header("Opcional - luz de entrada")]
     [Tooltip("Si tienes una luz suave en la boca de la cueva, puede apagarse hacia el fondo.")]
     [SerializeField] private Light luzEntradaCueva;
@@ -67,6 +89,8 @@ public class CaveInteriorController : MonoBehaviour
     private float reflectionIntensityAntes;
     private Color ambientColorAntes;
     private float luzEntradaIntensityAntes;
+    private AmbientMode ambientModeAntes;
+    private float[] lucesExtraIntensityAntes;
 
     private void Reset()
     {
@@ -297,10 +321,27 @@ public class CaveInteriorController : MonoBehaviour
     {
         GuardarValoresAntesDeAplicar();
 
+        float profundidadOscura = CalcularFactorOscuridadReal(profundidad);
+
         float solMultiplier = Mathf.Lerp(multiplicadorSolEnEntrada, multiplicadorSolEnFondo, profundidad);
         float lunaMultiplier = Mathf.Lerp(multiplicadorLunaEnEntrada, multiplicadorLunaEnFondo, profundidad);
         float reflejosMultiplier = Mathf.Lerp(multiplicadorReflejosEnEntrada, multiplicadorReflejosEnFondo, profundidad);
         float mezclaAmbiente = Mathf.Lerp(mezclaColorAmbienteEntrada, mezclaColorAmbienteFondo, profundidad);
+        Color colorAmbienteObjetivo = colorAmbienteCueva;
+
+        if (usarOscuridadInteriorReal)
+        {
+            solMultiplier = Mathf.Lerp(solMultiplier, multiplicadorSolOscuridadTotal, profundidadOscura);
+            lunaMultiplier = Mathf.Lerp(lunaMultiplier, multiplicadorLunaOscuridadTotal, profundidadOscura);
+            reflejosMultiplier = Mathf.Lerp(reflejosMultiplier, multiplicadorReflejosOscuridadTotal, profundidadOscura);
+            mezclaAmbiente = Mathf.Lerp(mezclaAmbiente, 1f, profundidadOscura);
+            colorAmbienteObjetivo = Color.Lerp(colorAmbienteCueva, colorAmbienteOscuridadTotal, profundidadOscura);
+
+            if (forzarAmbientePlanoEnCueva && profundidadOscura > 0.01f)
+            {
+                RenderSettings.ambientMode = AmbientMode.Flat;
+            }
+        }
 
         if (sunLight != null)
         {
@@ -312,7 +353,9 @@ public class CaveInteriorController : MonoBehaviour
             moonLight.intensity *= lunaMultiplier;
         }
 
-        RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, colorAmbienteCueva, mezclaAmbiente);
+        AplicarLucesExterioresExtra(profundidadOscura);
+
+        RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, colorAmbienteObjetivo, mezclaAmbiente);
         RenderSettings.reflectionIntensity *= reflejosMultiplier;
 
         if (luzEntradaCueva != null)
@@ -324,13 +367,66 @@ public class CaveInteriorController : MonoBehaviour
         ajustesAplicados = true;
     }
 
+    private float CalcularFactorOscuridadReal(float profundidad)
+    {
+        if (!usarOscuridadInteriorReal)
+        {
+            return 0f;
+        }
+
+        float inicio = Mathf.Clamp01(profundidadInicioOscuridadTotal);
+        float fin = Mathf.Clamp01(Mathf.Max(inicio + 0.001f, profundidadOscuridadTotal));
+        float t = Mathf.InverseLerp(inicio, fin, Mathf.Clamp01(profundidad));
+
+        if (curvaOscuridadInterior != null)
+        {
+            t = Mathf.Clamp01(curvaOscuridadInterior.Evaluate(t));
+        }
+
+        return t;
+    }
+
+    private void AplicarLucesExterioresExtra(float profundidadOscura)
+    {
+        if (lucesExterioresExtra == null || lucesExterioresExtra.Length == 0 || profundidadOscura <= 0.001f)
+        {
+            return;
+        }
+
+        float multiplier = Mathf.Lerp(1f, 0f, profundidadOscura);
+
+        foreach (Light luz in lucesExterioresExtra)
+        {
+            if (luz == null || luz == sunLight || luz == moonLight || luz == luzEntradaCueva)
+            {
+                continue;
+            }
+
+            luz.intensity *= multiplier;
+        }
+    }
+
     private void GuardarValoresAntesDeAplicar()
     {
         sunIntensityAntes = sunLight != null ? sunLight.intensity : 0f;
         moonIntensityAntes = moonLight != null ? moonLight.intensity : 0f;
         reflectionIntensityAntes = RenderSettings.reflectionIntensity;
         ambientColorAntes = RenderSettings.ambientLight;
+        ambientModeAntes = RenderSettings.ambientMode;
         luzEntradaIntensityAntes = luzEntradaCueva != null ? luzEntradaCueva.intensity : 0f;
+
+        if (lucesExterioresExtra != null && lucesExterioresExtra.Length > 0)
+        {
+            if (lucesExtraIntensityAntes == null || lucesExtraIntensityAntes.Length != lucesExterioresExtra.Length)
+            {
+                lucesExtraIntensityAntes = new float[lucesExterioresExtra.Length];
+            }
+
+            for (int i = 0; i < lucesExterioresExtra.Length; i++)
+            {
+                lucesExtraIntensityAntes[i] = lucesExterioresExtra[i] != null ? lucesExterioresExtra[i].intensity : 0f;
+            }
+        }
     }
 
     private void RestaurarAjustesAplicados()
@@ -352,10 +448,24 @@ public class CaveInteriorController : MonoBehaviour
 
         RenderSettings.reflectionIntensity = reflectionIntensityAntes;
         RenderSettings.ambientLight = ambientColorAntes;
+        RenderSettings.ambientMode = ambientModeAntes;
 
         if (luzEntradaCueva != null)
         {
             luzEntradaCueva.intensity = luzEntradaIntensityAntes;
+        }
+
+        if (lucesExterioresExtra != null && lucesExtraIntensityAntes != null)
+        {
+            int count = Mathf.Min(lucesExterioresExtra.Length, lucesExtraIntensityAntes.Length);
+
+            for (int i = 0; i < count; i++)
+            {
+                if (lucesExterioresExtra[i] != null)
+                {
+                    lucesExterioresExtra[i].intensity = lucesExtraIntensityAntes[i];
+                }
+            }
         }
 
         ajustesAplicados = false;
