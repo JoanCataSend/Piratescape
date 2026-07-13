@@ -121,6 +121,16 @@ public sealed class GestorPartida : MonoBehaviour
     public void MarcarTutorialCompletado(bool completado)
     {
         PlayerPrefs.SetInt(ClaveTutorialCompletado, completado ? 1 : 0);
+
+        if (completado)
+        {
+            MiniMissionManager.CompletarTutorialPrincipalGlobal();
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey(MiniMissionManager.DefaultClaveTutorialPrincipalCompletado);
+        }
+
         PlayerPrefs.Save();
     }
 
@@ -132,6 +142,7 @@ public sealed class GestorPartida : MonoBehaviour
         }
 
         PlayerPrefs.DeleteKey(ClaveTutorialCompletado);
+        MiniMissionManager.MarcarNuevaPartidaGlobal();
         PlayerPrefs.Save();
     }
 
@@ -150,6 +161,12 @@ public sealed class GestorPartida : MonoBehaviour
         {
             PartidaCargadaEnEsteInicio = false;
             BorrarPartida();
+
+            if (MiniMissionManager.Instance != null)
+            {
+                MiniMissionManager.Instance.PrepararNuevaPartida();
+            }
+
             Debug.Log("Nueva partida iniciada desde cero. Guardado anterior borrado si existia.");
             return;
         }

@@ -174,6 +174,20 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         {
             GestorPartida.Instance.MarcarTutorialCompletado(true);
         }
+
+        NotificarTutorialPrincipalCompletadoParaMiniMisiones();
+    }
+
+    private void NotificarTutorialPrincipalCompletadoParaMiniMisiones()
+    {
+        if (MiniMissionManager.Instance != null)
+        {
+            MiniMissionManager.Instance.CompletarTutorialPrincipal();
+        }
+        else
+        {
+            MiniMissionManager.CompletarTutorialPrincipalGlobal();
+        }
     }
 
     public void NotificarPartidaGuardada()
@@ -429,6 +443,8 @@ public sealed class TutorialMisionesLoro : MonoBehaviour
         {
             GestorPartida.Instance.MarcarTutorialCompletado(true);
         }
+
+        NotificarTutorialPrincipalCompletadoParaMiniMisiones();
 
         MostrarObjetivo("Tutorial completado", "¡Graaak! Ya sabes lo básico: moverte, recoger objetos, seleccionarlos y consumirlos.");
         StartCoroutine(OcultarPanelDespuesDeUnMomento());

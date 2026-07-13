@@ -5,6 +5,10 @@ using UnityEngine;
 
 public sealed class MiniMissionManager : MonoBehaviour
 {
+    public const string DefaultClaveGuardado = "PirateScape_MiniMisiones_Tutorial";
+    public const string DefaultClaveTutorialPrincipalCompletado = "PirateScape_TutorialPrincipal_Completado";
+    public const string DefaultClaveNuevaPartidaPendiente = "PirateScape_NuevaPartidaPendiente";
+    private const string ClaveTutorialLoroOriginal = "tutorial_loro_completado";
     public enum TipoObjetivo
     {
         TenerItem,
@@ -109,9 +113,22 @@ public sealed class MiniMissionManager : MonoBehaviour
     [SerializeField] private float retardoEntreMisiones = 1.2f;
     [SerializeField] private float intervaloComprobarObjetivos = 0.25f;
 
+    [Header("Arranque tras tutorial principal")]
+    [SerializeField] private bool esperarTutorialPrincipal = true;
+    [SerializeField] private bool activarMisionesAlCompletarTutorial = true;
+    [SerializeField] private bool resetearMisionesAlCompletarTutorialSiEstabanOcultas = true;
+    [SerializeField] private bool ocultarUIHastaCompletarTutorial = true;
+    [SerializeField] private bool tutorialPrincipalCompletado;
+    [SerializeField] private string claveTutorialPrincipalCompletado = DefaultClaveTutorialPrincipalCompletado;
+
+    [Header("Nueva partida")]
+    [SerializeField] private bool resetearSiNuevaPartidaPendiente = true;
+    [SerializeField] private bool consumirMarcaNuevaPartidaAlIniciar = true;
+    [SerializeField] private string claveNuevaPartidaPendiente = DefaultClaveNuevaPartidaPendiente;
+
     [Header("Guardado opcional")]
     [SerializeField] private bool guardarProgresoPlayerPrefs = true;
-    [SerializeField] private string claveGuardado = "PirateScape_MiniMisiones_Tutorial";
+    [SerializeField] private string claveGuardado = DefaultClaveGuardado;
 
     [Header("Depuracion")]
     [SerializeField] private bool mostrarLogs = false;
@@ -157,7 +174,10 @@ public sealed class MiniMissionManager : MonoBehaviour
             CargarProgreso();
         }
 
-        misionesActivas = activarMisionesAlIniciar;
+        AplicarNuevaPartidaPendienteSiExiste();
+        CargarEstadoTutorialPrincipal();
+
+        misionesActivas = activarMisionesAlIniciar && PuedeMostrarMisiones();
         PrepararMisionActual();
         RefrescarUI();
     }
@@ -218,6 +238,28 @@ public sealed class MiniMissionManager : MonoBehaviour
         Instance.ReportarEvento(idEvento);
     }
 
+    public static void MarcarNuevaPartidaGlobal()
+    {
+        PlayerPrefs.SetInt(DefaultClaveNuevaPartidaPendiente, 1);
+        BorrarProgresoGuardado(DefaultClaveGuardado);
+        PlayerPrefs.DeleteKey(DefaultClaveTutorialPrincipalCompletado);
+        PlayerPrefs.DeleteKey(ClaveTutorialLoroOriginal);
+        PlayerPrefs.Save();
+    }
+
+    public static void CompletarTutorialPrincipalGlobal()
+    {
+        if (Instance != null)
+        {
+            Instance.CompletarTutorialPrincipal();
+            return;
+        }
+
+        PlayerPrefs.SetInt(DefaultClaveTutorialPrincipalCompletado, 1);
+        PlayerPrefs.SetInt(ClaveTutorialLoroOriginal, 1);
+        PlayerPrefs.Save();
+    }
+
     public void ReportarEvento(string idEvento)
     {
         if (string.IsNullOrWhiteSpace(idEvento))
@@ -254,6 +296,19 @@ public sealed class MiniMissionManager : MonoBehaviour
 
     public void ActivarMisiones()
     {
+        if (!PuedeMostrarMisiones())
+        {
+            misionesActivas = false;
+            RefrescarUI();
+
+            if (mostrarLogs)
+            {
+                Debug.Log("[MiniMissionManager] No activo misiones porque falta completar el tutorial principal.", this);
+            }
+
+            return;
+        }
+
         misionesActivas = true;
         RefrescarUI();
     }
@@ -264,24 +319,71 @@ public sealed class MiniMissionManager : MonoBehaviour
         RefrescarUI();
     }
 
-    [ContextMenu("Debug/Resetear misiones")]
-    public void ResetearMisiones()
+    public void CompletarTutorialPrincipal()
     {
-        indiceMisionActual = 0;
-        eventosReportados.Clear();
-        completandoMision = false;
-        misionesActivas = true;
-        PrepararMisionActual();
+        tutorialPrincipalCompletado = true;
 
         if (guardarProgresoPlayerPrefs)
         {
-            PlayerPrefs.DeleteKey(claveGuardado + "_indice");
-            PlayerPrefs.DeleteKey(claveGuardado + "_eventos");
-            PlayerPrefs.DeleteKey(claveGuardado + "_diaInicio");
+            PlayerPrefs.SetInt(claveTutorialPrincipalCompletado, 1);
+            PlayerPrefs.SetInt(ClaveTutorialLoroOriginal, 1);
+            PlayerPrefs.Save();
+        }
+
+        if (resetearMisionesAlCompletarTutorialSiEstabanOcultas && !misionesActivas)
+        {
+            ResetearDatosMisiones(false);
+        }
+
+        if (activarMisionesAlCompletarTutorial)
+        {
+            misionesActivas = true;
+        }
+
+        PrepararMisionActual();
+        RefrescarUI();
+
+        if (mostrarLogs)
+        {
+            Debug.Log("[MiniMissionManager] Tutorial principal completado. Minimisiones activadas.", this);
+        }
+    }
+
+    public void PrepararNuevaPartida()
+    {
+        tutorialPrincipalCompletado = false;
+        misionesActivas = false;
+        ResetearDatosMisiones(true);
+
+        if (guardarProgresoPlayerPrefs)
+        {
+            PlayerPrefs.DeleteKey(claveTutorialPrincipalCompletado);
+            PlayerPrefs.DeleteKey(ClaveTutorialLoroOriginal);
+            PlayerPrefs.DeleteKey(claveNuevaPartidaPendiente);
             PlayerPrefs.Save();
         }
 
         RefrescarUI();
+    }
+
+    [ContextMenu("Debug/Resetear misiones")]
+    public void ResetearMisiones()
+    {
+        ResetearDatosMisiones(true);
+        misionesActivas = PuedeMostrarMisiones();
+        RefrescarUI();
+    }
+
+    [ContextMenu("Debug/Nueva partida - resetear y esperar tutorial")]
+    public void DebugNuevaPartidaResetearYEsperarTutorial()
+    {
+        PrepararNuevaPartida();
+    }
+
+    [ContextMenu("Debug/Completar tutorial principal y mostrar misiones")]
+    public void DebugCompletarTutorialPrincipal()
+    {
+        CompletarTutorialPrincipal();
     }
 
     [ContextMenu("Debug/Completar mision actual")]
@@ -300,6 +402,84 @@ public sealed class MiniMissionManager : MonoBehaviour
     public void DebugReportarPrimerPez()
     {
         ReportarEvento("pescar_primer_pez");
+    }
+
+    private void AplicarNuevaPartidaPendienteSiExiste()
+    {
+        if (!resetearSiNuevaPartidaPendiente || !guardarProgresoPlayerPrefs)
+        {
+            return;
+        }
+
+        bool nuevaPartidaPendiente = PlayerPrefs.GetInt(claveNuevaPartidaPendiente, 0) == 1;
+
+        if (!nuevaPartidaPendiente)
+        {
+            return;
+        }
+
+        ResetearDatosMisiones(false);
+        tutorialPrincipalCompletado = false;
+        misionesActivas = false;
+        PlayerPrefs.DeleteKey(claveTutorialPrincipalCompletado);
+        PlayerPrefs.DeleteKey(ClaveTutorialLoroOriginal);
+
+        if (consumirMarcaNuevaPartidaAlIniciar)
+        {
+            PlayerPrefs.DeleteKey(claveNuevaPartidaPendiente);
+        }
+
+        PlayerPrefs.Save();
+
+        if (mostrarLogs)
+        {
+            Debug.Log("[MiniMissionManager] Nueva partida detectada. Misiones reseteadas y esperando tutorial principal.", this);
+        }
+    }
+
+    private void CargarEstadoTutorialPrincipal()
+    {
+        if (!esperarTutorialPrincipal)
+        {
+            tutorialPrincipalCompletado = true;
+            return;
+        }
+
+        if (!guardarProgresoPlayerPrefs)
+        {
+            tutorialPrincipalCompletado = false;
+            return;
+        }
+
+        int valorMiniMisiones = PlayerPrefs.GetInt(claveTutorialPrincipalCompletado, tutorialPrincipalCompletado ? 1 : 0);
+        int valorTutorialLoro = PlayerPrefs.GetInt(ClaveTutorialLoroOriginal, 0);
+        tutorialPrincipalCompletado = valorMiniMisiones == 1 || valorTutorialLoro == 1;
+
+        if (tutorialPrincipalCompletado)
+        {
+            PlayerPrefs.SetInt(claveTutorialPrincipalCompletado, 1);
+        }
+    }
+
+    private bool PuedeMostrarMisiones()
+    {
+        return !esperarTutorialPrincipal || tutorialPrincipalCompletado;
+    }
+
+    private void ResetearDatosMisiones(bool borrarPlayerPrefs)
+    {
+        indiceMisionActual = 0;
+        eventosReportados.Clear();
+        completandoMision = false;
+        diaInicioMisionActual = gameTimeSystem != null ? gameTimeSystem.CurrentDay : 1;
+
+        if (borrarPlayerPrefs && guardarProgresoPlayerPrefs)
+        {
+            BorrarProgresoGuardado(claveGuardado);
+            PlayerPrefs.Save();
+        }
+
+        PrepararMisionActual();
     }
 
     private void BuscarReferenciasSiFaltan()
@@ -329,13 +509,13 @@ public sealed class MiniMissionManager : MonoBehaviour
     {
         misiones = new List<MiniMision>
         {
-            CrearMisionItem("mision_cana_vieja", "Una caña abandonada", "Encuentra una caña vieja en la isla para poder empezar a pescar.", "cana_vieja", 1, "Has encontrado una caña vieja."),
+            CrearMisionItem("mision_cana_vieja", "Una caña abandonada", "Encuentra una caña vieja en la playa para poder empezar a pescar.", "cana_vieja", 1, "Has encontrado una caña vieja."),
             CrearMisionEvento("mision_primer_pez", "Primer pez", "Selecciona la caña y pesca cualquier pez.", "pescar_primer_pez", "Has pescado tu primer pez."),
-            CrearMisionItem("mision_platanos", "Reserva de plátanos", "Consigue 4 plátanos. A los monos les gustan mucho", "platano", 4, "Ya tienes suficientes plátanos."),
+            CrearMisionItem("mision_platanos", "Reserva de plátanos", "Consigue 4 plátanos. Los monos de la isla parecen interesados en ellos.", "platano", 4, "Ya tienes suficientes plátanos."),
             CrearMisionEvento("mision_mono_amigo", "Un amigo peludo", "Dale 2 plátanos a un mono para ganarte su confianza.", "mono_amigo", "Ahora tienes un mono amigo."),
-            CrearMisionHora("mision_esperar_noche", "Espera a la noche", "Espera hasta las 22:00.", 22, 0, "Ya es hora de buscar al comerciante fantasma."),
-            CrearMisionEvento("mision_comerciante", "El comerciante fantasma", "Habla con el comerciante fantasmam", "hablar_comerciante", "Has hablado con el comerciante fantasma."),
-            CrearMisionSobrevivir("mision_sobrevive_dia", "Sobrevive un día", "Duerme", "Has sobrevivido un día completo."),
+            CrearMisionHora("mision_esperar_noche", "Espera a la noche", "Espera hasta las 22:00. Dicen que a esa hora aparece el comerciante fantasma.", 22, 0, "Ya es hora de buscar al comerciante fantasma."),
+            CrearMisionEvento("mision_comerciante", "El comerciante fantasma", "Habla con el comerciante fantasma cuando aparezca por la noche.", "hablar_comerciante", "Has hablado con el comerciante fantasma."),
+            CrearMisionSobrevivir("mision_sobrevive_dia", "Sobrevive un día", "Sobrevive hasta el siguiente día para aprender cómo cambia la isla.", "Has sobrevivido un día completo."),
             CrearMisionEvento("mision_cueva_luz", "Luz en la oscuridad", "Entra en la cueva llevando una antorcha o farol para explorar con seguridad.", "entrar_cueva_con_luz", "La cueva ya no parece tan oscura.")
         };
     }
@@ -506,7 +686,7 @@ public sealed class MiniMissionManager : MonoBehaviour
             return;
         }
 
-        if (!misionesActivas)
+        if (!misionesActivas || (ocultarUIHastaCompletarTutorial && !PuedeMostrarMisiones()))
         {
             missionUI.Ocultar();
             return;
@@ -686,7 +866,20 @@ public sealed class MiniMissionManager : MonoBehaviour
         PlayerPrefs.SetInt(claveGuardado + "_indice", indiceMisionActual);
         PlayerPrefs.SetInt(claveGuardado + "_diaInicio", diaInicioMisionActual);
         PlayerPrefs.SetString(claveGuardado + "_eventos", string.Join("|", eventosReportados));
+        PlayerPrefs.SetInt(claveTutorialPrincipalCompletado, tutorialPrincipalCompletado ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+    private static void BorrarProgresoGuardado(string claveBase)
+    {
+        if (string.IsNullOrWhiteSpace(claveBase))
+        {
+            return;
+        }
+
+        PlayerPrefs.DeleteKey(claveBase + "_indice");
+        PlayerPrefs.DeleteKey(claveBase + "_eventos");
+        PlayerPrefs.DeleteKey(claveBase + "_diaInicio");
     }
 
     private void CargarProgreso()
